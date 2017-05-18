@@ -130,7 +130,7 @@ img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google 
 
 #Call animate_move()
 animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
-             paths_mode = "simple", frames_nmax = 15,
+             paths_mode = "simple", frames_nmax = 50,
              img_caption = img_caption, img_title = img_title,
              img_sub = img_sub, log_level = 1)
 
