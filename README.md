@@ -8,10 +8,10 @@ This is an R package providung tools to visualize movement data by creating path
 
 This is the official moveVis R package repository, including beta code versions before submitted to CRAN. For operational use of moveVis, please use the current stable CRAN version of moveVis.
 
-To install from CRAN, please execute:
+To install stable version from CRAN, please execute:
 
 ```s
-install.packages('moveVis') #Currently not working until CRAN submission completed. Use instead dev. version!
+install.packages('moveVis')
 ```
 
 To install the development version from this GitHub repository, please execute:
