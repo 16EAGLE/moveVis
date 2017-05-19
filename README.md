@@ -1,5 +1,6 @@
 # moveVis
 [![CRAN version](https://www.r-pkg.org/badges/version/moveVis)](https://CRAN.R-project.org/package=moveVis)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-week/moveVis?color=brightgreen](https://CRAN.R-project.org/package=moveVis)
 
 ## Introduction
 
