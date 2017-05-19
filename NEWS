@@ -1,0 +1,6 @@
+moveVis 0.9.0
+Initial release of moveVis to CRAN including the functions
+ + animate_move()
+ + get_imconvert()
+and the example data set
+ + data(move_data)
