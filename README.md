@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This is an R package providing tools to visualize movement data by creating path animations from GPS point data. The package is under ongoing development, new functions including statistics visualaization will be added soon. The moveVis package shall be closely connected to the move package functionalities. It is partly based on the animation package and uses a ggplot2 based plot architecture for frame creation.
+This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The package is under ongoing development, new functions including statistics visualaization will be added soon. The moveVis package is working hand in hand with the move package by using the move class. It is partly based on the animation package and uses a ggplot2 based plot architecture for frame creation.
 
 ## Installation
 
