@@ -24,7 +24,7 @@ install.packages('moveVis', repos = 'https://github.com/16eagle/movevis')
 
 ## Quick guide for movement animation
 
-This guide explains shortly how to prepare your own geo-location point data for the animate_move() function by crearting a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours. First, you will need to load the move and the moveVis package and possibly the example data:
+This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by crearting a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours. First, you will need to load the move and the moveVis package and possibly the example data:
 
 ```s
 #Load packages
