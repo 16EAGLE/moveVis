@@ -22,5 +22,5 @@ install.packages('moveVis', repos = 'https://github.com/16eagle/movevis')
 
 ## Bug reports / Contact
 
-For bug reports, please use <https://github.com/yihui/animation/issues>. Feature requests and other contributions are also welcome.
+For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature requests and other contributions are also welcome.
 
