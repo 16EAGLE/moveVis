@@ -13,13 +13,13 @@ animate_raster(layer, out_dir, conv_dir = "convert", layer_type = "",
   frames_nres = 1, out_name = "final_gif", log_level = 1)
 }
 \arguments{
-\item{layer}{raster, list or character. Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
+\item{layer}{raster, list or character. Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
 
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
 \item{conv_dir}{character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.}
 
-\item{layer_type}{charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.}
+\item{layer_type}{charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{gradient}".}
 
 \item{layer_col}{character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.}
 
@@ -63,6 +63,23 @@ No return. The GIF file is written to the ouput directory.
 }
 \details{
 \code{animate_raster} is partly based on the \code{animation} package and needs the \code{convert} tool of the \code{ImageMagick} software package to assemble the GIF file. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
+}
+\examples{
+\dontrun{
+#Create a list of several raster objects to be displayed one after another
+#If layer_type = RGB, use a brick class obejct with RGB bands!
+layer <- list(raster1, raster2, raster2)
+
+#Get your convert directory/command
+conv_dir <- get_imconvert()
+
+#Spcecify output directory
+out_dir <- "path/to/output/dir"
+
+#Call animate_raster
+animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB")
+}
+
 }
 \seealso{
 \code{\link{get_imconvert}}
