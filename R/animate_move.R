@@ -272,16 +272,11 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   crs_input <- crs(data_ani[[1]])
   
   #Convert move class elements to dataframe
+  data_ani_df <- list()
   for(i in 1:length(data_ani)){
-    if(i == 1){
-      data_ani_df <- list(data.frame(data_ani[[i]]$x))
-      data_ani_df[[i]] <- cbind(data_ani_df[[i]],data_ani[[i]]$y,data_ani[[i]]$time)
-      colnames(data_ani_df[[i]]) <- c("x","y","dt")
-    }else{
-      data_ani_df[[i]] <- data.frame(data_ani[[i]]$x)
-      data_ani_df[[i]] <- cbind(data_ani_df[[i]],data_ani[[i]]$y,data_ani[[i]]$time)
-      colnames(data_ani_df[[i]]) <- c("x","y","dt")
-    }
+    data_ani_df[[i]] <- data.frame(data_ani[[i]]@coords[,1])
+    data_ani_df[[i]] <- cbind(data_ani_df[[i]],data_ani[[i]]@coords[,2],data_ani[[i]]@timestamps)
+    colnames(data_ani_df[[i]]) <- c("x","y","dt")
   }
 
   #Save original subset lengths

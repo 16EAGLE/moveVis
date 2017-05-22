@@ -185,6 +185,8 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = ""
     out("Keyword 'frames_nres' needs to be numeric! Setting 'frames_nres' to 1.",type=2)
     frames_nres <- 1
   }
+  #Plattform dependences
+  if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
   
   
   #[2] PREPARE RASTER LIST
@@ -244,6 +246,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = ""
   rec1_leftdown <- data.frame(x_left,y_down)
   colnames(rec1_leftdown) <- c("x","y")
   
+  crs_input <- crs(layer[[1]])
   #Transform to latlon
   if(as.character(crs(layer[[1]])) != "+proj=longlat +ellps=WGS84"){
     #Transform complete extent
