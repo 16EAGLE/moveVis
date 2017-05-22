@@ -1,5 +1,3 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE$
-R/animate_raster.r
-man/aniamte_raster.Rd
