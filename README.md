@@ -19,7 +19,7 @@ install.packages('moveVis')
 To install the development version from this GitHub repository, please execute:
 
 ```s
-install.packages('moveVis', repos = 'https://github.com/16eagle/movevis')
+devtools::install_github("16EAGLE/moveVis")
 ```
 
 ## Quick Guide for Movement Animation
