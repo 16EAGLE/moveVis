@@ -24,6 +24,7 @@
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
 #' @param north_col character. Colour of the north arrow. Default is "white".
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
+#' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
 #' @param paths_mode character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
@@ -112,8 +113,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
          layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", tail_elements = 10, tail_size = 4,
          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs", legend_title = "",
          legend_limits = NA,legend_labels = "auto", scalebar_col = "white", north_col = "white",
-         paths_col = "auto", paths_mode = "simple", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
-         out_name = "final_gif", log_level = 2){
+         paths_col = "auto", paths_alpha = 1, paths_mode = "simple", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
+         out_name = "final_gif", log_level = 1){
   
   
   #Define output handling
@@ -257,8 +258,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
           background layer data with equal projection or do not use 'layer'.",type=3)
     }
   }
-  
-  out("Loading packages...",type=1)
   #Plattform dependences
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
   
@@ -774,11 +773,11 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   
   #Define argument strings for the plot function to be called dynamically according to number of individuals
   plt_path_std <- 'geom_path(data = frame_l[[1]][,1:2],aes(x = frame_l[[1]]$x, y = frame_l[[1]]$y,
-  alpha = 1),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
+  alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
   plt_path_c1 <- 'geom_path(data = frame_l[['
   plt_path_c2 <- ']][,1:2],aes(x = frame_l[['
   plt_path_c3 <- ']]$x, y = frame_l[['
-  plt_path_c4 <- ']]$y, alpha = 1),lineend = "round", linejoin = "round", colour = colours['
+  plt_path_c4 <- ']]$y, alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours['
   plt_path_c5 <- ',], size = line_size,na.rm=TRUE,show.legend = FALSE)'
   
   #Assemble path plot functions

@@ -11,9 +11,9 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   img_title = "title", img_sub = "subtitle", img_caption = "caption",
   img_labs = "labs", legend_title = "", legend_limits = NA,
   legend_labels = "auto", scalebar_col = "white", north_col = "white",
-  paths_col = "auto", paths_mode = "simple", frames_nmax = 0,
-  frames_interval = 0.04, frames_nres = 1, out_name = "final_gif",
-  log_level = 2)
+  paths_col = "auto", paths_alpha = 1, paths_mode = "simple",
+  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
+  out_name = "final_gif", log_level = 1)
 }
 \arguments{
 \item{data_ani}{list. One or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates.}
@@ -59,6 +59,8 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{north_col}{character. Colour of the north arrow. Default is "white".}
 
 \item{paths_col}{character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.}
+
+\item{paths_alpha}{numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.}
 
 \item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
 
