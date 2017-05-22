@@ -10,13 +10,13 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   map_type = "satellite", tail_elements = 10, tail_size = 4,
   img_title = "title", img_sub = "subtitle", img_caption = "caption",
   img_labs = "labs", legend_title = "", legend_limits = NA,
-  legend_labels = "auto", scalebar_col = "white", north_col = "white",
-  paths_col = "auto", paths_alpha = 1, paths_mode = "simple",
-  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
-  out_name = "final_gif", log_level = 1)
+  legend_labels = "auto", map_elements = TRUE, scalebar_col = "white",
+  north_col = "white", paths_col = "auto", paths_alpha = 1,
+  paths_mode = "simple", frames_nmax = 0, frames_interval = 0.04,
+  frames_nres = 1, out_name = "final_gif", log_level = 1)
 }
 \arguments{
-\item{data_ani}{list. One or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates.}
+\item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
 
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
@@ -53,6 +53,8 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{legend_limits}{numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".}
 
 \item{legend_labels}{character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".}
+
+\item{map_elements}{logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.}
 
 \item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
 

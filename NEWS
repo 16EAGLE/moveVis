@@ -1,3 +1,9 @@
+moveVis 0.9.1 BETA (not on CRAN)
+- New function animate_raster() for animating just basemaps/for doing the same as with animate_move(), but without movement data
+- Added moveStack support: animate_move() now takes also moveStack objects in addition to list objects
+- Bug fix: Function now takes movebank.org data --> there had been a static code line preventing the read-out of movement coordinates
+- Several major and minor bug fixes
+
 moveVis 0.9.0
 Initial release of moveVis to CRAN including the functions
  + animate_move()

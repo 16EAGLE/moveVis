@@ -2,7 +2,7 @@
 #'
 #' \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}). 
 #'
-#' @param data_ani list. One or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates.
+#' @param data_ani list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.
 #' @param out_dir character. Output directory for the GIF file creation.
 #' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
 #' @param layer raster, list or character. Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
@@ -22,6 +22,7 @@
 #' @param legend_limits numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".
 #' @param legend_labels character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
+#' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
 #' @param north_col character. Colour of the north arrow. Default is "white".
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
 #' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
@@ -112,7 +113,7 @@
 animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
          layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", tail_elements = 10, tail_size = 4,
          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs", legend_title = "",
-         legend_limits = NA,legend_labels = "auto", scalebar_col = "white", north_col = "white",
+         legend_limits = NA,legend_labels = "auto", map_elements = TRUE, scalebar_col = "white", north_col = "white",
          paths_col = "auto", paths_alpha = 1, paths_mode = "simple", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
          out_name = "final_gif", log_level = 1){
   
@@ -220,7 +221,16 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   }else{
     if(is.list(data_ani) != TRUE){
       if(is(data_ani,"Move")){data_ani <- list(data_ani)} #Convert single move object to single element list
-      else{out("Argument 'data_ani' needs to be a list object containing a 'move' object for each individual!",type=3)}
+      else{
+        if(is(data_ani,"MoveStack")){
+          data_ani_temp <- list("empty")
+          for(i in 1:length(split(data_ani))){
+            data_ani_temp[[i]] <- split(data_ani)[[i]] 
+          }
+          data_ani <- data_ani_temp
+        }else{out("Argument 'data_ani' needs to be a list object containing a 'move' object for each individual!",type=3)
+        }
+      }
     }else{
       for(i in 1:length(data_ani)){
         if(is(data_ani[[i]],"Move") == FALSE){out("Elements in list object 'data_ani' need to be of the 'move' class!",type=3)}
@@ -836,18 +846,20 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   }
   
   #Defining map elements
-  plt_scale_north <- 'geom_polygon(data = rec1, aes_(x = ~x, y = ~y), fill = "white", colour = "black") +
-                      geom_polygon(data = rec2, aes_(x = ~x, y = ~y), fill = "black", colour = "black") +
-                      annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) +
-                      geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
-                      annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)'
-  plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)'
+  if(map_elements == TRUE){
+    plt_scale_north <- 'geom_polygon(data = rec1, aes_(x = ~x, y = ~y), fill = "white", colour = "black") +
+                        geom_polygon(data = rec2, aes_(x = ~x, y = ~y), fill = "black", colour = "black") +
+                        annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) +
+                        geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
+                        annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
+  }else{plt_scale_north <- ''}
+  plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)+'
   
   
   #Parse argument string for plotting in the saveGIF function
   if(is.character(layer) == TRUE){
     plt_fin <- paste0("quiet(plot(rbl_gg + ",
-                      plt_scale_north, "+",plt_progress,"+", plt_path)
+                      plt_scale_north,plt_progress,plt_path)
   }else{
     if(is.na(legend_limits)){plt_limits <- "limits=c(rbl[[i]]@data@min, rbl[[i]]@data@max)"
     }else{plt_limits <- "limits=legend_limits"}
@@ -855,18 +867,18 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
       plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
           scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,"+",plt_progress,"+",plt_path)
+                        plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "discrete"){
       plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = factor(~value))) +
           scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + 
           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,"+",plt_progress,"+",plt_path)
+                        plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "RGB"){
       plt_fin <- paste0('quiet(plot(ggplot(data=rbl_df[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]])) + scale_fill_identity() +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,"+",plt_progress,"+",plt_path)
+                        plt_scale_north,plt_progress,plt_path)
     }
   }
 
