@@ -7,7 +7,8 @@ New features:
  + New function animate_raster() for animating just basemaps/for doing the same as with animate_move(), but without movement data
 
 Improvements
- + Bug fix: Function now takes movebank.org data --> there had been a static code line preventing the read-out of movement coordinates, which is now solved.
+ + Bug fix: Function now takes movebank.org data --> there had been a static code line preventing the read-out of
+   movement coordinates, which is now solved.
  + Several major and minor bug fixes
 
 Bug report contributors:
