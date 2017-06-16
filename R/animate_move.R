@@ -30,8 +30,11 @@
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
+#' @param frames_width numeric. Number of pixels of frame width. Default is 600.
+#' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
 #' @param out_name character. Name of the output file. Default is "final_gif".
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
+#' @param ... optional arguments.
 #' 
 #' @return No return. The GIF file is written to the ouput directory.
 #' 
@@ -115,7 +118,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs", legend_title = "",
          legend_limits = NA,legend_labels = "auto", map_elements = TRUE, scalebar_col = "white", north_col = "white",
          paths_col = "auto", paths_alpha = 1, paths_mode = "simple", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
-         out_name = "final_gif", log_level = 1){
+         frames_width = 600, frames_height = 600, out_name = "final_gif", log_level = 1){
   
   
   #Define output handling
@@ -914,7 +917,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     index_max <- index_list[r]
     
     #Define ani.options
-    quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=600,ani.height=600, convert = conv_dir))
+    quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
     
     #Calcualte animation
     #s_try <- try(

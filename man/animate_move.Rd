@@ -13,7 +13,8 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   legend_labels = "auto", map_elements = TRUE, scalebar_col = "white",
   north_col = "white", paths_col = "auto", paths_alpha = 1,
   paths_mode = "simple", frames_nmax = 0, frames_interval = 0.04,
-  frames_nres = 1, out_name = "final_gif", log_level = 1)
+  frames_nres = 1, frames_width = 600, frames_height = 600,
+  out_name = "final_gif", log_level = 1)
 }
 \arguments{
 \item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
@@ -72,9 +73,15 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{frames_nres}{numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.}
 
+\item{frames_width}{numeric. Number of pixels of frame width. Default is 600.}
+
+\item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
+
 \item{out_name}{character. Name of the output file. Default is "final_gif".}
 
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
+
+\item{...}{optional arguments.}
 }
 \value{
 No return. The GIF file is written to the ouput directory.
