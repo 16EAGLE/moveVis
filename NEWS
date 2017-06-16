@@ -1,4 +1,12 @@
 -----------------------------------------------------------
+moveVis 0.9.2 BETA (only on GitHub)
+adding frame_width and frame_height arguments
+-----------------------------------------------------------
+New features:
+ + Added two new arguments to animate_move() function for changing output frame resolution
+
+ 
+-----------------------------------------------------------
 moveVis 0.9.1
 Fixing important bug; adding animate_raster()
 -----------------------------------------------------------
