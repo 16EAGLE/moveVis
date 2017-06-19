@@ -12,7 +12,7 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   img_labs = "labs", legend_title = "", legend_limits = NA,
   legend_labels = "auto", map_elements = TRUE, scalebar_col = "white",
   north_col = "white", paths_col = "auto", paths_alpha = 1,
-  paths_mode = "simple", frames_nmax = 0, frames_interval = 0.04,
+  paths_mode = "true_data", frames_nmax = 0, frames_interval = 0.04,
   frames_nres = 1, frames_width = 600, frames_height = 600,
   out_name = "final_gif", log_level = 1)
 }

@@ -117,7 +117,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
          layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", tail_elements = 10, tail_size = 4,
          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs", legend_title = "",
          legend_limits = NA,legend_labels = "auto", map_elements = TRUE, scalebar_col = "white", north_col = "white",
-         paths_col = "auto", paths_alpha = 1, paths_mode = "simple", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
+         paths_col = "auto", paths_alpha = 1, paths_mode = "true_data", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
          frames_width = 600, frames_height = 600, out_name = "final_gif", log_level = 1){
   
   
@@ -646,7 +646,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   
   #[5] CALCULATE COLOUR RAMP AND SIZE VECTOR
   out("Calculating colour ramp and size vector...",type=1)
-
+  
   #Calculate path colour ramp
   if(paths_col == "auto"){collist <- c("red","green","blue","yellow","darkgreen","orange","deepskyblue", "darkorange","deeppink","navy")
   }else{collist <- paths_col}
@@ -682,7 +682,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
       layer_col <- rev(colfunc(length(legend_breaks)))
     }
   }
- 
+  
   
   
   #[6] CALCULATE MAP ELEMENTS POSITIONS
@@ -780,10 +780,10 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   out("Parsing plot function arguments..", type=1)
   
   #Define argument strings for the plot function to be called dynamically according to number of individuals
-  plt_path_std <- 'geom_path(data = frame_l[[1]][,1:2],aes(x = frame_l[[1]]$x, y = frame_l[[1]]$y,
+  plt_path_std <- 'geom_path(data = frame_l[[1]][,1:2],aes_(x = frame_l[[1]]$x, y = frame_l[[1]]$y,
   alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
   plt_path_c1 <- 'geom_path(data = frame_l[['
-  plt_path_c2 <- ']][,1:2],aes(x = frame_l[['
+  plt_path_c2 <- ']][,1:2],aes_(x = frame_l[['
   plt_path_c3 <- ']]$x, y = frame_l[['
   plt_path_c4 <- ']]$y, alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours['
   plt_path_c5 <- ',], size = line_size,na.rm=TRUE,show.legend = FALSE)'
@@ -833,28 +833,28 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     if(img_caption != "caption"){
       if(img_sub != "subtitle"){
         plt_title <- paste0('labs(x = labs_x, y=labs_y, title="',img_title,'", subtitle="',img_sub,'", caption="',img_caption,'",label=c("123","456","789"))+
-                          theme(plot.title = element_text(hjust = 0.5),
-                          plot.subtitle = element_text(hjust = 0.5),
-                          plot.caption = element_text(hjust = 0.5))')
+                            theme(plot.title = element_text(hjust = 0.5),
+                            plot.subtitle = element_text(hjust = 0.5),
+                            plot.caption = element_text(hjust = 0.5))')
       }else{
         plt_title <- paste0('labs(x = labs_x, y=labs_y, title="',img_title,'", caption="',img_caption,'",label=c("123","456"))+
-                          theme(plot.title = element_text(hjust = 0.5), 
-                          plot.caption = element_text(hjust = 0.5))')
+                            theme(plot.title = element_text(hjust = 0.5), 
+                            plot.caption = element_text(hjust = 0.5))')
       }
-    }
-  }else{
-    if(img_caption != "caption"){plt_title <- paste0('labs(x = labs_x, y=labs_y, caption="',img_caption,'",label=c("123"))+
-                          theme(plot.caption = element_text(hjust = 0.5))')
-    }else{plt_title <- 0}
-  }
+      }
+      }else{
+        if(img_caption != "caption"){plt_title <- paste0('labs(x = labs_x, y=labs_y, caption="',img_caption,'",label=c("123"))+
+                                                         theme(plot.caption = element_text(hjust = 0.5))')
+        }else{plt_title <- 0}
+        }
   
   #Defining map elements
   if(map_elements == TRUE){
     plt_scale_north <- 'geom_polygon(data = rec1, aes_(x = ~x, y = ~y), fill = "white", colour = "black") +
-                        geom_polygon(data = rec2, aes_(x = ~x, y = ~y), fill = "black", colour = "black") +
-                        annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) +
-                        geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
-                        annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
+    geom_polygon(data = rec2, aes_(x = ~x, y = ~y), fill = "black", colour = "black") +
+    annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) +
+    geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
+    annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
   }else{plt_scale_north <- ''}
   plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)+'
   
@@ -868,23 +868,23 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     }else{plt_limits <- "limits=legend_limits"}
     if(layer_type == "gradient"){
       plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
-          scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
-          scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
+                        scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
+                        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "discrete"){
       plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = factor(~value))) +
-          scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + 
-          scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
+                        scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + 
+                        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "RGB"){
       plt_fin <- paste0('quiet(plot(ggplot(data=rbl_df[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]])) + scale_fill_identity() +
-        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
+                        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
   }
-
+  
   #Add title?
   if(plt_title != 0){plt_fin <- paste0(plt_fin,"+", plt_title,"))")
   }else{plt_fin <- paste0(plt_fin,"))")}
