@@ -1,4 +1,12 @@
 -----------------------------------------------------------
+moveVis 0.9.3 BETA (only on GitHub)
+Fixing major bug
+-----------------------------------------------------------
+Improvements
+ + Fixed a major bug causing an unavoidable error when creating animations with animate_move() using user defined basemaps (Error message: 'Error in eval(expr, envir, enclos) : Object 'frame_l' not found')
+
+
+-----------------------------------------------------------
 moveVis 0.9.2 BETA (only on GitHub)
 adding frame_width and frame_height arguments
 -----------------------------------------------------------
@@ -7,7 +15,7 @@ New features:
 
  
 -----------------------------------------------------------
-moveVis 0.9.1
+moveVis 0.9.1 (latest CRAN version)
 Fixing important bug; adding animate_raster()
 -----------------------------------------------------------
 New features:
