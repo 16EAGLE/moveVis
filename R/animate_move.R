@@ -642,6 +642,18 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     }
   }
   
+  #Calcualte min/max basmap values
+  if(is.character(layer) == FALSE){
+    if(is.na(legend_limits[1])){
+      val_x_limits <- data.frame(min(sapply(rbl, FUN = function(rbl){rbl@data@min})),
+                                 max(sapply(rbl, FUN = function(rbl){rbl@data@max})))
+      colnames(val_x_limits) <- c("x_min","x_max")
+    }else{val_x_limits <- data.frame(legend_limits[1],legend_limits[2])
+    colnames(val_x_limits) <- c("x_min","x_max")
+    }
+    plt_limits <- "limits=c(val_x_limits$x_min, val_x_limits$x_max)"
+  }
+  
   
   
   #[5] CALCULATE COLOUR RAMP AND SIZE VECTOR
@@ -864,8 +876,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     plt_fin <- paste0("quiet(plot(rbl_gg + ",
                       plt_scale_north,plt_progress,plt_path)
   }else{
-    if(is.na(legend_limits)){plt_limits <- "limits=c(rbl[[i]]@data@min, rbl[[i]]@data@max)"
-    }else{plt_limits <- "limits=legend_limits"}
+    #if(is.na(legend_limits)){plt_limits <- "limits=c(rbl[[i]]@data@min, rbl[[i]]@data@max)"
+    #}else{plt_limits <- "limits=legend_limits"}
     if(layer_type == "gradient"){
       plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
                         scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
