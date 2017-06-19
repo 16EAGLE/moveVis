@@ -12,6 +12,9 @@ adding frame_width and frame_height arguments
 -----------------------------------------------------------
 New features:
  + Added two new arguments to animate_move() function for changing output frame resolution
+ 
+Bug report contributors:
+ + vestlink@github
 
  
 -----------------------------------------------------------
