@@ -23,6 +23,7 @@
 #' @param legend_labels character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
 #' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
+#' @param extent_factor numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".
 #' @param north_col character. Colour of the north arrow. Default is "white".
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
 #' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
@@ -30,15 +31,17 @@
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
-#' @param frames_width numeric. Number of pixels of frame width. Default is 600.
+#' @param frames_width numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).
 #' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
 #' @param out_name character. Name of the output file. Default is "final_gif".
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
-#' @param ... optional arguments.
+#' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
+#' @param stats_create logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.
+#' @param ... optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).
 #' 
-#' @return No return. The GIF file is written to the ouput directory.
+#' @return None or logical (see \code{log_logical}. The output GIF file is written to the ouput directory.
 #' 
-#' @details \code{animate_move} is partly based on the \code{animation} package and needs the \code{convert} tool of the \code{ImageMagick} software package to assemble the GIF file. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
+#' @details \code{animate_move} is based on \code{ggplot2} and partly based on the \code{animation} package. It needs the \code{convert} tool of the \code{ImageMagick} software package to assemble GIF files. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
 #' 
 #' @examples
 #' #Load move and moveVis packages
@@ -94,11 +97,11 @@
 #'              img_sub = img_sub, log_level = 1)
 #'
 #' @author Jakob Schwalb-Willmann
-#' @seealso \code{\link{get_imconvert}}
+#' @seealso \code{\link{get_imconvert}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
 #' 
 #' @import ggplot2
 #' @importFrom animation ani.options
-#' @importFrom raster crs extent projectRaster raster getValues setValues rasterToPoints res crop
+#' @importFrom raster crs extent projectRaster raster getValues setValues rasterToPoints res crop extract
 #' @importFrom xts align.time
 #' @importFrom sp SpatialPointsDataFrame spTransform
 #' @importFrom geosphere distGeo
@@ -110,16 +113,21 @@
 #' @importFrom grDevices dev.off rgb colorRampPalette
 #' @importFrom utils head
 #' @importFrom methods is
-#' @importFrom stats approxfun
+#' @importFrom stats approxfun na.omit setNames
+#' @importFrom gridExtra grid.arrange
+#' @importFrom reshape melt
 #' @export
 
-animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
-         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", tail_elements = 10, tail_size = 4,
-         img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs", legend_title = "",
-         legend_limits = NA,legend_labels = "auto", map_elements = TRUE, scalebar_col = "white", north_col = "white",
-         paths_col = "auto", paths_alpha = 1, paths_mode = "true_data", frames_nmax =  0, frames_interval = .04, frames_nres = 1,
-         frames_width = 600, frames_height = 600, out_name = "final_gif", log_level = 1){
-  
+animate_move <- function(data_ani, out_dir, conv_dir = "convert",
+                         layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
+                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite",
+                         extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
+                         img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
+                         legend_title = "", legend_limits = NA, legend_labels = "auto",
+                         map_elements = TRUE, scalebar_col = "white", north_col = "white",
+                         paths_col = "auto", paths_alpha = 1, paths_mode = "true_data", stats_create = FALSE, 
+                         frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA,
+                         out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
   
   #Define output handling
   out <- function(input,type = 1){
@@ -188,6 +196,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     #Assemble batch line and write to batch file
     out("Creating GIF file...",type=1)
     batch <- paste0('"',ani.options()$convert,'" ',loop,' ',interval,' ',str_img_files,' "',out_dir,'/',movie.name,'"')
+    
     if(.Platform$OS.type == 'windows'){
       write(batch,"batch.bat")
       quiet(cmd.fun("batch.bat"))#,show.output.on.console = FALSE)
@@ -218,6 +227,23 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   
   #[1] PREREQUISITES
   out("Checking prerequisites...",type=1)
+  
+  #Checking for additional arguments
+  arg <- list(...)
+  s_try <- try(arg$stats_only)
+  if(class(s_try) == "NULL"){stats_only <-  FALSE}else{stats_only <- arg$stats_only}
+  s_try <- try(arg$stats_type)
+  if(class(s_try) == "NULL"){stats_type  <- ""}else{stats_type <- arg$stats_type}
+  s_try <- try(arg$stats_gg)
+  if(class(s_try) == "NULL"){stats_gg  <- ""}else{stats_gg <- arg$stats_gg}
+  s_try <- try(arg$stats_digits)
+  if(class(s_try) == "NULL"){stats_digits  <- 1}else{stats_digits <- arg$stats_digits}
+  s_try <- try(arg$stats_tframe)
+  if(class(s_try) == "NULL"){stats_tframe  <- 5}else{stats_tframe <- arg$stats_tframe}
+  s_try <- try(arg$stats_lay)
+  if(class(s_try) == "NULL"){stats_lay  <- 0}else{stats_lay <- arg$stats_lay}
+  s_try <- try(arg$stats_title)
+  if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
   
   if(missing(data_ani)){
     out("Argument 'data_ani' is missing! Please specify the input movement data.",type=3)
@@ -271,6 +297,44 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
           background layer data with equal projection or do not use 'layer'.",type=3)
     }
   }
+  if(stats_create == TRUE){
+    if(layer[1] == "basemap"){
+      out("Stats cannot be visualized for stadard Google Maps basemaps! Please use 'layer' to provide single layer basemap data!",type = 3)
+    }else{
+      if(layer_type != "RGB"){
+        if(stats_type == ""){
+          if(layer_type == "gradient"){stats_type <- "line"}
+          if(layer_type == "discrete"){stats_type <- "bar"}
+        }else{
+          if(stats_type != "line" & stats_type != "bar"){
+            out("Unkown input. 'stats_type' can either be 'line' or 'bar'. Use 'stats_gg' for advanced plotting.",type = 3)
+          }
+        }
+      }else{
+        out("Stats cannot be visualized for basemaps of layer_type 'RGB'! Please use 'layer' to provide single layer basemap data!",type = 3)
+      }
+    }
+  }
+  if(stats_title == ""){stats_title <- c("Map values acummulated\nover all frames",
+                                         paste0("Map values acummulated\nover a ",as.character(stats_tframe)," frames period"))}
+  if(is.na(frames_width)){
+    if(stats_create == TRUE & stats_only == FALSE){frames_width <- 1000}else{frames_width <- 600}
+  }
+  if(is.na(frames_height)){frames_height = 600}
+  if(frames_width >= 1200 | frames_height >= 1200){out("High resolution ouptut causes time intensive frame creation!",type = 2)}
+  if(stats_lay[1] == 0){
+    if(stats_only == TRUE){stats_lay = rbind(c(1,2))}else{stats_lay = rbind(c(1,1,2),c(1,1,3))}
+  }else{
+    if(stats_only == TRUE & length(unique(na.omit(stats_lay))) > 2){
+      out("'stats_lay' cannot contain more than two plot indicators, if 'stats_only' is set. Default is used.",type=2)
+      stats_lay = c(1,2)
+    }
+    if(stats_only == FALSE & length(unique(na.omit(stats_lay))) > 3){
+      out("'stats_lay' cannot contain more than three plot indicators. Default is used.",type=2)
+      stats_lay = rbind(c(1,1,2),c(1,1,3))
+    }
+  }
+  
   #Plattform dependences
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
   
@@ -432,7 +496,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     data_res <- data_ani_df
   }
   
-
+  
   
   #[4] PREPARE RASTER BASE LAYER
   out("Calculating extent...",type=1)
@@ -450,6 +514,13 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
       max_y <- c(max_y,max(data_res[[i]]$y,na.rm = TRUE))
       max_x <- c(max_x,max(data_res[[i]]$x,na.rm = TRUE))
     }
+  }
+  
+  if(extent_factor != 0.0001){
+    min_x <- min_x-(min_x*extent_factor)
+    max_x <- max_x+(max_x*extent_factor)
+    min_y <- min_y-(min_y*extent_factor)
+    max_y <- max_y+(max_y*extent_factor)
   }
   
   #Write out extent data and y/x diffs
@@ -500,8 +571,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     colnames(map_ext) <- c("y_min","x_min","y_max","x_max")
   }else{map_ext <- map_ext_ll}
   
-  
-  
   #Define raster base layer rbl
   if(is.character(layer) == TRUE){
     out("Creating static base layer...")
@@ -517,7 +586,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     map_ext$x_min <- rbl@extent@xmin
     map_ext$y_max <- rbl@extent@ymax
     map_ext$x_max <- rbl@extent@xmax
-    
   }
   
   if(is.character(layer) == FALSE){
@@ -695,9 +763,128 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     }
   }
   
+ 
   
+  #[6] CREATE STATS OBJECT
+  out("Computing stats...")
   
-  #[6] CALCULATE MAP ELEMENTS POSITIONS
+  if(stats_create == TRUE | layer != "basemap"){
+  
+    #Calc limits
+    stats_floor_mp <- stats_digits*10
+    stats_limits <- round(val_x_limits*stats_floor_mp)/10
+    
+    #Extract values
+    stats_pixvals <- list()
+    for(i in 1:length(data_res)){
+      for(j in 1:length(rbl)){
+        if(j == 1){
+          stats_pixvals[[i]] <- round(extract(rbl[[j]],matrix(c(data_res[[i]]$x,data_res[[i]]$y),ncol = 2))[j],digits = stats_digits)
+        }else{
+          stats_pixvals[[i]] <- c(stats_pixvals[[i]], round(extract(rbl[[j]],matrix(c(data_res[[i]]$x,data_res[[i]]$y),ncol = 2))[j], digits = stats_digits))
+        }
+      }
+    }
+    stats_pixvals <- lapply(stats_pixvals,FUN = function(stats_pixvals){
+      data.frame(stats_pixvals)
+    })
+    
+    #Derive frequence for each value
+    stats_pixvals_freq <- lapply(stats_pixvals,FUN = function(stats_pixvals){
+      data.frame(table(stats_pixvals))
+    })
+    
+    #Acummulate values
+    for(j in 1:length(stats_pixvals)){
+      stats_pixvals[[j]] <- cbind(stats_pixvals[[j]],NA)
+      colnames(stats_pixvals[[j]]) <- c("x","y")
+      if(length(stats_pixvals_freq[[j]][,1]) != 0){
+        for(i in 1:length(stats_pixvals_freq[[j]][,1])){
+          stats_pixvals[[j]][,2][which(stats_pixvals[[j]][,1] == stats_pixvals_freq[[j]][,1][i])] <- seq(from = 1, to = stats_pixvals_freq[[j]]$Freq[i], by = 1)
+        }
+      }
+      if(j==1){stats_indi <- as.character(data_ani[[j]]@idData$individual.local.identifier)
+      }else{stats_indi <- c(stats_indi,as.character(data_ani[[j]]@idData$individual.local.identifier))}
+    }
+    
+    
+    #{a} Create df per time frame with ALL values (acummulation)
+    stats_df <- list()
+    for(i in 1:length(rbl)){
+      if(i == 1){
+        stats_df[[i]] <- data.frame(seq(stats_limits$x_min,stats_limits$x_max,by=stats_digits/10))
+        stats_df[[i]] <- cbind(stats_df[[i]],data.frame(matrix(0,ncol = length(stats_pixvals),nrow = length(stats_df[[i]][,1]))))
+        colnames(stats_df[[i]]) <- c("val",stats_indi)
+      }else{
+        stats_df[[i]] <- stats_df[[i-1]]
+      }
+      for(j in 1:length(stats_pixvals)){
+        if(is.na(stats_pixvals[[j]][i,]$x) == FALSE){
+          stats_df[[i]][which(as.character(stats_df[[i]]$val) == as.character(stats_pixvals[[j]][i,]$x)),][j+1] <- stats_pixvals[[j]][i,]$y
+        }
+      }
+    }
+  
+    for(i in 1:length(rbl)){
+      stats_df[[i]] <- cbind(stats_df[[i]],rowSums(stats_df[[i]][2:(length(stats_pixvals)+1)]))
+      colnames(stats_df[[i]])[length(colnames(stats_df[[i]]))] <- "sum"
+    }
+    
+    
+    #{b} Create df per time frame period (live)
+    stats_df_tframe <- stats_df
+    for(i in 1:length(stats_df)){
+      if(i > stats_tframe){
+        stats_df_tframe[[i]][2:length(stats_df_tframe[[i]])] <- stats_df_tframe[[i]][2:length(stats_df_tframe[[i]])]-stats_df[[i-stats_tframe]][2:length(stats_df_tframe[[i]])]
+      }
+    }
+    
+    #convert data to long format
+    pdat <- list()
+    for(k in 1:2){
+      pdat[[k]] <- list()
+      if(k == 1){tomelt <- stats_df}else{tomelt <- stats_df_tframe}
+      for(i in 1:length(rbl)){
+        pdat[[k]][[i]] <- melt(tomelt[[i]], id.vars = "val")
+        pdat[[k]][[i]] <- cbind(pdat[[k]][[i]],NA)
+        colnames(pdat[[k]][[i]])[4] <- "cols"
+        
+        #prepare ggplot df
+        for(j in 1:(length(data_res)+1)){
+          if(j==1){
+            pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable=="sum")] <- "black"
+            cols<- "black"
+            names <- "sum"
+          }else{
+            pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable==stats_indi[j-1])] <- colours[j-1]
+            cols <- c(cols, as.character(colours[(j-1),tail_elements]))
+            names <- c(names,stats_indi[j-1])
+          }
+        }
+        cols <- setNames(cols,names)
+      }
+    }
+    stats_max <- c((max(stats_df[[length(stats_df)]]$sum)+5),(max(stats_df_tframe[[length(stats_df_tframe)]]$sum)+5))
+  
+    #Add histogram data line
+    for(i in 1:length(rbl)){
+      h <-rbl[[i]]@data@values
+      h <- round(h, digits = stats_digits)
+      h <- data.frame(table(h))
+      colnames(h) <- c("val","value")
+      add_pdat <- cbind(stats_df[[i]],h[which(h$val == unique(stats_df[[1]]$val)),]$value)
+      colnames(add_pdat)[length(colnames(add_pdat))] <- "hist"
+      add_pdat <-  melt(add_pdat, id.vars = "val")
+      pdat[[1]][[i]] <- cbind(add_pdat,c(pdat[[1]][[i]]$cols,rep("grey",length(unique(pdat[[1]][[i]]$val)))))
+      colnames(pdat[[1]][[i]])[4] <- "cols"
+    }
+    cols <- list(cols); cols[[2]] <- cols[[1]]
+    cols[[1]] <- c(cols[[1]],"grey");cols[[1]] <- setNames(cols[[1]],c(names,"hist"))
+  }
+  
+
+  
+  #[7] CALCULATE MAP ELEMENTS POSITIONS
   out("Calculating positions of map elements...",type=1)
   
   #Variables for scale bar and north arrow
@@ -788,12 +975,12 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
   
   
   
-  #[7] PARSING PLOT FUNCTION
+  #[8] PARSING PLOT FUNCTION
   out("Parsing plot function arguments..", type=1)
   
   #Define argument strings for the plot function to be called dynamically according to number of individuals
   plt_path_std <- 'geom_path(data = frame_l[[1]][,1:2],aes_(x = frame_l[[1]]$x, y = frame_l[[1]]$y,
-  alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
+    alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
   plt_path_c1 <- 'geom_path(data = frame_l[['
   plt_path_c2 <- ']][,1:2],aes_(x = frame_l[['
   plt_path_c3 <- ']]$x, y = frame_l[['
@@ -839,69 +1026,93 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
         img_sub <- img_sub_breaked
       }
       plt_title <- paste0('labs(x = labs_x, y=labs_y, title="',img_title,'", subtitle="',img_sub,'", label=c("123","456"))+
-                          theme(plot.title = element_text(hjust = 0.5),
-                          plot.subtitle = element_text(hjust = 0.5))')
+                            theme(plot.title = element_text(hjust = 0.5),
+                            plot.subtitle = element_text(hjust = 0.5))')
     }
     if(img_caption != "caption"){
       if(img_sub != "subtitle"){
         plt_title <- paste0('labs(x = labs_x, y=labs_y, title="',img_title,'", subtitle="',img_sub,'", caption="',img_caption,'",label=c("123","456","789"))+
-                            theme(plot.title = element_text(hjust = 0.5),
-                            plot.subtitle = element_text(hjust = 0.5),
-                            plot.caption = element_text(hjust = 0.5))')
+                              theme(plot.title = element_text(hjust = 0.5),
+                              plot.subtitle = element_text(hjust = 0.5),
+                              plot.caption = element_text(hjust = 0.5))')
       }else{
         plt_title <- paste0('labs(x = labs_x, y=labs_y, title="',img_title,'", caption="',img_caption,'",label=c("123","456"))+
-                            theme(plot.title = element_text(hjust = 0.5), 
-                            plot.caption = element_text(hjust = 0.5))')
+                              theme(plot.title = element_text(hjust = 0.5), 
+                              plot.caption = element_text(hjust = 0.5))')
       }
-      }
-      }else{
-        if(img_caption != "caption"){plt_title <- paste0('labs(x = labs_x, y=labs_y, caption="',img_caption,'",label=c("123"))+
-                                                         theme(plot.caption = element_text(hjust = 0.5))')
-        }else{plt_title <- 0}
-        }
+    }
+  }else{
+    if(img_caption != "caption"){plt_title <- paste0('labs(x = labs_x, y=labs_y, caption="',img_caption,'",label=c("123"))+
+                                                           theme(plot.caption = element_text(hjust = 0.5))')
+    }else{plt_title <- 0}
+  }
   
   #Defining map elements
   if(map_elements == TRUE){
     plt_scale_north <- 'geom_polygon(data = rec1, aes_(x = ~x, y = ~y), fill = "white", colour = "black") +
-    geom_polygon(data = rec2, aes_(x = ~x, y = ~y), fill = "black", colour = "black") +
-    annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) +
-    geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
-    annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
+      geom_polygon(data = rec2, aes_(x = ~x, y = ~y), fill = "black", colour = "black") +
+      annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) +
+      geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
+      annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
   }else{plt_scale_north <- ''}
   plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)+'
   
   
   #Parse argument string for plotting in the saveGIF function
   if(is.character(layer) == TRUE){
-    plt_fin <- paste0("quiet(plot(rbl_gg + ",
+    plt_fin <- paste0("rbl_gg + ",
                       plt_scale_north,plt_progress,plt_path)
   }else{
     #if(is.na(legend_limits)){plt_limits <- "limits=c(rbl[[i]]@data@min, rbl[[i]]@data@max)"
     #}else{plt_limits <- "limits=legend_limits"}
     if(layer_type == "gradient"){
-      plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
-                        scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
-                        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
+      plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
+                          scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
+                          scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "discrete"){
-      plt_fin <- paste0('quiet(plot(gplot(rbl[[i]]) + geom_tile(aes_(fill = factor(~value))) +
-                        scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + 
-                        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
+      plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = factor(~value))) +
+                          scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + 
+                          scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "RGB"){
-      plt_fin <- paste0('quiet(plot(ggplot(data=rbl_df[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]])) + scale_fill_identity() +
-                        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
+      plt_fin <- paste0('ggplot(data=rbl_df[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]])) + scale_fill_identity() +
+                          scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
   }
   
   #Add title?
-  if(plt_title != 0){plt_fin <- paste0(plt_fin,"+", plt_title,"))")
-  }else{plt_fin <- paste0(plt_fin,"))")}
+  if(plt_title != 0){plt_fin <- paste0(plt_fin,"+", plt_title)
+  }else{plt_fin <- paste0(plt_fin)}
   
   plt_parse <- parse(text=plt_fin)
+    
+  #stats plot function
+  if(stats_gg != ""){
+    plt_stats_parse = parse(text = stats_gg)
+  }else{
+    if(stats_type == "line"){
+      plt_stats_parse = parse(text = 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
+      geom_line() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
+      scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
+      scale_x_continuous(expand = c(0,0)) + 
+      scale_color_manual(name="",values = cols[[k]]) +
+      labs(x = "Basemap Value", y="Frequency", title=stats_title[[k]], label=c("123","456"))+
+      theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))')
+    }
+    if(stats_type == "bar"){
+      plt_stats_parse = parse(text = 'ggplot(data = pdat[[k]][[i]], aes(x = val, y = value, fill = variable)) + 
+      scale_fill_manual(name="",values = cols[[k]]) +
+      geom_bar(stat = "identity", position = "dodge") + theme_bw() + theme(aspect.ratio=1) +
+      scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
+      scale_x_continuous(expand = c(0,0)) +
+      labs(x = "Basemap Value", y="Frequency", title=stats_title[[k]], label=c("123","456"))+
+      theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))')
+    }
+  }
   
   
   
@@ -921,45 +1132,76 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     }
   }
   
-  #Create gifs
-  for(r in 1:n_reloop){
+  #Check, if stats should be visulized only
+  if(stats_only == TRUE){
+    for(r in 1:n_reloop){
+      
+      #gif frame loop start and stop
+      if(r == 1){index_min <- 1}else{index_min <- index_list[r-1]+1}
+      index_max <- index_list[r]
+      
+      #Define ani.options
+      quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
+      
+      createGIF(
+        for(i in index_min:index_max){
+          if((i+n_tail) <= index_max){
+            k <- 2; p1 <- eval(plt_stats_parse)
+            k <- 1; p2 <- eval(plt_stats_parse)
+            quiet(grid.arrange(p1,p2,layout_matrix = stats_lay))
+          }
+        },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
+      )
+    }
+  }else{
     
-    #gif frame loop start and stop
-    if(r == 1){index_min <- 1}else{index_min <- index_list[r-1]+1}
-    index_max <- index_list[r]
-    
-    #Define ani.options
-    quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
-    
-    #Calcualte animation
-    #s_try <- try(
-    createGIF(
-      for(i in index_min:index_max){
-        if((i+n_tail) <= index_max){
-          
-          #Create frame and plot it on basemap
-          for(a in 1:length(data_res)){
-            if(a == 1){
-              frame_l <- list(data_res[[a]][i:(i+n_tail),] )
+    #Create gifs
+    for(r in 1:n_reloop){
+      
+      #gif frame loop start and stop
+      if(r == 1){index_min <- 1}else{index_min <- index_list[r-1]+1}
+      index_max <- index_list[r]
+      
+      #Define ani.options
+      quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
+      
+      #Calcualte animation
+      #s_try <- try(
+      createGIF(
+        for(i in index_min:index_max){
+          if((i+n_tail) <= index_max){
+            
+            #Create frame and plot it on basemap
+            for(a in 1:length(data_res)){
+              if(a == 1){
+                frame_l <- list(data_res[[a]][i:(i+n_tail),] )
+              }else{
+                frame_l[a] <- list(data_res[[a]][i:(i+n_tail),] )
+              }
+            }
+            
+            #Calculate progress bar end
+            prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[i],prog_y))
+            colnames(prog_bar) <- c("x","y")
+            
+            #Execute parsed plotting function
+            if(
+              stats_create == FALSE){eval(plt_parse)
             }else{
-              frame_l[a] <- list(data_res[[a]][i:(i+n_tail),] )
+              #plot with par side by side
+              p1 <- eval(plt_parse)
+              k <- 2; p2 <- eval(plt_stats_parse)
+              k <- 1; p3 <- eval(plt_stats_parse)
+              quiet(grid.arrange(p1,p2,p3,layout_matrix = stats_lay))
             }
           }
-          
-          #Calculate progress bar end
-          prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[i],prog_y))
-          colnames(prog_bar) <- c("x","y")
-          
-          #Execute parsed plotting function
-          eval(plt_parse)
-          
-        }
-      },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
-    )
-    #)
-    #if(class(s_try) == "try-error"){
-    #  out("Creation of animation failed.",type=3)
-    #}
+        },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
+      )
+      #)
+      #if(class(s_try) == "try-error"){
+      #  out("Creation of animation failed.",type=3)
+      #}
+    }
   }
   
   #Compress and fusion gifs
@@ -977,10 +1219,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert", layer = "basem
     cmd.fun(cmd_fusion)
     file.remove(list.files(temp_dir)[grep("out_gif",list.files(temp_dir))])
   }
-  
-  
-  
-  #[10] CLEAN UP
-  out("Cleaning up environment...", type=1)
-  out("Finished! Your animated GIF was saved in the specified output directory.", type=1)
+  out(paste0("Finished. Your animated GIF was saved to '",out_dir,"'."), type=1)
+  if(log_logical == TRUE){return(TRUE)}
 }

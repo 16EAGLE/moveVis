@@ -7,14 +7,15 @@
 animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
   layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
-  map_type = "satellite", tail_elements = 10, tail_size = 4,
-  img_title = "title", img_sub = "subtitle", img_caption = "caption",
-  img_labs = "labs", legend_title = "", legend_limits = NA,
-  legend_labels = "auto", map_elements = TRUE, scalebar_col = "white",
-  north_col = "white", paths_col = "auto", paths_alpha = 1,
-  paths_mode = "true_data", frames_nmax = 0, frames_interval = 0.04,
-  frames_nres = 1, frames_width = 600, frames_height = 600,
-  out_name = "final_gif", log_level = 1)
+  map_type = "satellite", extent_factor = 1e-04, tail_elements = 10,
+  tail_size = 4, img_title = "title", img_sub = "subtitle",
+  img_caption = "caption", img_labs = "labs", legend_title = "",
+  legend_limits = NA, legend_labels = "auto", map_elements = TRUE,
+  scalebar_col = "white", north_col = "white", paths_col = "auto",
+  paths_alpha = 1, paths_mode = "true_data", stats_create = FALSE,
+  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
+  frames_width = NA, frames_height = NA, out_name = "final_gif",
+  log_level = 1, log_logical = FALSE, ...)
 }
 \arguments{
 \item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
@@ -36,6 +37,8 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{layer_nacol}{character. Colour to be displayed for NA values. Default is "white".}
 
 \item{map_type}{character.  Static basemap type. Chosse from "roadmap", "satellite", "hybrid", "terrain".}
+
+\item{extent_factor}{numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".}
 
 \item{tail_elements}{numeric. Number of points to be displayed as path tail of the animation paths. Default is 10.}
 
@@ -67,13 +70,15 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
 
+\item{stats_create}{logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.}
+
 \item{frames_nmax}{numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).}
 
 \item{frames_interval}{numeric. Duration, each frame is displayed (in seconds). Default is .04.}
 
 \item{frames_nres}{numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.}
 
-\item{frames_width}{numeric. Number of pixels of frame width. Default is 600.}
+\item{frames_width}{numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).}
 
 \item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
 
@@ -81,16 +86,18 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
-\item{...}{optional arguments.}
+\item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
+
+\item{...}{optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).}
 }
 \value{
-No return. The GIF file is written to the ouput directory.
+None or logical (see \code{log_logical}. The output GIF file is written to the ouput directory.
 }
 \description{
 \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}).
 }
 \details{
-\code{animate_move} is partly based on the \code{animation} package and needs the \code{convert} tool of the \code{ImageMagick} software package to assemble the GIF file. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
+\code{animate_move} is based on \code{ggplot2} and partly based on the \code{animation} package. It needs the \code{convert} tool of the \code{ImageMagick} software package to assemble GIF files. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
 }
 \examples{
 #Load move and moveVis packages
@@ -147,7 +154,7 @@ animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
 
 }
 \seealso{
-\code{\link{get_imconvert}}
+\code{\link{get_imconvert}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
 }
 \author{
 Jakob Schwalb-Willmann

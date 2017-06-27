@@ -1,5 +1,18 @@
 -----------------------------------------------------------
-moveVis 0.9.3 BETA (only on GitHub)
+moveVis 0.9.4 (on GitHub, submitted to CRAN including prior versions)
+adding animate_stats() and stats arguments for animate_move()
+-----------------------------------------------------------
+New features:
+ + animate_stats(): Enables creation of statistic plot animations visualizing possible relationships between movement paths and basemap. Define individual plot designs based on ggplot2 syntax.
+ + stats arguments for animate_move(): Enables statistic plot animations side-by-side with the spatial plot animation of animate_move. Use the animate_stats() arguments with animate_move().
+ + extent_factor argument for animate_move(): Increase the distance between the spatial extents of the movement paths and the basemap.
+
+Improvements:
+ + Several minor bug fixes
+
+
+-----------------------------------------------------------
+moveVis 0.9.3 (on GitHub)
 Fixing major bug
 -----------------------------------------------------------
 Improvements
@@ -7,7 +20,7 @@ Improvements
 
 
 -----------------------------------------------------------
-moveVis 0.9.2 BETA (only on GitHub)
+moveVis 0.9.2 (on GitHub)
 adding frame_width and frame_height arguments
 -----------------------------------------------------------
 New features:

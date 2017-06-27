@@ -1,7 +1,7 @@
 Package: moveVis
 Type: Package
 Title: Movement Data Visualization
-Version: 0.9.1
+Version: 0.9.4
 Depends: R (>= 2.10)
 Date: 2017-05-23
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
@@ -25,4 +25,6 @@ Imports:
   methods,
   stats,
   move,
-  RCurl
+  RCurl,
+  gridExtra,
+  reshape
