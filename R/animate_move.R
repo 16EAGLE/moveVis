@@ -116,6 +116,7 @@
 #' @importFrom stats approxfun na.omit setNames
 #' @importFrom gridExtra grid.arrange
 #' @importFrom reshape melt
+#' @importFrom graphics plot
 #' @export
 
 animate_move <- function(data_ani, out_dir, conv_dir = "convert",

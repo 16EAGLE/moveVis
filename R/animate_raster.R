@@ -62,6 +62,7 @@
 #' @importFrom utils head
 #' @importFrom methods is
 #' @importFrom stats approxfun
+#' @importFrom graphics plot
 #' @export
 
 animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "", layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", 
