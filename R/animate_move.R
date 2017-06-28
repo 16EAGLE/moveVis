@@ -1185,8 +1185,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
             colnames(prog_bar) <- c("x","y")
             
             #Execute parsed plotting function
-            if(
-              stats_create == FALSE){eval(plt_parse)
+            if(stats_create == FALSE){
+              quiet(plot(eval(plt_parse)))
             }else{
               #plot with par side by side
               p1 <- eval(plt_parse)

@@ -11,8 +11,9 @@ The package is under ongoing development, new functions will be added. The \code
 functionalities.
 }
 \details{
-At the moment, the package includes the \code{animate_move()} function, which can create GIF file animations from
-movement data. Among other funtionalities, the function is able to
+At the moment, the package includes the following functions:
+
+\code{\link{animate_move}}, which can create spatial movement data animations as GIF file. Among other funtionalities, the function is able to
 \itemize{
   \item visualize move class point data as (multiple) movement paths
   \item display static basemap layers downloaded from Google Maps
@@ -21,6 +22,12 @@ movement data. Among other funtionalities, the function is able to
   \item compute temporal interpolations from time-referneced raster data
   ...
 }
+
+\code{\link{animate_stats}}, which can create animated statistic plots from movement and basemap data as GIF file.
+
+\code{\link{animate_raster}}, which can create animated spatial plots of basemap data as GIF file.
+
+\code{\link{get_imconvert}}, a helper function to locate/download/install the convert tool ofImageMagick needed for assembling the GIF files.
 }
 \seealso{
 \code{\link{animate_move}}
