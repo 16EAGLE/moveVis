@@ -1,5 +1,5 @@
 -----------------------------------------------------------
-moveVis 0.9.4 (on GitHub, submitted to CRAN including prior versions)
+moveVis 0.9.4
 adding animate_stats() and stats arguments for animate_move()
 -----------------------------------------------------------
 New features:
@@ -12,7 +12,7 @@ Improvements:
 
 
 -----------------------------------------------------------
-moveVis 0.9.3 (on GitHub)
+moveVis 0.9.3
 Fixing major bug
 -----------------------------------------------------------
 Improvements
@@ -20,7 +20,7 @@ Improvements
 
 
 -----------------------------------------------------------
-moveVis 0.9.2 (on GitHub)
+moveVis 0.9.2
 adding frame_width and frame_height arguments
 -----------------------------------------------------------
 New features:
@@ -31,7 +31,7 @@ Bug report contributors:
 
  
 -----------------------------------------------------------
-moveVis 0.9.1 (latest CRAN version)
+moveVis 0.9.1
 Fixing important bug; adding animate_raster()
 -----------------------------------------------------------
 New features:
