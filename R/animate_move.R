@@ -769,7 +769,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   #[6] CREATE STATS OBJECT
   out("Computing stats...")
   
-  if(stats_create == TRUE | layer != "basemap"){
+  if(stats_create == TRUE | layer[1] != "basemap"){
   
     #Calc limits
     stats_floor_mp <- stats_digits*10

@@ -27,4 +27,5 @@ Imports:
   move,
   RCurl,
   gridExtra,
-  reshape
+  reshape,
+  graphics

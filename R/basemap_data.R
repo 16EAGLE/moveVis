@@ -5,6 +5,6 @@
 #' @details The example data have been pre-processed and have euqal extents and projections. 
 #' 
 #' @format List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.
-#' @source MODIS 2013 freely available data, acsessed using MODIS R package: URL \url{https://cran.r-project.org/package=MODIS}
+#' @source MODIS 2013 freely available data, acsessed using \code{MODIS} R package
 #' 
 "basemap_data"
