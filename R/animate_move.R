@@ -238,7 +238,10 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   s_try <- try(arg$stats_gg)
   if(class(s_try) == "NULL"){stats_gg  <- ""}else{stats_gg <- arg$stats_gg}
   s_try <- try(arg$stats_digits)
-  if(class(s_try) == "NULL"){stats_digits  <- 1}else{stats_digits <- arg$stats_digits}
+  if(class(s_try) == "NULL"){
+    if(layer_type == "gradient"){stats_digits  <- 1}
+    if(layer_type == "discrete"){stats_digits <- 0}   
+  }else{stats_digits <- arg$stats_digits}
   s_try <- try(arg$stats_tframe)
   if(class(s_try) == "NULL"){stats_tframe  <- 5}else{stats_tframe <- arg$stats_tframe}
   s_try <- try(arg$stats_lay)
@@ -689,7 +692,15 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     
     if(layer_type == "discrete"){
       for(i in 1:length(rbl)){
-        if(i == 1){rbl_vals <- getValues(rbl[[i]])}else{rbl_vals <- c(rbl_vals, getValues(rbl[[i]]))}
+        if(i == 1){
+          rbl_vals <- getValues(rbl[[i]])
+          rbl_df <- list(data.frame(rasterToPoints(rbl[[i]])))
+          colnames(rbl_df[[i]]) <- c("x","y","value")
+        }else{
+          rbl_vals <- c(rbl_vals, getValues(rbl[[i]]))
+          rbl_df[[i]] <- data.frame(rasterToPoints(rbl[[i]]))
+          colnames(rbl_df[[i]]) <- c("x","y","value")
+        }
       }
       legend_breaks <- pretty(round(rbl_vals))
       if(legend_labels[1] == "auto"){legend_labels <- as.character(legend_breaks)
@@ -755,7 +766,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }
   }
   
- 
+
   
   #[6] CREATE STATS OBJECT
   out("Computing stats...")
@@ -763,8 +774,13 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   if(stats_create == TRUE | layer[1] != "basemap"){
   
     #Calc limits
-    stats_floor_mp <- stats_digits*10
-    stats_limits <- round(val_x_limits*stats_floor_mp)/10
+    if(stats_digits > 0){
+      stats_floor_mp <- stats_digits*10
+      stats_limits <- round(val_x_limits*stats_floor_mp)/10
+    }else{
+      stats_floor_mp = 1
+      stats_limits <- round(val_x_limits)
+    }
     
     #Extract values
     stats_pixvals <- list()
@@ -804,12 +820,13 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     stats_df <- list()
     for(i in 1:length(rbl)){
       if(i == 1){
-        stats_df[[i]] <- data.frame(seq(stats_limits$x_min,stats_limits$x_max,by=stats_digits/10))
+        stats_df[[i]] <- data.frame(seq(stats_limits$x_min,stats_limits$x_max,by=stats_floor_mp))
         stats_df[[i]] <- cbind(stats_df[[i]],data.frame(matrix(0,ncol = length(stats_pixvals),nrow = length(stats_df[[i]][,1]))))
         colnames(stats_df[[i]]) <- c("val",stats_indi)
       }else{
         stats_df[[i]] <- stats_df[[i-1]]
       }
+      
       for(j in 1:length(stats_pixvals)){
         if(is.na(stats_pixvals[[j]][i,]$x) == FALSE){
           stats_df[[i]][which(as.character(stats_df[[i]]$val) == as.character(stats_pixvals[[j]][i,]$x)),][j+1] <- stats_pixvals[[j]][i,]$y
@@ -858,6 +875,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }
     stats_max <- c((max(stats_df[[length(stats_df)]]$sum)+5),(max(stats_df_tframe[[length(stats_df_tframe)]]$sum)+5))
   
+    
     #Add histogram data line
     for(i in 1:length(rbl)){
       h <-rbl[[i]]@data@values
@@ -1064,8 +1082,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                         plt_scale_north,plt_progress,plt_path)
     }
     if(layer_type == "discrete"){
-      plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = factor(~value))) +
-                          scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + 
+      plt_fin <- paste0('ggplot(data=rbl_df[[i]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) +
+                          scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress,plt_path)
     }
@@ -1075,6 +1093,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                         plt_scale_north,plt_progress,plt_path)
     }
   }
+  
   
   #Add title?
   if(plt_title != 0){plt_fin <- paste0(plt_fin,"+", plt_title)
