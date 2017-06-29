@@ -325,15 +325,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   if(frames_width >= 1200 | frames_height >= 1200){out("High resolution ouptut causes time intensive frame creation!",type = 2)}
   if(stats_lay[1] == 0){
     if(stats_only == TRUE){stats_lay = rbind(c(1,2))}else{stats_lay = rbind(c(1,1,2),c(1,1,3))}
-  }else{
-    if(stats_only == TRUE & length(unique(na.omit(stats_lay))) > 2){
-      out("'stats_lay' cannot contain more than two plot indicators, if 'stats_only' is set. Default is used.",type=2)
-      stats_lay = c(1,2)
-    }
-    if(stats_only == FALSE & length(unique(na.omit(stats_lay))) > 3){
-      out("'stats_lay' cannot contain more than three plot indicators. Default is used.",type=2)
-      stats_lay = rbind(c(1,1,2),c(1,1,3))
-    }
   }
   
   #Plattform dependences
