@@ -23,9 +23,8 @@
 get_imconvert <- function(dir = "auto"){
   if(dir == "auto"){dir <- tempdir()}
   if(.Platform$OS.type == 'windows'){
-    if((length(grep("ImageMagick",list.files("C:/Program Files/"))) == 0) != TRUE){
-      conv_dir <- paste0("C:/Program Files/",list.files("C:/Program Files/")
-                         [grep("ImageMagick",list.files("C:/Program Files/"))],"/convert.exe")
+    if(length(grep("convert.exe",list.files(paste0("C:/Program Files/",grep("ImageMagick", list.files("C:/Program Files/"),value = TRUE))))) != 0){
+      conv_dir <- paste0("C:/Program Files/", list.files("C:/Program Files/")[grep("ImageMagick",list.files("C:/Program Files/"))], "/convert.exe")
     }else{
       if(file.exists(paste0(dir,"/imagick/convert.exe")) == FALSE){
         print("Downloading portable ImageMagick...")
