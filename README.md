@@ -112,14 +112,14 @@ For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature
 ## What else are we doing?
 
 The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
- * <a href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>
+ * <a href="http://bleutner.github.io/RStoolbox/" target="_blank">RStoolbox</a>
  * <a href=" https://github.com/RRemelgado/rsMove/">rsMove</a>
 
-For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a href="http://remote-sensing.eu/">here</a>
+For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a href="http://remote-sensing.eu/ target="_blank"">here</a>.
 
 ## Aknowledgements
           
-This initiative is part of the <a href="http://www.fernerkundung.geographie.uni-wuerzburg.de/en/lehrstuehle_und_arbeitsgruppen/department_of_remote_sensing/research/projects/current_projects/opt4environment//">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
+This initiative is part of the <a href="http://www.fernerkundung.geographie.uni-wuerzburg.de/en/lehrstuehle_und_arbeitsgruppen/department_of_remote_sensing/research/projects/current_projects/opt4environment// target="_blank"">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
 
 <p align="justify"><img width="150" height="100" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img width="100" height="100" src="http://remote-sensing.eu/wp-content/uploads/2016/05/eagle_master_full_noText.png">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img width="150" height="100" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img width="150" height="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q">
 </p>
