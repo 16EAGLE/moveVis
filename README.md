@@ -109,3 +109,12 @@ animate_move(data_ani, out_dir, conv_dir = conv_dir, tail_elements = 10,
 
 For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature requests and other contributions are also welcome.
 
+## What else are we doing?
+
+<p align="justify">
+The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
+</p>
+
+ * <a href="http://bleutner.github.io/RStoolbox/">RStookbox</a>
+ * <a href=" https://github.com/RRemelgado/rsMove/">rsMove</a>
+
