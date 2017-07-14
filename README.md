@@ -112,8 +112,9 @@ For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature
 ## What else are we doing?
 
 The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
- * <a href="http://bleutner.github.io/RStoolbox/">RStookbox</a>
+ * <a href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>
  * <a href=" https://github.com/RRemelgado/rsMove/">rsMove</a>
+
 For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a href="http://remote-sensing.eu/">here</a>
 
 ## Aknowledgements
