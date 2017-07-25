@@ -84,7 +84,7 @@ data("move_data")
 move_data$dt <- as.POSIXct(strptime(move_data$dt, "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"))
 
 #Create move class object
-data_ani <- split(move(move_data$lon, move_data$lat, 
+data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
 	time = move_data$dt, animal=move_data$individual, data=move_data))
 
 #Load basemap data (MODIS NDVI)
