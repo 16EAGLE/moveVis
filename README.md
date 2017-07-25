@@ -45,7 +45,7 @@ Your movement data need to be provided as move class objects to the animate_move
 
 ```s
 #Differentiate data per individual
-data_ani <- split(move(move_data$lon, move_data$lat, 
+data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
 	time = move_data$dt, animal=move_data$individual, data=move_data))
 ```
 
