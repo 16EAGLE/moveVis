@@ -87,6 +87,7 @@
 #' @importFrom rasterVis gplot
 #' @importFrom grid arrow unit
 #' @importFrom move move
+#' @importFrom move idData
 #' @importFrom grDevices dev.off rgb colorRampPalette
 #' @importFrom utils head
 #' @importFrom methods is
@@ -788,8 +789,9 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
           stats_pixvals[[j]][,2][which(stats_pixvals[[j]][,1] == stats_pixvals_freq[[j]][,1][i])] <- seq(from = 1, to = stats_pixvals_freq[[j]]$Freq[i], by = 1)
         }
       }
-      if(j==1){stats_indi <- as.character(data_ani[[j]]@idData$individual.local.identifier)
-      }else{stats_indi <- c(stats_indi,as.character(data_ani[[j]]@idData$individual.local.identifier))}
+      if(j==1){stats_indi <- 
+	      rownames(idData(data_ani[[j]]))
+      }else{stats_indi <- c(stats_indi,rownames(idData(data_ani[[j]])) )}
     }
     
     
