@@ -5,7 +5,7 @@
 #' @param data_ani list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.
 #' @param out_dir character. Output directory for the GIF file creation.
 #' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
-#' @param layer raster, list or character. Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
+#' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
 #' @param layer_dt POSIXct or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
 #' @param layer_type charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.
@@ -248,25 +248,29 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   if(class(s_try) == "NULL"){stats_lay  <- 0}else{stats_lay <- arg$stats_lay}
   s_try <- try(arg$stats_title)
   if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
+  s_try <- try(arg$raster_only)
+  if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
   
-  if(missing(data_ani)){
-    out("Argument 'data_ani' is missing! Please specify the input movement data.",type=3)
-  }else{
-    if(is.list(data_ani) != TRUE){
-      if(is(data_ani,"Move")){data_ani <- list(data_ani)} #Convert single move object to single element list
-      else{
-        if(is(data_ani,"MoveStack")){
-          data_ani_temp <- list("empty")
-          for(i in 1:length(split(data_ani))){
-            data_ani_temp[[i]] <- split(data_ani)[[i]] 
-          }
-          data_ani <- data_ani_temp
-        }else{out("Argument 'data_ani' needs to be a list object containing a 'move' object for each individual!",type=3)
-        }
-      }
+  if(raster_only != TRUE){ #data_ani not needed for animate_raster()
+    if(missing(data_ani)){
+      out("Argument 'data_ani' is missing! Please specify the input movement data.",type=3)
     }else{
-      for(i in 1:length(data_ani)){
-        if(is(data_ani[[i]],"Move") == FALSE){out("Elements in list object 'data_ani' need to be of the 'move' class!",type=3)}
+      if(is.list(data_ani) != TRUE){
+        if(is(data_ani,"Move")){data_ani <- list(data_ani)} #Convert single move object to single element list
+        else{
+          if(is(data_ani,"MoveStack")){
+            data_ani_temp <- list("empty")
+            for(i in 1:length(split(data_ani))){
+              data_ani_temp[[i]] <- split(data_ani)[[i]] 
+            }
+            data_ani <- data_ani_temp
+          }else{out("Argument 'data_ani' needs to be a list object containing a 'move' object for each individual!",type=3)
+          }
+        }
+      }else{
+        for(i in 1:length(data_ani)){
+          if(is(data_ani[[i]],"Move") == FALSE){out("Elements in list object 'data_ani' need to be of the 'move' class!",type=3)}
+        }
       }
     }
   }
@@ -300,22 +304,21 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       out("Arguments 'layer' and 'data_ani' have different projections! Please provide movement data and
           background layer data with equal projection or do not use 'layer'.",type=3)
     }
+  }else{
+    if(layer != "basemap"){out(paste0("Unknown input '",layer, "'. Argument 'layer' needs to be either a list of raster objects, a single raster object or a string containing 'basemap'."),type=3)}
   }
   if(stats_create == TRUE){
     if(layer[1] == "basemap"){
       out("Stats cannot be visualized for stadard Google Maps basemaps! Please use 'layer' to provide single layer basemap data!",type = 3)
     }else{
-      if(layer_type != "RGB"){
-        if(stats_type == ""){
-          if(layer_type == "gradient"){stats_type <- "line"}
-          if(layer_type == "discrete"){stats_type <- "bar"}
-        }else{
-          if(stats_type != "line" & stats_type != "bar"){
-            out("Unkown input. 'stats_type' can either be 'line' or 'bar'. Use 'stats_gg' for advanced plotting.",type = 3)
-          }
-        }
+      if(stats_type == ""){
+        if(layer_type == "gradient"){stats_type <- "line"}
+        if(layer_type == "RGB"){stats_type <- "line"}
+        if(layer_type == "discrete"){stats_type <- "bar"}
       }else{
-        out("Stats cannot be visualized for basemaps of layer_type 'RGB'! Please use 'layer' to provide single layer basemap data!",type = 3)
+        if(stats_type != "line" & stats_type != "bar"){
+          out("Unkown input. 'stats_type' can either be 'line' or 'bar'. Use 'stats_gg' for advanced plotting.",type = 3)
+        }
       }
     }
   }
@@ -719,8 +722,9 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       val_x_limits <- data.frame(min(sapply(rbl, FUN = function(rbl){rbl@data@min})),
                                  max(sapply(rbl, FUN = function(rbl){rbl@data@max})))
       colnames(val_x_limits) <- c("x_min","x_max")
-    }else{val_x_limits <- data.frame(legend_limits[1],legend_limits[2])
-    colnames(val_x_limits) <- c("x_min","x_max")
+    }else{
+      val_x_limits <- data.frame(legend_limits[1],legend_limits[2])
+      colnames(val_x_limits) <- c("x_min","x_max")
     }
     plt_limits <- "limits=c(val_x_limits$x_min, val_x_limits$x_max)"
   }
