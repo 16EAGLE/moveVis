@@ -91,7 +91,7 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{...}{optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).}
 }
 \value{
-None or logical (see \code{log_logical}. The output GIF file is written to the ouput directory.
+None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
 }
 \description{
 \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}).

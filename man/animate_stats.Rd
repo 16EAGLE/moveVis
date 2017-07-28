@@ -42,7 +42,7 @@ animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{stats_tframe}{numeric. Defines the temporal range of the periodic stats plot. Default is 5 meaning that five time frames back from the displayed frame are evaluated.}
 
-\item{stats_lay}{matrix. Optional layout. Based on the \code{\link{grid.arrange}} syntax.}
+\item{stats_lay}{matrix. Optional layout. Define, which stats plot should be plotted where, e. g. \code{rbind(c(1,2),c(3,4),c(5,6))}, which puts stats plot 1 and 2 to the first row, plot 3 and 4 to the second etc. Use e. g. \code{rbind(c(1,1),c(1,1),c(2,3))} to fill two columns/rows with plot 1 and put plot 2 and 3 underneath. If \code{animate_stats()} is called, an odd number respresents the overall plots and even numbers the periodic accumulated plots (if \code{animate_move()} is called, it is vice versa, since  plot 1 represents the spatial plot). Based on the \code{\link{grid.arrange}} syntax.}
 
 \item{stats_title}{character vector. Optional plot titles. Two character strings within a vector.}
 
@@ -65,7 +65,7 @@ animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{...}{optional arguments.}
 }
 \value{
-None or logical (see \code{log_logical}. The output GIF file is written to the ouput directory.
+None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
 }
 \description{
 \code{animate_stats} animates statistic plot from movement data provided as \code{move} class objects or a list of them and basemap data provided as \code{raster}. It extracts basemap values of pixels that are part of the movement paths and visualizes frequencies per value. The function creates an animated GIF file and saves it into the output directory. See also \code{\link{animate_move}}.

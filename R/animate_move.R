@@ -39,7 +39,7 @@
 #' @param stats_create logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.
 #' @param ... optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).
 #' 
-#' @return None or logical (see \code{log_logical}. The output GIF file is written to the ouput directory.
+#' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
 #' 
 #' @details \code{animate_move} is based on \code{ggplot2} and partly based on the \code{animation} package. It needs the \code{convert} tool of the \code{ImageMagick} software package to assemble GIF files. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
 #' 
@@ -117,6 +117,7 @@
 #' @importFrom gridExtra grid.arrange
 #' @importFrom reshape melt
 #' @importFrom graphics plot
+#' @importFrom RStoolbox ggRGB
 #' @export
 
 animate_move <- function(data_ani, out_dir, conv_dir = "convert",
@@ -240,6 +241,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   s_try <- try(arg$stats_digits)
   if(class(s_try) == "NULL"){
     if(layer_type == "gradient"){stats_digits  <- 1}
+    if(layer_type == "RGB"){stats_digits  <- 1}
     if(layer_type == "discrete"){stats_digits <- 0}   
   }else{stats_digits <- arg$stats_digits}
   s_try <- try(arg$stats_tframe)
@@ -299,11 +301,14 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(length(layer) != length(layer_dt)){
       out("Arguments 'layer' and 'layer_dt' need to be lists of equal lengths.",type=3)
     }
-    if(unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[1] != unlist(strsplit(as.character(crs(layer[[1]]))," "))[1]
-       & unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[2] != unlist(strsplit(as.character(crs(layer[[1]]))," "))[2]){
-      out("Arguments 'layer' and 'data_ani' have different projections! Please provide movement data and
-          background layer data with equal projection or do not use 'layer'.",type=3)
+    if(raster_only != TRUE){
+      if(unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[1] != unlist(strsplit(as.character(crs(layer[[1]]))," "))[1]
+         & unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[2] != unlist(strsplit(as.character(crs(layer[[1]]))," "))[2]){
+        out("Arguments 'layer' and 'data_ani' have different projections! Please provide movement data and
+            background layer data with equal projection or do not use 'layer'.",type=3)
+      }
     }
+    if(is(layer[[1]],"RasterBrick") == TRUE){out("Layer input of class 'RasterBrick' is not supported. Please use 'RasterStack' instead.",type=3)}
   }else{
     if(layer != "basemap"){out(paste0("Unknown input '",layer, "'. Argument 'layer' needs to be either a list of raster objects, a single raster object or a string containing 'basemap'."),type=3)}
   }
@@ -322,15 +327,40 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       }
     }
   }
-  if(stats_title == ""){stats_title <- c("Map values acummulated\nover all frames",
-                                         paste0("Map values acummulated\nover a ",as.character(stats_tframe)," frames period"))}
+  if(stats_title == ""){
+    if(layer_type == "RGB"){
+      stats_title <- list(
+        c("Map values (all frames)\nband 1",
+          paste0("Map values (",as.character(stats_tframe)," frames)\nband 1")),
+        c("Map values (all frames)\nband 2",
+          paste0("Map values (",as.character(stats_tframe)," frames)\nband 2")),
+        c("Map values (all frames)\nband 3",
+          paste0("Map values (",as.character(stats_tframe)," frames)\nband 3"))
+      )
+    }else{
+      stats_title <- list(c("Map values acummulated\nover all frames",
+                                         paste0("Map values acummulated\nover a ",as.character(stats_tframe)," frames period")))
+    }
+  }else{
+    if(layer_type == "RGB"){
+      stats_title <- list(unlist(stats_title[1:2]),unlist(stats_title[3:4]),unlist(stats_title[5:6]))
+    }else{
+      stats_title <- list(unlist(list(stats_title)))
+    }
+  }
   if(is.na(frames_width)){
-    if(stats_create == TRUE & stats_only == FALSE){frames_width <- 1000}else{frames_width <- 600}
+    if(stats_create == TRUE & stats_only == FALSE){
+      if(layer_type != "RGB"){frames_width <- 1000}else{frames_width <- 1200}
+    }else{frames_width <- 600}
   }
   if(is.na(frames_height)){frames_height = 600}
-  if(frames_width >= 1200 | frames_height >= 1200){out("High resolution ouptut causes time intensive frame creation!",type = 2)}
+  if(frames_width > 1200 | frames_height > 1200){out("High resolution ouptut causes time intensive frame creation!",type = 2)}
   if(stats_lay[1] == 0){
-    if(stats_only == TRUE){stats_lay = rbind(c(1,2))}else{stats_lay = rbind(c(1,1,2),c(1,1,3))}
+    if(stats_only == TRUE){
+      if(layer_type == "RGB"){stats_lay =  rbind(c(1,2),c(3,4),c(5,6))}else{stats_lay = rbind(c(1,2))}
+    }else{
+      if(layer_type == "RGB"){stats_lay = rbind(c(1,1,2,4,6),c(1,1,3,5,7))}else{stats_lay = rbind(c(1,1,2),c(1,1,3))}
+    }
   }
   
   #Plattform dependences
@@ -339,181 +369,202 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
 
   
   #[2] PREPRO DATA DEPENDING ON MODE
-  out("Preprocessing data depending on selected mode...",type=1)
-  
-  #CRS
-  crs_input_cr <- paste0(unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[1], " ",
+  if(raster_only != TRUE){ #101: exclude for raster_only
+    out("Preprocessing data depending on selected mode...",type=1)
+    #CRS
+    crs_input_cr <- paste0(unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[1], " ",
                       unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[2])
-  crs_input <- crs(data_ani[[1]])
+    crs_input <- crs(data_ani[[1]])
   
-  #Convert move class elements to dataframe
-  data_ani_df <- list()
-  for(i in 1:length(data_ani)){
-    data_ani_df[[i]] <- data.frame(data_ani[[i]]@coords[,1])
-    data_ani_df[[i]] <- cbind(data_ani_df[[i]],data_ani[[i]]@coords[,2],data_ani[[i]]@timestamps)
-    colnames(data_ani_df[[i]]) <- c("x","y","dt")
-  }
-
-  #Save original subset lengths
-  for(i in 1:length(data_ani_df)){
-    if(i == 1){sl_orig <- length(data_ani_df[[i]]$dt)}
-    else{sl_orig <- c(sl_orig,length(data_ani_df[[i]]$dt))}
-  }
+    #Convert move class elements to dataframe
+    data_ani_df <- list()
+    for(i in 1:length(data_ani)){
+      data_ani_df[[i]] <- data.frame(data_ani[[i]]@coords[,1])
+      data_ani_df[[i]] <- cbind(data_ani_df[[i]],data_ani[[i]]@coords[,2],data_ani[[i]]@timestamps)
+      colnames(data_ani_df[[i]]) <- c("x","y","dt")
+    }
   
-  if(length(data_ani) > 1){
-    if(paths_mode == "simple"){
-      out("Preparing data for paths_mode 'simple' ...",type=1)
+    #Save original subset lengths
+    for(i in 1:length(data_ani_df)){
+      if(i == 1){sl_orig <- length(data_ani_df[[i]]$dt)}
+      else{sl_orig <- c(sl_orig,length(data_ani_df[[i]]$dt))}
+    }
+    
+    if(length(data_ani) > 1){
+      if(paths_mode == "simple"){
+        out("Preparing data for paths_mode 'simple' ...",type=1)
+        #Subset lengths
+        for(i in 1:length(data_ani_df)){
+          if(i == 1){subset_lengths <- length(data_ani_df[[i]]$x)}
+          else{subset_lengths <- c(subset_lengths,length(data_ani_df[[i]]$x))}
+        }
+        
+        #Missing lines adding
+        for(i in 1:length(data_ani_df)){
+          if(length(data_ani_df[[i]]$x) < max(subset_lengths)){
+            diff_lengths <- max(subset_lengths)-length(data_ani_df[[i]]$x)
+            add_row <- data_ani_df[[i]][1,]
+            add_row$x <- NA; add_row$y <- NA; add_row$dt <- NA
+            for(a in 1:diff_lengths){
+              data_ani_df[[i]] <- rbind(data_ani_df[[i]],add_row)
+            }
+          }
+        }
+      }
+      
+      if(paths_mode == "true_time" | paths_mode == "true_data"){
+        out("Preparing data for true mode...",type=1)
+        #Determine sets with earliest and latest dt for start/stop of data_ani_df
+        start_dt <- st_times(data_ani_df)[[1]]
+        stop_dt <- st_times(data_ani_df)[[2]]
+        
+        start_earliest_set <- which(start_dt == min(start_dt))
+        start_latest_set <- which(start_dt == max(start_dt))
+        stop_earliest_set <- which(stop_dt == min(stop_dt))
+        stop_latest_set <- which(stop_dt == max(stop_dt))
+        
+        #Creating template data frame from earliest start to latest stop time
+        time_range <- align.time(
+          seq(min(start_dt)-60,max(stop_dt)-60,
+              length.out = as.integer(difftime(max(stop_dt),min(start_dt),units = "mins"))+1),n=60)
+        template <- data.frame(time_range)
+        template <- cbind(template, x=vector(mode="double", length=length(time_range)),
+                          y=vector(mode="double", length=length(time_range)))
+        colnames(template) <- c("dt","x","y")
+        
+        #Filling template
+        for(i in 1:length(data_ani_df)){
+          if(i == 1){
+            data_ani_df_true <- list(template)
+          }else{
+            data_ani_df_true[i] <- list(template)
+          }
+          match <- match(data_ani_df_true[[i]]$dt,data_ani_df[[i]]$dt)
+          match <- which(is.na(match) == FALSE)
+          data_ani_df_true[[i]]$x[match] <- data_ani_df[[i]]$x
+          data_ani_df_true[[i]]$x[which(data_ani_df_true[[i]]$x == 0)] <- NA
+          data_ani_df_true[[i]]$y[match] <- data_ani_df[[i]]$y
+          data_ani_df_true[[i]]$y[which(data_ani_df_true[[i]]$y == 0)] <- NA
+          
+          for(j in 2:length(match)){
+            if(match[j]-1 != match[j-1]){
+              data_ani_df_true[[i]]$x[(match[j-1]+2):match[j]-1] <- data_ani_df_true[[i]]$x[match[j-1]]
+              data_ani_df_true[[i]]$y[(match[j-1]+2):match[j]-1] <- data_ani_df_true[[i]]$y[match[j-1]]
+            }
+          }
+        }
+        
+        if(paths_mode != "true_data"){
+          data_ani_df <- data_ani_df_true
+        }else{
+          #Remove lines with no movement
+          for(j in 1:length(data_ani_df_true)){
+            if(j == 1){data_dupl <- data_ani_df_true[[j]][2:3]}
+            else{data_dupl <- cbind(data_dupl,data_ani_df_true[[j]][2:3])}
+          }
+          for(j in 1:length(data_ani_df_true)){
+            data_ani_df[[j]] <- data_ani_df_true[[j]][-which(duplicated(data_dupl)),]
+          }
+        }
+    
+        #Subset lengths
+        for(i in 1:length(data_ani_df)){
+          if(i == 1){subset_lengths <- length(data_ani_df[[i]]$x)}
+          else{subset_lengths <- c(subset_lengths,length(data_ani_df[[i]]$x))}
+        }
+      }
+    }else{
       #Subset lengths
       for(i in 1:length(data_ani_df)){
         if(i == 1){subset_lengths <- length(data_ani_df[[i]]$x)}
         else{subset_lengths <- c(subset_lengths,length(data_ani_df[[i]]$x))}
-      }
-      
-      #Missing lines adding
-      for(i in 1:length(data_ani_df)){
-        if(length(data_ani_df[[i]]$x) < max(subset_lengths)){
-          diff_lengths <- max(subset_lengths)-length(data_ani_df[[i]]$x)
-          add_row <- data_ani_df[[i]][1,]
-          add_row$x <- NA; add_row$y <- NA; add_row$dt <- NA
-          for(a in 1:diff_lengths){
-            data_ani_df[[i]] <- rbind(data_ani_df[[i]],add_row)
-          }
-        }
       }
     }
     
-    if(paths_mode == "true_time" | paths_mode == "true_data"){
-      out("Preparing data for true mode...",type=1)
-      #Determine sets with earliest and latest dt for start/stop of data_ani_df
-      start_dt <- st_times(data_ani_df)[[1]]
-      stop_dt <- st_times(data_ani_df)[[2]]
-      
-      start_earliest_set <- which(start_dt == min(start_dt))
-      start_latest_set <- which(start_dt == max(start_dt))
-      stop_earliest_set <- which(stop_dt == min(stop_dt))
-      stop_latest_set <- which(stop_dt == max(stop_dt))
-      
-      #Creating template data frame from earliest start to latest stop time
-      time_range <- align.time(
-        seq(min(start_dt)-60,max(stop_dt)-60,
-            length.out = as.integer(difftime(max(stop_dt),min(start_dt),units = "mins"))+1),n=60)
-      template <- data.frame(time_range)
-      template <- cbind(template, x=vector(mode="double", length=length(time_range)),
-                        y=vector(mode="double", length=length(time_range)))
-      colnames(template) <- c("dt","x","y")
-      
-      #Filling template
+    #Subset, if specified
+    if(frames_nmax != 0){
+      out("Shortening movement data...")
+      for(j in 1:length(data_ani_df)){
+        if(length(data_ani_df[[j]][,1]) < frames_nmax){frames_nmax <- length(data_ani_df[[j]][,1])}
+        data_ani_df[[j]] <- data_ani_df[[j]][1:frames_nmax,]
+      }
+    }
+    
+    
+    #Remove individuals out of time range (NA)
+    i = 1
+    while(i <= length(data_ani_df)){
+      if(length(unique(data_ani_df[[i]]$x)) == 1){
+        if(is.na(unique(data_ani_df[[i]]$x))){
+          data_ani_df <- data_ani_df[-i]
+        }else{i = i + 1}
+      }else{i = i + 1}
+    }
+  
+  
+    
+    #[3] RECALCULATE RESOLUTION
+     out("Recalculating dataset on specified output resolution...",type=1)
+  
+    #Calculate resolution
+    n_lines <- length(data_ani_df[[1]]$x)
+    if(frames_nres == 1){frames_nres <- max(subset_lengths)}
+    if(n_lines > frames_nres){
       for(i in 1:length(data_ani_df)){
         if(i == 1){
-          data_ani_df_true <- list(template)
+          data_res <- list(data_ani_df[[i]][seq(1, length(data_ani_df[[i]]$x),frames_nres),])
         }else{
-          data_ani_df_true[i] <- list(template)
-        }
-        match <- match(data_ani_df_true[[i]]$dt,data_ani_df[[i]]$dt)
-        match <- which(is.na(match) == FALSE)
-        data_ani_df_true[[i]]$x[match] <- data_ani_df[[i]]$x
-        data_ani_df_true[[i]]$x[which(data_ani_df_true[[i]]$x == 0)] <- NA
-        data_ani_df_true[[i]]$y[match] <- data_ani_df[[i]]$y
-        data_ani_df_true[[i]]$y[which(data_ani_df_true[[i]]$y == 0)] <- NA
-        
-        for(j in 2:length(match)){
-          if(match[j]-1 != match[j-1]){
-            data_ani_df_true[[i]]$x[(match[j-1]+2):match[j]-1] <- data_ani_df_true[[i]]$x[match[j-1]]
-            data_ani_df_true[[i]]$y[(match[j-1]+2):match[j]-1] <- data_ani_df_true[[i]]$y[match[j-1]]
-          }
+          data_res[i] <- list(data_ani_df[[i]][seq(1, length(data_ani_df[[i]]$x),frames_nres),])
         }
       }
-      
-      if(paths_mode != "true_data"){
-        data_ani_df <- data_ani_df_true
-      }else{
-        #Remove lines with no movement
-        for(j in 1:length(data_ani_df_true)){
-          if(j == 1){data_dupl <- data_ani_df_true[[j]][2:3]}
-          else{data_dupl <- cbind(data_dupl,data_ani_df_true[[j]][2:3])}
-        }
-        for(j in 1:length(data_ani_df_true)){
-          data_ani_df[[j]] <- data_ani_df_true[[j]][-which(duplicated(data_dupl)),]
-        }
-      }
-  
-      #Subset lengths
-      for(i in 1:length(data_ani_df)){
-        if(i == 1){subset_lengths <- length(data_ani_df[[i]]$x)}
-        else{subset_lengths <- c(subset_lengths,length(data_ani_df[[i]]$x))}
-      }
+      n_loop <- length(data_res[[1]]$x)
+    }else{
+      n_loop <- n_lines
+      #Hier interpolation/smoothing fuer den Fall einbauen, dass gefragte Resolution groesser ist als input length!!!
+      data_res <- data_ani_df
     }
   }else{
-    #Subset lengths
-    for(i in 1:length(data_ani_df)){
-      if(i == 1){subset_lengths <- length(data_ani_df[[i]]$x)}
-      else{subset_lengths <- c(subset_lengths,length(data_ani_df[[i]]$x))}
-    }
-  }
-  
-  #Subset, if specified
-  if(frames_nmax != 0){
-    out("Shortening movement data...")
-    for(j in 1:length(data_ani_df)){
-      if(length(data_ani_df[[j]][,1]) < frames_nmax){frames_nmax <- length(data_ani_df[[j]][,1])}
-      data_ani_df[[j]] <- data_ani_df[[j]][1:frames_nmax,]
-    }
-  }
-  
-  
-  #Remove individuals out of time range (NA)
-  i = 1
-  while(i <= length(data_ani_df)){
-    if(length(unique(data_ani_df[[i]]$x)) == 1){
-      if(is.na(unique(data_ani_df[[i]]$x))){
-        data_ani_df <- data_ani_df[-i]
-      }else{i = i + 1}
-    }else{i = i + 1}
-  }
-
-
-  
-  #[3] RECALCULATE RESOLUTION
-   out("Recalculating dataset on specified output resolution...",type=1)
-
-  #Calculate resolution
-  n_lines <- length(data_ani_df[[1]]$x)
-  if(frames_nres == 1){frames_nres <- max(subset_lengths)}
-  if(n_lines > frames_nres){
-    for(i in 1:length(data_ani_df)){
-      if(i == 1){
-        data_res <- list(data_ani_df[[i]][seq(1, length(data_ani_df[[i]]$x),frames_nres),])
-      }else{
-        data_res[i] <- list(data_ani_df[[i]][seq(1, length(data_ani_df[[i]]$x),frames_nres),])
-      }
-    }
-    n_loop <- length(data_res[[1]]$x)
-  }else{
-    n_loop <- n_lines
-    #Hier interpolation/smoothing fuer den Fall einbauen, dass gefragte Resolution groesser ist als input length!!!
-    data_res <- data_ani_df
-  }
-  
+    crs_input_cr <- paste0(unlist(strsplit(as.character(crs(layer[[1]]))," "))[1], " ",
+                           unlist(strsplit(as.character(crs(layer[[1]]))," "))[2])
+    crs_input <- crs(layer[[1]])
+    n_loop <- length(layer); n_tail = 0
+  }#101end: exclude for raster_only
   
   
   #[4] PREPARE RASTER BASE LAYER
   out("Calculating extent...",type=1)
   
-  #Compute overall min and max y and x
-  for(i in 1:length(data_res)){
-    if(i == 1){
-      min_y <- min(data_res[[i]]$y,na.rm = TRUE)
-      min_x <- min(data_res[[i]]$x,na.rm = TRUE)
-      max_y <- max(data_res[[i]]$y,na.rm = TRUE)
-      max_x <- max(data_res[[i]]$x,na.rm = TRUE)
-    }else{
-      min_y <- c(min_y,min(data_res[[i]]$y,na.rm = TRUE))
-      min_x <- c(min_x,min(data_res[[i]]$x,na.rm = TRUE))
-      max_y <- c(max_y,max(data_res[[i]]$y,na.rm = TRUE))
-      max_x <- c(max_x,max(data_res[[i]]$x,na.rm = TRUE))
-    }
-  }
+  #Scale down to output width and height
+  #if(dim(layer[[1]])[1] > frames_height & dim(layer[[1]])[2] > frames_width){
+  #  fact <- min(c(dim(layer[[1]])[1]/frames_height,dim(layer[[1]])[2]/frames_width))
+  #  layer_agg <- lapply(layer,fact,FUN = function(layer,fact){
+  #    aggregate(layer,fact = fact)
+  #  })
+  #  layer <- layer_agg; rm(layer_agg)
+  #}
   
+  if(raster_only != TRUE){ #101: exlude for raster_only
+    #Compute overall min and max y and x
+    for(i in 1:length(data_res)){
+      if(i == 1){
+        min_y <- min(data_res[[i]]$y,na.rm = TRUE)
+        min_x <- min(data_res[[i]]$x,na.rm = TRUE)
+        max_y <- max(data_res[[i]]$y,na.rm = TRUE)
+        max_x <- max(data_res[[i]]$x,na.rm = TRUE)
+      }else{
+        min_y <- c(min_y,min(data_res[[i]]$y,na.rm = TRUE))
+        min_x <- c(min_x,min(data_res[[i]]$x,na.rm = TRUE))
+        max_y <- c(max_y,max(data_res[[i]]$y,na.rm = TRUE))
+        max_x <- c(max_x,max(data_res[[i]]$x,na.rm = TRUE))
+      }
+    }
+  }else{
+    min_y <- extent(layer[[1]])@ymin
+    min_x <- extent(layer[[1]])@xmin
+    max_y <- extent(layer[[1]])@ymax
+    max_x <- extent(layer[[1]])@xmax
+  }#101end: exlude for raster_only
+    
   if(extent_factor != 0.0001){
     min_x <- min_x-(min_x*extent_factor)
     max_x <- max_x+(max_x*extent_factor)
@@ -586,6 +637,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     map_ext$x_max <- rbl@extent@xmax
   }
   
+  
   if(is.character(layer) == FALSE){
     out("Creating dynamic base layer...")
     
@@ -599,13 +651,16 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     
     #Either interpolate per track time frame or just assign to time frames
     if(layer_int == FALSE){
-      #Find nearest dated layer for each time frame
-      dr_dt <- data.frame(as.numeric(data_res[[which(sl_orig == max(sl_orig,na.rm = TRUE))[1]]]$dt))
-      ly_dt <- data.frame(as.numeric(layer_dt))
-      rbl <- unlist(apply(dr_dt,ly_dt, MARGIN = 1, FUN = function(dr_dt,ly_dt){
-        layer_crop[which(abs(ly_dt-dr_dt) == min(abs(ly_dt-dr_dt)))]
-      }))
-      
+      if(raster_only != TRUE){ #101: exlude for raster_only
+        #Find nearest dated layer for each time frame
+        dr_dt <- data.frame(as.numeric(data_res[[which(sl_orig == max(sl_orig,na.rm = TRUE))[1]]]$dt))
+        ly_dt <- data.frame(as.numeric(layer_dt))
+        rbl <- unlist(apply(dr_dt,ly_dt, MARGIN = 1, FUN = function(dr_dt,ly_dt){
+          layer_crop[which(abs(ly_dt-dr_dt) == min(abs(ly_dt-dr_dt)))]
+        }))
+      }else{
+        rbl <- layer
+      }
     }else{
       #Convert raster to vector for faster processing
       for(i in 1:length(layer_crop)){
@@ -681,17 +736,26 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     map_ext$y_max <- rbl[[1]]@extent@ymax
     map_ext$x_max <- rbl[[1]]@extent@xmax
     
-    if(layer_type == "RGB"){
-      for(i in 1:length(rbl)){
-        if(i == 1){
-          rbl_df <- list(data.frame(rasterToPoints(rbl[[i]])))
-          rbl_rgb <- list(rgb(rbl_df[[i]]$red,rbl_df[[i]]$green,rbl_df[[i]]$blue, maxColorValue = 255))
-        }else{
-          rbl_df[[i]] <- data.frame(rasterToPoints(rbl[[i]]))
-          rbl_rgb[[i]] <- rgb(rbl_df[[i]]$red,rbl_df[[i]]$green,rbl_df[[i]]$blue, maxColorValue = 255)
-        }
-      }
-    }
+    #if(layer_type == "RGB"){
+      #for(j in 1:length(rbl)){
+        #tmax <- max(c(rbl[[i]][[1]]@data@max,rbl[[i]][[2]]@data@max,rbl[[i]][[3]]@data@max))
+        #tfact <- 255/tmax
+        #rbl_255 <- list()
+        #for(i in 1:4){
+          #tval <- getValues(rbl[[i]]); tval[which(tval < 0)] <- 0; tval <- tval*tfact
+          #rbl_255[[i]] <- rbl[[i]]; rbl_255[[i]] <- setValues(rbl_255[[i]],tval)
+        #}
+        #if(j == 1){
+          #rbl_df <- list(data.frame(rasterToPoints(rbl[[i]])))
+          #rbl_rgb <- list(rgb(rbl_df[[i]]$red,rbl_df[[i]]$green,rbl_df[[i]]$blue, maxColorValue = 255))
+          #rbl_rgb <- list(ggRGB(rbl_255[[j]],r=3,g=2,b=1,scale = 255))
+        #}else{
+          #rbl_df[[i]] <- data.frame(rasterToPoints(rbl[[i]]))
+          #rbl_rgb[[i]] <- rgb(rbl_df[[i]]$red,rbl_df[[i]]$green,rbl_df[[i]]$blue, maxColorValue = 255)
+          #rbl_rgb[[j]] <- ggRGB(rbl_255[[j]],r=3,g=2,b=1,scale = 255)
+        #}
+      #}
+    #}
     
     if(layer_type == "discrete"){
       for(i in 1:length(rbl)){
@@ -719,9 +783,20 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   #Calcualte min/max basmap values
   if(is.character(layer) == FALSE){
     if(is.na(legend_limits[1])){
-      val_x_limits <- data.frame(min(sapply(rbl, FUN = function(rbl){rbl@data@min})),
-                                 max(sapply(rbl, FUN = function(rbl){rbl@data@max})))
-      colnames(val_x_limits) <- c("x_min","x_max")
+      if(layer_type == "RGB"){
+        rbl_ustk <- list()
+        for(i in 1:length(rbl)){
+          rbl_ustk[[i]] <- unstack(rbl[[i]]) #crazy performance issues with rasterBricks here, therfore no rasterBricks can be used at the moment
+        }
+        rbl_ustk <- unlist(rbl_ustk)
+        val_x_limits <- data.frame(min(sapply(rbl_ustk, FUN = function(rbl_ustk){rbl_ustk@data@min})),
+                                   max(sapply(rbl_ustk, FUN = function(rbl_ustk){rbl_ustk@data@max})))
+        colnames(val_x_limits) <- c("x_min","x_max")
+      }else{
+        val_x_limits <- data.frame(min(sapply(rbl, FUN = function(rbl){rbl@data@min})),
+                                   max(sapply(rbl, FUN = function(rbl){rbl@data@max})))
+        colnames(val_x_limits) <- c("x_min","x_max")
+      }
     }else{
       val_x_limits <- data.frame(legend_limits[1],legend_limits[2])
       colnames(val_x_limits) <- c("x_min","x_max")
@@ -732,170 +807,173 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   
   #[5] CALCULATE COLOUR RAMP AND SIZE VECTOR
-  out("Calculating colour ramp and size vector...",type=1)
   
-  #Calculate path colour ramp
-  if(paths_col == "auto"){collist <- c("red","green","blue","yellow","darkgreen","orange","deepskyblue", "darkorange","deeppink","navy")
-  }else{collist <- paths_col}
-  n_tail <- tail_elements-1
-  
-  if(length(data_res) > length(collist)){
-    col_recycle <- as.integer(length(data_res)/length(collist))
-    for(i in 1:col_recycle){
-      collist <- c(collist,collist)
+  if(raster_only != TRUE){ #101: exlude for raster_only
+    out("Calculating colour ramp and size vector...",type=1)
+    #Calculate path colour ramp
+    if(paths_col == "auto"){collist <- c("red","green","blue","yellow","darkgreen","orange","deepskyblue", "darkorange","deeppink","navy")
+    }else{collist <- paths_col}
+    n_tail <- tail_elements-1
+    
+    if(length(data_res) > length(collist)){
+      col_recycle <- as.integer(length(data_res)/length(collist))
+      for(i in 1:col_recycle){
+        collist <- c(collist,collist)
+      }
     }
-  }
-  
-  for(i in 1:length(data_res)){
-    colfunc <- colorRampPalette(c(collist[i],"white"))
-    if(i == 1){
-      colours <- rbind(rev(colfunc(tail_elements+4)[1:tail_elements]))
-    }else{
-      colours <- rbind(colours,rev(colfunc(tail_elements+4)[1:tail_elements]))
+    
+    for(i in 1:length(data_res)){
+      colfunc <- colorRampPalette(c(collist[i],"white"))
+      if(i == 1){
+        colours <- rbind(rev(colfunc(tail_elements+4)[1:tail_elements]))
+      }else{
+        colours <- rbind(colours,rev(colfunc(tail_elements+4)[1:tail_elements]))
+      }
     }
-  }
-  
-  #Size vector calculation depending on tail_elements
-  size_divid <- round(tail_size/(length(colours[1,])+4),4)
-  for(i in 1:length(colours[1,])){
-    if(i==1){line_size <- tail_size}else{line_size[i] <- line_size[i-1]-size_divid}
-  }
-  line_size <- rev(line_size)
-  
-  #Calculate layer colour ramp
-  if(layer_type == "discrete"){
-    if(length(layer_col) != length(legend_breaks)){
-      colfunc <- colorRampPalette(layer_col)
-      layer_col <- rev(colfunc(length(legend_breaks)))
+    
+    #Size vector calculation depending on tail_elements
+    size_divid <- round(tail_size/(length(colours[1,])+4),4)
+    for(i in 1:length(colours[1,])){
+      if(i==1){line_size <- tail_size}else{line_size[i] <- line_size[i-1]-size_divid}
     }
-  }
-  
+    line_size <- rev(line_size)
+    
+    #Calculate layer colour ramp
+    if(layer_type == "discrete"){
+      if(length(layer_col) != length(legend_breaks)){
+        colfunc <- colorRampPalette(layer_col)
+        layer_col <- rev(colfunc(length(legend_breaks)))
+      }
+    }
+  }#101end: exlude for raster_only
 
   
   #[6] CREATE STATS OBJECT
-  out("Computing stats...")
-  
-  if(stats_create == TRUE | layer[1] != "basemap"){
-  
-    #Calc limits
-    if(stats_digits > 0){
-      stats_floor_mp <- stats_digits*10
-      stats_limits <- round(val_x_limits*stats_floor_mp)/10
-    }else{
-      stats_floor_mp = 1
-      stats_limits <- round(val_x_limits)
-    }
-    
-    #Extract values
-    stats_pixvals <- list()
-    for(i in 1:length(data_res)){
-      for(j in 1:length(rbl)){
-        if(j == 1){
-          stats_pixvals[[i]] <- round(extract(rbl[[j]],matrix(c(data_res[[i]]$x,data_res[[i]]$y),ncol = 2))[j],digits = stats_digits)
-        }else{
-          stats_pixvals[[i]] <- c(stats_pixvals[[i]], round(extract(rbl[[j]],matrix(c(data_res[[i]]$x,data_res[[i]]$y),ncol = 2))[j], digits = stats_digits))
-        }
-      }
-    }
-    stats_pixvals <- lapply(stats_pixvals,FUN = function(stats_pixvals){
-      data.frame(stats_pixvals)
-    })
-    
-    #Derive frequence for each value
-    stats_pixvals_freq <- lapply(stats_pixvals,FUN = function(stats_pixvals){
-      data.frame(table(stats_pixvals))
-    })
-    
-    #Acummulate values
-    for(j in 1:length(stats_pixvals)){
-      stats_pixvals[[j]] <- cbind(stats_pixvals[[j]],NA)
-      colnames(stats_pixvals[[j]]) <- c("x","y")
-      if(length(stats_pixvals_freq[[j]][,1]) != 0){
-        for(i in 1:length(stats_pixvals_freq[[j]][,1])){
-          stats_pixvals[[j]][,2][which(stats_pixvals[[j]][,1] == stats_pixvals_freq[[j]][,1][i])] <- seq(from = 1, to = stats_pixvals_freq[[j]]$Freq[i], by = 1)
-        }
-      }
-      if(j==1){stats_indi <- as.character(data_ani[[j]]@idData$individual.local.identifier)
-      }else{stats_indi <- c(stats_indi,as.character(data_ani[[j]]@idData$individual.local.identifier))}
-    }
-    
-    
-    #{a} Create df per time frame with ALL values (acummulation)
-    stats_df <- list()
-    for(i in 1:length(rbl)){
-      if(i == 1){
-        stats_df[[i]] <- data.frame(seq(stats_limits$x_min,stats_limits$x_max,by=stats_floor_mp))
-        stats_df[[i]] <- cbind(stats_df[[i]],data.frame(matrix(0,ncol = length(stats_pixvals),nrow = length(stats_df[[i]][,1]))))
-        colnames(stats_df[[i]]) <- c("val",stats_indi)
-      }else{
-        stats_df[[i]] <- stats_df[[i-1]]
-      }
+  if(raster_only != TRUE){ #101: exlude for raster_only
+    if(stats_create == TRUE & layer[1] != "basemap"){
       
-      for(j in 1:length(stats_pixvals)){
-        if(is.na(stats_pixvals[[j]][i,]$x) == FALSE){
-          stats_df[[i]][which(as.character(stats_df[[i]]$val) == as.character(stats_pixvals[[j]][i,]$x)),][j+1] <- stats_pixvals[[j]][i,]$y
-        }
-      }
-    }
-  
-    for(i in 1:length(rbl)){
-      stats_df[[i]] <- cbind(stats_df[[i]],rowSums(stats_df[[i]][2:(length(stats_pixvals)+1)]))
-      colnames(stats_df[[i]])[length(colnames(stats_df[[i]]))] <- "sum"
-    }
-    
-    
-    #{b} Create df per time frame period (live)
-    stats_df_tframe <- stats_df
-    for(i in 1:length(stats_df)){
-      if(i > stats_tframe){
-        stats_df_tframe[[i]][2:length(stats_df_tframe[[i]])] <- stats_df_tframe[[i]][2:length(stats_df_tframe[[i]])]-stats_df[[i-stats_tframe]][2:length(stats_df_tframe[[i]])]
-      }
-    }
-    
-    #convert data to long format
-    pdat <- list()
-    for(k in 1:2){
-      pdat[[k]] <- list()
-      if(k == 1){tomelt <- stats_df}else{tomelt <- stats_df_tframe}
-      for(i in 1:length(rbl)){
-        pdat[[k]][[i]] <- melt(tomelt[[i]], id.vars = "val")
-        pdat[[k]][[i]] <- cbind(pdat[[k]][[i]],NA)
-        colnames(pdat[[k]][[i]])[4] <- "cols"
-        
-        #prepare ggplot df
-        for(j in 1:(length(data_res)+1)){
-          if(j==1){
-            pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable=="sum")] <- "black"
-            cols<- "black"
-            names <- "sum"
-          }else{
-            pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable==stats_indi[j-1])] <- colours[j-1]
-            cols <- c(cols, as.character(colours[(j-1),tail_elements]))
-            names <- c(names,stats_indi[j-1])
+      out("Computing stats...")
+      #Calc limits
+      stats_limits <- round(val_x_limits,digits = stats_digits)
+      stats_floor_mp <- 1/(as.numeric(paste(c("1",as.character(rep(0,stats_digits))),collapse = "")))
+      
+      #Define rerun time in case that rasterStack is used for RGB
+      if(layer_type == "RGB"){br <- 3}else{br <- 1}
+      stats_obj <- list()
+      for(b in 1:br){
+        #Extract values
+        stats_pixvals <- list()
+        for(i in 1:length(data_res)){
+          for(j in 1:length(rbl)){
+            if(j == 1){
+              stats_pixvals[[i]] <- round(extract(rbl[[j]][[b]],matrix(c(data_res[[i]]$x,data_res[[i]]$y),ncol = 2))[j],digits = stats_digits)
+            }else{
+              stats_pixvals[[i]] <- c(stats_pixvals[[i]], round(extract(rbl[[j]][[b]],matrix(c(data_res[[i]]$x,data_res[[i]]$y),ncol = 2))[j], digits = stats_digits))
+            }
           }
         }
-        cols <- setNames(cols,names)
+        stats_pixvals <- lapply(stats_pixvals,FUN = function(stats_pixvals){
+          data.frame(stats_pixvals)
+        })
+        
+        #Derive frequence for each value
+        stats_pixvals_freq <- lapply(stats_pixvals,FUN = function(stats_pixvals){
+          data.frame(table(stats_pixvals))
+        })
+        
+        #Acummulate values
+        for(j in 1:length(stats_pixvals)){
+          stats_pixvals[[j]] <- cbind(stats_pixvals[[j]],NA)
+          colnames(stats_pixvals[[j]]) <- c("x","y")
+          if(length(stats_pixvals_freq[[j]][,1]) != 0){
+            for(i in 1:length(stats_pixvals_freq[[j]][,1])){
+              stats_pixvals[[j]][,2][which(stats_pixvals[[j]][,1] == stats_pixvals_freq[[j]][,1][i])] <- seq(from = 1, to = stats_pixvals_freq[[j]]$Freq[i], by = 1)
+            }
+          }
+          if(j==1){stats_indi <- as.character(data_ani[[j]]@idData$individual.local.identifier)
+          }else{stats_indi <- c(stats_indi,as.character(data_ani[[j]]@idData$individual.local.identifier))}
+        }
+        
+        
+        #{a} Create df per time frame with ALL values (acummulation)
+        stats_df <- list()
+        for(i in 1:length(rbl)){
+          if(i == 1){
+            stats_df[[i]] <- data.frame(seq(stats_limits$x_min,stats_limits$x_max,by=stats_floor_mp))
+            stats_df[[i]] <- cbind(stats_df[[i]],data.frame(matrix(0,ncol = length(stats_pixvals),nrow = length(stats_df[[i]][,1]))))
+            colnames(stats_df[[i]]) <- c("val",stats_indi)
+          }else{
+            stats_df[[i]] <- stats_df[[i-1]]
+          }
+          
+          for(j in 1:length(stats_pixvals)){
+            if(is.na(stats_pixvals[[j]][i,]$x) == FALSE){
+              stats_df[[i]][which(as.character(stats_df[[i]]$val) == as.character(stats_pixvals[[j]][i,]$x)),][j+1] <- stats_pixvals[[j]][i,]$y
+            }
+          }
+        }
+      
+        for(i in 1:length(rbl)){
+          stats_df[[i]] <- cbind(stats_df[[i]],rowSums(stats_df[[i]][2:(length(stats_pixvals)+1)]))
+          colnames(stats_df[[i]])[length(colnames(stats_df[[i]]))] <- "sum"
+        }
+        
+        
+        #{b} Create df per time frame period (live)
+        stats_df_tframe <- stats_df
+        for(i in 1:length(stats_df)){
+          if(i > stats_tframe){
+            stats_df_tframe[[i]][2:length(stats_df_tframe[[i]])] <- stats_df_tframe[[i]][2:length(stats_df_tframe[[i]])]-stats_df[[i-stats_tframe]][2:length(stats_df_tframe[[i]])]
+          }
+        }
+        
+        #convert data to long format
+        pdat <- list()
+        for(k in 1:2){
+          pdat[[k]] <- list()
+          if(k == 1){tomelt <- stats_df}else{tomelt <- stats_df_tframe}
+          for(i in 1:length(rbl)){
+            pdat[[k]][[i]] <- melt(tomelt[[i]], id.vars = "val")
+            pdat[[k]][[i]] <- cbind(pdat[[k]][[i]],NA)
+            colnames(pdat[[k]][[i]])[4] <- "cols"
+            
+            #prepare ggplot df
+            for(j in 1:(length(data_res)+1)){
+              if(j==1){
+                pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable=="sum")] <- "black"
+                cols<- "black"
+                names <- "sum"
+              }else{
+                pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable==stats_indi[j-1])] <- colours[j-1]
+                cols <- c(cols, as.character(colours[(j-1),tail_elements]))
+                names <- c(names,stats_indi[j-1])
+              }
+            }
+            cols <- setNames(cols,names)
+          }
+        }
+        stats_max <- c((max(stats_df[[length(stats_df)]]$sum)+5),(max(stats_df_tframe[[length(stats_df_tframe)]]$sum)+5))
+      
+        
+        #Add histogram data line
+        for(i in 1:length(rbl)){
+          h <-rbl[[i]][[b]]@data@values
+          h <- round(h, digits = stats_digits)
+          h <- data.frame(table(h))
+          colnames(h) <- c("val","value")
+          add_pdat <- cbind(stats_df[[i]],0)
+          add_pdat$`0`[match(h$val,stats_df[[1]]$val)] <- h$value
+          colnames(add_pdat)[length(colnames(add_pdat))] <- "hist"
+          add_pdat <-  melt(add_pdat, id.vars = "val")
+          pdat[[1]][[i]] <- cbind(add_pdat,c(pdat[[1]][[i]]$cols,rep("grey",length(unique(pdat[[1]][[i]]$val)))))
+          colnames(pdat[[1]][[i]])[4] <- "cols"
+        }
+        cols <- list(cols); cols[[2]] <- cols[[1]]
+        cols[[1]] <- c(cols[[1]],"grey");cols[[1]] <- setNames(cols[[1]],c(names,"hist"))
+        stats_obj[[b]] <- pdat
       }
     }
-    stats_max <- c((max(stats_df[[length(stats_df)]]$sum)+5),(max(stats_df_tframe[[length(stats_df_tframe)]]$sum)+5))
-  
-    
-    #Add histogram data line
-    for(i in 1:length(rbl)){
-      h <-rbl[[i]]@data@values
-      h <- round(h, digits = stats_digits)
-      h <- data.frame(table(h))
-      colnames(h) <- c("val","value")
-      add_pdat <- cbind(stats_df[[i]],h[which(h$val == unique(stats_df[[1]]$val)),]$value)
-      colnames(add_pdat)[length(colnames(add_pdat))] <- "hist"
-      add_pdat <-  melt(add_pdat, id.vars = "val")
-      pdat[[1]][[i]] <- cbind(add_pdat,c(pdat[[1]][[i]]$cols,rep("grey",length(unique(pdat[[1]][[i]]$val)))))
-      colnames(pdat[[1]][[i]])[4] <- "cols"
-    }
-    cols <- list(cols); cols[[2]] <- cols[[1]]
-    cols[[1]] <- c(cols[[1]],"grey");cols[[1]] <- setNames(cols[[1]],c(names,"hist"))
-  }
-  
+  }#101end: exlude for raster_only
 
   
   #[7] CALCULATE MAP ELEMENTS POSITIONS
@@ -992,21 +1070,23 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   #[8] PARSING PLOT FUNCTION
   out("Parsing plot function arguments..", type=1)
   
-  #Define argument strings for the plot function to be called dynamically according to number of individuals
-  plt_path_std <- 'geom_path(data = frame_l[[1]][,1:2],aes_(x = frame_l[[1]]$x, y = frame_l[[1]]$y,
-    alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
-  plt_path_c1 <- 'geom_path(data = frame_l[['
-  plt_path_c2 <- ']][,1:2],aes_(x = frame_l[['
-  plt_path_c3 <- ']]$x, y = frame_l[['
-  plt_path_c4 <- ']]$y, alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours['
-  plt_path_c5 <- ',], size = line_size,na.rm=TRUE,show.legend = FALSE)'
-  
-  #Assemble path plot functions
-  for(i in 1:length(data_res)){
-    if(i==1){plt_path <- plt_path_std
-    }else{plt_path <- paste0(plt_path,"+",plt_path_c1,toString(i),plt_path_c2,toString(i),plt_path_c3,toString(i),plt_path_c4,toString(i),plt_path_c5)}
+  if(raster_only != TRUE){ #101: exclude for raster_only
+    #Define argument strings for the plot function to be called dynamically according to number of individuals
+    plt_path_std <- 'geom_path(data = frame_l[[1]][,1:2],aes_(x = frame_l[[1]]$x, y = frame_l[[1]]$y,
+      alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours[1,], size = line_size,na.rm=TRUE, show.legend = FALSE)'
+    plt_path_c1 <- 'geom_path(data = frame_l[['
+    plt_path_c2 <- ']][,1:2],aes_(x = frame_l[['
+    plt_path_c3 <- ']]$x, y = frame_l[['
+    plt_path_c4 <- ']]$y, alpha = paths_alpha),lineend = "round", linejoin = "round", colour = colours['
+    plt_path_c5 <- ',], size = line_size,na.rm=TRUE,show.legend = FALSE)'
+    
+    #Assemble path plot functions
+    for(i in 1:length(data_res)){
+      if(i==1){plt_path <- plt_path_std
+      }else{plt_path <- paste0(plt_path,"+",plt_path_c1,toString(i),plt_path_c2,toString(i),plt_path_c3,toString(i),plt_path_c4,toString(i),plt_path_c5)}
+    }
   }
-  
+
   #Define labs
   if(img_labs != "labs"){labs_x <- img_labs[1]; labs_y <- img_labs[2]
   }else{
@@ -1083,22 +1163,26 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
                           scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_progress,plt_path)
+                        plt_scale_north,plt_progress)
     }
     if(layer_type == "discrete"){
       plt_fin <- paste0('ggplot(data=rbl_df[[i]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) +
                           scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_progress,plt_path)
+                        plt_scale_north,plt_progress)
     }
     if(layer_type == "RGB"){
-      plt_fin <- paste0('ggplot(data=rbl_df[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]])) + scale_fill_identity() +
+      plt_fin <- paste0('ggRGB(rbl[[i]],r=3,g=2,b=1) + scale_fill_identity() +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_progress,plt_path)
+                        plt_scale_north,plt_progress) #rbl_df[[i]] #ggplot(data=rbl_rgb[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]]))
+    }
+    if(raster_only != TRUE){ #101: exclude for raster_only
+      plt_fin <- paste0(plt_fin,plt_path)
+    }else{
+      plt_fin <- substr(plt_fin,0,(nchar(plt_fin)-1)) #removing last plus sign from plt_progress
     }
   }
-  
-  
+
   #Add title?
   if(plt_title != 0){plt_fin <- paste0(plt_fin,"+", plt_title)
   }else{plt_fin <- paste0(plt_fin)}
@@ -1110,21 +1194,21 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     plt_stats_parse = parse(text = stats_gg)
   }else{
     if(stats_type == "line"){
-      plt_stats_parse = parse(text = 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
+      plt_stats_parse = parse(text = 'ggplot(data = stats_obj[[b]][[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
       geom_line() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
       scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
       scale_x_continuous(expand = c(0,0)) + 
       scale_color_manual(name="",values = cols[[k]]) +
-      labs(x = "Basemap Value", y="Frequency", title=stats_title[[k]], label=c("123","456"))+
+      labs(x = "Basemap Value", y="Frequency", title=stats_title[[b]][[k]], label=c("123","456"))+
       theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))')
     }
     if(stats_type == "bar"){
-      plt_stats_parse = parse(text = 'ggplot(data = pdat[[k]][[i]], aes(x = val, y = value, fill = variable)) + 
+      plt_stats_parse = parse(text = 'ggplot(data = stats_obj[[b]][[k]][[i]], aes(x = val, y = value, fill = variable)) + 
       scale_fill_manual(name="",values = cols[[k]]) +
       geom_bar(stat = "identity", position = "dodge") + theme_bw() + theme(aspect.ratio=1) +
       scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
       scale_x_continuous(expand = c(0,0)) +
-      labs(x = "Basemap Value", y="Frequency", title=stats_title[[k]], label=c("123","456"))+
+      labs(x = "Basemap Value", y="Frequency", title=stats_title[[b]][[k]], label=c("123","456"))+
       theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))')
     }
   }
@@ -1161,9 +1245,20 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       createGIF(
         for(i in index_min:index_max){
           if((i+n_tail) <= index_max){
-            k <- 2; p1 <- eval(plt_stats_parse)
-            k <- 1; p2 <- eval(plt_stats_parse)
-            quiet(grid.arrange(p1,p2,layout_matrix = stats_lay))
+            pl <- list()
+            if(layer_type != "RGB"){
+              b <- 1; k <- 2; pl[[1]] <- eval(plt_stats_parse); k <- 1; pl[[2]] <- eval(plt_stats_parse)
+              pl <- pl[unique(c(stats_lay))] #select plots
+              pl <- lapply(pl, ggplotGrob)
+              quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
+            }else{
+              b <- 1; k <- 2; pl[[1]] <- eval(plt_stats_parse); k <- 1; pl[[2]] <- eval(plt_stats_parse)
+              b <- 2; k <- 2; pl[[3]] <- eval(plt_stats_parse); k <- 1; pl[[4]] <- eval(plt_stats_parse)
+              b <- 3; k <- 2; pl[[5]] <- eval(plt_stats_parse); k <- 1; pl[[6]] <- eval(plt_stats_parse)
+              pl <- pl[unique(c(stats_lay))] #select plots
+              pl <- lapply(pl, ggplotGrob)
+              quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
+            }
           }
         },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
       )
@@ -1186,12 +1281,14 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
         for(i in index_min:index_max){
           if((i+n_tail) <= index_max){
             
-            #Create frame and plot it on basemap
-            for(a in 1:length(data_res)){
-              if(a == 1){
-                frame_l <- list(data_res[[a]][i:(i+n_tail),] )
-              }else{
-                frame_l[a] <- list(data_res[[a]][i:(i+n_tail),] )
+            if(raster_only != TRUE){ #101: exclude for raster_only
+              #Create frame and plot it on basemap
+              for(a in 1:length(data_res)){
+                if(a == 1){
+                  frame_l <- list(data_res[[a]][i:(i+n_tail),] )
+                }else{
+                  frame_l[a] <- list(data_res[[a]][i:(i+n_tail),] )
+                }
               }
             }
             
@@ -1203,11 +1300,28 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
             if(stats_create == FALSE){
               quiet(plot(eval(plt_parse)))
             }else{
+              pl <- list()
+              if(layer_type != "RGB"){
+                pl[[1]] <- eval(plt_parse)
+                b <- 1; k <- 2; pl[[2]] <- eval(plt_stats_parse); k <- 1; pl[[3]] <- eval(plt_stats_parse)
+                pl <- pl[unique(c(stats_lay))] #select plots
+                pl <- lapply(pl, ggplotGrob)
+                quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
+              }else{
+                pl[[1]] <- quiet(eval(plt_parse))
+                b <- 1; k <- 2; pl[[2]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[3]] <- quiet(eval(plt_stats_parse))
+                b <- 2; k <- 2; pl[[4]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[5]] <- quiet(eval(plt_stats_parse))
+                b <- 3; k <- 2; pl[[6]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[7]] <- quiet(eval(plt_stats_parse))
+                pl <- pl[unique(c(stats_lay))] #select plots
+                pl <- lapply(pl, ggplotGrob)
+                quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
+              }
+              
               #plot with par side by side
-              p1 <- eval(plt_parse)
-              k <- 2; p2 <- eval(plt_stats_parse)
-              k <- 1; p3 <- eval(plt_stats_parse)
-              quiet(grid.arrange(p1,p2,p3,layout_matrix = stats_lay))
+              #p1 <- eval(plt_parse)
+              #k <- 2; p2 <- eval(plt_stats_parse)
+              #k <- 1; p3 <- eval(plt_stats_parse)
+              #quiet(grid.arrange(p1,p2,p3,layout_matrix = stats_lay))
             }
           }
         },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir

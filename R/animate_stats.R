@@ -16,7 +16,7 @@
 #' @param stats_gg character. Enables usage of \code{ggplot2} syntax for plot design. If set, \code{stats_type} is ignored. See \code{details} for information on the statistic data structure to be used by the user defined plot function.
 #' @param stats_digits numeric. Defines how detailed the statistic plot should be as number of decimals. Values with more decimals are rounded. Default is 1 for one decimal.
 #' @param stats_tframe numeric. Defines the temporal range of the periodic stats plot. Default is 5 meaning that five time frames back from the displayed frame are evaluated.
-#' @param stats_lay matrix. Optional layout. Based on the \code{\link{grid.arrange}} syntax.
+#' @param stats_lay matrix. Optional layout. Define, which stats plot should be plotted where, e. g. \code{rbind(c(1,2),c(3,4),c(5,6))}, which puts stats plot 1 and 2 to the first row, plot 3 and 4 to the second etc. Use e. g. \code{rbind(c(1,1),c(1,1),c(2,3))} to fill two columns/rows with plot 1 and put plot 2 and 3 underneath. If \code{animate_stats()} is called, an odd number respresents the overall plots and even numbers the periodic accumulated plots (if \code{animate_move()} is called, it is vice versa, since  plot 1 represents the spatial plot). Based on the \code{\link{grid.arrange}} syntax.
 #' @param stats_title character vector. Optional plot titles. Two character strings within a vector.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
@@ -28,7 +28,7 @@
 #' @param log_logical logical. For large processing schemes. If TRUE, the function returns TRUE when finished processing succesfully.
 #' @param ... optional arguments.
 #' 
-#' @return None or logical (see \code{log_logical}. The output GIF file is written to the ouput directory.
+#' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
 #' 
 #' @details \code{animate_stats} is a wrapper function of \code{\link{animate_move}} to create single statistic plots without spatial plotting. For statistic plot animations sidy-by-side with spatial plot animations, use \code{\link{animate_move}} (see \code{stats_create} argument). The function can handle all arguments taken by \code{animate_stats} as well.
 #' Use \code{stats_gg} to provide an own ggplot2 plot design as shown in the examples. The statistics are stored for both plots (periodic and accumulated) withn the variable \code{pdat} (list of two, indexed by k ranging from 1 to 2 for each plot). Both \code{pdat} lists contain the stats elements framewise for each time step. For this, see the \code{stats_gg} example. The variable \code{cols} (list of two, one per plot) contains the defined colour values and namings. 
@@ -122,7 +122,7 @@ animate_stats <- function(data_ani, out_dir, conv_dir = "convert", layer = "base
   }
   
   if(layer[1] == "basemap"){out("Basemap cannot be a Google Basemap for computing stats pixelwise. Please provide a single-layer dataset.",type = 3)}
-  if(layer_type == "RGB"){out("Basemap cannot be of type 'RGB' for computing stats pixelwise. Please provide a single-layer data.",type = 3)}
+  #if(layer_type == "RGB"){out("Basemap cannot be of type 'RGB' for computing stats pixelwise. Please provide a single-layer data.",type = 3)}
   
   #Call animate_move (alias function)
   animate_move(data_ani, out_dir, conv_dir = conv_dir, layer = layer, layer_dt = layer_dt, layer_int = layer_int, layer_type = layer_type,

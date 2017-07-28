@@ -1,4 +1,16 @@
+----------------------------------------------------------
+moveVis 0.9.5
+improvements to workflow
 -----------------------------------------------------------
+New features:
+ + RGB statd support added for animate_stats() and animate_move()
+
+Improvements:
+ + several major bug fixes
+ + major animate_raster() bug fixes, reenabling use of RGB rasterStack inputs
+
+
+----------------------------------------------------------
 moveVis 0.9.4
 adding animate_stats() and stats arguments for animate_move()
 -----------------------------------------------------------
