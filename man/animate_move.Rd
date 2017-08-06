@@ -6,16 +6,16 @@
 \usage{
 animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
-  layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
-  map_type = "satellite", extent_factor = 1e-04, tail_elements = 10,
-  tail_size = 4, img_title = "title", img_sub = "subtitle",
-  img_caption = "caption", img_labs = "labs", legend_title = "",
-  legend_limits = NA, legend_labels = "auto", map_elements = TRUE,
-  scalebar_col = "white", north_col = "white", paths_col = "auto",
-  paths_alpha = 1, paths_mode = "true_data", stats_create = FALSE,
-  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
-  frames_width = NA, frames_height = NA, out_name = "final_gif",
-  log_level = 1, log_logical = FALSE, ...)
+  layer_stretch = "none", layer_col = c("sandybrown", "white", "darkgreen"),
+  layer_nacol = "white", map_type = "satellite", extent_factor = 1e-04,
+  tail_elements = 10, tail_size = 4, img_title = "title",
+  img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
+  legend_title = "", legend_limits = NA, legend_labels = "auto",
+  map_elements = TRUE, scalebar_col = "white", north_col = "white",
+  paths_col = "auto", paths_alpha = 1, paths_mode = "true_data",
+  stats_create = FALSE, frames_nmax = 0, frames_interval = 0.04,
+  frames_nres = 1, frames_width = NA, frames_height = NA,
+  out_name = "final_gif", log_level = 1, log_logical = FALSE, ...)
 }
 \arguments{
 \item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
@@ -30,7 +30,9 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{layer_int}{logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.}
 
-\item{layer_type}{charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.}
+\item{layer_type}{charachter. Layer type. Either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.}
+
+\item{layer_stretch}{character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".}
 
 \item{layer_col}{character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.}
 

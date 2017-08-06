@@ -4,6 +4,7 @@
 #'
 #' @param layer list. List of raster objects. 
 #' @param layer_type charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class object), "\code{gradient}" or "\code{discrete}". Default is "\code{gradient}".
+#' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
 #' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
 #' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
 #' @param out_dir character. Output directory for the GIF file creation.
@@ -52,7 +53,7 @@
 #' 
 #' @export
 
-animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "gradient",
+animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "gradient", layer_stretch = "none",
                            layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white",
                            img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                            legend_title = "", legend_limits = NA, legend_labels = "auto",
@@ -70,7 +71,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "g
   layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length=length(layer))
   
   #Call animate_move (alias function)
-  animate_move(raster_only = TRUE, layer = layer, layer_dt = layer_dt,
+  animate_move(raster_only = TRUE, layer = layer, layer_dt = layer_dt, layer_stretch = layer_stretch,
                out_dir = out_dir, conv_dir = conv_dir, layer_type = layer_type,
                layer_col = layer_col, layer_nacol = layer_nacol,
                img_title = img_title, img_sub = img_sub, img_caption = img_caption, img_labs = img_labs,

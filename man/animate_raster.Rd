@@ -5,14 +5,14 @@
 \title{Animate raster data}
 \usage{
 animate_raster(layer, out_dir, conv_dir = "convert",
-  layer_type = "gradient", layer_col = c("sandybrown", "white",
-  "darkgreen"), layer_nacol = "white", img_title = "title",
-  img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
-  legend_title = "", legend_limits = NA, legend_labels = "auto",
-  map_elements = TRUE, scalebar_col = "white", north_col = "white",
-  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
-  frames_width = NA, frames_height = NA, out_name = "final_gif",
-  log_level = 1, log_logical = FALSE)
+  layer_type = "gradient", layer_stretch = "none",
+  layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
+  img_title = "title", img_sub = "subtitle", img_caption = "caption",
+  img_labs = "labs", legend_title = "", legend_limits = NA,
+  legend_labels = "auto", map_elements = TRUE, scalebar_col = "white",
+  north_col = "white", frames_nmax = 0, frames_interval = 0.04,
+  frames_nres = 1, frames_width = NA, frames_height = NA,
+  out_name = "final_gif", log_level = 1, log_logical = FALSE)
 }
 \arguments{
 \item{layer}{list. List of raster objects.}
@@ -22,6 +22,8 @@ animate_raster(layer, out_dir, conv_dir = "convert",
 \item{conv_dir}{character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.}
 
 \item{layer_type}{charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class object), "\code{gradient}" or "\code{discrete}". Default is "\code{gradient}".}
+
+\item{layer_stretch}{character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".}
 
 \item{layer_col}{character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.}
 

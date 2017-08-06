@@ -8,7 +8,8 @@
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
 #' @param layer_dt POSIXct or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
-#' @param layer_type charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.
+#' @param layer_type charachter. Layer type. Either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.
+#' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
 #' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
 #' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
 #' @param map_type character.  Static basemap type. Chosse from "roadmap", "satellite", "hybrid", "terrain".
@@ -121,7 +122,7 @@
 #' @export
 
 animate_move <- function(data_ani, out_dir, conv_dir = "convert",
-                         layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
+                         layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
                          layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite",
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
@@ -142,7 +143,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   quiet <- function(expr){
     return(suppressWarnings(suppressMessages(expr)))
   }
-
   
   #GIF creation function (adjusted code taken from the saveGIF function of the animation package)
   createGIF = function(
@@ -210,6 +210,14 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     file.remove(img.files)
     file.remove("batch.bat")
   }
+  
+  #get legend
+  g_legend<-function(a.gplot){ 
+    tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
+    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
+    legend <- tmp$grobs[[leg]] 
+    return(legend)
+  } 
   
   #Calculate start/stop times
   st_times <- function(data){
@@ -1172,7 +1180,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                         plt_scale_north,plt_progress)
     }
     if(layer_type == "RGB"){
-      plt_fin <- paste0('ggRGB(rbl[[i]],r=3,g=2,b=1) + scale_fill_identity() +
+      plt_fin <- paste0('ggRGB(rbl[[i]],r=3,g=2,b=1,stretch=layer_stretch) + scale_fill_identity() +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_progress) #rbl_df[[i]] #ggplot(data=rbl_rgb[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]]))
     }
@@ -1212,7 +1220,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))')
     }
   }
-  
+  #b <- 1; k <- 1; stleg <- g_legend(eval(plt_stats_parse))
   
   
   #[8] CALCULATING ANIMATION
@@ -1313,8 +1321,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                 b <- 2; k <- 2; pl[[4]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[5]] <- quiet(eval(plt_stats_parse))
                 b <- 3; k <- 2; pl[[6]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[7]] <- quiet(eval(plt_stats_parse))
                 pl <- pl[unique(c(stats_lay))] #select plots
-                pl <- lapply(pl, ggplotGrob)
-                quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
+                pl <- lapply(pl, FUN = function(pl){ggplotGrob(pl + theme(legend.position = "none"))})
+                quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay))) #grobs=c(pl,stleg)
               }
               
               #plot with par side by side
