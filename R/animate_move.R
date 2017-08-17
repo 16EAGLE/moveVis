@@ -67,7 +67,7 @@
 #' 
 #' #Specify some optional appearance variables
 #' img_title <- "Movement of the white stork population at Lake Constance, Germany"
-#' img_sub <- paste0("including individuals ",indi_names)
+#' img_sub <- paste0("including individuals ",paste(names(data_ani), collapse=', '))
 #' img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 #' 
 #' #Call animate_move()
