@@ -12,6 +12,8 @@ Improvements:
  + major animate_raster() bug fixes, reenabling use of RGB rasterStack inputs
  + stats legend is now locatable using frame_layout
 
+Contributers:
+ + Bart Kranstauber
 
 ----------------------------------------------------------
 moveVis 0.9.4

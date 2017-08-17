@@ -44,36 +44,9 @@ move_data$dt <- as.POSIXct(strptime(move_data$dt, "\%Y-\%m-\%d \%H:\%M:\%S", tz 
 Your movement data need to be provided as move class objects to the animate_move() function. For each individual movement path you want to display simultaniously within a single animation, you will need one move class object. The move class objects per path are provided as a list. If your data.frame contains several individuals (e. g. differentiable by a "individuals" column, as the example data.frame does), then subset the data per individual and store the namings. If you just want to display a single path, you do not have to do this.
 
 ```s
-#Differentiate data per individual
-indi_levels <- levels(move_data$individual)
-indi_levels_n <- length(indi_levels)
-for(i in 1:indi_levels_n){
-  if(i == 1){
-    indi_subset <- list(subset(move_data, individual == indi_levels[i]))
-  }else{
-    indi_subset <- c(indi_subset,list(subset(move_data,
-                               individual == indi_levels[i])))
-  }
-}
-indi_names <- paste(indi_levels, collapse = ", ")
-```
-
-Finally, the move class object list can be created (or just a single move class object depending on the number of paths):
-
-```s
-#Create move class object
-for(i in 1:length(indi_subset)){
-  if(i == 1){
-     data_ani <- list(move(x=indi_subset[[i]]$lon,y=indi_subset[[i]]$lat,
-                                 time=indi_subset[[i]]$dt,
-                                 proj=CRS("+proj=longlat +ellps=WGS84"),
-                                 animal=indi_levels[i]))
-  }else{
-     data_ani[i] <- list(move(x=indi_subset[[i]]$lon,y=indi_subset[[i]]$lat,
-                                 time=indi_subset[[i]]$dt,
-                                 proj=CRS("+proj=longlat +ellps=WGS84"),
-                                 animal=indi_levels[i]))}
-}
+#Create new move class object list by individual
+data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
+                       time = move_data$dt, animal=move_data$individual, data=move_data))
 ```
 
 Please note that the animate_move() function needs to know how to call the convert tool of the ImageMagick software package. By default, animate_move() trys to execute the "convert" command from the command line. To ensure that everything is going right, you should execute the get_imconvert() function prior to the animate_move() call (at least if you run it first). The get_imconvert() function checks, if the convert tool can be found on your system and downloads and installs ImageMagick automatically if necessary, depending on your system. Most Linux distributions have ImageMagick preinstalled. Store the output string of get_imconvert() to a variable to be able to hand it over to animate_move(). If you know the convert tool command or its directory, you can also specify it manually (see the "conv_dir" argument of animate_move()).

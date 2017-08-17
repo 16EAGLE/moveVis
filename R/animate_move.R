@@ -55,32 +55,9 @@
 #' data("move_data")
 #' move_data$dt <- as.POSIXct(strptime(move_data$dt, "%Y-%m-%d %H:%M:%S", tz = "UTC"))
 #'
-#' #Differentiate data per individual
-#' indi_levels <- levels(move_data$individual)
-#' indi_levels_n <- length(indi_levels)
-#' for(i in 1:indi_levels_n){
-#'   if(i == 1){
-#'     indi_subset <- list(subset(move_data, individual == indi_levels[i]))
-#'   }else{
-#'     indi_subset <- c(indi_subset,list(subset(move_data,
-#'                                individual == indi_levels[i])))
-#'   }
-#' }
-#' indi_names <- paste(indi_levels, collapse = ", ")
-#' 
-#' #Create move class object
-#' for(i in 1:length(indi_subset)){
-#'   if(i == 1){
-#'      data_ani <- list(move(x=indi_subset[[i]]$lon,y=indi_subset[[i]]$lat,
-#'                                  time=indi_subset[[i]]$dt,
-#'                                  proj=CRS("+proj=longlat +ellps=WGS84"),
-#'                                  animal=indi_levels[i]))
-#'   }else{
-#'      data_ani[i] <- list(move(x=indi_subset[[i]]$lon,y=indi_subset[[i]]$lat,
-#'                                  time=indi_subset[[i]]$dt,
-#'                                  proj=CRS("+proj=longlat +ellps=WGS84"),
-#'                                  animal=indi_levels[i]))}
-#' }
+#' #Create move class object list
+#' data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
+#'                        time = move_data$dt, animal=move_data$individual, data=move_data))
 #' 
 #' #Find command or directory to convert tool of ImageMagick
 #' conv_dir <- get_imconvert()
@@ -905,8 +882,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
               stats_pixvals[[j]][,2][which(stats_pixvals[[j]][,1] == stats_pixvals_freq[[j]][,1][i])] <- seq(from = 1, to = stats_pixvals_freq[[j]]$Freq[i], by = 1)
             }
           }
-          if(j==1){stats_indi <- as.character(data_ani[[j]]@idData$individual.local.identifier)
-          }else{stats_indi <- c(stats_indi,as.character(data_ani[[j]]@idData$individual.local.identifier))}
+          if(j==1){stats_indi <- rownames(idData(data_ani[[j]]))
+          }else{stats_indi <- c(stats_indi,rownames(idData(data_ani[[j]])))}
         }
         
         

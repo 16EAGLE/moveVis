@@ -41,35 +41,12 @@
 #' #Get the sample data from the moveVis package
 #' data("move_data")
 #' move_data$dt <- as.POSIXct(strptime(move_data$dt, "%Y-%m-%d %H:%M:%S", tz = "UTC"))
-#'
-#' #Differentiate data per individual
-#' indi_levels <- levels(move_data$individual)
-#' indi_levels_n <- length(indi_levels)
-#' for(i in 1:indi_levels_n){
-#'   if(i == 1){
-#'     indi_subset <- list(subset(move_data, individual == indi_levels[i]))
-#'   }else{
-#'     indi_subset <- c(indi_subset,list(subset(move_data,
-#'                                individual == indi_levels[i])))
-#'   }
-#' }
-#' indi_names <- paste(indi_levels, collapse = ", ")
 #' 
-#' #Create move class object
-#' for(i in 1:length(indi_subset)){
-#'   if(i == 1){
-#'      data_ani <- list(move(x=indi_subset[[i]]$lon,y=indi_subset[[i]]$lat,
-#'                                  time=indi_subset[[i]]$dt,
-#'                                  proj=CRS("+proj=longlat +ellps=WGS84"),
-#'                                  animal=indi_levels[i]))
-#'   }else{
-#'      data_ani[i] <- list(move(x=indi_subset[[i]]$lon,y=indi_subset[[i]]$lat,
-#'                                  time=indi_subset[[i]]$dt,
-#'                                  proj=CRS("+proj=longlat +ellps=WGS84"),
-#'                                  animal=indi_levels[i]))}
-#' }
-#' 
-#' #Load basemap data (MODIS NDVI)
+#' #Create move class object list
+#' data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
+#'                        time = move_data$dt, animal=move_data$individual, data=move_data))
+#'  
+#' #Load basemap MODIS NDVI data
 #' data("basemap_data")
 #' layer = basemap_data[[1]]
 #' layer_dt = basemap_data[[2]]
