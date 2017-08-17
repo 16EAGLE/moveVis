@@ -3,11 +3,14 @@ moveVis 0.9.5
 improvements to workflow
 -----------------------------------------------------------
 New features:
- + RGB statd support added for animate_stats() and animate_move()
+ + RGB stats support added for animate_stats() and animate_move()
+ + added animate_move() argument "time_scale" to enable a time scale
+ + added animate_move() argument frame_layout for user friendly, complex layouting of the output GIF by specifiying the plot locations
 
 Improvements:
  + several major bug fixes
  + major animate_raster() bug fixes, reenabling use of RGB rasterStack inputs
+ + stats legend is now locatable using frame_layout
 
 
 ----------------------------------------------------------
@@ -67,5 +70,6 @@ Initial release of moveVis via CRAN
 Initial features:
  + animate_move()
  + get_imconvert()
+ 
 Initial example data sets:
  + data(move_data)

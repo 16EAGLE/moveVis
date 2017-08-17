@@ -11,11 +11,12 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   tail_elements = 10, tail_size = 4, img_title = "title",
   img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
   legend_title = "", legend_limits = NA, legend_labels = "auto",
-  map_elements = TRUE, scalebar_col = "white", north_col = "white",
-  paths_col = "auto", paths_alpha = 1, paths_mode = "true_data",
-  stats_create = FALSE, frames_nmax = 0, frames_interval = 0.04,
-  frames_nres = 1, frames_width = NA, frames_height = NA,
-  out_name = "final_gif", log_level = 1, log_logical = FALSE, ...)
+  map_elements = TRUE, time_scale = TRUE, scalebar_col = "white",
+  north_col = "white", paths_col = "auto", paths_alpha = 1,
+  paths_mode = "true_data", stats_create = FALSE, frames_layout = 0,
+  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
+  frames_width = NA, frames_height = NA, out_name = "final_gif",
+  log_level = 1, log_logical = FALSE, ...)
 }
 \arguments{
 \item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
@@ -62,6 +63,8 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{map_elements}{logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.}
 
+\item{time_scale}{logical. If\code{FALSE}, time scale is hidden. Default is \code{TRUE}.}
+
 \item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
 
 \item{north_col}{character. Colour of the north arrow. Default is "white".}
@@ -73,6 +76,8 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
 
 \item{stats_create}{logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.}
+
+\item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
 
 \item{frames_nmax}{numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).}
 

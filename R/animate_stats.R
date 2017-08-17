@@ -16,8 +16,8 @@
 #' @param stats_gg character. Enables usage of \code{ggplot2} syntax for plot design. If set, \code{stats_type} is ignored. See \code{details} for information on the statistic data structure to be used by the user defined plot function.
 #' @param stats_digits numeric. Defines how detailed the statistic plot should be as number of decimals. Values with more decimals are rounded. Default is 1 for one decimal.
 #' @param stats_tframe numeric. Defines the temporal range of the periodic stats plot. Default is 5 meaning that five time frames back from the displayed frame are evaluated.
-#' @param stats_lay matrix. Optional layout. Define, which stats plot should be plotted where, e. g. \code{rbind(c(1,2),c(3,4),c(5,6))}, which puts stats plot 1 and 2 to the first row, plot 3 and 4 to the second etc. Use e. g. \code{rbind(c(1,1),c(1,1),c(2,3))} to fill two columns/rows with plot 1 and put plot 2 and 3 underneath. If \code{animate_stats()} is called, an odd number respresents the overall plots and even numbers the periodic accumulated plots (if \code{animate_move()} is called, it is vice versa, since  plot 1 represents the spatial plot). Based on the \code{\link{grid.arrange}} syntax.
 #' @param stats_title character vector. Optional plot titles. Two character strings within a vector.
+#' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
@@ -110,8 +110,8 @@
 
 animate_stats <- function(data_ani, out_dir, conv_dir = "convert", layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
          val_limits = NA, paths_col = "auto",  paths_mode = "true_data",
-         stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5, stats_lay = 0,
-         stats_title = "", frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = 600,
+         stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
+         stats_title = "", frames_layout = 0, frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = 600,
          frames_height = 600, out_name = "final_gif", log_level = 1, log_logical = FALSE){
 
   #Define output handling
@@ -127,7 +127,7 @@ animate_stats <- function(data_ani, out_dir, conv_dir = "convert", layer = "base
   #Call animate_move (alias function)
   animate_move(data_ani, out_dir, conv_dir = conv_dir, layer = layer, layer_dt = layer_dt, layer_int = layer_int, layer_type = layer_type,
                tail_elements = 1, paths_col = paths_col, paths_mode = "true_data",
-               stats_create = TRUE, stats_tframe = stats_tframe, stats_lay = stats_lay,
+               stats_create = TRUE, stats_tframe = stats_tframe, frames_layout = frames_layout,
                stats_type = stats_type, stats_title = stats_title,
                stats_gg = stats_gg, stats_digits = stats_digits, frames_nmax =  frames_nmax, frames_interval = frames_interval, frames_nres = frames_nres, frames_width = frames_width,
                frames_height = frames_height, out_name = out_name, log_level = log_level, log_logical = log_logical,  stats_only = TRUE)

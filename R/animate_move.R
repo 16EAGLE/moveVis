@@ -24,11 +24,13 @@
 #' @param legend_labels character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
 #' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
+#' @param time_scale logical. If\code{FALSE}, time scale is hidden. Default is \code{TRUE}.
 #' @param extent_factor numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".
 #' @param north_col character. Colour of the north arrow. Default is "white".
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
 #' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
 #' @param paths_mode character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".
+#' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
@@ -112,7 +114,7 @@
 #' @importFrom grid arrow unit
 #' @importFrom move move
 #' @importFrom grDevices dev.off rgb colorRampPalette
-#' @importFrom utils head
+#' @importFrom utils head txtProgressBar
 #' @importFrom methods is
 #' @importFrom stats approxfun na.omit setNames
 #' @importFrom gridExtra grid.arrange
@@ -127,16 +129,16 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
-                         map_elements = TRUE, scalebar_col = "white", north_col = "white",
+                         map_elements = TRUE, time_scale = TRUE, scalebar_col = "white", north_col = "white",
                          paths_col = "auto", paths_alpha = 1, paths_mode = "true_data", stats_create = FALSE, 
-                         frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA,
+                         frames_layout = 0, frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA,
                          out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
   
   #Define output handling
   out <- function(input,type = 1){
     signs <- c("[LOG]: ", "[WARNING]: ")
-    if(type == 2 & log_level <= 2){print(paste(signs[2],input))}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){print(paste(signs[1],input))}}}
+    if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
+    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
   }
   
   #Suppress messages and warnings
@@ -155,7 +157,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       dir.create(dirname(movie.name))
     }
     ## create images in the temp dir
-    out("Creating PNG frame files (this may take a while; depending on the spatial resolution of the basemap)...",type=1)
     if(img.dir == 'dir'){img.dir <- tempdir()}
     if(out_dir == 'dir'){img.dir <- tempdir()}
     
@@ -193,11 +194,11 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     #Define arguments to be passed to convert.exe
     loop = paste0("-loop ", as.character(ifelse(isTRUE(ani.options('loop')), 0, ani.options('loop'))))
     interval = paste0("-delay ",as.character(head(ani.options('interval'), length(img.files))*100))
-    str_img_files <- gsub(",", "", toString(img.files))
+    str_img_files <- gsub(",", "", gsub("p1.png","",toString(img.files))) #blank frame error 
     
     #Assemble batch line and write to batch file
-    out("Creating GIF file...",type=1)
-    batch <- paste0('"',ani.options()$convert,'" ',loop,' ',interval,' ',str_img_files,' "',out_dir,'/',movie.name,'"')
+    #out("Creating GIF file...",type=1)
+    batch <- paste0('"',ani.options()$convert,'" ',loop,' ',interval,' ',str_img_files,' "',out_dir,'/',movie.name,'"') #-layers optimize 
     
     if(.Platform$OS.type == 'windows'){
       write(batch,"batch.bat")
@@ -254,8 +255,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   }else{stats_digits <- arg$stats_digits}
   s_try <- try(arg$stats_tframe)
   if(class(s_try) == "NULL"){stats_tframe  <- 5}else{stats_tframe <- arg$stats_tframe}
-  s_try <- try(arg$stats_lay)
-  if(class(s_try) == "NULL"){stats_lay  <- 0}else{stats_lay <- arg$stats_lay}
   s_try <- try(arg$stats_title)
   if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
   s_try <- try(arg$raster_only)
@@ -263,48 +262,49 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   if(raster_only != TRUE){ #data_ani not needed for animate_raster()
     if(missing(data_ani)){
-      out("Argument 'data_ani' is missing! Please specify the input movement data.",type=3)
+      out("Argument 'data_ani' is missing. Please specify the input movement data.",type=3)
     }else{
       if(is.list(data_ani) != TRUE){
         if(is(data_ani,"Move")){data_ani <- list(data_ani)} #Convert single move object to single element list
         else{
           if(is(data_ani,"MoveStack")){
-            data_ani_temp <- list("empty")
-            for(i in 1:length(split(data_ani))){
-              data_ani_temp[[i]] <- split(data_ani)[[i]] 
-            }
-            data_ani <- data_ani_temp
-          }else{out("Argument 'data_ani' needs to be a list object containing a 'move' object for each individual!",type=3)
+            data_ani <- split(data_ani)
+            #for(i in 1:length(split(data_ani))){
+            #  data_ani_temp[[i]] <- split(data_ani)[[i]] 
+            #}
+            #data_ani <- data_ani_temp
+          }else{out("Argument 'data_ani' needs to be either a list object containing a 'move' object for each individual  or a 'moveStack' object.",type=3)
           }
         }
       }else{
         for(i in 1:length(data_ani)){
-          if(is(data_ani[[i]],"Move") == FALSE){out("Elements in list object 'data_ani' need to be of the 'move' class!",type=3)}
+          if(is(data_ani[[i]],"Move") == FALSE){out("Elements in list object 'data_ani' need to be of the 'move' class.",type=3)}
         }
       }
     }
   }
   if(missing(out_dir)){
-    out("Argument 'out_dir' is missing! Please specify the output directory!", type=3)
+    out("Argument 'out_dir' is missing. Please specify the output directory.", type=3)
   }else{
     if(is.character(out_dir) != TRUE){
-      out("Argument 'out_dir' needs to be a character object!",type=3)
+      out("Argument 'out_dir' needs to be a character object.",type=3)
     }else{
+      user_wd <- getwd()
       temp_dir <- paste0(tempdir(),"/moveVis")
       quiet(dir.create(temp_dir))
       setwd(temp_dir)
     }
   }
   if(is.character(conv_dir) == FALSE){
-    out("Argument 'conv_dir' needs to be a character object!",type=3)
+    out("Argument 'conv_dir' needs to be a character object.",type=3)
   }
   if(is.numeric(frames_nres) == FALSE){
-    out("Keyword 'frames_nres' needs to be numeric! Setting 'frames_nres' to 1.",type=2)
+    out("Keyword 'frames_nres' needs to be numeric. Setting 'frames_nres' to 1.",type=2)
     frames_nres <- 1
   }
   if(is.character(paths_col) == FALSE){out("Keword 'paths_col' needs to be character or character vector.",type=3)}
   if(is.character(layer) == FALSE){
-    if(is.character(layer_dt) == TRUE){out("Argument 'layer_dt' needs to be specified if using 'layer'!
+    if(is.character(layer_dt) == TRUE){out("Argument 'layer_dt' needs to be specified if using 'layer'.
                                   Please provide time data with same length of 'layer'.",type=3)}
     if(length(layer) != length(layer_dt)){
       out("Arguments 'layer' and 'layer_dt' need to be lists of equal lengths.",type=3)
@@ -312,7 +312,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(raster_only != TRUE){
       if(unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[1] != unlist(strsplit(as.character(crs(layer[[1]]))," "))[1]
          & unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[2] != unlist(strsplit(as.character(crs(layer[[1]]))," "))[2]){
-        out("Arguments 'layer' and 'data_ani' have different projections! Please provide movement data and
+        out("Arguments 'layer' and 'data_ani' have different projections. Please provide movement data and
             background layer data with equal projection or do not use 'layer'.",type=3)
       }
     }
@@ -322,7 +322,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   }
   if(stats_create == TRUE){
     if(layer[1] == "basemap"){
-      out("Stats cannot be visualized for stadard Google Maps basemaps! Please use 'layer' to provide single layer basemap data!",type = 3)
+      out("Stats cannot be visualized for stadard Google Maps basemaps. Please use 'layer' to provide single layer basemap data.",type = 3)
     }else{
       if(stats_type == ""){
         if(layer_type == "gradient"){stats_type <- "line"}
@@ -362,13 +362,24 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }else{frames_width <- 600}
   }
   if(is.na(frames_height)){frames_height = 600}
-  if(frames_width > 1200 | frames_height > 1200){out("High resolution ouptut causes time intensive frame creation!",type = 2)}
-  if(stats_lay[1] == 0){
-    if(stats_only == TRUE){
-      if(layer_type == "RGB"){stats_lay =  rbind(c(1,2),c(3,4),c(5,6))}else{stats_lay = rbind(c(1,2))}
-    }else{
-      if(layer_type == "RGB"){stats_lay = rbind(c(1,1,2,4,6),c(1,1,3,5,7))}else{stats_lay = rbind(c(1,1,2),c(1,1,3))}
+  if(frames_width > 1200 | frames_height > 1200){out("High resolution ouptut causes time intensive frame creation.",type = 2)}
+  if(frames_layout[1] == 0){
+    if(raster_only == TRUE | stats_create == FALSE){frames_layout <- rbind(c(1))}
+    else{
+      if(stats_only == TRUE){
+        if(layer_type == "RGB"){frames_layout =  rbind(c(2,3),c(4,5),c(6,7),c(8,8))}else{frames_layout = rbind(c(2,3))}
+      }else{
+        if(layer_type == "RGB"){frames_layout = rbind(c(1,1,2,4,6,8),c(1,1,3,5,7,8))}else{frames_layout = rbind(c(1,1,2,8),c(1,1,3,8))}
+      }
     }
+  }else{
+    res <- matrix(c(1,2,3,2,3,4,5,6,7,8)[match(frames_layout, c("map", "stats_per", "stats_all", "stats_per_b1", "stats_all_b1", "stats_per_b2","stats_all_b2",
+                                                            "stats_per_b3","stats_all_b3","stats_leg"))], 3)
+    res <- ifelse(is.na(res), frames_layout, res)
+    frames_layout <- apply(res, 2, as.numeric)
+    
+    if(stats_only == TRUE & length(which(frames_layout == 1)) !=0 ){out("'frames_layout' cannot contain 'map' with animate_stats() or if 'stats_only' is set to TRUE.",type = 3)}
+    if(stats_create == FALSE & length(which(frames_layout > 1)) !=0){out("'frames_layout' cannot contain any stats layers or legends, if 'stats_create' is set to FALSE.",type=3)}
   }
   
   #Plattform dependences
@@ -378,7 +389,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   #[2] PREPRO DATA DEPENDING ON MODE
   if(raster_only != TRUE){ #101: exclude for raster_only
-    out("Preprocessing data depending on selected mode...",type=1)
     #CRS
     crs_input_cr <- paste0(unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[1], " ",
                       unlist(strsplit(as.character(crs(data_ani[[1]]))," "))[2])
@@ -491,7 +501,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     
     #Subset, if specified
     if(frames_nmax != 0){
-      out("Shortening movement data...")
+      out(paste0("Shortening movement data to frames_nmax = ",frames_nmax,"..."))
       for(j in 1:length(data_ani_df)){
         if(length(data_ani_df[[j]][,1]) < frames_nmax){frames_nmax <- length(data_ani_df[[j]][,1])}
         data_ani_df[[j]] <- data_ani_df[[j]][1:frames_nmax,]
@@ -512,7 +522,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
     
     #[3] RECALCULATE RESOLUTION
-     out("Recalculating dataset on specified output resolution...",type=1)
+    out("Calculating output spatial resolution and extent...",type=1)
   
     #Calculate resolution
     n_lines <- length(data_ani_df[[1]]$x)
@@ -540,8 +550,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   
   #[4] PREPARE RASTER BASE LAYER
-  out("Calculating extent...",type=1)
-  
   #Scale down to output width and height
   #if(dim(layer[[1]])[1] > frames_height & dim(layer[[1]])[2] > frames_width){
   #  fact <- min(c(dim(layer[[1]])[1]/frames_height,dim(layer[[1]])[2]/frames_width))
@@ -815,7 +823,6 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   
   #[5] CALCULATE COLOUR RAMP AND SIZE VECTOR
-  
   if(raster_only != TRUE){ #101: exlude for raster_only
     out("Calculating colour ramp and size vector...",type=1)
     #Calculate path colour ramp
@@ -984,8 +991,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   }#101end: exlude for raster_only
 
   
-  #[7] CALCULATE MAP ELEMENTS POSITIONS
-  out("Calculating positions of map elements...",type=1)
+  #[7] DEFINE MAP ELEMENTS
+  out("Creating map elements...",type=1)
   
   #Variables for scale bar and north arrow
   y_bm <- c(map_ext[,1],map_ext[,3])
@@ -1070,13 +1077,15 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(i == 1){prog_x_st <- min(rbl_gg_build$data[[1]]$xmin)}
     else{prog_x_st <- c(prog_x_st, prog_x_st[i-1]+prog_bar_elem_length)}
   }
-  prog_x_end <- c(prog_x_st[2:prog_bar_length],max(rbl_gg_build$data[[1]]$xmax))
+  prog_x_end <- c(prog_x_st[2:prog_bar_length],(prog_x_st[prog_bar_length]+prog_bar_elem_length),max(rbl_gg_build$data[[1]]$xmax))
   prog_y <- max(rbl_gg_build$data[[1]]$ymax)
   
+  #time_scale annotation
+  tscale <- as.character(data_res[[which(sl_orig == max(sl_orig,na.rm = TRUE))[1]]]$dt)
   
   
   #[8] PARSING PLOT FUNCTION
-  out("Parsing plot function arguments..", type=1)
+  out("Parsing plot strings...", type=1)
   
   if(raster_only != TRUE){ #101: exclude for raster_only
     #Define argument strings for the plot function to be called dynamically according to number of individuals
@@ -1157,13 +1166,15 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) +
       annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
   }else{plt_scale_north <- ''}
+  if(time_scale == TRUE){ #leg_coords$x[2]  rec1_leftdown$y-leg_dist
+    plt_time_scale <- 'annotate("text", label = tscale[[i]], x = x_bm[[1]]+(x_bm[[2]]-x_bm[[1]])/2, y = y_bm[[2]]-leg_dist, size = 3, colour = scalebar_col)+'
+  }else{plt_time_scale <- ''}
   plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)+'
-  
   
   #Parse argument string for plotting in the saveGIF function
   if(is.character(layer) == TRUE){
     plt_fin <- paste0("rbl_gg + ",
-                      plt_scale_north,plt_progress,plt_path)
+                      plt_scale_north,plt_time_scale,plt_progress,plt_path)
   }else{
     #if(is.na(legend_limits)){plt_limits <- "limits=c(rbl[[i]]@data@min, rbl[[i]]@data@max)"
     #}else{plt_limits <- "limits=legend_limits"}
@@ -1171,18 +1182,18 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
                           scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_progress)
+                        plt_scale_north,plt_time_scale,plt_progress)
     }
     if(layer_type == "discrete"){
       plt_fin <- paste0('ggplot(data=rbl_df[[i]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) +
                           scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_progress)
+                        plt_scale_north,plt_time_scale,plt_progress)
     }
     if(layer_type == "RGB"){
       plt_fin <- paste0('ggRGB(rbl[[i]],r=3,g=2,b=1,stretch=layer_stretch) + scale_fill_identity() +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_progress) #rbl_df[[i]] #ggplot(data=rbl_rgb[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]]))
+                        plt_scale_north,plt_time_scale,plt_progress) #rbl_df[[i]] #ggplot(data=rbl_rgb[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]]))
     }
     if(raster_only != TRUE){ #101: exclude for raster_only
       plt_fin <- paste0(plt_fin,plt_path)
@@ -1220,14 +1231,14 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))')
     }
   }
-  #b <- 1; k <- 1; stleg <- g_legend(eval(plt_stats_parse))
+  
+  #Extract stats legend
+  if(stats_create == TRUE){b <- 1; k <- 1; stleg <- g_legend(eval(plt_stats_parse))}
   
   
-  #[8] CALCULATING ANIMATION
-  out("Calculating animation...", type=1)
-  
+  #[9] CREATING GIF
   #Decide, if to use one or several gifs for gif assembling
-  max_frames <- 3000 #maximum frames which convert.exe can use
+  max_frames <- 100 #maximum frames which convert.exe can use
   n_reloop <- ceiling(n_loop/max_frames) #number of repeating gif building
   
   #Calculate gif frame maxima for each gif
@@ -1239,107 +1250,62 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }
   }
   
-  #Check, if stats should be visulized only
-  if(stats_only == TRUE){
-    for(r in 1:n_reloop){
-      
-      #gif frame loop start and stop
-      if(r == 1){index_min <- 1}else{index_min <- index_list[r-1]+1}
-      index_max <- index_list[r]
-      
-      #Define ani.options
-      quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
-      
-      createGIF(
-        for(i in index_min:index_max){
-          if((i+n_tail) <= index_max){
-            pl <- list()
-            if(layer_type != "RGB"){
-              b <- 1; k <- 2; pl[[1]] <- eval(plt_stats_parse); k <- 1; pl[[2]] <- eval(plt_stats_parse)
-              pl <- pl[unique(c(stats_lay))] #select plots
-              pl <- lapply(pl, ggplotGrob)
-              quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
-            }else{
-              b <- 1; k <- 2; pl[[1]] <- eval(plt_stats_parse); k <- 1; pl[[2]] <- eval(plt_stats_parse)
-              b <- 2; k <- 2; pl[[3]] <- eval(plt_stats_parse); k <- 1; pl[[4]] <- eval(plt_stats_parse)
-              b <- 3; k <- 2; pl[[5]] <- eval(plt_stats_parse); k <- 1; pl[[6]] <- eval(plt_stats_parse)
-              pl <- pl[unique(c(stats_lay))] #select plots
-              pl <- lapply(pl, ggplotGrob)
-              quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
-            }
-          }
-        },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
-      )
-    }
-  }else{
+  #Compute plot identifiers
+  frames_layout_id <- matrix(seq((min(frames_layout,na.rm = TRUE)-min(frames_layout,na.rm = TRUE)+1),max(frames_layout,na.rm = TRUE))[1:length(sort(unique(c(frames_layout))))][match(frames_layout, sort(unique(c(frames_layout))))], length(frames_layout[,1]))
+  pl_id <- sort(unique(c(frames_layout)))[which(sort(unique(c(frames_layout)))!= 8)] #excluding legend
+  
+  #Set p_out
+  out("Creating frames...")
+  if(log_level == 1){p_out <- txtProgressBar(min = 0, max = n_loop, style = 3)}
+  
+  #gif creation
+  for(r in 1:n_reloop){
     
-    #Create gifs
-    for(r in 1:n_reloop){
-      
-      #gif frame loop start and stop
-      if(r == 1){index_min <- 1}else{index_min <- index_list[r-1]+1}
-      index_max <- index_list[r]
-      
-      #Define ani.options
-      quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
-      
-      #Calcualte animation
-      #s_try <- try(
-      createGIF(
-        for(i in index_min:index_max){
-          if((i+n_tail) <= index_max){
-            
-            if(raster_only != TRUE){ #101: exclude for raster_only
-              #Create frame and plot it on basemap
-              for(a in 1:length(data_res)){
-                if(a == 1){
-                  frame_l <- list(data_res[[a]][i:(i+n_tail),] )
-                }else{
-                  frame_l[a] <- list(data_res[[a]][i:(i+n_tail),] )
-                }
-              }
-            }
-            
-            #Calculate progress bar end
-            prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[i],prog_y))
-            colnames(prog_bar) <- c("x","y")
-            
-            #Execute parsed plotting function
-            if(stats_create == FALSE){
-              quiet(plot(eval(plt_parse)))
-            }else{
-              pl <- list()
-              if(layer_type != "RGB"){
-                pl[[1]] <- eval(plt_parse)
-                b <- 1; k <- 2; pl[[2]] <- eval(plt_stats_parse); k <- 1; pl[[3]] <- eval(plt_stats_parse)
-                pl <- pl[unique(c(stats_lay))] #select plots
-                pl <- lapply(pl, ggplotGrob)
-                quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay)))
+    #gif frame loop start and stop
+    if(r == 1){index_min <- 1}else{index_min <- index_list[r-1]+1}
+    index_max <- index_list[r]
+    
+    #Define ani.options
+    quiet(ani.options(interval=frames_interval, nmax=index_max, ani.width=frames_width,ani.height=frames_height, convert = conv_dir))
+    
+    quiet(createGIF(
+      for(i in index_min:index_max){
+        if(log_level == 1){setTxtProgressBar(p_out, i)}
+        if((i+n_tail) <= index_list[n_reloop]){
+          
+          #Movement data frame creation
+          if(raster_only != TRUE){ #101: exclude for raster_only
+            for(a in 1:length(data_res)){ 
+              if(a == 1){
+                frame_l <- list(data_res[[a]][i:(i+n_tail),] )
               }else{
-                pl[[1]] <- quiet(eval(plt_parse))
-                b <- 1; k <- 2; pl[[2]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[3]] <- quiet(eval(plt_stats_parse))
-                b <- 2; k <- 2; pl[[4]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[5]] <- quiet(eval(plt_stats_parse))
-                b <- 3; k <- 2; pl[[6]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[7]] <- quiet(eval(plt_stats_parse))
-                pl <- pl[unique(c(stats_lay))] #select plots
-                pl <- lapply(pl, FUN = function(pl){ggplotGrob(pl + theme(legend.position = "none"))})
-                quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=stats_lay))) #grobs=c(pl,stleg)
+                frame_l[a] <- list(data_res[[a]][i:(i+n_tail),] )
               }
-              
-              #plot with par side by side
-              #p1 <- eval(plt_parse)
-              #k <- 2; p2 <- eval(plt_stats_parse)
-              #k <- 1; p3 <- eval(plt_stats_parse)
-              #quiet(grid.arrange(p1,p2,p3,layout_matrix = stats_lay))
             }
           }
-        },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
-      )
-      #)
-      #if(class(s_try) == "try-error"){
-      #  out("Creation of animation failed.",type=3)
-      #}
-    }
+          
+          #Calculate progress bar end
+          prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[i],prog_y))
+          colnames(prog_bar) <- c("x","y")
+          
+          pl <- list()
+          if(stats_only == TRUE){pl[[1]] <- NA}else{pl[[1]] <- quiet(eval(plt_parse))} #spatial plot needed or not
+          if(stats_create == TRUE){
+            for(b in 1:length(stats_obj)){
+              k <- 2; pl[[b*2]] <- quiet(eval(plt_stats_parse)); k <- 1; pl[[(b*2)+1]] <- quiet(eval(plt_stats_parse))
+            }
+            if(length(pl) != 7){pl[length(pl)+1:7]=NA}
+          }else{pl[2:7] <- NA}
+          pl <- pl[pl_id] #select plots from frames_layout
+          pl <- lapply(pl, FUN = function(pl){ggplotGrob(pl + theme(legend.position = "none"))})
+          if(length(which(frames_layout==8))!= 0){pl[[length(pl)+1]] <- stleg}
+          do.call("grid.arrange",args = list(grobs=pl,layout_matrix=frames_layout_id)) #grobs=c(pl,stleg)
+        }
+      },movie.name = paste0("out_gif",toString(r),".gif"),img.name = "p",out_dir = temp_dir,img.dir = temp_dir
+    ))
   }
+  if(log_level == 1){close(p_out)}
+  out("Creating output file...")
   
   #Compress and fusion gifs
   if(n_reloop == 1){
@@ -1349,13 +1315,19 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     file.remove(paste0(out_name,".gif"))
   }else{
     for(r in 1:n_reloop){
-      if(r == 1){cmd_fusion <- paste0('"',conv_dir,'" -loop 0 -delay ',toString(frames_interval*100),' out_gif',toString(r),'.gif')}
+      if(r == 1){cmd_fusion <- paste0('"',conv_dir,'" -loop 0 out_gif',toString(r),'.gif')} # -delay ',toString(frames_interval*100),'
       else{cmd_fusion <- paste0(cmd_fusion,' out_gif',toString(r),'.gif')}
     }
-    cmd_fusion <- paste0(cmd_fusion, ' "',out_dir,'/',out_name,'.gif"')
+    cmd_fusion <- paste0(cmd_fusion, ' "',out_dir,'/',out_name,'.gif"') #-layers optimize
     cmd.fun(cmd_fusion)
     file.remove(list.files(temp_dir)[grep("out_gif",list.files(temp_dir))])
   }
-  out(paste0("Finished. Your animated GIF was saved to '",out_dir,"'."), type=1)
-  if(log_logical == TRUE){return(TRUE)}
+  setwd(user_wd) #reset to user wd
+  
+  if(file.exists(paste0(out_dir,out_name,'.gif'))==TRUE){
+    out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)
+    if(log_logical == TRUE){return(TRUE)}
+  }else{
+    out("GIF creation failed.",type=3)
+  }
 }

@@ -8,7 +8,7 @@ animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
   val_limits = NA, paths_col = "auto", paths_mode = "true_data",
   stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
-  stats_lay = 0, stats_title = "", frames_nmax = 0,
+  stats_title = "", frames_layout = 0, frames_nmax = 0,
   frames_interval = 0.04, frames_nres = 1, frames_width = 600,
   frames_height = 600, out_name = "final_gif", log_level = 1,
   log_logical = FALSE)
@@ -42,9 +42,9 @@ animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{stats_tframe}{numeric. Defines the temporal range of the periodic stats plot. Default is 5 meaning that five time frames back from the displayed frame are evaluated.}
 
-\item{stats_lay}{matrix. Optional layout. Define, which stats plot should be plotted where, e. g. \code{rbind(c(1,2),c(3,4),c(5,6))}, which puts stats plot 1 and 2 to the first row, plot 3 and 4 to the second etc. Use e. g. \code{rbind(c(1,1),c(1,1),c(2,3))} to fill two columns/rows with plot 1 and put plot 2 and 3 underneath. If \code{animate_stats()} is called, an odd number respresents the overall plots and even numbers the periodic accumulated plots (if \code{animate_move()} is called, it is vice versa, since  plot 1 represents the spatial plot). Based on the \code{\link{grid.arrange}} syntax.}
-
 \item{stats_title}{character vector. Optional plot titles. Two character strings within a vector.}
+
+\item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
 
 \item{frames_nmax}{numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).}
 
