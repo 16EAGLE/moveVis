@@ -89,7 +89,7 @@
 #' @importFrom maptools gcDestination
 #' @importFrom rasterVis gplot
 #' @importFrom grid arrow unit
-#' @importFrom move move
+#' @importFrom move move split
 #' @importFrom grDevices dev.off rgb colorRampPalette
 #' @importFrom utils head txtProgressBar
 #' @importFrom methods is
