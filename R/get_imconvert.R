@@ -20,13 +20,14 @@
 #' @importFrom utils download.file unzip
 #' @importFrom RCurl getURL
 #' @export
+
 get_imconvert <- function(dir = "auto"){
   if(dir == "auto"){dir <- tempdir()}
   if(.Platform$OS.type == 'windows'){
     if(length(grep("convert.exe",list.files(paste0("C:/Program Files/",grep("ImageMagick", list.files("C:/Program Files/"),value = TRUE))))) != 0){
       conv_dir <- paste0("C:/Program Files/", list.files("C:/Program Files/")[grep("ImageMagick",list.files("C:/Program Files/"))], "/convert.exe")
     }else{
-      if(file.exists(paste0(dir,"/imagick/convert.exe")) == FALSE){
+      if(!file.exists(paste0(dir,"/imagick/convert.exe"))){
         print("Downloading portable ImageMagick...")
         ftp.dir <- "ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/"
         zip.dir <- grep(".zip$",grep('portable', unlist(strsplit(getURL(ftp.dir,dirlistonly = TRUE),"[\\\\]|[^[:print:]]",fixed=FALSE)), value=TRUE),value = TRUE)
