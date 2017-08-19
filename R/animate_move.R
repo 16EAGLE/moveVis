@@ -362,7 +362,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(stats_only == TRUE & length(which(frames_layout == 1)) !=0 ){out("'frames_layout' cannot contain 'map' with animate_stats() or if 'stats_only' is set to TRUE.",type = 3)}
     if(stats_create == FALSE & length(which(frames_layout > 1)) !=0){out("'frames_layout' cannot contain any stats layers or legends, if 'stats_create' is set to FALSE.",type=3)}
   }
-  if(is.na(static_data[1])[1] == FALSE){
+  if(!is.na(static_data[1])[1]){
     if(length(static_data$x)==0){out("'static_data' must contain a column 'x' containing the x coordinates.",type=3)}
     if(length(static_data$y)==0){out("'static_data' must contain a column 'y' containing the y coordinates.",type=3)}
     if(length(static_data$names)==0){out("'static_data' must contain a variable 'names' containing the points' namings.",type=3)}
@@ -497,13 +497,11 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     i = 1; indi_names <- c()
     while(i <= length(data_ani_df)){
       if(length(unique(data_ani_df[[i]]$x)) == 1){
-        if(is.na(unique(data_ani_df[[i]]$x))){data_ani_df <- data_ani_df[-i]}else{i = i + 1;indi_names <- c(indi_names,get_indi(data_ani[[i]]))}
-      }else{i = i + 1;indi_names <- c(indi_names,get_indi(data_ani[[i]]))}
+        if(is.na(unique(data_ani_df[[i]]$x))){data_ani_df <- data_ani_df[-i]}else{indi_names <- c(indi_names,get_indi(data_ani[[i]]));i = i + 1}
+      }else{indi_names <- c(indi_names,get_indi(data_ani[[i]]));i = i + 1}
     }
     
     
-  
-  
     
     #[3] RECALCULATE RESOLUTION
     out("Calculating output spatial resolution and extent...",type=1)
@@ -780,12 +778,14 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }
   }
   
-  #Convert static_data to SPDF and crop it, then convert it back to a df
-  static_spdf <- SpatialPointsDataFrame(coords = cbind(static_data$x,static_data$y),data = static_data,proj4string = crs_input)
-  static_spdf <- crop(static_spdf,extent(rbl[[1]]))
-  
-  #Extract static data to df
-  static_data <- as.data.frame(static_spdf); static_data <- static_data[1:(length(static_data)-2)]
+  if(!is.na(static_data[1])[1]){
+    #Convert static_data to SPDF and crop it, then convert it back to a df
+    static_spdf <- SpatialPointsDataFrame(coords = cbind(static_data$x,static_data$y),data = static_data,proj4string = crs_input)
+    static_spdf <- crop(static_spdf,extent(rbl[[1]]))
+    
+    #Extract static data to df
+    static_data <- as.data.frame(static_spdf); static_data <- static_data[1:(length(static_data)-2)]
+  }
   
   #Calcualte min/max basmap values
   if(is.character(layer) == FALSE){
@@ -1158,13 +1158,13 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)+'
   }else{plt_scale_north <- ''}
   if(time_scale == TRUE){ #leg_coords$x[2]  rec1_leftdown$y-leg_dist
-    plt_time_scale <- 'annotate("text", label = tscale[[i]], x = x_bm[[1]]+(x_bm[[2]]-x_bm[[1]])/2, y = y_bm[[2]]-leg_dist, size = 3, colour = scalebar_col)+'
+    plt_time_scale <- 'annotate("text", label = tscale[[i]], x = x_bm[[1]]+(x_bm[[2]]-x_bm[[1]])/2, y = y_bm[[2]]-(leg_dist*1.5), size = 3, colour = scalebar_col)+'
   }else{plt_time_scale <- ''}
   plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)+'
   
   #Defining static_data
   if(!is.na(static_data[1])[1]){
-    if(is.na(static_gg)){plt_static <- 'geom_point(data = static_data, aes_(x= ~x, y= ~y),shape=15, fill="white", color="black", size=3) + geom_text(data = static_data, aes_(x= ~x, y= ~y, label= ~names),size=3,colour="black",position = position_nudge(y = -leg_dist)) +'
+    if(is.na(static_gg)){plt_static <- 'geom_point(data = static_data, aes_(x= ~x, y= ~y),shape=23, fill="white", color="black", size=3) + geom_label(data = static_data, aes_(x= ~x, y= ~y, label= ~names),size=3,colour="black",position = position_nudge(y = -(leg_dist*1.5))) +' #scalebar_col
     }else{plt_static <- paste0(static_gg,'+')}
   }else{plt_static <- ''}
   
@@ -1323,11 +1323,11 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     file.remove(list.files(temp_dir)[grep("out_gif",list.files(temp_dir))])
   }
   setwd(user_wd) #reset to user wd
-  Sys.sleep(1)
-  if(file.exists(paste0(out_dir,out_name,'.gif'))==TRUE){
+  
+  if(file.exists(paste0(out_dir,'/',out_name,'.gif'))){
     out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)
     if(log_logical == TRUE){return(TRUE)}
   }else{
-    out("GIF creation failed.",type=3)
+    out("GIF creation failed due to unknown error when assembling frames to GIF file.",type=3)
   }
 }
