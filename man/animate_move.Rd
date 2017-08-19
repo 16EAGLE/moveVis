@@ -7,19 +7,20 @@
 animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
   layer_stretch = "none", layer_col = c("sandybrown", "white", "darkgreen"),
-  layer_nacol = "white", map_type = "satellite", extent_factor = 1e-04,
-  tail_elements = 10, tail_size = 4, img_title = "title",
-  img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
-  legend_title = "", legend_limits = NA, legend_labels = "auto",
-  map_elements = TRUE, time_scale = TRUE, scalebar_col = "white",
-  north_col = "white", paths_col = "auto", paths_alpha = 1,
-  paths_mode = "true_data", stats_create = FALSE, frames_layout = 0,
-  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
-  frames_width = NA, frames_height = NA, out_name = "final_gif",
-  log_level = 1, log_logical = FALSE, ...)
+  layer_nacol = "white", map_type = "satellite", static_data = NA,
+  static_gg = NA, extent_factor = 1e-04, tail_elements = 10,
+  tail_size = 4, img_title = "title", img_sub = "subtitle",
+  img_caption = "caption", img_labs = "labs", legend_title = "",
+  legend_limits = NA, legend_labels = "auto", map_elements = TRUE,
+  time_scale = TRUE, scalebar_col = "white", north_col = "white",
+  paths_col = "auto", paths_alpha = 1, paths_mode = "true_data",
+  stats_create = FALSE, frames_layout = 0, frames_nmax = 0,
+  frames_interval = 0.04, frames_nres = 1, frames_width = NA,
+  frames_height = NA, out_name = "final_gif", log_level = 1,
+  log_logical = FALSE, ...)
 }
 \arguments{
-\item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
+\item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
 
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
@@ -115,9 +116,9 @@ library(moveVis)
 data("move_data")
 move_data$dt <- as.POSIXct(strptime(move_data$dt, "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"))
 
-#Create move class object list
-data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
-                       time = move_data$dt, animal=move_data$individual, data=move_data))
+#Create moveStack object including multiple individuals
+data_ani <- move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
+                 time = move_data$dt, animal=move_data$individual, data=move_data)
 
 #Find command or directory to convert tool of ImageMagick
 conv_dir <- get_imconvert()
@@ -127,7 +128,7 @@ out_dir <- "/out/test"
 
 #Specify some optional appearance variables
 img_title <- "Movement of the white stork population at Lake Constance, Germany"
-img_sub <- paste0("including individuals ",indi_names)
+img_sub <- paste0("including individuals ",paste(rownames(idData(data_ani)), collapse=', '))
 img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 
 #Call animate_move()

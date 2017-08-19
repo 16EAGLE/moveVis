@@ -14,7 +14,7 @@ animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   log_logical = FALSE)
 }
 \arguments{
-\item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.}
+\item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
 
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
@@ -83,9 +83,9 @@ library(moveVis)
 data("move_data")
 move_data$dt <- as.POSIXct(strptime(move_data$dt, "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"))
 
-#Create move class object list
-data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
-                       time = move_data$dt, animal=move_data$individual, data=move_data))
+#Create moveStack object including multiple individuals
+data_ani <- move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
+                 time = move_data$dt, animal=move_data$individual, data=move_data)
  
 #Load basemap MODIS NDVI data
 data("basemap_data")

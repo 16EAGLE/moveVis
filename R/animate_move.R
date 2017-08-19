@@ -2,7 +2,7 @@
 #'
 #' \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}). 
 #'
-#' @param data_ani list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps and projection.
+#' @param data_ani list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
 #' @param out_dir character. Output directory for the GIF file creation.
 #' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
@@ -55,9 +55,9 @@
 #' data("move_data")
 #' move_data$dt <- as.POSIXct(strptime(move_data$dt, "%Y-%m-%d %H:%M:%S", tz = "UTC"))
 #'
-#' #Create move class object list
-#' data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
-#'                        time = move_data$dt, animal=move_data$individual, data=move_data))
+#' #Create moveStack object including multiple individuals
+#' data_ani <- move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
+#'                  time = move_data$dt, animal=move_data$individual, data=move_data)
 #' 
 #' #Find command or directory to convert tool of ImageMagick
 #' conv_dir <- get_imconvert()
@@ -67,7 +67,7 @@
 #' 
 #' #Specify some optional appearance variables
 #' img_title <- "Movement of the white stork population at Lake Constance, Germany"
-#' img_sub <- paste0("including individuals ",paste(names(data_ani), collapse=', '))
+#' img_sub <- paste0("including individuals ",paste(rownames(idData(data_ani)), collapse=', '))
 #' img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 #' 
 #' #Call animate_move()
@@ -102,7 +102,7 @@
 
 animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                          layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
-                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite",
+                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", static_data = NA, static_gg = NA,
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
@@ -209,6 +209,11 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       }
     }
     return(list(start_dt,stop_dt))
+  }
+  
+  get_indi <- function(data){
+    indi <- idData(data); if(length(indi)!= 1){indi <- as.character(indi$individual)}else{indi <- as.character(indi)}
+    return(indi)
   }
   
   #+++++++++++++++++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++++++++++++++++++++++++
@@ -344,25 +349,28 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(raster_only == TRUE | stats_create == FALSE){frames_layout <- rbind(c(1))}
     else{
       if(stats_only == TRUE){
-        if(layer_type == "RGB"){frames_layout =  rbind(c(2,3),c(4,5),c(6,7),c(8,8))}else{frames_layout = rbind(c(2,3))}
+        if(layer_type == "RGB"){frames_layout =  rbind(c(2,3),c(4,5),c(6,7),c(8,8))}else{frames_layout = rbind(c(2,3,8))}
       }else{
-        if(layer_type == "RGB"){frames_layout = rbind(c(1,1,2,4,6,8),c(1,1,3,5,7,8))}else{frames_layout = rbind(c(1,1,2,8),c(1,1,3,8))}
+        if(layer_type == "RGB"){frames_layout = rbind(c(1,1,2,4,6,8),c(1,1,3,5,7,8))}else{frames_layout = rbind(c(1,1,2,8),c(1,1,3,8))} #frames_layout = rbind(c(1,1,9,2,4,6,8),c(1,1,9,3,5,7,8))}else{frames_layout = rbind(c(1,1,9,2,8),c(1,1,9,3,8))}
       }
     }
   }else{
-    res <- matrix(c(1,2,3,2,3,4,5,6,7,8)[match(frames_layout, c("map", "stats_per", "stats_all", "stats_per_b1", "stats_all_b1", "stats_per_b2","stats_all_b2",
-                                                            "stats_per_b3","stats_all_b3","stats_leg"))], 3)
+    quiet(res <- matrix(c(1,2,3,2,3,4,5,6,7,8)[match(frames_layout, c("map","st_per","st_all","st_perR","st_allR","st_perG","st_allG","st_perB","st_allB","st_leg"))], 3))
     res <- ifelse(is.na(res), frames_layout, res)
     frames_layout <- apply(res, 2, as.numeric)
     
     if(stats_only == TRUE & length(which(frames_layout == 1)) !=0 ){out("'frames_layout' cannot contain 'map' with animate_stats() or if 'stats_only' is set to TRUE.",type = 3)}
     if(stats_create == FALSE & length(which(frames_layout > 1)) !=0){out("'frames_layout' cannot contain any stats layers or legends, if 'stats_create' is set to FALSE.",type=3)}
   }
+  if(is.na(static_data[1])[1] == FALSE){
+    if(length(static_data$x)==0){out("'static_data' must contain a column 'x' containing the x coordinates.",type=3)}
+    if(length(static_data$y)==0){out("'static_data' must contain a column 'y' containing the y coordinates.",type=3)}
+    if(length(static_data$names)==0){out("'static_data' must contain a variable 'names' containing the points' namings.",type=3)}
+  }
   
   #Plattform dependences
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
   
-
   
   #[2] PREPRO DATA DEPENDING ON MODE
   if(raster_only != TRUE){ #101: exclude for raster_only
@@ -485,16 +493,15 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       }
     }
     
-    
     #Remove individuals out of time range (NA)
-    i = 1
+    i = 1; indi_names <- c()
     while(i <= length(data_ani_df)){
       if(length(unique(data_ani_df[[i]]$x)) == 1){
-        if(is.na(unique(data_ani_df[[i]]$x))){
-          data_ani_df <- data_ani_df[-i]
-        }else{i = i + 1}
-      }else{i = i + 1}
+        if(is.na(unique(data_ani_df[[i]]$x))){data_ani_df <- data_ani_df[-i]}else{i = i + 1;indi_names <- c(indi_names,get_indi(data_ani[[i]]))}
+      }else{i = i + 1;indi_names <- c(indi_names,get_indi(data_ani[[i]]))}
     }
+    
+    
   
   
     
@@ -773,6 +780,13 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }
   }
   
+  #Convert static_data to SPDF and crop it, then convert it back to a df
+  static_spdf <- SpatialPointsDataFrame(coords = cbind(static_data$x,static_data$y),data = static_data,proj4string = crs_input)
+  static_spdf <- crop(static_spdf,extent(rbl[[1]]))
+  
+  #Extract static data to df
+  static_data <- as.data.frame(static_spdf); static_data <- static_data[1:(length(static_data)-2)]
+  
   #Calcualte min/max basmap values
   if(is.character(layer) == FALSE){
     if(is.na(legend_limits[1])){
@@ -882,8 +896,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
               stats_pixvals[[j]][,2][which(stats_pixvals[[j]][,1] == stats_pixvals_freq[[j]][,1][i])] <- seq(from = 1, to = stats_pixvals_freq[[j]]$Freq[i], by = 1)
             }
           }
-          if(j==1){stats_indi <- rownames(idData(data_ani[[j]]))
-          }else{stats_indi <- c(stats_indi,rownames(idData(data_ani[[j]])))}
+          #if(j==1){stats_indi <- get_indi(data_ani[[j]])
+          #}else{stats_indi <- c(stats_indi,get_indi(data_ani[[j]]))}
         }
         
         
@@ -893,7 +907,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
           if(i == 1){
             stats_df[[i]] <- data.frame(seq(stats_limits$x_min,stats_limits$x_max,by=stats_floor_mp))
             stats_df[[i]] <- cbind(stats_df[[i]],data.frame(matrix(0,ncol = length(stats_pixvals),nrow = length(stats_df[[i]][,1]))))
-            colnames(stats_df[[i]]) <- c("val",stats_indi)
+            colnames(stats_df[[i]]) <- c("val",indi_names)
           }else{
             stats_df[[i]] <- stats_df[[i-1]]
           }
@@ -936,9 +950,9 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                 cols<- "black"
                 names <- "sum"
               }else{
-                pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable==stats_indi[j-1])] <- colours[j-1]
+                pdat[[k]][[i]]$cols[which(pdat[[k]][[i]]$variable==indi_names[j-1])] <- colours[j-1]
                 cols <- c(cols, as.character(colours[(j-1),tail_elements]))
-                names <- c(names,stats_indi[j-1])
+                names <- c(names,indi_names[j-1])
               }
             }
             cols <- setNames(cols,names)
@@ -1058,7 +1072,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   prog_y <- max(rbl_gg_build$data[[1]]$ymax)
   
   #time_scale annotation
-  tscale <- as.character(data_res[[which(sl_orig == max(sl_orig,na.rm = TRUE))[1]]]$dt)
+  if(raster_only == TRUE){tscale <- as.character(layer_dt)}else{tscale <- as.character(data_res[[which(sl_orig == max(sl_orig,na.rm = TRUE))[1]]]$dt)}
   
   
   #[8] PARSING PLOT FUNCTION
@@ -1148,10 +1162,16 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   }else{plt_time_scale <- ''}
   plt_progress <- 'geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)+'
   
+  #Defining static_data
+  if(!is.na(static_data[1])[1]){
+    if(is.na(static_gg)){plt_static <- 'geom_point(data = static_data, aes_(x= ~x, y= ~y),shape=15, fill="white", color="black", size=3) + geom_text(data = static_data, aes_(x= ~x, y= ~y, label= ~names),size=3,colour="black",position = position_nudge(y = -leg_dist)) +'
+    }else{plt_static <- paste0(static_gg,'+')}
+  }else{plt_static <- ''}
+  
   #Parse argument string for plotting in the saveGIF function
   if(is.character(layer) == TRUE){
     plt_fin <- paste0("rbl_gg + ",
-                      plt_scale_north,plt_time_scale,plt_progress,plt_path)
+                      plt_scale_north,plt_time_scale,plt_static,plt_progress,plt_path)
   }else{
     #if(is.na(legend_limits)){plt_limits <- "limits=c(rbl[[i]]@data@min, rbl[[i]]@data@max)"
     #}else{plt_limits <- "limits=legend_limits"}
@@ -1159,18 +1179,18 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
       plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
                           scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_time_scale,plt_progress)
+                        plt_scale_north,plt_time_scale,plt_static,plt_progress)
     }
     if(layer_type == "discrete"){
       plt_fin <- paste0('ggplot(data=rbl_df[[i]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) +
                           scale_fill_manual(values = c(setNames(layer_col, 1:length(layer_col))), labels = legend_labels, drop = FALSE, na.value = layer_nacol, guide = guide_legend(title = legend_title, label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_time_scale,plt_progress)
+                        plt_scale_north,plt_time_scale,plt_static,plt_progress)
     }
     if(layer_type == "RGB"){
       plt_fin <- paste0('ggRGB(rbl[[i]],r=3,g=2,b=1,stretch=layer_stretch) + scale_fill_identity() +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
-                        plt_scale_north,plt_time_scale,plt_progress) #rbl_df[[i]] #ggplot(data=rbl_rgb[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]]))
+                        plt_scale_north,plt_time_scale,plt_static,plt_progress) #rbl_df[[i]] #ggplot(data=rbl_rgb[[i]],aes_(x=~x, y=~y)) + geom_tile(aes_(fill = ~rbl_rgb[[i]]))
     }
     if(raster_only != TRUE){ #101: exclude for raster_only
       plt_fin <- paste0(plt_fin,plt_path)
@@ -1229,7 +1249,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   #Compute plot identifiers
   frames_layout_id <- matrix(seq((min(frames_layout,na.rm = TRUE)-min(frames_layout,na.rm = TRUE)+1),max(frames_layout,na.rm = TRUE))[1:length(sort(unique(c(frames_layout))))][match(frames_layout, sort(unique(c(frames_layout))))], length(frames_layout[,1]))
-  pl_id <- sort(unique(c(frames_layout)))[which(sort(unique(c(frames_layout)))!= 8)] #excluding legend
+  pl_id <- sort(unique(c(frames_layout)))[which(sort(unique(c(frames_layout)))!= 8)] #excluding st legend
   
   #Set p_out
   out("Creating frames...")
@@ -1274,7 +1294,10 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
             if(length(pl) != 7){pl[length(pl)+1:7]=NA}
           }else{pl[2:7] <- NA}
           pl <- pl[pl_id] #select plots from frames_layout
-          pl <- lapply(pl, FUN = function(pl){ggplotGrob(pl + theme(legend.position = "none"))})
+          if(stats_only == FALSE){
+            pl[[1]] <- ggplotGrob(pl[[1]])
+            if(length(pl) > 1){pltemp <- pl[2:length(pl)]; pl[2:length(pl)] <- lapply(pltemp, FUN = function(pltemp){ggplotGrob(pltemp + theme(legend.position = "none"))})}
+          }else{pl <- lapply(pl, FUN = function(pl){ggplotGrob(pl + theme(legend.position = "none"))})}
           if(length(which(frames_layout==8))!= 0){pl[[length(pl)+1]] <- stleg}
           do.call("grid.arrange",args = list(grobs=pl,layout_matrix=frames_layout_id)) #grobs=c(pl,stleg)
         }
@@ -1300,7 +1323,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     file.remove(list.files(temp_dir)[grep("out_gif",list.files(temp_dir))])
   }
   setwd(user_wd) #reset to user wd
-  
+  Sys.sleep(1)
   if(file.exists(paste0(out_dir,out_name,'.gif'))==TRUE){
     out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)
     if(log_logical == TRUE){return(TRUE)}
