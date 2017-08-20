@@ -83,8 +83,11 @@ layer <- list(raster1, raster2, raster2)
 #Get your convert directory/command
 conv_dir <- get_imconvert()
 
-#Spcecify output directory
-out_dir <- "path/to/output/dir"
+#Specify the output directory, e.g.
+out_dir <- "/out/test"
+#or to a temporary directory:
+out_dir <- paste0(tempdir(),"/test")
+dir.create(out_dir)
 
 #Call animate_raster
 animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB")

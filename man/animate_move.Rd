@@ -128,8 +128,11 @@ data_ani <- move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WG
 #Find the command or directory to convert tool of ImageMagick
 conv_dir <- get_imconvert()
 
-#Specify the output directory
+#Specify the output directory, e.g.
 out_dir <- "/out/test"
+#or to a temporary directory:
+out_dir <- paste0(tempdir(),"/test")
+dir.create(out_dir)
 
 #Specify some optional appearance variables
 img_title <- "Movement of the white stork population at Lake Constance, Germany"

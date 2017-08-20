@@ -54,8 +54,12 @@
 #' #Find command or directory to convert tool of ImageMagick
 #' conv_dir <- get_imconvert()
 #' 
-#' #Specify output directory
+#' #Specify the output directory, e.g.
 #' out_dir <- "/out/test"
+#' #or to a temporary directory:
+#' out_dir <- paste0(tempdir(),"/test")
+#' dir.create(out_dir)
+#' 
 #' 
 #' #Call animate_stats()
 #' animate_stats(data_ani, out_dir, conv_dir = conv_dir,
@@ -63,6 +67,7 @@
 #'               stats_digits = 1, stats_type = "bar", out_name = "final_gif",
 #'               log_level = 1,frames_nmax = 60)
 #'               
+#' \dontrun{
 #' #Define your own ggplot2 plot design
 #' stats_gg <- 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
 #'              geom_smooth() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
@@ -79,7 +84,8 @@
 #'               layer=layer, layer_dt = layer_dt, layer_type = "gradient",
 #'               stats_digits = 1, stats_gg = stats_gg, out_name = "final_gif",
 #'               log_level = 1,frames_nmax = 60)
-#'
+#' }
+#' 
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{get_imconvert}}
 #'

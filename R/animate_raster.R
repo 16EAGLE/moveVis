@@ -41,8 +41,11 @@
 #' #Get your convert directory/command
 #' conv_dir <- get_imconvert()
 #' 
-#' #Spcecify output directory
-#' out_dir <- "path/to/output/dir"
+#' #Specify the output directory, e.g.
+#' out_dir <- "/out/test"
+#' #or to a temporary directory:
+#' out_dir <- paste0(tempdir(),"/test")
+#' dir.create(out_dir)
 #' 
 #' #Call animate_raster
 #' animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB")
@@ -68,7 +71,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "g
     else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){print(paste(signs[1],input))}}}
   }
   
-  layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length=length(layer))
+  layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))
   
   #Call animate_move (alias function)
   animate_move(raster_only = TRUE, layer = layer, layer_dt = layer_dt, layer_stretch = layer_stretch,

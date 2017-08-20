@@ -65,8 +65,11 @@
 #' #Find the command or directory to convert tool of ImageMagick
 #' conv_dir <- get_imconvert()
 #' 
-#' #Specify the output directory
+#' #Specify the output directory, e.g.
 #' out_dir <- "/out/test"
+#' #or to a temporary directory:
+#' out_dir <- paste0(tempdir(),"/test")
+#' dir.create(out_dir)
 #' 
 #' #Specify some optional appearance variables
 #' img_title <- "Movement of the white stork population at Lake Constance, Germany"
@@ -139,7 +142,7 @@
 #' 
 #' @import ggplot2
 #' @importFrom animation ani.options
-#' @importFrom raster crs extent projectRaster raster getValues setValues rasterToPoints res crop extract
+#' @importFrom raster crs extent projectRaster raster getValues setValues rasterToPoints res crop extract unstack
 #' @importFrom xts align.time
 #' @importFrom sp SpatialPointsDataFrame spTransform
 #' @importFrom geosphere distGeo
@@ -147,9 +150,9 @@
 #' @importFrom maptools gcDestination
 #' @importFrom rasterVis gplot
 #' @importFrom grid arrow unit
-#' @importFrom move move split
+#' @importFrom move move split idData
 #' @importFrom grDevices dev.off rgb colorRampPalette
-#' @importFrom utils head txtProgressBar
+#' @importFrom utils head capture.output setTxtProgressBar txtProgressBar
 #' @importFrom methods is
 #' @importFrom stats approxfun na.omit setNames
 #' @importFrom gridExtra grid.arrange
@@ -237,7 +240,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     
     if(.Platform$OS.type == 'windows'){
       write(batch,"batch.bat")
-      capture.output(quiet(cmd.fun("batch.bat")),file="NUL") #,show.output.on.console = FALSE)
+      quiet(cmd.fun("batch.bat >nul 2>1"))
     }else{
       write(batch,"batch.bat")
       system("chmod +x batch.bat")
@@ -329,7 +332,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(is.character(out_dir) != TRUE){
       out("Argument 'out_dir' needs to be a character object.",type=3)
     }else{
-      if(!dir.exists(out_dir)){out(paste0("'out_dir' '",out_dir,"' is not existing. Create or change 'out_dir'."))}
+      if(!dir.exists(out_dir)){out(paste0("'out_dir' '",out_dir,"' is not existing. Create or change 'out_dir'."),type = 3)}
       user_wd <- getwd()
       temp_dir <- paste0(tempdir(),"/moveVis")
       quiet(dir.create(temp_dir))
@@ -1386,7 +1389,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     cmd_fusion <- paste0(cmd_fusion, ' "',out_dir,'/',out_name,'.gif"')
     
     if(.Platform$OS.type == 'windows'){
-      write(cmd_fusion,"batch.bat"); quiet(cmd.fun("batch.bat"))#,show.output.on.console = FALSE)
+      write(cmd_fusion,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
     }else{
       write(cmd_fusion,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))
     }

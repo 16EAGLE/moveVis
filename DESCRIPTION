@@ -28,4 +28,5 @@ Imports:
   RCurl,
   gridExtra,
   reshape,
-  graphics
+  graphics,
+  RStoolbox
