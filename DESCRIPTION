@@ -1,12 +1,12 @@
 Package: moveVis
 Type: Package
 Title: Movement Data Visualization
-Version: 0.9.4
+Version: 0.9.5
 Depends: R (>= 2.10)
 Date: 2017-06-28
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
-Description: Tools to visualize movement data of any kind, e. g by creating path animations from GPS point data.
+Description: Tools to visualize movement data of any kind, e. g. by creating path animations from GPS point data.
 License: GPL-3
 RoxygenNote: 6.0.1
 Imports:

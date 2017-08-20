@@ -172,7 +172,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
                          map_elements = TRUE, time_scale = TRUE, scalebar_col = "white", north_col = "white",
                          paths_col = "auto", paths_alpha = 1, paths_mode = "true_data", stats_create = FALSE, 
                          frames_layout = 0, frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA,
-                         out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
+                         out_name = "final_gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "auto", conv_frames = 100){
   
   #Define output handling
   out <- function(input,type = 1){
@@ -303,8 +303,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   s_try <- try(arg$stats_title)
   if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
   s_try <- try(arg$raster_only); if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
-  s_try <- try(arg$conv_cmd); if(class(s_try) == "NULL"){conv_cmd <- "auto"}else{conv_cmd <- arg$conv_cmd}
-  s_try <- try(arg$conv_frames); if(class(s_try) == "NULL"){conv_frames <- 100}else{conv_frames <- arg$conv_frames}
+  #s_try <- try(arg$conv_cmd); if(class(s_try) == "NULL"){conv_cmd <- "auto"}else{conv_cmd <- arg$conv_cmd}
+  #s_try <- try(arg$conv_frames); if(class(s_try) == "NULL"){conv_frames <- 100}else{conv_frames <- arg$conv_frames}
   
   if(raster_only != TRUE){ #data_ani not needed for animate_raster()
     if(missing(data_ani)){

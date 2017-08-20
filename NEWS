@@ -1,11 +1,13 @@
 ----------------------------------------------------------
 moveVis 0.9.5
-improvements to workflow
+adding frames_layout, static_data etc., improvements to workflow
 -----------------------------------------------------------
 New features:
  + RGB stats support added for animate_stats() and animate_move()
  + added animate_move() argument "time_scale" to enable a time scale
- + added animate_move() argument frame_layout for user friendly, complex layouting of the output GIF by specifiying the plot locations
+ + added animate_move() argument "frame_layout" for user friendly, complex layouting of the output GIF by specifiying the plot locations
+ + added animate_move() argument "layer_stretch"
+ + added animate_move() expert arguments "conv_cmd" and "conv_frames"
 
 Improvements:
  + several major bug fixes

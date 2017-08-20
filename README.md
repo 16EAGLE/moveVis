@@ -78,6 +78,8 @@ animate_move(data_ani, out_dir, conv_dir = conv_dir, tail_elements = 10,
              img_sub = img_sub, log_level = 1)
 ```
 
+Further examples and explanations on different modes are provided within the function manuals.
+
 ## Bug reports & contact
 
 For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature requests and other contributions are also welcome.

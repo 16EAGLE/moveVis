@@ -17,7 +17,7 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
   stats_create = FALSE, frames_layout = 0, frames_nmax = 0,
   frames_interval = 0.04, frames_nres = 1, frames_width = NA,
   frames_height = NA, out_name = "final_gif", log_level = 1,
-  log_logical = FALSE, ...)
+  log_logical = FALSE, ..., conv_cmd = "auto", conv_frames = 100)
 }
 \arguments{
 \item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}

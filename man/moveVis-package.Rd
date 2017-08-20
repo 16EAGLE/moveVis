@@ -6,20 +6,21 @@
 \alias{moveVis-package}
 \title{Overview of moveVis tools}
 \description{
-\code{moveVis} shall provide tools to visualize movement data of any kind, e. g by creating path animations from GPS point data.
-The package is under ongoing development, new functions will be added. The \code{moveVis} package shall be closely connected to the \code{move} package
-functionalities.
+\code{moveVis} provides tools to visualize movement data of any kind, e. g by creating path animations from GPS point data.
+The package is under ongoing development, new functionalities are added constantly.
+The \code{moveVis} package is closely connected to the \code{move} package and mainly builds up on \code{ggplot2}.
 }
 \details{
 At the moment, the package includes the following functions:
 
 \code{\link{animate_move}}, which can create spatial movement data animations as GIF file. Among other funtionalities, the function is able to
 \itemize{
-  \item visualize move class point data as (multiple) movement paths
-  \item display static basemap layers downloaded from Google Maps
-  \item display static basemap layers provided by the user
-  \item display dynamic, time-referenced raster data, e. g. to visualize land cover changes etc.
-  \item compute temporal interpolations from time-referneced raster data
+  \item visualize move class point data as (multiple) movement paths,
+  \item display static basemap layers downloaded from Google Maps,
+  \item display static basemap layers provided by the user,
+  \item display dynamic, time-referenced raster data, e. g. to visualize land cover changes etc.,
+  \item compute temporal interpolations from time-referneced raster data,
+  \item create statistic plots, displaying the interaction of the individual movement paths with environmental data.
   ...
 }
 
