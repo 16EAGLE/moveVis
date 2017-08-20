@@ -42,6 +42,8 @@
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
 #' @param stats_create logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.
+#' @param conv_cmd character. Recommended for expert use only. Passes additional command line options to the convert command such as '-limit' for memory ressource handling. This does not affect the GIF creation from frames, but the final GIF assembling from multiple temporary GIF segments. For details, see \url{https://www.imagemagick.org/script/command-line-options.php}.
+#' @param conv_frames numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100.
 #' @param ... optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).
 #' 
 #' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
@@ -152,7 +154,7 @@
 #' @importFrom grid arrow unit
 #' @importFrom move move split idData
 #' @importFrom grDevices dev.off rgb colorRampPalette
-#' @importFrom utils head capture.output setTxtProgressBar txtProgressBar
+#' @importFrom utils head setTxtProgressBar txtProgressBar
 #' @importFrom methods is
 #' @importFrom stats approxfun na.omit setNames
 #' @importFrom gridExtra grid.arrange
@@ -244,7 +246,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     }else{
       write(batch,"batch.bat")
       system("chmod +x batch.bat")
-      capture.output(quiet(cmd.fun("./batch.bat")),file="/dev/null")
+      quiet(cmd.fun("./batch.bat"))
     }
     file.remove(img.files)
     file.remove("batch.bat")
@@ -302,6 +304,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
   s_try <- try(arg$raster_only); if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
   s_try <- try(arg$conv_cmd); if(class(s_try) == "NULL"){conv_cmd <- "auto"}else{conv_cmd <- arg$conv_cmd}
+  s_try <- try(arg$conv_frames); if(class(s_try) == "NULL"){conv_frames <- 100}else{conv_frames <- arg$conv_frames}
   
   if(raster_only != TRUE){ #data_ani not needed for animate_raster()
     if(missing(data_ani)){
@@ -1297,8 +1300,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   
   #[9] CREATING GIF
   #Decide, if to use one or several gifs for gif assembling
-  max_frames <- 100 #maximum frames which convert.exe can use
-  n_reloop <- ceiling(n_loop/max_frames) #number of repeating gif building
+  n_reloop <- ceiling(n_loop/conv_frames) #number of repeating gif building
   
   #Calculate gif frame maxima for each gif
   for(r in 1:n_reloop){

@@ -101,6 +101,10 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 \item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
 
 \item{...}{optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).}
+
+\item{conv_cmd}{character. Recommended for expert use only. Passes additional command line options to the convert command such as '-limit' for memory ressource handling. This does not affect the GIF creation from frames, but the final GIF assembling from multiple temporary GIF segments. For details, see \url{https://www.imagemagick.org/script/command-line-options.php}.}
+
+\item{conv_frames}{numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100.}
 }
 \value{
 None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
