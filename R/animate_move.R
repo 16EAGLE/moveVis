@@ -273,6 +273,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     if(is.character(out_dir) != TRUE){
       out("Argument 'out_dir' needs to be a character object.",type=3)
     }else{
+      if(!dir.exists(out_dir)){out(paste0("'out_dir' '",out_dir,"' is not existing. Create or change 'out_dir'."))}
       user_wd <- getwd()
       temp_dir <- paste0(tempdir(),"/moveVis")
       quiet(dir.create(temp_dir))
