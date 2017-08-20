@@ -232,7 +232,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     #Define arguments to be passed to convert.exe
     loop = paste0("-loop ", as.character(ifelse(isTRUE(ani.options('loop')), 0, ani.options('loop'))))
     interval = paste0("-delay ",as.character(head(ani.options('interval'), length(img.files))*100))
-    str_img_files <- gsub(",", "", gsub("p1.png","",toString(img.files))) #blank frame error 
+    str_img_files <- gsub(",", "", gsub("p1.png","",toString(img.files)))
     
     #Assemble batch line and write to batch file
     #out("Creating GIF file...",type=1)
