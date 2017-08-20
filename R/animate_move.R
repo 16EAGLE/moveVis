@@ -241,8 +241,8 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
   if(class(s_try) == "NULL"){stats_tframe  <- 5}else{stats_tframe <- arg$stats_tframe}
   s_try <- try(arg$stats_title)
   if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
-  s_try <- try(arg$raster_only)
-  if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
+  s_try <- try(arg$raster_only); if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
+  s_try <- try(arg$conv_cmd); if(class(s_try) == "NULL"){conv_cmd <- "auto"}else{conv_cmd <- arg$conv_cmd}
   
   if(raster_only != TRUE){ #data_ani not needed for animate_raster()
     if(missing(data_ani)){
@@ -1318,7 +1318,13 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     file.remove(paste0(out_name,".gif"))
   }else{
     for(r in 1:n_reloop){
-      if(r == 1){cmd_fusion <- paste0('"',conv_dir,'" -loop 0 -delay ',toString(frames_interval*100),' out_gif',toString(r),'.gif')}
+      if(r == 1){
+        if(conv_cmd != "auto"){
+          cmd_fusion <- paste0('"',conv_dir,'" ', conv_cmd,' -loop 0 -delay ',toString(frames_interval*100),' out_gif',toString(r),'.gif')
+        }else{
+          cmd_fusion <- paste0('"',conv_dir,'" -loop 0 -delay ',toString(frames_interval*100),' out_gif',toString(r),'.gif')
+        }
+      }
       else{cmd_fusion <- paste0(cmd_fusion,' out_gif',toString(r),'.gif')}
     }
     cmd_fusion <- paste0(cmd_fusion, ' "',out_dir,'/',out_name,'.gif"')

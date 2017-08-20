@@ -42,6 +42,10 @@ animate_move(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{map_type}{character.  Static basemap type. Chosse from "roadmap", "satellite", "hybrid", "terrain".}
 
+\item{static_data}{data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.}
+
+\item{static_gg}{character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.}
+
 \item{extent_factor}{numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".}
 
 \item{tail_elements}{numeric. Number of points to be displayed as path tail of the animation paths. Default is 10.}
