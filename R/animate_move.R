@@ -179,7 +179,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     
     if(.Platform$OS.type == 'windows'){
       write(batch,"batch.bat")
-      quiet(cmd.fun("batch.bat",show.output.on.console = FALSE)) #,show.output.on.console = FALSE)
+      quiet(cmd.fun("batch.bat")) #,show.output.on.console = FALSE)
     }else{
       write(batch,"batch.bat")
       system("chmod +x batch.bat")
