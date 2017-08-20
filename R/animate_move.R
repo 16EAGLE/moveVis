@@ -53,18 +53,19 @@
 #' library(move)
 #' library(moveVis)
 #' 
-#' #Get the sample data from the moveVis package
+#' #Get the sample data from the moveVis package (a data.frame)
 #' data("move_data")
 #' move_data$dt <- as.POSIXct(strptime(move_data$dt, "%Y-%m-%d %H:%M:%S", tz = "UTC"))
 #'
-#' #Create moveStack object including multiple individuals
+#' #Create moveStack object including multiple individuals from the data.frame
+#' #alternatively, use the move package to download data directly from movebank.org
 #' data_ani <- move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
 #'                  time = move_data$dt, animal=move_data$individual, data=move_data)
 #' 
-#' #Find command or directory to convert tool of ImageMagick
+#' #Find the command or directory to convert tool of ImageMagick
 #' conv_dir <- get_imconvert()
 #' 
-#' #Specify output directory
+#' #Specify the output directory
 #' out_dir <- "/out/test"
 #' 
 #' #Specify some optional appearance variables
@@ -72,11 +73,66 @@
 #' img_sub <- paste0("including individuals ",paste(rownames(idData(data_ani)), collapse=', '))
 #' img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 #' 
-#' #Call animate_move()
+#' #Call animate_move() with an automatic basemap from Google, maximum frames at 50
+#' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
+#'              paths_mode = "true_data", frames_nmax = 50,
+#'              img_caption = img_caption, img_title = img_title,
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002)
+#'  
+#' #Improve your animation by adding a static points layer
+#' static_data <- data.frame(x = c(8.94,8.943), y = c(47.75,47.753), names = c("Site 1","Site 2"))
+#' 
+#' 
+#' #Call animate_move() with "static_data" added
+#' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
+#'              paths_mode = "true_data", frames_nmax = 50,
+#'              img_caption = img_caption, img_title = img_title,
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002, 
+#'              static_data=static_data)
+#'              
+#' #Try a different paths_mode: Instead of "true_data" use "simple"
 #' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
 #'              paths_mode = "simple", frames_nmax = 50,
 #'              img_caption = img_caption, img_title = img_title,
-#'              img_sub = img_sub, log_level = 1)
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
+#'              static_data=static_data)
+#'  
+#' #Use your own basemap by adding lists of rasters and of timestamps
+#' data("basemap_data")
+#' layer = basemap_data[[1]] #this is a example MODIS NDVI dataset
+#' layer_dt = basemap_data[[2]] #this is a corresponding date/time list
+#'  
+#' #Call animate_move with NDVI data as basemap
+#' #layer_type is "gradient", since NDVI values are continuous
+#' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10, layer_type = "gradient",
+#'              paths_mode = "true_data", frames_nmax = 50, layer =layer, layer_dt = layer_dt,
+#'              img_caption = img_caption, img_title = img_title,
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002)
+#'              
+#' #How do your moving individuals interact with their environments?
+#' #Use "stats_create" to create statistics plots
+#' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10, layer_type = "gradient",
+#'              paths_mode = "true_data", frames_nmax = 50, layer =layer, layer_dt = layer_dt,
+#'              img_caption = img_caption, img_title = img_title,
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
+#'              stats_create = TRUE)
+#'
+#' #If you just want those stats plots, use animate_stats()
+#' 
+#' #Use "frames_layout" to change the layout of your GIF
+#' #e.g. change the position of st_all and st_per
+#' frames_layout <-  rbind(c("map","map","map","st_all","st_leg"),
+#'                         c("map","map","map","st_per","st_leg"))
+#' 
+#' #or equalize the sizes of spatial map and stats plots
+#' frames_layout <-  rbind(c("map","st_all","st_per","st_leg"))
+#' 
+#' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10, layer_type = "gradient",
+#'              paths_mode = "true_data", frames_nmax = 50, layer =layer, layer_dt = layer_dt,
+#'              img_caption = img_caption, img_title = img_title,
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
+#'              stats_create = TRUE, frames_layout=frames_layout)
+#' 
 #'
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{get_imconvert}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
