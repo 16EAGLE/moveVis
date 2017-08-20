@@ -95,7 +95,7 @@ animate_stats <- function(data_ani, out_dir, conv_dir = "convert", layer = "base
          val_limits = NA, paths_col = "auto",  paths_mode = "true_data",
          stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
          stats_title = "", frames_layout = 0, frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = 600,
-         frames_height = 600, out_name = "final_gif", log_level = 1, log_logical = FALSE){
+         frames_height = 600, out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
 
   #Define output handling
   out <- function(input,type = 1){

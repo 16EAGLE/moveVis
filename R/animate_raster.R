@@ -7,6 +7,8 @@
 #' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
 #' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
 #' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
+#' @param static_data data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options. 
+#' @param static_gg character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.
 #' @param out_dir character. Output directory for the GIF file creation.
 #' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
 #' @param img_title character. Titel to be displayed above the animated plot. If not specified, no title will be displayed.
@@ -27,6 +29,7 @@
 #' @param out_name character. Name of the output file. Default is "final_gif".
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
+#' @param ... optional arguments.
 #' 
 #' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
 #' 
@@ -58,11 +61,12 @@
 
 animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "gradient", layer_stretch = "none",
                            layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white",
+                           static_data = NA, static_gg = NA,
                            img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                            legend_title = "", legend_limits = NA, legend_labels = "auto",
                            map_elements = TRUE, scalebar_col = "white", north_col = "white",
                            frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA,
-                           out_name = "final_gif", log_level = 1, log_logical = FALSE){
+                           out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
   
   #Define output handling
   out <- function(input,type = 1){
@@ -76,7 +80,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "g
   #Call animate_move (alias function)
   animate_move(raster_only = TRUE, layer = layer, layer_dt = layer_dt, layer_stretch = layer_stretch,
                out_dir = out_dir, conv_dir = conv_dir, layer_type = layer_type,
-               layer_col = layer_col, layer_nacol = layer_nacol,
+               layer_col = layer_col, layer_nacol = layer_nacol, static_data = static_data, static_gg = static_gg,
                img_title = img_title, img_sub = img_sub, img_caption = img_caption, img_labs = img_labs,
                legend_title = legend_title, legend_limits = legend_limits, legend_labels = legend_labels,
                map_elements = map_elements, scalebar_col = scalebar_col, north_col = north_col,

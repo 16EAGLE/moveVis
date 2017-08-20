@@ -7,12 +7,13 @@
 animate_raster(layer, out_dir, conv_dir = "convert",
   layer_type = "gradient", layer_stretch = "none",
   layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
-  img_title = "title", img_sub = "subtitle", img_caption = "caption",
-  img_labs = "labs", legend_title = "", legend_limits = NA,
-  legend_labels = "auto", map_elements = TRUE, scalebar_col = "white",
-  north_col = "white", frames_nmax = 0, frames_interval = 0.04,
-  frames_nres = 1, frames_width = NA, frames_height = NA,
-  out_name = "final_gif", log_level = 1, log_logical = FALSE)
+  static_data = NA, static_gg = NA, img_title = "title",
+  img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
+  legend_title = "", legend_limits = NA, legend_labels = "auto",
+  map_elements = TRUE, scalebar_col = "white", north_col = "white",
+  frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
+  frames_width = NA, frames_height = NA, out_name = "final_gif",
+  log_level = 1, log_logical = FALSE, ...)
 }
 \arguments{
 \item{layer}{list. List of raster objects.}
@@ -28,6 +29,10 @@ animate_raster(layer, out_dir, conv_dir = "convert",
 \item{layer_col}{character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.}
 
 \item{layer_nacol}{character. Colour to be displayed for NA values. Default is "white".}
+
+\item{static_data}{data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.}
+
+\item{static_gg}{character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.}
 
 \item{img_title}{character. Titel to be displayed above the animated plot. If not specified, no title will be displayed.}
 
@@ -64,6 +69,8 @@ animate_raster(layer, out_dir, conv_dir = "convert",
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
 \item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
+
+\item{...}{optional arguments.}
 }
 \value{
 None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
