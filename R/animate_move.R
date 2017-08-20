@@ -179,7 +179,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     
     if(.Platform$OS.type == 'windows'){
       write(batch,"batch.bat")
-      quiet(cmd.fun("batch.bat"))#,show.output.on.console = FALSE)
+      quiet(cmd.fun("batch.bat",show.output.on.console = FALSE)) #,show.output.on.console = FALSE)
     }else{
       write(batch,"batch.bat")
       system("chmod +x batch.bat")
@@ -1315,11 +1315,17 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     file.remove(paste0(out_name,".gif"))
   }else{
     for(r in 1:n_reloop){
-      if(r == 1){cmd_fusion <- paste0('"',conv_dir,'" -loop 0 out_gif',toString(r),'.gif')} # -delay ',toString(frames_interval*100),'
+      if(r == 1){cmd_fusion <- paste0('"',conv_dir,'" -loop 0 -delay ',toString(frames_interval*100),' out_gif',toString(r),'.gif')}
       else{cmd_fusion <- paste0(cmd_fusion,' out_gif',toString(r),'.gif')}
     }
-    cmd_fusion <- paste0(cmd_fusion, ' "',out_dir,'/',out_name,'.gif"') #-layers optimize
-    cmd.fun(cmd_fusion)
+    cmd_fusion <- paste0(cmd_fusion, ' "',out_dir,'/',out_name,'.gif"')
+    
+    if(.Platform$OS.type == 'windows'){
+      write(cmd_fusion,"batch.bat"); quiet(cmd.fun("batch.bat"))#,show.output.on.console = FALSE)
+    }else{
+      write(cmd_fusion,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))
+    }
+    file.remove("batch.bat")
     file.remove(list.files(temp_dir)[grep("out_gif",list.files(temp_dir))])
   }
   setwd(user_wd) #reset to user wd
