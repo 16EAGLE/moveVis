@@ -87,7 +87,7 @@
 #' #Improve your animation by adding a static points layer
 #' static_data <- data.frame(x = c(8.94,8.943), y = c(47.75,47.753), names = c("Site 1","Site 2"))
 #' 
-#' 
+#' \dontrun{
 #' #Call animate_move() with "static_data" added
 #' animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
 #'              paths_mode = "true_data", frames_nmax = 50,
@@ -137,7 +137,7 @@
 #'              img_caption = img_caption, img_title = img_title,
 #'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
 #'              stats_create = TRUE, frames_layout=frames_layout)
-#' 
+#' }
 #'
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{get_imconvert}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
