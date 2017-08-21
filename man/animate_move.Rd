@@ -116,6 +116,8 @@ None or logical (see \code{log_logical}). The output GIF file is written to the 
 \code{animate_move} is based on \code{ggplot2} and partly based on the \code{animation} package. It needs the \code{convert} tool of the \code{ImageMagick} software package to assemble GIF files. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
 }
 \examples{
+
+\dontrun{
 #Load move and moveVis packages
 library(move)
 library(moveVis)
@@ -152,7 +154,6 @@ animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
 #Improve your animation by adding a static points layer
 static_data <- data.frame(x = c(8.94,8.943), y = c(47.75,47.753), names = c("Site 1","Site 2"))
 
-\dontrun{
 #Call animate_move() with "static_data" added
 animate_move(data_ani, out_dir, conv_dir, tail_elements = 10,
              paths_mode = "true_data", frames_nmax = 50,

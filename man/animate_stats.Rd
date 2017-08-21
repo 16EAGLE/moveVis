@@ -75,6 +75,7 @@ None or logical (see \code{log_logical}). The output GIF file is written to the 
 Use \code{stats_gg} to provide an own ggplot2 plot design as shown in the examples. The statistics are stored for both plots (periodic and accumulated) withn the variable \code{pdat} (list of two, indexed by k ranging from 1 to 2 for each plot). Both \code{pdat} lists contain the stats elements framewise for each time step. For this, see the \code{stats_gg} example. The variable \code{cols} (list of two, one per plot) contains the defined colour values and namings.
 }
 \examples{
+\dontrun{
 #Load move and moveVis packages
 library(move)
 library(moveVis)
@@ -108,7 +109,6 @@ animate_stats(data_ani, out_dir, conv_dir = conv_dir,
               stats_digits = 1, stats_type = "bar", out_name = "final_gif",
               log_level = 1,frames_nmax = 60)
               
-\dontrun{
 #Define your own ggplot2 plot design
 stats_gg <- 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
              geom_smooth() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
