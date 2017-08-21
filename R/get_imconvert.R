@@ -22,6 +22,15 @@
 #' @export
 
 get_imconvert <- function(dir = "auto"){
+  
+  #Define output handling
+  log_level <- 1
+  out <- function(input,type = 1){
+    signs <- c("[LOG]: ", "[WARNING]: ")
+    if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
+    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
+  }
+  
   if(dir == "auto"){dir <- tempdir()}
   if(.Platform$OS.type == 'windows'){
     if(length(grep("convert.exe",list.files(paste0("C:/Program Files/",grep("ImageMagick", list.files("C:/Program Files/"),value = TRUE))))) != 0){
@@ -43,9 +52,9 @@ get_imconvert <- function(dir = "auto"){
   }else{
     tryit <- try(system("convert",ignore.stdout = TRUE,ignore.stderr = TRUE))
     if(tryit != 1){
-      print("Installing ImageMagick on this system requires root permissions by the user.")
-      print("Please open the terminal, enter 'sudo apt-get install imagemagick' and then rerun get_imconvert().")
-      print("This operation will not be necessary again in the future unless ImageMagick gets deinstalled.")
+      out("No ImageMagick installation could be found. Please install manually.",type=1)
+      out("On Linux, open the terminal, enter 'sudo apt-get install imagemagick' and then rerun get_imconvert().",type=1)
+      out("On other systems, install manually from 'https://www.imagemagick.org/script/download.php' and then rerun get_imconvert().",type=1)
     }else{conv_dir <- "convert"; return(conv_dir)}
   }
 }
