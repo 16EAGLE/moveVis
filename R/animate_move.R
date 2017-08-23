@@ -1393,7 +1393,7 @@ animate_move <- function(data_ani, out_dir, conv_dir = "convert",
     #}else{plt_limits <- "limits=legend_limits"}
     if(layer_type == "gradient"){
       plt_fin <- paste0('gplot(rbl[[i]]) + geom_tile(aes_(fill = ~value)) +
-                          scale_fill_gradientn(colours = layer_col, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
+                          scale_fill_gradientn(colours = layer_col, na.value = layer_nacol, ',plt_limits,', guide=guide_colourbar(title = legend_title, label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
                           scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1) +',
                         plt_scale_north,plt_time_scale,plt_static,plt_progress)
     }
