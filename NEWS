@@ -13,6 +13,7 @@ Improvements:
  + several major bug fixes
  + major animate_raster() bug fixes, reenabling use of RGB rasterStack inputs
  + stats legend is now locatable using frame_layout
+ + fixed a bug of get_imconvert() that caused it to have issues with finding convert.exe on Windows machines, if ImageMagick is preinstalled
 
 Contributers:
  + Bart Kranstauber
