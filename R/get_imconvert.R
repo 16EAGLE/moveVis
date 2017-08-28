@@ -53,8 +53,8 @@ get_imconvert <- function(dir = "auto"){
     tryit <- try(system("convert",ignore.stdout = TRUE,ignore.stderr = TRUE))
     if(tryit != 1){
       out("No ImageMagick installation could be found. Please install manually.",type=1)
-      out("On Linux, open the terminal, enter 'sudo apt-get install imagemagick' and then rerun get_imconvert().",type=1)
-      out("On other systems, install manually from 'https://www.imagemagick.org/script/download.php' and then rerun get_imconvert().",type=1)
+      out("On Linux, open the terminal, enter 'sudo apt-get install imagemagick'.",type=1)
+      out("On other systems, install manually from 'https://www.imagemagick.org/script/download.php'.",type=1)
     }else{conv_dir <- "convert"; return(conv_dir)}
   }
 }

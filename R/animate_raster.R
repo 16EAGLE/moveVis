@@ -71,8 +71,8 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "g
   #Define output handling
   out <- function(input,type = 1){
     signs <- c("[LOG]: ", "[WARNING]: ")
-    if(type == 2 & log_level <= 2){print(paste(signs[2],input))}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){print(paste(signs[1],input))}}}
+    if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
+    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
   }
   
   layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))

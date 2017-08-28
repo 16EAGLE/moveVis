@@ -100,8 +100,8 @@ animate_stats <- function(data_ani, out_dir, conv_dir = "convert", layer = "base
   #Define output handling
   out <- function(input,type = 1){
     signs <- c("[LOG]: ", "[WARNING]: ")
-    if(type == 2 & log_level <= 2){print(paste(signs[2],input))}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){print(paste(signs[1],input))}}}
+    if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
+    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
   }
   
   if(layer[1] == "basemap"){out("Basemap cannot be a Google Basemap for computing stats pixelwise. Please provide a single-layer dataset.",type = 3)}
