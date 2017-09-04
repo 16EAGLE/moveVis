@@ -6,6 +6,10 @@
 
 This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The package is under ongoing development, new functions including statistics visualaization will be added soon. The moveVis package is working hand in hand with the move package by using the move class. It is partly based on the animation package and uses a ggplot2 based plot architecture for frame creation.
 
+![Alt Text](https://github.com/16EAGLE/AUX_data/blob/master/data/examp1.gif)
+![Alt Text](https://github.com/16EAGLE/AUX_data/blob/master/data/examp2.gif)
+
+
 ## Installation
 
 This is the official moveVis R package repository, including beta code versions before submitted to CRAN. For operational use of moveVis, please use the current stable CRAN version of moveVis.
