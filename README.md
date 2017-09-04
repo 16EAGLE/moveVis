@@ -112,4 +112,5 @@ This initiative is part of the <a target="_blank" href="http://www.fernerkundung
 
 </p>
 
-I am studying the Earth Observation and Geoanalysis of the Living Environment (EAGLE) Master Programme by the University of Wuerzburg, Germany, and the Geramn Aerospace Center (DLR). Visit the Master Programme's website  <a target="_blank" href="http://eagle-science.org">following this link</a> to learn about the possibilites of becoming an EAGLE master student in Wuerzburg, Germany.
+
+I am studying the Earth Observation and Geoanalysis of the Living Environment (EAGLE) Master Programme by the University of Wuerzburg, Germany, and the German Aerospace Center (DLR). Visit the Master Programme's website  <a target="_blank" href="http://eagle-science.org">following this link</a> to learn about the possibilites of becoming an EAGLE master student in Wuerzburg, Germany.
