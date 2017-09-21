@@ -2,7 +2,7 @@
 #'
 #' \code{animate_stats} animates statistic plot from movement data provided as \code{move} class objects or a list of them and basemap data provided as \code{raster}. It extracts basemap values of pixels that are part of the movement paths and visualizes frequencies per value. The function creates an animated GIF file and saves it into the output directory. See also \code{\link{animate_move}}. 
 #'
-#' @param data_ani list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
+#' @param m list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
 #' @param out_dir character. Output directory for the GIF file creation.
 #' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
 #' @param layer raster, list or character. Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
@@ -21,8 +21,10 @@
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
+#' @param frames_tres numeric. Defines temporal output resolution in seconds, 'm' should be interpolated to (linear interpolation). If 0, temporal resolution is detected automatically. Default is 0.
 #' @param frames_width numeric. Number of pixels of frame width. Default is 600.
 #' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
+#' @param frames_pixres numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
 #' @param out_name character. Name of the output file. Default is "final_gif".
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If TRUE, the function returns TRUE when finished processing succesfully.
@@ -91,27 +93,27 @@
 #'
 #' @export
 
-animate_stats <- function(data_ani, out_dir, conv_dir = "convert", layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
+animate_stats <- function(m, out_dir, conv_dir = "convert", layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "",
          val_limits = NA, paths_col = "auto",  paths_mode = "true_data",
          stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
-         stats_title = "", frames_layout = 0, frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = 600,
-         frames_height = 600, out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
+         stats_title = "", frames_layout = 0, frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_tres = 0, frames_width = 800, 
+         frames_height = 300, frames_pixres = 80, out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
 
   #Define output handling
-  out <- function(input,type = 1){
-    signs <- c("[LOG]: ", "[WARNING]: ")
-    if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
-  }
+  #out <- function(input,type = 1){
+  #  signs <- c("[LOG]: ", "[WARNING]: ")
+  #  if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
+  #  else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
+  #}
   
-  if(layer[1] == "basemap"){out("Basemap cannot be a Google Basemap for computing stats pixelwise. Please provide a single-layer dataset.",type = 3)}
+  #if(layer[1] == "basemap"){out("Basemap cannot be a Google Basemap for computing stats pixelwise. Please provide a single-layer dataset.",type = 3)}
   #if(layer_type == "RGB"){out("Basemap cannot be of type 'RGB' for computing stats pixelwise. Please provide a single-layer data.",type = 3)}
   
   #Call animate_move (alias function)
-  animate_move(data_ani, out_dir, conv_dir = conv_dir, layer = layer, layer_dt = layer_dt, layer_int = layer_int, layer_type = layer_type,
+  animate_move(m, out_dir, conv_dir = conv_dir, layer = layer, layer_dt = layer_dt, layer_int = layer_int, layer_type = layer_type,
                tail_elements = 1, paths_col = paths_col, paths_mode = "true_data",
                stats_create = TRUE, stats_tframe = stats_tframe, frames_layout = frames_layout,
                stats_type = stats_type, stats_title = stats_title,
                stats_gg = stats_gg, stats_digits = stats_digits, frames_nmax =  frames_nmax, frames_interval = frames_interval, frames_nres = frames_nres, frames_width = frames_width,
-               frames_height = frames_height, out_name = out_name, log_level = log_level, log_logical = log_logical,  stats_only = TRUE)
+               frames_height = frames_height, frames_pixres = frames_pixres, out_name = out_name, log_level = log_level, log_logical = log_logical,  stats_only = TRUE)
 }

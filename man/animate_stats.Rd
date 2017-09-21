@@ -4,17 +4,17 @@
 \alias{animate_stats}
 \title{Animate movement data statistics}
 \usage{
-animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
+animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
   val_limits = NA, paths_col = "auto", paths_mode = "true_data",
   stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
   stats_title = "", frames_layout = 0, frames_nmax = 0,
-  frames_interval = 0.04, frames_nres = 1, frames_width = 600,
-  frames_height = 600, out_name = "final_gif", log_level = 1,
-  log_logical = FALSE, ...)
+  frames_interval = 0.04, frames_nres = 1, frames_tres = 0,
+  frames_width = 800, frames_height = 300, frames_pixres = 80,
+  out_name = "final_gif", log_level = 1, log_logical = FALSE, ...)
 }
 \arguments{
-\item{data_ani}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
+\item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
 
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
@@ -52,9 +52,13 @@ animate_stats(data_ani, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{frames_nres}{numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.}
 
+\item{frames_tres}{numeric. Defines temporal output resolution in seconds, 'm' should be interpolated to (linear interpolation). If 0, temporal resolution is detected automatically. Default is 0.}
+
 \item{frames_width}{numeric. Number of pixels of frame width. Default is 600.}
 
 \item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
+
+\item{frames_pixres}{numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
 \item{out_name}{character. Name of the output file. Default is "final_gif".}
 

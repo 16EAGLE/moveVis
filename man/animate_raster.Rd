@@ -4,7 +4,7 @@
 \alias{animate_raster}
 \title{Animate raster data}
 \usage{
-animate_raster(layer, out_dir, conv_dir = "convert",
+animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = 0,
   layer_type = "gradient", layer_stretch = "none",
   layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
   static_data = NA, static_gg = NA, img_title = "title",
@@ -12,8 +12,8 @@ animate_raster(layer, out_dir, conv_dir = "convert",
   legend_title = "", legend_limits = NA, legend_labels = "auto",
   map_elements = TRUE, scalebar_col = "white", north_col = "white",
   frames_nmax = 0, frames_interval = 0.04, frames_nres = 1,
-  frames_width = NA, frames_height = NA, out_name = "final_gif",
-  log_level = 1, log_logical = FALSE, ...)
+  frames_width = NA, frames_height = NA, frames_pixres = 80,
+  out_name = "final_gif", log_level = 1, log_logical = FALSE, ...)
 }
 \arguments{
 \item{layer}{list. List of raster objects.}
@@ -21,6 +21,8 @@ animate_raster(layer, out_dir, conv_dir = "convert",
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
 \item{conv_dir}{character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.}
+
+\item{layer_dt}{POSIXct or vector. Optional vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects to display a time scale.}
 
 \item{layer_type}{charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class object), "\code{gradient}" or "\code{discrete}". Default is "\code{gradient}".}
 
@@ -63,6 +65,8 @@ animate_raster(layer, out_dir, conv_dir = "convert",
 \item{frames_width}{numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).}
 
 \item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
+
+\item{frames_pixres}{numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
 \item{out_name}{character. Name of the output file. Default is "final_gif".}
 

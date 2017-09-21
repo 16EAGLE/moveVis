@@ -2,7 +2,8 @@
 #'
 #' \code{animate_raster} animates raster data provided as list of \code{raster} class objects. The function creates an animated GIF file and saves it into the output directory.
 #'
-#' @param layer list. List of raster objects. 
+#' @param layer list. List of raster objects.
+#' @param layer_dt POSIXct or vector. Optional vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects to display a time scale.
 #' @param layer_type charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class object), "\code{gradient}" or "\code{discrete}". Default is "\code{gradient}".
 #' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
 #' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
@@ -26,6 +27,7 @@
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
 #' @param frames_width numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).
 #' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
+#' @param frames_pixres numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
 #' @param out_name character. Name of the output file. Default is "final_gif".
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
@@ -59,23 +61,20 @@
 #' 
 #' @export
 
-animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "gradient", layer_stretch = "none",
+animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = 0, layer_type = "gradient", layer_stretch = "none",
                            layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white",
                            static_data = NA, static_gg = NA,
                            img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                            legend_title = "", legend_limits = NA, legend_labels = "auto",
                            map_elements = TRUE, scalebar_col = "white", north_col = "white",
-                           frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA,
+                           frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA, frames_pixres = 80,
                            out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
-  
-  #Define output handling
-  out <- function(input,type = 1){
-    signs <- c("[LOG]: ", "[WARNING]: ")
-    if(type == 2 & log_level <= 2){warning(paste(signs[2],input))}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(log_level == 1){cat(paste(signs[1],input),sep="\n")}}}
+  if(layer_dt == 0){
+    time_scale <- FALSE
+    layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))
+  }else{
+    time_scale <-  TRUE
   }
-  
-  layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))
   
   #Call animate_move (alias function)
   animate_move(raster_only = TRUE, layer = layer, layer_dt = layer_dt, layer_stretch = layer_stretch,
@@ -83,7 +82,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_type = "g
                layer_col = layer_col, layer_nacol = layer_nacol, static_data = static_data, static_gg = static_gg,
                img_title = img_title, img_sub = img_sub, img_caption = img_caption, img_labs = img_labs,
                legend_title = legend_title, legend_limits = legend_limits, legend_labels = legend_labels,
-               map_elements = map_elements, scalebar_col = scalebar_col, north_col = north_col,
+               map_elements = map_elements, scalebar_col = scalebar_col, north_col = north_col, time_scale = time_scale,
                frames_nmax =  frames_nmax, frames_interval = frames_interval, frames_nres = frames_nres, frames_width = frames_width, frames_height = frames_height,
                out_name = out_name, log_level = log_level, log_logical = log_logical)
 }

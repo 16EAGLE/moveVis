@@ -1,4 +1,30 @@
 ----------------------------------------------------------
+moveVis 0.9.6 BETA (not on CRAN yet)
+bug fixes, performance increasing, interpolation
+-----------------------------------------------------------
+New features:
+ + animate_move() now detects temporal resolution and uniformity of timestamps automatically to determine, if interpolation needs to be applied to calculate uniform frame times per frame tick
+ + added animate_move() argument "frames_tres" to change temporal resolution through linear interpolation
+ + added animate_move() argument "frames_pixres" to adjust frame ppi
+ 
+Improvements:
+ + recoding of multiple processing steps to increase processing speed and stability
+ + increased error handler by several errors likely to occure
+ + several bug fixes
+ 
+Will be implemented in this and next version:
+ + video output formats (mp4 etc.) in addition to GIF by including ffmpeg interface
+ + user-defined area of interest (AOI), which scales map extent to specific area without excluding tracks "out of sight", enables move-in and move-out of individuals to AOI
+ + segmentation coulouring
+ + dynamic overplotting, e. g. polygons or points that change over time
+ 
+Known problems in this BETA (to be fixed befor release):
+ + animate_move() argument "frames_nres" is not working correctly
+ 
+Contributors:
+ + AniMove 2017 participants
+ 
+----------------------------------------------------------
 moveVis 0.9.5
 adding frames_layout, static_data etc., improvements to workflow
 -----------------------------------------------------------
@@ -15,7 +41,7 @@ Improvements:
  + stats legend is now locatable using frame_layout
  + fixed a bug of get_imconvert() that caused it to have issues with finding convert.exe on Windows machines, if ImageMagick is preinstalled
 
-Contributers:
+Contributors:
  + Bart Kranstauber
 
 ----------------------------------------------------------
