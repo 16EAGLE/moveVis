@@ -176,11 +176,40 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
                          frames_layout = 0, frames_nmax =  0, frames_pixres = 80, frames_interval = .04, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA,
                          out_name = "final_gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
   
+  #Checking for additional arguments
+  arg <- list(...)
+  s_try <- try(arg$stats_only)
+  if(class(s_try) == "NULL"){stats_only <-  FALSE}else{stats_only <- arg$stats_only}
+  s_try <- try(arg$stats_type)
+  if(class(s_try) == "NULL"){stats_type  <- ""}else{stats_type <- arg$stats_type}
+  s_try <- try(arg$stats_gg)
+  if(class(s_try) == "NULL"){stats_gg  <- ""}else{stats_gg <- arg$stats_gg}
+  s_try <- try(arg$stats_digits)
+  if(class(s_try) == "NULL"){
+    if(layer_type == "gradient"){stats_digits  <- 1}
+    if(layer_type == "RGB"){stats_digits  <- 1}
+    if(layer_type == "discrete"){stats_digits <- 0}   
+  }else{stats_digits <- arg$stats_digits}
+  s_try <- try(arg$stats_tframe)
+  if(class(s_try) == "NULL"){stats_tframe  <- 5}else{stats_tframe <- arg$stats_tframe}
+  s_try <- try(arg$stats_title)
+  if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
+  s_try <- try(arg$raster_only); if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
+  s_try <- try(arg$data_ani); if(class(s_try) != "NULL"){m <- arg$data_ani}
+  
+  #shiny arguments
+  s_try <- try(arg$shiny_mode); if(class(s_try) != "NULL"){shiny_mode <- arg$shiny_mode}else{shiny_mode = FALSE} #catch cmd_msg prior to function definition
+  s_try <- try(arg$shiny_session); if(class(s_try)[1] != "NULL"){shiny_session <- arg$shiny_session}else{shiny_session = FALSE}
+  
+  ## FUNCTION DEFINITION
+  
   #Define output handling
-  out <- function(input,type = 1, ll = log_level){
+  out <- function(input,type = 1, ll = log_level, msg = shiny_mode){
     signs <- c("", "")
     if(type == 2 & ll <= 2){warning(paste0(signs[2],input), call. = FALSE, immediate. = TRUE)}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(ll == 1){cat(paste0(signs[1],input),sep="\n")}}}
+    else{if(type == 3){stop(input,call. = FALSE)}else{if(ll == 1){
+      if(msg == FALSE){cat(paste0(signs[1],input),sep="\n")
+      }else{message(paste0(signs[1],input))}}}}
   }
   
   #get legend
@@ -363,30 +392,9 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   
   #+++++++++++++++++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++++++++++++++++++++++++
   
-  #[1] PREREQUISITES
+  ## PREREQUISITES
   out("Checking prerequisites...",type=1)
-  
-  #Checking for additional arguments
-  arg <- list(...)
-  s_try <- try(arg$stats_only)
-  if(class(s_try) == "NULL"){stats_only <-  FALSE}else{stats_only <- arg$stats_only}
-  s_try <- try(arg$stats_type)
-  if(class(s_try) == "NULL"){stats_type  <- ""}else{stats_type <- arg$stats_type}
-  s_try <- try(arg$stats_gg)
-  if(class(s_try) == "NULL"){stats_gg  <- ""}else{stats_gg <- arg$stats_gg}
-  s_try <- try(arg$stats_digits)
-  if(class(s_try) == "NULL"){
-    if(layer_type == "gradient"){stats_digits  <- 1}
-    if(layer_type == "RGB"){stats_digits  <- 1}
-    if(layer_type == "discrete"){stats_digits <- 0}   
-  }else{stats_digits <- arg$stats_digits}
-  s_try <- try(arg$stats_tframe)
-  if(class(s_try) == "NULL"){stats_tframe  <- 5}else{stats_tframe <- arg$stats_tframe}
-  s_try <- try(arg$stats_title)
-  if(class(s_try) == "NULL"){stats_title  <- ""}else{stats_title <- arg$stats_title}
-  s_try <- try(arg$raster_only); if(class(s_try) == "NULL"){raster_only  <- ""}else{raster_only <- arg$raster_only}
-  s_try <- try(arg$data_ani); if(class(s_try) != "NULL"){m <- arg$data_ani}
-  
+
   if(raster_only != TRUE){ #m not needed for animate_raster()
     if(missing(m)){
       out("Argument 'm' is missing. Please specify the input movement data.",type=3)
@@ -544,7 +552,8 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     m.stack <- moveStack(m)
     
     uni.stamps.c <- unique(as.numeric(sapply(strsplit(as.character(timestamps(m.stack)),":"), function(x){x[3]})))
-    if(length(uni.stamps.c) > 1){uni.stamps <- FALSE}else{uni.stamps <- TRUE} #check for uniform timestamps
+    if(length(uni.stamps.c) > 1){uni.stamps <- FALSE
+    }else{if(length(unique(timeLag(m.stack,units ="secs"))) == 1){uni.stamps <- TRUE}else{uni.stamps <- FALSE}} #check for uniform timestamps
     
     if(uni.stamps == TRUE & frames_tres == 0){
       #nothing must be done except finding out the resolution
@@ -555,7 +564,7 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
         out("Paths interpolation will be applied, since 'frames_tres' is user-defined.")
       }else{
         frames_tres <- min(sapply(timeLag(m.stack,units = "secs"), min))
-        out(paste0("Detected temporal resolution of ", as.character(frames_tres) ," seconds and non-uniform timestamps, paths intorpaltion will be forced."),type=2)
+        out(paste0("Detected minimum temporal resolution of ", as.character(frames_tres) ," seconds, but non-uniform timestamps, paths interpolation will be forced."),type=2)
         out(paste0("'frames_tres' set to ",as.character(frames_tres)," seconds, since undefined."), type=2)
         out("Linear paths interpolation can massively distort movement, particularly non-movement periods!",type=2)
       }
@@ -1108,7 +1117,12 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
       else{index_list <- c(index_list,n_loop)}
     }
   }
-  if(log_level == 1){p.out <- txtProgressBar(min = 0, max = n_loop+n_reloop, style = 3)}
+  if(log_level == 1 & shiny_mode == FALSE){p.out <- txtProgressBar(min = 0, max = n_loop+n_reloop, style = 3)}
+  if(shiny_mode == TRUE){
+    progress <- Progress$new(shiny_session, min=1, max=n_loop+n_reloop)
+    progress$set(message = 'Animating data\n',
+                 detail = 'This may take a while...')
+  }
   
   #Draw plots per frame and print to magick device
   if(raster_only != TRUE){
@@ -1126,7 +1140,8 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   in.cond.list <- list(raster_only, stats_only, stats_create)
   
   p.dir <- quiet(sapply(seq(1:(length(global.times)-tail_elements)), function(x, ld = in.data.list, lp = in.plt.list, lc = in.cond.list, dir = temp_dir){ #length(global.times)
-    if(log_level == 1){setTxtProgressBar(p.out, x)}
+    if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, x)}
+    if(shiny_mode == TRUE){progress$set(value = x)}
     
     prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[x],prog_y))
     colnames(prog_bar) <- c("x","y")
@@ -1176,7 +1191,8 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   }))
   
   og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_interval, n = n_loop){
-    if(log_level == 1){setTxtProgressBar(p.out, (n+x))}
+    if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
+    if(shiny_mode == TRUE){progress$set(value = n+x)}
     if(x == 1){range = c(0,il[x])}else{range = c(il[x-1], il[x])}
     batch <- paste0('"',cd,'" ', cm,' -loop 0 -delay ',toString(fi*100),' ',paste0(d[range[1]:range[2]],collapse = " "),' out_gif',toString(x),'.gif')
     
@@ -1200,12 +1216,13 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   file.copy(paste0(out_name,".gif"),paste0(out_dir,"/",out_name,".gif"), overwrite = TRUE)
   file.remove(list.files(temp_dir))
     
-  if(log_level == 1){close(p.out)}
+  if(log_level == 1 & shiny_mode == FALSE){close(p.out)}
+  if(shiny_mode == TRUE){progress$close()}
   
   setwd(user_wd) #reset to user wd
   
   if(file.exists(paste0(out_dir,'/',out_name,'.gif'))){
-    out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)
+    if(shiny_mode != TRUE){out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)}
     if(log_logical == TRUE){return(TRUE)}
   }else{
     out("animate_move failed due to unknown error.",type=3)
