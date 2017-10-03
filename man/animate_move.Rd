@@ -4,21 +4,21 @@
 \alias{animate_move}
 \title{Animate movement data}
 \usage{
-animate_move(m, out_dir, conv_dir = "convert", layer = "basemap",
-  layer_dt = "basemap", layer_int = FALSE, layer_type = "",
-  layer_stretch = "none", layer_col = c("sandybrown", "white", "darkgreen"),
-  layer_nacol = "white", map_type = "satellite", static_data = NA,
-  static_gg = NA, extent_factor = 1e-04, tail_elements = 10,
-  tail_size = 4, img_title = "title", img_sub = "subtitle",
-  img_caption = "caption", img_labs = "labs", legend_title = "",
-  legend_limits = NA, legend_labels = "auto", map_elements = TRUE,
-  time_scale = TRUE, scalebar_col = "white", north_col = "white",
-  paths_col = "auto", paths_alpha = 1, paths_mode = "true_data",
-  stats_create = FALSE, frames_layout = 0, frames_nmax = 0,
-  frames_pixres = 80, frames_interval = 0.04, frames_nres = 1,
-  frames_tres = 0, frames_width = NA, frames_height = NA,
-  out_name = "final_gif", log_level = 1, log_logical = FALSE, ...,
-  conv_cmd = "", conv_frames = 100)
+animate_move(m, out_dir, conv_dir = "convert", paths_mode = "true_data",
+  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1,
+  layer = "basemap", layer_dt = "basemap", layer_int = FALSE,
+  layer_type = "", layer_stretch = "none", layer_col = c("sandybrown",
+  "white", "darkgreen"), layer_nacol = "white", map_type = "satellite",
+  stats_create = FALSE, static_data = NA, static_gg = NA,
+  extent_factor = 1e-04, tail_elements = 10, tail_size = 4,
+  img_title = "title", img_sub = "subtitle", img_caption = "caption",
+  img_labs = "labs", legend_title = "", legend_limits = NA,
+  legend_labels = "auto", map_elements = TRUE, time_scale = TRUE,
+  scalebar_col = "white", north_col = "white", frames_layout = 0,
+  frames_nmax = 0, frames_pixres = 80, frames_interval = 0.04,
+  frames_nres = 1, frames_tres = 0, frames_width = NA,
+  frames_height = NA, out_name = "final_gif", log_level = 1,
+  log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100)
 }
 \arguments{
 \item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
@@ -26,6 +26,14 @@ animate_move(m, out_dir, conv_dir = "convert", layer = "basemap",
 \item{out_dir}{character. Output directory for the GIF file creation.}
 
 \item{conv_dir}{character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.}
+
+\item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
+
+\item{paths_na.hold}{logical. If TRUE, last path location is being hold on frame for NA path locations. If FALSE, path disappears until next path non-NA location. Default is TRUE.}
+
+\item{paths_col}{character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.}
+
+\item{paths_alpha}{numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.}
 
 \item{layer}{raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
 
@@ -42,6 +50,8 @@ animate_move(m, out_dir, conv_dir = "convert", layer = "basemap",
 \item{layer_nacol}{character. Colour to be displayed for NA values. Default is "white".}
 
 \item{map_type}{character.  Static basemap type. Chosse from "roadmap", "satellite", "hybrid", "terrain".}
+
+\item{stats_create}{logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.}
 
 \item{static_data}{data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.}
 
@@ -74,14 +84,6 @@ animate_move(m, out_dir, conv_dir = "convert", layer = "basemap",
 \item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
 
 \item{north_col}{character. Colour of the north arrow. Default is "white".}
-
-\item{paths_col}{character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.}
-
-\item{paths_alpha}{numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.}
-
-\item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
-
-\item{stats_create}{logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.}
 
 \item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
 

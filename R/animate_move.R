@@ -32,6 +32,7 @@
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
 #' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
 #' @param paths_mode character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".
+#' @param paths_na.hold logical. If TRUE, last path location is being hold on frame for NA path locations. If FALSE, path disappears until next path non-NA location. Default is TRUE.
 #' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
@@ -166,13 +167,13 @@
 #' @export
 
 animate_move <- function(m, out_dir, conv_dir = "convert",
+                         paths_mode = "true_data",  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1, 
                          layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
-                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", static_data = NA, static_gg = NA,
+                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", stats_create = FALSE, static_data = NA, static_gg = NA,
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
-                         map_elements = TRUE, time_scale = TRUE, scalebar_col = "white", north_col = "white",
-                         paths_col = "auto", paths_alpha = 1, paths_mode = "true_data", stats_create = FALSE, 
+                         map_elements = TRUE, time_scale = TRUE, scalebar_col = "white", north_col = "white", 
                          frames_layout = 0, frames_nmax =  0, frames_pixres = 80, frames_interval = .04, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA,
                          out_name = "final_gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
   
@@ -551,9 +552,14 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     if(global.crs.str != "+proj=longlat +ellps=WGS84"){m <- lapply(m,function(x){spTransform(x, crs("+proj=longlat +ellps=WGS84"))})}
     m.stack <- moveStack(m)
     
-    uni.stamps.c <- unique(as.numeric(sapply(strsplit(as.character(timestamps(m.stack)),":"), function(x){x[3]})))
+    uni.stamps.c <- unique(as.numeric(sapply(strsplit(as.character(timestamps(m.stack)),":"), function(x){x[3]}))) #identify unfirom seconds digits
     if(length(uni.stamps.c) > 1){uni.stamps <- FALSE
-    }else{if(length(unique(timeLag(m.stack,units ="secs"))) == 1){uni.stamps <- TRUE}else{uni.stamps <- FALSE}} #check for uniform timestamps
+    }else{
+      uni.lag <- unique(unlist(timeLag(m.stack,units ="secs"))) #identify timelags
+      #if(length(unique(timeLag(m.stack,units ="secs"))) == 1){uni.stamps <- TRUE}else{uni.stamps <- FALSE} #check for uniform timestamps
+      if(length(unique(sapply(strsplit(as.character(uni.lag/min(uni.lag)),"[.]"), function(x){x[2]}))) == 1){uni.stamps <- TRUE #check, if all timelags can be divided by minimum lag
+      }else{uni.stamps <- FALSE}
+    }
     
     if(uni.stamps == TRUE & frames_tres == 0){
       #nothing must be done except finding out the resolution
@@ -619,7 +625,15 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     } #creates data.frames by paths mode
     
     if(frames_nmax != 0){m.df <- lapply(m.df, function(x, l = frames_nmax){x[1:l,]})} #take first frames, if wanted
-    if(frames_nres != 1){m.df <- lapply(m.df, function(x, l = frames_nres){x[seq(1,length(x[,1]),by = l),]})} #take every nth element, if wanted
+    if(frames_nres != 1){m.df <- lapply(m.df, function(x, l = frames_nres){x[seq(1,length(x[,1]),by = l),]})} #take every nth element, if wanted, BUG! include NA hold or not hold to avoid disappearance
+    
+    if(paths_na.hold == TRUE){m.df <- lapply(m.df, function(x){
+      t <- x
+      t[,1] <- na.locf(t[,1], na.rm = FALSE)
+      t[,2] <- na.locf(t[,2], na.rm = FALSE)
+      return(t)
+      })
+    }
     
     sub.val.true <- sapply(m.df, function(x){t <- apply(x, 2, function(x){is.na(x)})
     if(length(unique(t[,1])) > 1){return(TRUE)}else{if(unique(t[,1]) == TRUE){return(FALSE)}else{return(TRUE)}}
@@ -632,7 +646,7 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     ## Define global extent
     
     m.ext.list <- sapply(m.df,function(x){c(min(x$x,na.rm = TRUE),max(x$x,na.rm = TRUE),min(x$y,na.rm = TRUE),max(x$y,na.rm = TRUE))})
-    m.ext <- extent(c(min(m.ext.list[1,]),max(m.ext.list[2,]),min(m.ext.list[3,]),max(m.ext.list[4,]))) #create move extent object
+    m.ext <- extent(as.numeric(c(min(m.ext.list[1,]),max(m.ext.list[2,]),min(m.ext.list[3,]),max(m.ext.list[4,])))) #create move extent object
     m.corners <- rbind(c(m.ext@xmin,m.ext@ymin),c(m.ext@xmin,m.ext@ymax),c(m.ext@xmax,m.ext@ymax),c(m.ext@xmax,m.ext@ymin)) #create corner coordinates of move extet
     
     if(global.crs.str != "+proj=longlat +ellps=WGS84"){
@@ -981,7 +995,7 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   ## creating plot strings
   
   #Define labs
-  if(img_labs != "labs"){labs_x <- img_labs[1]; labs_y <- img_labs[2]
+  if(img_labs[1] != "labs"){labs_x <- img_labs[1]; labs_y <- img_labs[2]
   }else{
     if(global.crs.str == "+proj=longlat +ellps=WGS84"){
       labs_x <- "Longitude"; labs_y <- "Latitude"
@@ -1222,7 +1236,7 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   setwd(user_wd) #reset to user wd
   
   if(file.exists(paste0(out_dir,'/',out_name,'.gif'))){
-    if(shiny_mode != TRUE){out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)}
+    if(shiny_mode != TRUE){out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)}else{out("Finished.")}
     if(log_logical == TRUE){return(TRUE)}
   }else{
     out("animate_move failed due to unknown error.",type=3)

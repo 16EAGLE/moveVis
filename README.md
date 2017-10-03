@@ -91,9 +91,9 @@ animate_move(data_ani, out_dir, conv_dir = conv_dir, tail_elements = 10,
 
 Further examples and explanations on different modes are provided within the function manuals.
 
-## Bug reports & contact
+## Contact & bug reports
 
-For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature requests and other contributions are also welcome.
+moveVis is being developed and maintained by Jakob Schwalb-Willmann. For bug reports, please use <https://github.com/16eagle/movevis/issues> to contact me. Feature requests and other contributions are also welcome.
 
 ## What else are we doing?
 
