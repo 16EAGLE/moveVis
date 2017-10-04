@@ -19,7 +19,7 @@ Will be implemented in this and next version:
  + dynamic overplotting, e. g. polygons or points that change over time
  
 Known problems in this BETA (to be fixed befor release):
- + animate_move() argument "frames_nres" is not working correctly
+ + creating stats using animate_move() for layer_type = "RGB" is corrupted at the moment
  
 Contributors:
  + AniMove 2017 participants
@@ -104,3 +104,8 @@ Initial features:
  
 Initial example data sets:
  + data(move_data)
+ 
+
+-----------------------------------------------------------
+This document should provide a broad overview on changes that are applied to the moveVis R package. There is no warranty for completeness, since minor changes might not be included. All improvement and feature descriptions are bundled per release version. The document is currently maintained by Jakob Schwalb-Willmann.
+
