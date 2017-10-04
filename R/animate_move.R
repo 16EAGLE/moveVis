@@ -752,7 +752,12 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     }
     plt_limits <- "limits=c(legend_limits[1], legend_limits[2])"
   }
-  
+  if(layer_type == "RGB"){
+    legend_breaks <- c(min(sapply(bm.frames, function(x){min(getValues(x), na.rm = TRUE)})),
+                       max(sapply(bm.frames, function(x){max(getValues(x), na.rm = TRUE)})))
+                        
+  }
+  print(legend_breaks)
   
   ## static data
   
