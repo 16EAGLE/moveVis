@@ -445,7 +445,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
   }
   if(is.character(out_format) == FALSE){out("Argument 'out_format' needs to be a character object.", type = 3)}
-  if(shiny_mode == TRUE){
+  if(shiny_mode != TRUE){
     if(is.character(conv_dir) == FALSE){
       out("Argument 'conv_dir' needs to be a character object.",type=3)
     }else{
