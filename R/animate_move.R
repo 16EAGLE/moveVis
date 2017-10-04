@@ -201,7 +201,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   s_try <- try(arg$data_ani); if(class(s_try) != "NULL"){m <- arg$data_ani}
   
   #shiny arguments
-  s_try <- try(arg$shiny_mode); if(class(s_try) != "NULL"){shiny_mode <- arg$shiny_mode}else{shiny_mode = FALSE} #catch cmd_msg prior to function definition
+  s_try <- try(arg$shiny_mode); if(class(s_try) != "NULL"){shiny_mode <- arg$shiny_mode}else{shiny_mode = FALSE} #prev or ani
   s_try <- try(arg$shiny_session); if(class(s_try)[1] != "NULL"){shiny_session <- arg$shiny_session}else{shiny_session = FALSE}
   
   #out format
@@ -445,7 +445,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
   }
   if(is.character(out_format) == FALSE){out("Argument 'out_format' needs to be a character object.", type = 3)}
-  if(shiny_mode != TRUE){
+  if(shiny_mode == FALSE){
     if(is.character(conv_dir) == FALSE){
       out("Argument 'conv_dir' needs to be a character object.",type=3)
     }else{
@@ -1173,7 +1173,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
   }
   if(log_level == 1 & shiny_mode == FALSE){p.out <- txtProgressBar(min = 0, max = n_loop-1+n_reloop, style = 3)}
-  if(shiny_mode == TRUE){
+  if(shiny_mode == "ani"){
     progress <- Progress$new(shiny_session, min=1, max=n_loop-1+n_reloop)
     progress$set(message = 'Animating data\n',
                  detail = 'This may take a while...')
@@ -1196,7 +1196,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   
   p.dir <- quiet(sapply(seq(1:(length(global.times)-tail_elements)), function(x, ld = in.data.list, lp = in.plt.list, lc = in.cond.list, dir = temp_dir){ #length(global.times)
     if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, x)}
-    if(shiny_mode == TRUE){progress$set(value = x)}
+    if(shiny_mode == "ani"){progress$set(value = x)}
     
     prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[x],prog_y))
     colnames(prog_bar) <- c("x","y")
@@ -1250,7 +1250,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   if(out_format == "gif"){
     og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_fps, n = n_loop){
       if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
-      if(shiny_mode == TRUE){progress$set(value = n+x)}
+      if(shiny_mode == "ani"){progress$set(value = n+x)}
       if(x == 1){range = c(0,il[x])}else{range = c(il[x-1], il[x])}
       
       batch <- paste0('"',cd,'" ', cm,' -loop 0 -delay ',toString(100%/%fi),' ',paste0(d[range[1]:range[2]],collapse = " "),' out',toString(x),'.', out_format)
@@ -1278,12 +1278,12 @@ animate_move <- function(m, out_dir, conv_dir = "",
   file.remove(list.files(temp_dir))
     
   if(log_level == 1 & shiny_mode == FALSE){close(p.out)}
-  if(shiny_mode == TRUE){progress$close()}
+  if(shiny_mode == "ani"){progress$close()}
   
   setwd(user_wd) #reset to user wd
   
   if(file.exists(paste0(out_dir,'/',out_name,'.',out_format))){
-    if(shiny_mode != TRUE){out(paste0("Done. '",out_name,".",out_format,"' has been saved to '",out_dir,"'."), type=1)}else{out("Done.")}
+    if(shiny_mode == FALSE){out(paste0("Done. '",out_name,".",out_format,"' has been saved to '",out_dir,"'."), type=1)}else{out("Done.")}
     if(log_logical == TRUE){return(TRUE)}
   }else{
     out("animate_move failed due to unknown error.",type=3)
