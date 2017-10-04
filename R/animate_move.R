@@ -757,7 +757,6 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
                        max(sapply(bm.frames, function(x){max(getValues(x), na.rm = TRUE)})))
                         
   }
-  print(legend_breaks)
   
   ## static data
   
