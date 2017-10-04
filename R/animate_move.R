@@ -1207,7 +1207,8 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     dev.off()
     return(fn)
   }))
-  p.dir <- p.dir[-which(match(p.dir,NA) == 1)]
+  p.dir.na <- which(match(p.dir,NA) == 1)
+  if(length(p.dir.na) != 0){p.dir <- p.dir[-p.dir.na]}
   
   og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_interval, n = n_loop){
     if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
