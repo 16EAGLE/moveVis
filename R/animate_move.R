@@ -4,7 +4,10 @@
 #'
 #' @param m list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
 #' @param out_dir character. Output directory for the GIF file creation.
-#' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
+#' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}.
+#' \itemize{
+#'   \item If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}.
+#'   \item If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. specify command of or path to the \code{ffmpeg} or \code{avconv} tool. You can use \code{get_libraries} to find or download/install \code{ffmpeg} or \code{avconv}.
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
 #' @param layer_dt POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
@@ -27,6 +30,7 @@
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
 #' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
 #' @param time_scale logical. If\code{FALSE}, time scale is hidden. Default is \code{TRUE}.
+#' @param time_bar_col character. Colour of the time progress bar on the top edge of the map. Default is "grey".
 #' @param extent_factor numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".
 #' @param north_col character. Colour of the north arrow. Default is "white".
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
@@ -35,18 +39,19 @@
 #' @param paths_na.hold logical. If TRUE, last path location is being hold on frame for NA path locations. If FALSE, path disappears until next path non-NA location. Default is TRUE.
 #' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
-#' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
+#' @param frames_fps numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
 #' @param frames_tres numeric. Defines temporal output resolution in seconds, 'm' should be interpolated to (linear interpolation). If 0, temporal resolution is detected automatically. Default is 0.
 #' @param frames_width numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).
 #' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
 #' @param frames_pixres numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
 #' @param out_name character. Name of the output file. Default is "final_gif".
+#' @param out_format character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Format "gif" requires ImageMagick (see \code{\link{get_imconvert}}), all other video formats require FFmpeg to be installed.
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
 #' @param stats_create logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.
-#' @param conv_cmd character. Recommended for expert use only. Passes additional command line options to the convert command such as '-limit' for memory ressource handling. This does not affect the GIF creation from frames, but the final GIF assembling from multiple temporary GIF segments. For details, see \url{https://www.imagemagick.org/script/command-line-options.php}.
-#' @param conv_frames numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100.
+#' @param conv_cmd character. Recommended for expert use only. Passes additional command line options to the conversion command, e.g. with a \code{convert} call adding '-limit' for memory ressource handling. For details, see check the documentations of ImageMagick \code{convert}, FFmpeg \code{ffmpeg} and libav \code{avconv}.
+#' @param conv_frames numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".
 #' @param ... optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).
 #' 
 #' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
@@ -166,16 +171,16 @@
 #' @importFrom zoo na.locf
 #' @export
 
-animate_move <- function(m, out_dir, conv_dir = "convert",
+animate_move <- function(m, out_dir, conv_dir = "",
                          paths_mode = "true_data",  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1, 
                          layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
                          layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", stats_create = FALSE, static_data = NA, static_gg = NA,
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
-                         map_elements = TRUE, time_scale = TRUE, scalebar_col = "white", north_col = "white", 
-                         frames_layout = 0, frames_nmax =  0, frames_pixres = 80, frames_interval = .04, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA,
-                         out_name = "final_gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
+                         map_elements = TRUE, time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white", north_col = "white", 
+                         frames_layout = 0, frames_nmax =  0, frames_pixres = 80, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA,
+                         out_name = "moveVis_ani", out_format = "gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
   
   #Checking for additional arguments
   arg <- list(...)
@@ -202,6 +207,10 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   s_try <- try(arg$shiny_mode); if(class(s_try) != "NULL"){shiny_mode <- arg$shiny_mode}else{shiny_mode = FALSE} #catch cmd_msg prior to function definition
   s_try <- try(arg$shiny_session); if(class(s_try)[1] != "NULL"){shiny_session <- arg$shiny_session}else{shiny_session = FALSE}
   
+  #out format
+  #s_try <- try(arg$out_format); if(class(s_try)[1] != "NULL"){out_format <- arg$out_format}else{out_format = "gif"}
+ 
+
   ## FUNCTION DEFINITION
   
   #Define output handling
@@ -395,6 +404,9 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   
   ## PREREQUISITES
   out("Checking prerequisites...",type=1)
+  
+  #Plattform dependences
+  if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
 
   if(raster_only != TRUE){ #m not needed for animate_raster()
     if(missing(m)){
@@ -435,9 +447,39 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
       setwd(temp_dir)
     }
   }
+  if(is.character(out_format) == FALSE){out("Argument 'out_format' needs to be a character object.", type = 3)}
   if(is.character(conv_dir) == FALSE){
     out("Argument 'conv_dir' needs to be a character object.",type=3)
+  }else{
+    if(out_format == "gif"){
+      if(conv_dir == ""){
+        conv_dir <- get_imconvert(nodownload = TRUE)
+      }
+      tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
+      if(tryit != 1){out(paste0("'",conv_dir,"' could not be executed. Use get_imconvert() to search for 'convert' on your system."),type=3)
+      }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
+    }else{
+      if(conv_dir == ""){
+        conv_dir.t <- c("ffmpeg","avconv")
+        tryit <- sapply(conv_dir.t, function(x){try(cmd.fun(x,ignore.stdout = TRUE,ignore.stderr = TRUE))})
+        if(length(which(tryit == 1)) == 0){out("No video converter library could be found on your system.",type=3) #BUG HERE
+        }else{
+          conv_dir <- conv_dir.t[which(tryit == 1)]
+          if(length(conv_dir > 1)){conv_dir <- conv_dir[1]}
+          out(paste0("Detected 'conv_dir' executable(s) on this system. Using: '",conv_dir,"'"),type=1)
+        }
+      }else{
+        tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
+        if(tryit == 1){out(paste0("'", conv_dir, "' could not be executed."),type=3)}
+      }
+      formats.supp <- sapply(lapply(cmd.fun(paste0(conv_dir," -formats"),intern = TRUE, ignore.stdout = FALSE, ignore.stderr = TRUE),
+                                    function(x){substring(x,5,20)}), function(x){unlist(strsplit(x, " "))[1]})
+      formats.supp <- formats.supp[5:length(formats.supp)]
+      formats.search <- which(formats.supp == out_format)
+      if(length(formats.search) == 0){out(paste0("This system's '",conv_dir,"' installation seems to not support '",out_format,"'. Use another format."),type=3)}
+    }
   }
+  
   if(is.numeric(frames_nres) == FALSE){
     out("Keyword 'frames_nres' needs to be numeric. Setting 'frames_nres' to 1.",type=2)
     frames_nres <- 1
@@ -538,10 +580,6 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
     if(length(static_data$y)==0){out("'static_data' must contain a column 'y' containing the y coordinates.",type=3)}
     if(length(static_data$names)==0){out("'static_data' must contain a variable 'names' containing the points' namings.",type=3)}
   }
-  
-  #Plattform dependences
-  if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
-  
   
   
   ## Preprocess move data
@@ -982,13 +1020,13 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   
   #Variables for progress bar
   n_loop <- length(bm.frames)-tail_elements
-  prog_bar_length <- n_loop
+  prog_bar_length <- n_loop-2
   prog_bar_elem_length <- (max(bm.gg.build$data[[1]]$xmax)-min(bm.gg.build$data[[1]]$xmin))/(prog_bar_length+1)
   for(i in 1:prog_bar_length){
     if(i == 1){prog_x_st <- min(bm.gg.build$data[[1]]$xmin)}
     else{prog_x_st <- c(prog_x_st, prog_x_st[i-1]+prog_bar_elem_length)}
   }
-  prog_x_end <- c(prog_x_st[2:prog_bar_length],(prog_x_st[prog_bar_length]+prog_bar_elem_length),max(bm.gg.build$data[[1]]$xmax))
+  prog_x_end <- c(prog_x_st[1:prog_bar_length],(prog_x_st[prog_bar_length]+prog_bar_elem_length),max(bm.gg.build$data[[1]]$xmax))
   prog_y <- max(bm.gg.build$data[[1]]$ymax)
   
   #time_scale annotation
@@ -1135,9 +1173,9 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
       else{index_list <- c(index_list,n_loop)}
     }
   }
-  if(log_level == 1 & shiny_mode == FALSE){p.out <- txtProgressBar(min = 0, max = n_loop+n_reloop, style = 3)}
+  if(log_level == 1 & shiny_mode == FALSE){p.out <- txtProgressBar(min = 0, max = n_loop-1+n_reloop, style = 3)}
   if(shiny_mode == TRUE){
-    progress <- Progress$new(shiny_session, min=1, max=n_loop+n_reloop)
+    progress <- Progress$new(shiny_session, min=1, max=n_loop-1+n_reloop)
     progress$set(message = 'Animating data\n',
                  detail = 'This may take a while...')
   }
@@ -1210,30 +1248,34 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   p.dir.na <- which(match(p.dir,NA) == 1)
   if(length(p.dir.na) != 0){p.dir <- p.dir[-p.dir.na]}
   
-  og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_interval, n = n_loop){
-    if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
-    if(shiny_mode == TRUE){progress$set(value = n+x)}
-    if(x == 1){range = c(0,il[x])}else{range = c(il[x-1], il[x])}
-    batch <- paste0('"',cd,'" ', cm,' -loop 0 -delay ',toString(fi*100),' ',paste0(d[range[1]:range[2]],collapse = " "),' out_gif',toString(x),'.gif')
+  if(out_format == "gif"){
+    og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_fps, n = n_loop){
+      if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
+      if(shiny_mode == TRUE){progress$set(value = n+x)}
+      if(x == 1){range = c(0,il[x])}else{range = c(il[x-1], il[x])}
+      
+      batch <- paste0('"',cd,'" ', cm,' -loop 0 -delay ',toString(100%/%fi),' ',paste0(d[range[1]:range[2]],collapse = " "),' out',toString(x),'.', out_format)
+      
+      if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
+      }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))}
+      file.remove("batch.bat")
+      return(paste0('out',toString(x),'.',out_format))
+    })
     
-    if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
-    }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))}
-    file.remove("batch.bat")
-    return(paste0('out_gif',toString(x),'.gif'))
-  })
-  
-  if(n_reloop > 1){
-    batch <- paste0('"',conv_dir,'" ', conv_cmd,' -loop 0 -delay ',toString(frames_interval*100),' ',paste0(og.dir,collapse = " "),' ',out_name,'.gif')
-    if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
-    }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))}
-    file.remove("batch.bat")
+    if(n_reloop > 1){
+      batch <- paste0('"',conv_dir,'" ', conv_cmd,' -loop 0 -delay ',toString(100%/%frames_fps),' ',paste0(og.dir,collapse = " "),' ',out_name,'.', out_format)
+      if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
+      }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))}
+      file.remove("batch.bat")
+    }else{
+      file.rename(paste0("out1.",out_format),paste0(out_name,".",out_format))
+    }
   }else{
-    file.rename("out_gif1.gif",paste0(out_name,".gif"))
+    quiet(cmd.fun(paste0(conv_dir,' -i ',conv_cmd,' p%d.png -r ',toString(frames_fps),' ',out_name,'.',out_format),ignore.stdout = TRUE,ignore.stderr = TRUE))
   }
   
   #Cleaning up
-  if(file.exists(paste0(out_dir,"/",out_name,".gif"))){}
-  file.copy(paste0(out_name,".gif"),paste0(out_dir,"/",out_name,".gif"), overwrite = TRUE)
+  file.copy(paste0(out_name,".",out_format),paste0(out_dir,"/",out_name,".",out_format), overwrite = TRUE)
   file.remove(list.files(temp_dir))
     
   if(log_level == 1 & shiny_mode == FALSE){close(p.out)}
@@ -1241,8 +1283,8 @@ animate_move <- function(m, out_dir, conv_dir = "convert",
   
   setwd(user_wd) #reset to user wd
   
-  if(file.exists(paste0(out_dir,'/',out_name,'.gif'))){
-    if(shiny_mode != TRUE){out(paste0("Done. '",out_name,".gif' has been saved to '",out_dir,"'."), type=1)}else{out("Finished.")}
+  if(file.exists(paste0(out_dir,'/',out_name,'.',out_format))){
+    if(shiny_mode != TRUE){out(paste0("Done. '",out_name,".",out_format,"' has been saved to '",out_dir,"'."), type=1)}else{out("Done.")}
     if(log_logical == TRUE){return(TRUE)}
   }else{
     out("animate_move failed due to unknown error.",type=3)

@@ -4,7 +4,7 @@
 \alias{animate_move}
 \title{Animate movement data}
 \usage{
-animate_move(m, out_dir, conv_dir = "convert", paths_mode = "true_data",
+animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
   paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1,
   layer = "basemap", layer_dt = "basemap", layer_int = FALSE,
   layer_type = "", layer_stretch = "none", layer_col = c("sandybrown",
@@ -14,18 +14,17 @@ animate_move(m, out_dir, conv_dir = "convert", paths_mode = "true_data",
   img_title = "title", img_sub = "subtitle", img_caption = "caption",
   img_labs = "labs", legend_title = "", legend_limits = NA,
   legend_labels = "auto", map_elements = TRUE, time_scale = TRUE,
-  scalebar_col = "white", north_col = "white", frames_layout = 0,
-  frames_nmax = 0, frames_pixres = 80, frames_interval = 0.04,
-  frames_nres = 1, frames_tres = 0, frames_width = NA,
-  frames_height = NA, out_name = "final_gif", log_level = 1,
-  log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100)
+  time_bar_col = "grey", scalebar_col = "white", north_col = "white",
+  frames_layout = 0, frames_nmax = 0, frames_pixres = 80,
+  frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA,
+  frames_height = NA, out_name = "moveVis_ani", out_format = "gif",
+  log_level = 1, log_logical = FALSE, ..., conv_cmd = "",
+  conv_frames = 100)
 }
 \arguments{
 \item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
 
 \item{out_dir}{character. Output directory for the GIF file creation.}
-
-\item{conv_dir}{character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.}
 
 \item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
 
@@ -81,6 +80,8 @@ animate_move(m, out_dir, conv_dir = "convert", paths_mode = "true_data",
 
 \item{time_scale}{logical. If\code{FALSE}, time scale is hidden. Default is \code{TRUE}.}
 
+\item{time_bar_col}{character. Colour of the time progress bar on the top edge of the map. Default is "grey".}
+
 \item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
 
 \item{north_col}{character. Colour of the north arrow. Default is "white".}
@@ -91,7 +92,7 @@ animate_move(m, out_dir, conv_dir = "convert", paths_mode = "true_data",
 
 \item{frames_pixres}{numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
-\item{frames_interval}{numeric. Duration, each frame is displayed (in seconds). Default is .04.}
+\item{frames_fps}{numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.}
 
 \item{frames_nres}{numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.}
 
@@ -103,15 +104,17 @@ animate_move(m, out_dir, conv_dir = "convert", paths_mode = "true_data",
 
 \item{out_name}{character. Name of the output file. Default is "final_gif".}
 
+\item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Format "gif" requires ImageMagick (see \code{\link{get_imconvert}}), all other video formats require FFmpeg to be installed.}
+
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
 \item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
 
 \item{...}{optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).}
 
-\item{conv_cmd}{character. Recommended for expert use only. Passes additional command line options to the convert command such as '-limit' for memory ressource handling. This does not affect the GIF creation from frames, but the final GIF assembling from multiple temporary GIF segments. For details, see \url{https://www.imagemagick.org/script/command-line-options.php}.}
+\item{conv_cmd}{character. Recommended for expert use only. Passes additional command line options to the conversion command, e.g. with a \code{convert} call adding '-limit' for memory ressource handling. For details, see check the documentations of ImageMagick \code{convert}, FFmpeg \code{ffmpeg} and libav \code{avconv}.}
 
-\item{conv_frames}{numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100.}
+\item{conv_frames}{numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".}
 }
 \value{
 None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.

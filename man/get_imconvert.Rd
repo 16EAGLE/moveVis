@@ -4,21 +4,26 @@
 \alias{get_imconvert}
 \title{Search/download and install ImageMagick}
 \usage{
-get_imconvert(dir = "auto")
+get_imconvert(dir = "auto", ...)
 }
 \arguments{
 \item{dir}{character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used. Default is "auto".}
+
+\item{...}{additional arguments. Currently not used.}
 }
 \value{
 The convert tool command line command or directory. The output can serve as \code{conv_dir} input to the \code{animate_move} function.
 }
 \description{
 \code{get_imconvert} searches for the convert tool being part of the ImageMagick software on your system (either Windows or Linux) or installs it.
-The convert tool system command or directory is needed by the \code{animate_move()} function of the \code{moveVis} package.
+The convert tool system command or directory is needed by the \code{animate_move()} function to support the \code{.gif} output format.
+}
+\details{
 If you are running Windows, the function can download and either temporarily or permanently install ImageMagick
 on your Windows system in case that no existing installation can be found. If you are running Linux,
 the function provides a root permission requiring command to be executed once by the user in the terminal
 to install ImageMagick (Linux), if ImageMagick is not installed. On standard Ubuntu distributions, ImageMagick belongs to the preinstalled packages by default.
+If you are running macOS (former OSX), please install ImageMagick manually from \url{https://www.imagemagick.org/script/download.php} or via a package manager such as 'brew'.
 }
 \examples{
 conv_dir <- get_imconvert()
