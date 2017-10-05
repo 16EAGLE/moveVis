@@ -1,13 +1,23 @@
 ----------------------------------------------------------
 moveVis 0.9.6 BETA (not on CRAN yet)
-bug fixes, performance increasing, interpolation
+automatic preprocessing, video support, performance increase, bug fixes
 -----------------------------------------------------------
+New functions:
+ + get_libraries() handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be code for compatibility reasons
+ + get_formats() outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.
+
 New features:
+ + moveVis supports now multiple video formats in addition to GIF, if it is linked to a video library (either FFmpeg of libav)
  + animate_move() now detects temporal resolution and uniformity of timestamps automatically to determine, if interpolation needs to be applied to calculate uniform frame times per frame tick
  + added animate_move() argument "frames_tres" to change temporal resolution through linear interpolation
  + added animate_move() argument "frames_pixres" to adjust frame ppi
+ + added animate_move() argument "paths_na.hold" for defining how to deal with data gaps (hold or not hold last path location)
+ + added animate_move() argument "time_bar_col" for changing colouring of the time bar at the top border of the map
+ + added animate_move() argument "out_format" for defining output file format
  
 Improvements:
+ + in some situations, the movement data extent was bigger than the cropped layer extent: this works now
+ + in some situations, stat animation lines were cut off, this should be resolved now
  + recoding of multiple processing steps to increase processing speed and stability
  + increased error handler by several errors likely to occure
  + several bug fixes
