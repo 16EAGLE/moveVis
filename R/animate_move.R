@@ -4,7 +4,7 @@
 #'
 #' @param m list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
 #' @param out_dir character. Output directory for the GIF file creation.
-#' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. specify command of or path to the \code{ffmpeg} or \code{avconv} tool. You can use \code{get_libraries} to find or download/install \code{ffmpeg} or \code{avconv}.
+#' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. You can use \code{get_libraries} to find or download/install \code{ffmpeg} or \code{avconv}.
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
 #' @param layer_dt POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
@@ -460,7 +460,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
         if(conv_dir == ""){
           conv_dir.t <- c("ffmpeg","avconv")
           tryit <- sapply(conv_dir.t, function(x){try(cmd.fun(x,ignore.stdout = TRUE,ignore.stderr = TRUE))})
-          if(length(which(tryit == 1)) == 0){out("No video converter library could be found on your system.",type=3) #BUG HERE
+          if(length(which(tryit == 1)) == 0){out("No video converter library could be found on your system.",type=3)
           }else{
             conv_dir <- conv_dir.t[which(tryit == 1)]
             if(length(conv_dir > 1)){conv_dir <- conv_dir[1]}
