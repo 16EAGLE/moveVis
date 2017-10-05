@@ -1,41 +1,14 @@
 #' Animate raster data
 #'
-#' \code{animate_raster} animates raster data provided as list of \code{raster} class objects. The function creates an animated GIF file and saves it into the output directory.
+#' \code{animate_raster} animates raster data provided as list of \code{raster} class objects. The function creates an animated GIF or video file and saves it into the output directory.
 #'
+#' @inheritParams animate_move
 #' @param layer list. List of raster objects.
 #' @param layer_dt POSIXct or vector. Optional vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects to display a time scale.
-#' @param layer_type charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class object), "\code{gradient}" or "\code{discrete}". Default is "\code{gradient}".
-#' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
-#' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
-#' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
-#' @param static_data data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options. 
-#' @param static_gg character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.
-#' @param out_dir character. Output directory for the GIF file creation.
-#' @param conv_dir character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.
-#' @param img_title character. Titel to be displayed above the animated plot. If not specified, no title will be displayed.
-#' @param img_sub character. Subtitel to be displayed underneath the title. If not specified, no subtitle will be displayed.
-#' @param img_caption character. Caption to be displayed underneath the plot. If not specified, no caption will be displayed.
-#' @param img_labs character. Axis titles to be displayed at the x and y axis of the plot. If not specified, labs will be computed depending on the projection or will be "x" and "y".
-#' @param legend_title character. Title to be displayed above the basemap layer legend (if layer_type is not \code{"RGB"}). Ignored, if \code{layer = "basemap"}.
-#' @param legend_limits numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".
-#' @param legend_labels character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".
-#' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
-#' @param scalebar_col character. Colour of the scalebar text. Default is "white".
-#' @param north_col character. Colour of the north arrow. Default is "white".
-#' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
-#' @param frames_interval numeric. Duration, each frame is displayed (in seconds). Default is .04.
-#' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
-#' @param frames_width numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).
-#' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
-#' @param frames_pixres numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
-#' @param out_name character. Name of the output file. Default is "final_gif".
-#' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
-#' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
-#' @param ... optional arguments.
+#'  
+#' @return None or logical (see \code{log_logical}). The output GIF or video file is written to the ouput directory.
 #' 
-#' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
-#' 
-#' @details \code{animate_raster} is partly based on the \code{animation} package and needs the \code{convert} tool of the \code{ImageMagick} software package to assemble the GIF file. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
+#' @details \code{animate_raster} is based on \code{ggplot2}. Depending on the selected output format (\code{out_format}, it either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
 #' 
 #' @examples
 #' \dontrun{
@@ -44,7 +17,7 @@
 #' layer <- list(raster1, raster2, raster2)
 #' 
 #' #Get your convert directory/command
-#' conv_dir <- get_imconvert()
+#' conv_dir <- get_libraries()
 #' 
 #' #Specify the output directory, e.g.
 #' out_dir <- "/out/test"
@@ -53,11 +26,16 @@
 #' dir.create(out_dir)
 #' 
 #' #Call animate_raster
-#' animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB")
+#' animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB",
+#'                out_format = "gif")
+#'                
+#' #use another file format for longer videos
+#' animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB",
+#'                out_format = "mov")
 #' }
 #' 
 #' @author Jakob Schwalb-Willmann
-#' @seealso \code{\link{get_imconvert}}
+#' @seealso \code{\link{get_libraries}}, \code{\link{animate_move}}, 
 #' 
 #' @export
 
@@ -66,9 +44,9 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = 0, l
                            static_data = NA, static_gg = NA,
                            img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                            legend_title = "", legend_limits = NA, legend_labels = "auto",
-                           map_elements = TRUE, scalebar_col = "white", north_col = "white",
-                           frames_nmax =  0, frames_interval = .04, frames_nres = 1, frames_width = NA, frames_height = NA, frames_pixres = 80,
-                           out_name = "final_gif", log_level = 1, log_logical = FALSE, ...){
+                           map_elements = TRUE, time_bar_col = "grey", scalebar_col = "white", north_col = "white",
+                           frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_width = NA, frames_height = NA, frames_pixres = 80,
+                           out_name = "moveVis_ani", out_format = "gif", log_level = 1, log_logical = FALSE, conv_cmd = "", conv_frames = 100){
   if(layer_dt == 0){
     time_scale <- FALSE
     layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))
@@ -82,7 +60,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = 0, l
                layer_col = layer_col, layer_nacol = layer_nacol, static_data = static_data, static_gg = static_gg,
                img_title = img_title, img_sub = img_sub, img_caption = img_caption, img_labs = img_labs,
                legend_title = legend_title, legend_limits = legend_limits, legend_labels = legend_labels,
-               map_elements = map_elements, scalebar_col = scalebar_col, north_col = north_col, time_scale = time_scale,
-               frames_nmax =  frames_nmax, frames_interval = frames_interval, frames_nres = frames_nres, frames_width = frames_width, frames_height = frames_height,
-               out_name = out_name, log_level = log_level, log_logical = log_logical)
+               map_elements = map_elements, time_bar_col = time_bar_col, scalebar_col = scalebar_col, north_col = north_col, time_scale = time_scale,
+               frames_nmax =  frames_nmax, frames_fps = frames_fps, frames_nres = frames_nres, frames_width = frames_width, frames_height = frames_height,
+               out_name = out_name, out_format = out_format, log_level = log_level, log_logical = log_logical, conv_cmd = conv_cmd, conv_frames = conv_frames)
 }

@@ -15,18 +15,18 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
   img_labs = "labs", legend_title = "", legend_limits = NA,
   legend_labels = "auto", map_elements = TRUE, time_scale = TRUE,
   time_bar_col = "grey", scalebar_col = "white", north_col = "white",
-  frames_layout = 0, frames_nmax = 0, frames_pixres = 80,
-  frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA,
-  frames_height = NA, out_name = "moveVis_ani", out_format = "gif",
+  frames_layout = 0, frames_nmax = 0, frames_fps = 25, frames_nres = 1,
+  frames_tres = 0, frames_width = NA, frames_height = NA,
+  frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif",
   log_level = 1, log_logical = FALSE, ..., conv_cmd = "",
   conv_frames = 100)
 }
 \arguments{
 \item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
 
-\item{out_dir}{character. Output directory for the GIF file creation.}
+\item{out_dir}{character. Output directory of the output file.}
 
-\item{conv_dir}{character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. specify command of or path to the \code{ffmpeg} or \code{avconv} tool. You can use \code{get_libraries} to find or download/install \code{ffmpeg} or \code{avconv}.}
+\item{conv_dir}{character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. See also \code{\link{get_libraries}}. If not specified, animate_move() trys to find libraries automatically.}
 
 \item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
 
@@ -54,7 +54,7 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{stats_create}{logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.}
 
-\item{static_data}{data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.}
+\item{static_data}{data.frame. Data (e.g. static points) to be displayed within the spatial plot of the output animation. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.}
 
 \item{static_gg}{character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.}
 
@@ -80,7 +80,7 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{map_elements}{logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.}
 
-\item{time_scale}{logical. If\code{FALSE}, time scale is hidden. Default is \code{TRUE}.}
+\item{time_scale}{logical. If \code{FALSE}, time scale is hidden. Default is \code{TRUE}.}
 
 \item{time_bar_col}{character. Colour of the time progress bar on the top edge of the map. Default is "grey".}
 
@@ -88,11 +88,9 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{north_col}{character. Colour of the north arrow. Default is "white".}
 
-\item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
+\item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix representing the GIF/video frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
 
 \item{frames_nmax}{numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).}
-
-\item{frames_pixres}{numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
 \item{frames_fps}{numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.}
 
@@ -104,9 +102,11 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
 
-\item{out_name}{character. Name of the output file. Default is "final_gif".}
+\item{frames_pixres}{numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
-\item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Format "gif" requires ImageMagick (see \code{\link{get_imconvert}}), all other video formats require FFmpeg to be installed.}
+\item{out_name}{character. Name of the output file. Default is "moveVis_ani".}
+
+\item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
 
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
@@ -116,16 +116,16 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{conv_cmd}{character. Recommended for expert use only. Passes additional command line options to the conversion command, e.g. with a \code{convert} call adding '-limit' for memory ressource handling. For details, see check the documentations of ImageMagick \code{convert}, FFmpeg \code{ffmpeg} and libav \code{avconv}.}
 
-\item{conv_frames}{numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".}
+\item{conv_frames}{numeric. Recommended for expert use only. Only used, if \code{out_format = "gif"}. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".}
 }
 \value{
-None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
+None or logical (see \code{log_logical}). The output file is written to the ouput directory.
 }
 \description{
-\code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}).
+\code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF or video file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}).
 }
 \details{
-\code{animate_move} is based on \code{ggplot2} and partly based on the \code{animation} package. It needs the \code{convert} tool of the \code{ImageMagick} software package to assemble GIF files. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
+\code{animate_move} is based on \code{ggplot2}. It preprocesses yout move data depending on the state of the data (see \code{paths_mode} and \code{frames_tres}). Depending on the selected output format (\code{out_format}, it either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
 }
 \examples{
 
@@ -144,7 +144,7 @@ m <- move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
                  time = move_data$dt, animal=move_data$individual, data=move_data)
 
 #Find the command or directory to convert tool of ImageMagick
-conv_dir <- get_imconvert()
+conv_dir <- get_libraries()
 
 #Specify the output directory, e.g.
 out_dir <- "/out/test"
@@ -158,27 +158,31 @@ img_sub <- paste0("including individuals ",paste(rownames(idData(m)), collapse='
 img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 
 #Call animate_move() with an automatic basemap from Google, maximum frames at 50
+#output format "gif"
 animate_move(m, out_dir, conv_dir, tail_elements = 10,
              paths_mode = "true_data", frames_nmax = 50,
              img_caption = img_caption, img_title = img_title,
-             img_sub = img_sub, log_level = 1, extent_factor = 0.0002)
+             img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
+             out_format = "gif")
  
 #Improve your animation by adding a static points layer
 static_data <- data.frame(x = c(8.94,8.943), y = c(47.75,47.753), names = c("Site 1","Site 2"))
 
 #Call animate_move() with "static_data" added
+#use another output format, e.g. "mov"
 animate_move(m, out_dir, conv_dir, tail_elements = 10,
              paths_mode = "true_data", frames_nmax = 50,
              img_caption = img_caption, img_title = img_title,
              img_sub = img_sub, log_level = 1, extent_factor = 0.0002, 
-             static_data=static_data)
+             static_data=static_data, out_format = "mov")
              
 #Try a different paths_mode: Instead of "true_data" use "simple"
+#output format "mp4". Longer videos then 100-200 frames should not be GIFs
 animate_move(m, out_dir, conv_dir, tail_elements = 10,
              paths_mode = "simple", frames_nmax = 50,
              img_caption = img_caption, img_title = img_title,
              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
-             static_data=static_data)
+             static_data=static_data, out_format = "mp4")
  
 #Use your own basemap by adding lists of rasters and of timestamps
 data("basemap_data")
@@ -202,7 +206,7 @@ animate_move(m, out_dir, conv_dir, tail_elements = 10, layer_type = "gradient",
 
 #If you just want those stats plots, use animate_stats()
 
-#Use "frames_layout" to change the layout of your GIF
+#Use "frames_layout" to change the layout of your animation
 #e.g. change the position of st_all and st_per
 frames_layout <-  rbind(c("map","map","map","st_all","st_leg"),
                         c("map","map","map","st_per","st_leg"))
@@ -219,7 +223,7 @@ animate_move(m, out_dir, conv_dir, tail_elements = 10, layer_type = "gradient",
 
 }
 \seealso{
-\code{\link{get_imconvert}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
+\code{\link{get_libraries}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
 }
 \author{
 Jakob Schwalb-Willmann

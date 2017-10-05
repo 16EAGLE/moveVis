@@ -1,10 +1,10 @@
 #' Animate movement data
 #'
-#' \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}). 
+#' \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF or video file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}). 
 #'
 #' @param m list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
-#' @param out_dir character. Output directory for the GIF file creation.
-#' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. You can use \code{get_libraries} to find or download/install \code{ffmpeg} or \code{avconv}.
+#' @param out_dir character. Output directory of the output file.
+#' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. See also \code{\link{get_libraries}}. If not specified, animate_move() trys to find libraries automatically.
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
 #' @param layer_dt POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
@@ -13,7 +13,7 @@
 #' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
 #' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
 #' @param map_type character.  Static basemap type. Chosse from "roadmap", "satellite", "hybrid", "terrain".
-#' @param static_data data.frame. Data (e.g. static points) to be displayed within the spatial plot of the GIF output. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options. 
+#' @param static_data data.frame. Data (e.g. static points) to be displayed within the spatial plot of the output animation. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options. 
 #' @param static_gg character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.
 #' @param tail_elements numeric. Number of points to be displayed as path tail of the animation paths. Default is 10.
 #' @param tail_size numeric. Size of the first tail element. Default is 4.
@@ -26,7 +26,7 @@
 #' @param legend_labels character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
 #' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
-#' @param time_scale logical. If\code{FALSE}, time scale is hidden. Default is \code{TRUE}.
+#' @param time_scale logical. If \code{FALSE}, time scale is hidden. Default is \code{TRUE}.
 #' @param time_bar_col character. Colour of the time progress bar on the top edge of the map. Default is "grey".
 #' @param extent_factor numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".
 #' @param north_col character. Colour of the north arrow. Default is "white".
@@ -34,26 +34,26 @@
 #' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
 #' @param paths_mode character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".
 #' @param paths_na.hold logical. If TRUE, last path location is being hold on frame for NA path locations. If FALSE, path disappears until next path non-NA location. Default is TRUE.
-#' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
+#' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix representing the GIF/video frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_fps numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.
 #' @param frames_nres numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.
 #' @param frames_tres numeric. Defines temporal output resolution in seconds, 'm' should be interpolated to (linear interpolation). If 0, temporal resolution is detected automatically. Default is 0.
 #' @param frames_width numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).
 #' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
-#' @param frames_pixres numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
-#' @param out_name character. Name of the output file. Default is "final_gif".
-#' @param out_format character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Format "gif" requires ImageMagick (see \code{\link{get_imconvert}}), all other video formats require FFmpeg to be installed.
+#' @param frames_pixres numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
+#' @param out_name character. Name of the output file. Default is "moveVis_ani".
+#' @param out_format character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
 #' @param stats_create logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.
 #' @param conv_cmd character. Recommended for expert use only. Passes additional command line options to the conversion command, e.g. with a \code{convert} call adding '-limit' for memory ressource handling. For details, see check the documentations of ImageMagick \code{convert}, FFmpeg \code{ffmpeg} and libav \code{avconv}.
-#' @param conv_frames numeric. Recommended for expert use only. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".
+#' @param conv_frames numeric. Recommended for expert use only. Only used, if \code{out_format = "gif"}. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".
 #' @param ... optional arguments. All arguments taken by \code{\link{animate_stats}} can be handed over to \code{\link{animate_move}} as well to create sidy-by-side spatial and statistic plot animations (see \code{\link{animate_stats}}).
 #' 
-#' @return None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
+#' @return None or logical (see \code{log_logical}). The output file is written to the ouput directory.
 #' 
-#' @details \code{animate_move} is based on \code{ggplot2} and partly based on the \code{animation} package. It needs the \code{convert} tool of the \code{ImageMagick} software package to assemble GIF files. The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_imconvert}} to search for the convert command/tool directory on your system or to automatically download and install the required software. See \code{\link{get_imconvert}} for details.
+#' @details \code{animate_move} is based on \code{ggplot2}. It preprocesses yout move data depending on the state of the data (see \code{paths_mode} and \code{frames_tres}). Depending on the selected output format (\code{out_format}, it either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
 #' 
 #' @examples
 #' 
@@ -72,7 +72,7 @@
 #'                  time = move_data$dt, animal=move_data$individual, data=move_data)
 #' 
 #' #Find the command or directory to convert tool of ImageMagick
-#' conv_dir <- get_imconvert()
+#' conv_dir <- get_libraries()
 #' 
 #' #Specify the output directory, e.g.
 #' out_dir <- "/out/test"
@@ -86,27 +86,31 @@
 #' img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 #' 
 #' #Call animate_move() with an automatic basemap from Google, maximum frames at 50
+#' #output format "gif"
 #' animate_move(m, out_dir, conv_dir, tail_elements = 10,
 #'              paths_mode = "true_data", frames_nmax = 50,
 #'              img_caption = img_caption, img_title = img_title,
-#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002)
+#'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
+#'              out_format = "gif")
 #'  
 #' #Improve your animation by adding a static points layer
 #' static_data <- data.frame(x = c(8.94,8.943), y = c(47.75,47.753), names = c("Site 1","Site 2"))
 #' 
 #' #Call animate_move() with "static_data" added
+#' #use another output format, e.g. "mov"
 #' animate_move(m, out_dir, conv_dir, tail_elements = 10,
 #'              paths_mode = "true_data", frames_nmax = 50,
 #'              img_caption = img_caption, img_title = img_title,
 #'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002, 
-#'              static_data=static_data)
+#'              static_data=static_data, out_format = "mov")
 #'              
 #' #Try a different paths_mode: Instead of "true_data" use "simple"
+#' #output format "mp4". Longer videos then 100-200 frames should not be GIFs
 #' animate_move(m, out_dir, conv_dir, tail_elements = 10,
 #'              paths_mode = "simple", frames_nmax = 50,
 #'              img_caption = img_caption, img_title = img_title,
 #'              img_sub = img_sub, log_level = 1, extent_factor = 0.0002,
-#'              static_data=static_data)
+#'              static_data=static_data, out_format = "mp4")
 #'  
 #' #Use your own basemap by adding lists of rasters and of timestamps
 #' data("basemap_data")
@@ -130,7 +134,7 @@
 #'
 #' #If you just want those stats plots, use animate_stats()
 #' 
-#' #Use "frames_layout" to change the layout of your GIF
+#' #Use "frames_layout" to change the layout of your animation
 #' #e.g. change the position of st_all and st_per
 #' frames_layout <-  rbind(c("map","map","map","st_all","st_leg"),
 #'                         c("map","map","map","st_per","st_leg"))
@@ -146,7 +150,7 @@
 #' }
 #'
 #' @author Jakob Schwalb-Willmann
-#' @seealso \code{\link{get_imconvert}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
+#' @seealso \code{\link{get_libraries}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
 #' 
 #' @import ggplot2
 #' @importFrom raster nlayers crs extent projectRaster raster getValues setValues rasterToPoints res crop extract unstack sampleRegular brick ncell stack
@@ -166,6 +170,7 @@
 #' @importFrom simecol approxTime
 #' @importFrom plyr ldply
 #' @importFrom zoo na.locf
+#'  
 #' @export
 
 animate_move <- function(m, out_dir, conv_dir = "",
@@ -176,7 +181,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
                          map_elements = TRUE, time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white", north_col = "white", 
-                         frames_layout = 0, frames_nmax =  0, frames_pixres = 80, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA,
+                         frames_layout = 0, frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA, frames_pixres = 80,
                          out_name = "moveVis_ani", out_format = "gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
   
   #Checking for additional arguments
@@ -450,30 +455,35 @@ animate_move <- function(m, out_dir, conv_dir = "",
       out("Argument 'conv_dir' needs to be a character object.",type=3)
     }else{
       if(out_format == "gif"){
-        if(conv_dir == ""){
-          conv_dir <- get_imconvert(nodownload = TRUE)
+        if(length(conv_dir) > 1){
+          if(length(grep("convert",conv_dir)) != 0){
+            conv_dir <- conv_dir[grep("convert",conv_dir)]
+          }else{
+            out(paste0("Could not detect the 'convert' tool from 'conv_dir'. '",paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '",out_format,"'"),type=2)
+          }
         }
+        if(conv_dir == ""){conv_dir <- get_libraries(lib.tool = "convert", nodownload = TRUE, log_level = 3)}
         tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
-        if(tryit != 1){out(paste0("'",conv_dir,"' could not be executed. Use get_imconvert() to search for 'convert' on your system."),type=3)
+        if(tryit != 1){out(paste0("'",conv_dir,"' could not be executed. Use get_libraries() to search for 'convert' on your system or to install the required library (ImageMagick)."),type=3)
         }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
       }else{
-        if(conv_dir == ""){
-          conv_dir.t <- c("ffmpeg","avconv")
-          tryit <- sapply(conv_dir.t, function(x){try(cmd.fun(x,ignore.stdout = TRUE,ignore.stderr = TRUE))})
-          if(length(which(tryit == 1)) == 0){out("No video converter library could be found on your system.",type=3)
+        if(length(conv_dir) > 1){
+          if(length(grep("ffmpeg",conv_dir)) != 0){
+            conv_dir <- conv_dir[grep("ffmpeg",conv_dir)]
           }else{
-            conv_dir <- conv_dir.t[which(tryit == 1)]
-            if(length(conv_dir > 1)){conv_dir <- conv_dir[1]}
-            out(paste0("Detected 'conv_dir' executable(s) on this system. Using: '",conv_dir,"'"),type=1)
+            if(length(grep("avconc",conv_dir)) != 0){
+              conv_dir <- conv_dir[grep("avconv",conv_dir)]
+            }else{
+              out(paste0("Could not detect the 'ffmpeg' or 'avconv' tool from 'conv_dir'. '",paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '",out_format,"'"),type=2)
+            }
           }
-        }else{
-          tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
-          if(tryit == 1){out(paste0("'", conv_dir, "' could not be executed."),type=3)}
         }
-        formats.supp <- sapply(lapply(cmd.fun(paste0(conv_dir," -formats"),intern = TRUE, ignore.stdout = FALSE, ignore.stderr = TRUE),
-                                      function(x){substring(x,5,20)}), function(x){unlist(strsplit(x, " "))[1]})
-        formats.supp <- formats.supp[5:length(formats.supp)]
-        formats.search <- which(formats.supp == out_format)
+        if(conv_dir == ""){conv_dir <- get_libraries(lib.tool = c("ffmpeg","avconv"), nodownload = TRUE, log_level = 3)[1]}
+        tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
+        if(tryit > 1){out(paste0("'", conv_dir, "' could not be executed. Use get_libraries() to search for 'ffmpeg'/'avconv' on your system or to install the required libraries (FFmpeg, libav)."),type=3)
+        }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
+        
+        formats.search <- which(get_formats(conv_dir) == out_format)
         if(length(formats.search) == 0){out(paste0("This system's '",conv_dir,"' installation seems to not support '",out_format,"'. Use another format."),type=3)}
       }
     }
@@ -1174,7 +1184,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   }
   if(log_level == 1 & shiny_mode == FALSE){p.out <- txtProgressBar(min = 0, max = n_loop-1+n_reloop, style = 3)}
   if(shiny_mode == "ani"){
-    progress <- Progress$new(shiny_session, min=1, max=n_loop-1+n_reloop)
+    progress <- shiny::Progress$new(shiny_session, min=1, max=n_loop-1+n_reloop)
     progress$set(message = 'Animating data\n',
                  detail = 'This may take a while...')
   }
@@ -1196,7 +1206,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   
   p.dir <- quiet(sapply(seq(1:(length(global.times)-tail_elements)), function(x, ld = in.data.list, lp = in.plt.list, lc = in.cond.list, dir = temp_dir){ #length(global.times)
     if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, x)}
-    if(shiny_mode == "ani"){progress$set(value = x)}
+    if(shiny_mode == "ani"){shiny::Progress$set(value = x)}
     
     prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[x],prog_y))
     colnames(prog_bar) <- c("x","y")
@@ -1250,7 +1260,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   if(out_format == "gif"){
     og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_fps, n = n_loop){
       if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
-      if(shiny_mode == "ani"){progress$set(value = n+x)}
+      if(shiny_mode == "ani"){shiny::Progress$set(value = n+x)}
       if(x == 1){range = c(0,il[x])}else{range = c(il[x-1], il[x])}
       
       batch <- paste0('"',cd,'" ', cm,' -loop 0 -delay ',toString(100%/%fi),' ',paste0(d[range[1]:range[2]],collapse = " "),' out',toString(x),'.', out_format)
@@ -1278,7 +1288,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   file.remove(list.files(temp_dir))
     
   if(log_level == 1 & shiny_mode == FALSE){close(p.out)}
-  if(shiny_mode == "ani"){progress$close()}
+  if(shiny_mode == "ani"){shiny::Progress$close()}
   
   setwd(user_wd) #reset to user wd
   

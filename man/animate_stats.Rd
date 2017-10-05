@@ -8,31 +8,31 @@ animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
   val_limits = NA, paths_col = "auto", paths_mode = "true_data",
   stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
-  stats_title = "", frames_layout = 0, frames_nmax = 0,
-  frames_interval = 0.04, frames_nres = 1, frames_tres = 0,
-  frames_width = 800, frames_height = 300, frames_pixres = 80,
-  out_name = "final_gif", log_level = 1, log_logical = FALSE, ...)
+  stats_title = "", frames_layout = 0, frames_nmax = 0, frames_fps = 25,
+  frames_nres = 1, frames_tres = 0, frames_width = 800,
+  frames_height = 300, frames_pixres = 80, out_name = "moveVis_ani",
+  out_format = "gif", log_level = 1, log_logical = FALSE)
 }
 \arguments{
 \item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
 
-\item{out_dir}{character. Output directory for the GIF file creation.}
+\item{out_dir}{character. Output directory of the output file.}
 
-\item{conv_dir}{character. Command or directory to call the ImageMagick convert tool (default to be \code{convert}). You can use \code{conv_dir = get_imconvert()} to search for the right command/tool directory and/or get the required software.}
+\item{conv_dir}{character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. See also \code{\link{get_libraries}}. If not specified, animate_move() trys to find libraries automatically.}
 
-\item{layer}{raster, list or character. Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
+\item{layer}{raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
 
-\item{layer_dt}{POSIXct or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.}
+\item{layer_dt}{POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.}
 
 \item{layer_int}{logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.}
 
-\item{layer_type}{charachter. Layer type. Can be either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.}
+\item{layer_type}{charachter. Layer type. Either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.}
 
-\item{val_limits}{numeric vector. Fixed minimum and maximum limit values of the basemap value range (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".}
+\item{val_limits}{numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".}
 
 \item{paths_col}{character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.}
 
-\item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. See \code{\link{animate_move}} for details. Default is "true_data".}
+\item{paths_mode}{character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".}
 
 \item{stats_type}{character. Defines which standard plot design should be used. Select either "line" or "bar". Ignored, if \code{stats_gg} is used.}
 
@@ -44,35 +44,35 @@ animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{stats_title}{character vector. Optional plot titles. Two character strings within a vector.}
 
-\item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix represnting the GIF frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
+\item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix representing the GIF/video frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
 
 \item{frames_nmax}{numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).}
 
-\item{frames_interval}{numeric. Duration, each frame is displayed (in seconds). Default is .04.}
+\item{frames_fps}{numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.}
 
 \item{frames_nres}{numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.}
 
 \item{frames_tres}{numeric. Defines temporal output resolution in seconds, 'm' should be interpolated to (linear interpolation). If 0, temporal resolution is detected automatically. Default is 0.}
 
-\item{frames_width}{numeric. Number of pixels of frame width. Default is 600.}
+\item{frames_width}{numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).}
 
 \item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
 
-\item{frames_pixres}{numeric. Resolution of output GIF in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
+\item{frames_pixres}{numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
-\item{out_name}{character. Name of the output file. Default is "final_gif".}
+\item{out_name}{character. Name of the output file. Default is "moveVis_ani".}
+
+\item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
 
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
-\item{log_logical}{logical. For large processing schemes. If TRUE, the function returns TRUE when finished processing succesfully.}
-
-\item{...}{optional arguments.}
+\item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
 }
 \value{
-None or logical (see \code{log_logical}). The output GIF file is written to the ouput directory.
+None or logical (see \code{log_logical}). The output GIF or video file is written to the ouput directory.
 }
 \description{
-\code{animate_stats} animates statistic plot from movement data provided as \code{move} class objects or a list of them and basemap data provided as \code{raster}. It extracts basemap values of pixels that are part of the movement paths and visualizes frequencies per value. The function creates an animated GIF file and saves it into the output directory. See also \code{\link{animate_move}}.
+\code{animate_stats} animates statistic plot from movement data provided as \code{move} class objects or a list of them and basemap data provided as \code{raster}. It extracts basemap values of pixels that are part of the movement paths and visualizes frequencies per value. The function creates an animated GIF or video file and saves it into the output directory. See also \code{\link{animate_move}}.
 }
 \details{
 \code{animate_stats} is a wrapper function of \code{\link{animate_move}} to create single statistic plots without spatial plotting. For statistic plot animations sidy-by-side with spatial plot animations, use \code{\link{animate_move}} (see \code{stats_create} argument). The function can handle all arguments taken by \code{animate_stats} as well.
@@ -98,7 +98,7 @@ layer = basemap_data[[1]]
 layer_dt = basemap_data[[2]]
 
 #Find command or directory to convert tool of ImageMagick
-conv_dir <- get_imconvert()
+conv_dir <- get_libraries()
 
 #Specify the output directory, e.g.
 out_dir <- "/out/test"
@@ -110,7 +110,7 @@ dir.create(out_dir)
 #Call animate_stats()
 animate_stats(data_ani, out_dir, conv_dir = conv_dir,
               layer=layer, layer_dt = layer_dt, layer_type = "gradient",
-              stats_digits = 1, stats_type = "bar", out_name = "final_gif",
+              stats_digits = 1, stats_type = "bar", out_name = "moveVis_ani",
               log_level = 1,frames_nmax = 60)
               
 #Define your own ggplot2 plot design
@@ -127,13 +127,13 @@ stats_gg <- 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~
 #Call animate_stats() with stats_gg
 animate_stats(data_ani, out_dir, conv_dir = conv_dir,
               layer=layer, layer_dt = layer_dt, layer_type = "gradient",
-              stats_digits = 1, stats_gg = stats_gg, out_name = "final_gif",
+              stats_digits = 1, stats_gg = stats_gg, out_name = "moveVis_ani",
               log_level = 1,frames_nmax = 60)
 }
 
 }
 \seealso{
-\code{\link{get_imconvert}}
+\code{\link{get_libraries}}
 }
 \author{
 Jakob Schwalb-Willmann

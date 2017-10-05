@@ -21,7 +21,9 @@
 #' 
 #' \code{\link{animate_raster}}, which can create animated spatial plots of basemap data as GIF file.
 #' 
-#' \code{\link{get_imconvert}}, a helper function to locate/download/install the convert tool ofImageMagick needed for assembling the GIF files.
+#' \code{\link{get_libraries}}, a helper function to locate/download/install the extern libraries ImageMagick, FFmpeg and libav and their tools, which are needed for different output file format support.
+#' 
+#' \code{\link{get_formats}}, a helper function which returns all available output file formats (system-dependent).
 #' 
 #' @seealso \code{\link{animate_move}}
 #' @author Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann jakob@schwalb-willmann.de
