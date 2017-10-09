@@ -1,9 +1,9 @@
-#' Detect and/or download and install libraries needed by moveVis
+#' Detect and/or download and install extern system libraries needed by moveVis
 #'
 #' \code{get_libraries} trys to detect the libraries on your system that are needed by moveVis to be able to deal with different output file formats. get_libraries() searches for'convert' form the ImageMagick library (needed for .gif support), 'ffmpeg' from the FFmpeg library or 'avconv' from the 'libav-tools' library (both needed for video support).
 #' You can execute get_libraries() to make sure, these libraries are correctly installed on your system. It is recommended to have ImageMagick including 'convert' and FFmpeg including 'ffmpeg' installed to gain support of all available output file formats. The function's return can serve as \code{conv_dir} input to the animate_move() function.
 #'  
-#' \code{get_imconvert} is an alias function of \code{get_libraries} that does the same as \code{get_libraries}, but is just checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
+#' \code{get_imconvert} is an alias function of \code{get_libraries} inlcuded for compatibility reasons that does the same as \code{get_libraries}, but is only checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
 #'  
 #' @param lib.tool character. Vector of libraries to look for. This can be either 'convert', 'ffmpeg', 'avconv' or a combination. Default is "all" to check for all possible libraries.
 #' @param dir character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used. Default is "auto".
@@ -61,7 +61,8 @@ get_libraries <- function(lib.tool = "all", dir = "auto", ...){
       }else{message(paste0(signs[1],input))}}}}
   }
   
-  if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
+  #if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
+  cmd.fun <- system
   if(dir == "auto"){dir <- tempdir()}
   
   lib.avail <- c("convert", "avconv", "ffmpeg")
@@ -70,8 +71,8 @@ get_libraries <- function(lib.tool = "all", dir = "auto", ...){
     out(paste0("'",paste(lib.tool, collapse = ", "),"' is not supported by moveVis. Argument 'lib.tool' can be either 'all' or 'convert', 'ffmpeg', 'avconv' or a combination of the latter three."),type=3)}
   }
   
-  try.lib <- sapply(lib.tool, function(x){try(cmd.fun(x,ignore.stdout = TRUE,ignore.stderr = TRUE))})
-  try.lib.which <- which(try.lib > 1)
+  try.lib <- sapply(lib.tool, function(x){quiet(try(cmd.fun(x,ignore.stdout = TRUE,ignore.stderr = TRUE)))})
+  try.lib.which <- which(try.lib > 100)
   
   if(length(try.lib.which) == 0){lib.found <- lib.tool
   }else{lib.found <- lib.tool[-try.lib.which]}
@@ -104,18 +105,16 @@ get_libraries <- function(lib.tool = "all", dir = "auto", ...){
     }  
   }
   if(is.na(match("ffmpeg", lib.notfound)) == FALSE){
-    #ffmpeg install process
-    out("No FFmpeg installation could be found. Please install manually. On Linux, open the terminal, enter 'sudo apt-get install ffmpeg'.
-          On other systems, install manually from 'https://www.ffmpeg.org/download.html'.",type=2)
-  }
-  if(is.na(match("avconv", lib.notfound)) == FALSE){
-    #libav install process
-    out("No libav installation could be found. Please install manually. On Linux, open the terminal, enter 'sudo apt-get install libav-tools'.
-          On other systems, install manually from 'https://libav.org/download/'.",type=2)
+    if(is.na(match("avconv", lib.notfound)) == FALSE){
+      #libav install process
+      out("No FFmpeg or libav installation could be found. Please install manually.",type=2)
+      out("On Linux, open the terminal, enter 'sudo apt-get install ffmpeg' for ffmpeg or 'sudo apt-get install libav-tools' for avconv.",type=1)
+      out("On other systems, install manually from 'https://www.ffmpeg.org/download.html' or 'https://libav.org/download/'.",type=1)
+    }
   }
   
   if(length(lib.found) != 0){out(paste0("Detected library commands on this system: ",paste0(lib.found, collapse = ", ")))}
-  if(length(lib.notfound) != 0){
+  if(length(grep("convert",lib.notfound)) == 1 | length(lib.found) <= 1){
     out(paste0("Could not detect or install the following library commands: ",paste0(lib.notfound, collapse = ", ")), type = 2)
     out(paste0("Please follow installation instructions and then run get_libraries() again."))
   }

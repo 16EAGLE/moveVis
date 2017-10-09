@@ -3,7 +3,7 @@
 \name{get_libraries}
 \alias{get_libraries}
 \alias{get_imconvert}
-\title{Detect and/or download and install libraries needed by moveVis}
+\title{Detect and/or download and install extern system libraries needed by moveVis}
 \usage{
 get_libraries(lib.tool = "all", dir = "auto", ...)
 
@@ -23,7 +23,7 @@ A character vector including all found commands or directories to the needed too
 \code{get_libraries} trys to detect the libraries on your system that are needed by moveVis to be able to deal with different output file formats. get_libraries() searches for'convert' form the ImageMagick library (needed for .gif support), 'ffmpeg' from the FFmpeg library or 'avconv' from the 'libav-tools' library (both needed for video support).
 You can execute get_libraries() to make sure, these libraries are correctly installed on your system. It is recommended to have ImageMagick including 'convert' and FFmpeg including 'ffmpeg' installed to gain support of all available output file formats. The function's return can serve as \code{conv_dir} input to the animate_move() function.
  
-\code{get_imconvert} is an alias function of \code{get_libraries} that does the same as \code{get_libraries}, but is just checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
+\code{get_imconvert} is an alias function of \code{get_libraries} inlcuded for compatibility reasons that does the same as \code{get_libraries}, but is only checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
 }
 \details{
 The following tools and libraries are needed by moveVis:
