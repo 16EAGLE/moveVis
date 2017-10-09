@@ -22,7 +22,7 @@ animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{layer}{raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
 
-\item{layer_dt}{POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.}
+\item{layer_dt}{POSIXct vector or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps representing the acquisition dates of the \code{layer} raster objects.}
 
 \item{layer_int}{logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.}
 

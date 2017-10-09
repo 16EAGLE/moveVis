@@ -6,7 +6,7 @@
 #' @param out_dir character. Output directory of the output file.
 #' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. See also \code{\link{get_libraries}}. If not specified, animate_move() trys to find libraries automatically.
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
-#' @param layer_dt POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.
+#' @param layer_dt POSIXct vector or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps representing the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
 #' @param layer_type charachter. Layer type. Either "\code{RGB}" (if layer is a rasterBrick class onejct), "\code{gradient}" or "\code{discrete}". Default is "\code{RGB}". Ignored, if \code{layer = "basemap"}.
 #' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
@@ -25,6 +25,7 @@
 #' @param legend_limits numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".
 #' @param legend_labels character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".
 #' @param scalebar_col character. Colour of the scalebar text. Default is "white".
+#' @param scalebar_dist numeric. Distance represented by the scalebar in kilometers.
 #' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
 #' @param time_scale logical. If \code{FALSE}, time scale is hidden. Default is \code{TRUE}.
 #' @param time_bar_col character. Colour of the time progress bar on the top edge of the map. Default is "grey".
@@ -34,6 +35,7 @@
 #' @param paths_alpha numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.
 #' @param paths_mode character vector. Mode to be used for dealing with time information when displaying multiple individual paths. If set to "true_data", paths are displayed based on true coverage times, showing only time periods that are covered. Time gaps will be skipped. Each frame is linked to a specific true time. If set to "true_time",  paths are displayed based on true coverage times. Time gaps will be filled with non-movement frames. This mode is only recommended, if the dataset has no time gaps. Each frame is linked to a specific, true time. If set to "simple", all movement paths are displayed individually with no regard to the true coverage times. Time gaps will be skipped. Each frame displays several times at once, since each individual path has its own time. Default is "true_data".
 #' @param paths_na.hold logical. If TRUE, last path location is being hold on frame for NA path locations. If FALSE, path disappears until next path non-NA location. Default is TRUE.
+#' @param indi_names character. Optional vector of individual names. Length has to be equal to number of individuals in \code{m}. If NA, individual names are tried to be extracted from \code{m} using \code{\link{idData}}. Default is NA.
 #' @param frames_layout matrix. Optional layout. Define, which plots should be placed where using a matrix representing the GIF/video frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.
 #' @param frames_nmax numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).
 #' @param frames_fps numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.
@@ -44,6 +46,7 @@
 #' @param frames_pixres numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
 #' @param out_name character. Name of the output file. Default is "moveVis_ani".
 #' @param out_format character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.
+#' @param overwrite logical. If TRUE, files with equal file names to \code{out_name} will be overwritten. Default is FALSE.
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
 #' @param log_logical logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.
 #' @param stats_create logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.
@@ -53,7 +56,9 @@
 #' 
 #' @return None or logical (see \code{log_logical}). The output file is written to the ouput directory.
 #' 
-#' @details \code{animate_move} is based on \code{ggplot2}. It preprocesses yout move data depending on the state of the data (see \code{paths_mode} and \code{frames_tres}). Depending on the selected output format (\code{out_format}, it either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
+#' @details Make sure you have run \code{\link{get_libraries}} before you use moveVis for the first time: Depending on the selected output format (\code{out_format}, \code{animate_move} either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
+#' 
+#' \code{animate_move} preprocesses your move data depending on the state of the data (see \code{paths_mode} and \code{frames_tres}). \code{animate_move} is based on \code{ggplot2}. 
 #' 
 #' @examples
 #' 
@@ -170,19 +175,25 @@
 #' @importFrom simecol approxTime
 #' @importFrom plyr ldply
 #' @importFrom zoo na.locf
+#' @importFrom lubridate seconds_to_period hour minute second
+#' @importFrom parallel detectCores makeCluster stopCluster
+#' @importFrom pbapply timerProgressBar getTimerProgressBar setTimerProgressBar
 #'  
 #' @export
 
 animate_move <- function(m, out_dir, conv_dir = "",
-                         paths_mode = "true_data",  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1, 
+                         paths_mode = "true_data",  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1, indi_names = NA,
                          layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
                          layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", stats_create = FALSE, static_data = NA, static_gg = NA,
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
-                         map_elements = TRUE, time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white", north_col = "white", 
+                         map_elements = TRUE, time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white", scalebar_dist = "auto", north_col = "white", 
                          frames_layout = 0, frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA, frames_pixres = 80,
-                         out_name = "moveVis_ani", out_format = "gif", log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
+                         out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE, log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
+  
+  #Start clock
+  run.start <- Sys.time()
   
   #Checking for additional arguments
   arg <- list(...)
@@ -210,6 +221,11 @@ animate_move <- function(m, out_dir, conv_dir = "",
   s_try <- try(arg$shiny_session); if(class(s_try)[1] != "NULL"){shiny_session <- arg$shiny_session}else{shiny_session = FALSE}
   if(shiny_mode == FALSE){Progress <- NULL} #for CRAN checks
   
+  #parallel processing set-up
+  s_try <- try(arg$par); if(class(s_try) != "NULL"){par <- arg$par}else{par <- FALSE}
+  s_try <- try(arg$par_cores); if(class(s_try)[1] != "NULL"){par_cores <- arg$par_cores}else{par_cores = NA}
+  
+
   ## FUNCTION DEFINITION
   
   #Define output handling
@@ -243,11 +259,14 @@ animate_move <- function(m, out_dir, conv_dir = "",
     return(list(start_dt,stop_dt))
   }
   
-  get_indi <- function(data){
-    indi <- idData(data)
-    if(length(indi) == 0){indi <- paste0("individual ",seq(1,NROW(indi),by=1))}
-    else{if(length(indi)!= 1){indi <- as.character(indi$individual)}else{indi <- as.character(indi)}}
-    return(indi)
+  get_indi <- function(data, names = indi_names){
+    if(is.na(names[1]) == FALSE){return(names)
+    }else{
+      indi <- idData(data)
+      if(length(rownames(indi)) == 0){indi <- paste0("individual ",seq(1,NROW(indi),by=1))}
+      else{if(length(indi) != 1){indi <- as.character(rownames(indi))}else{indi <- as.character(indi)}}
+      return(indi)
+    }
   }
   
   #RGB plotting originally forked from  RStoolbox::ggRGB based on raster:plotRGB
@@ -407,6 +426,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   #Plattform dependences
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
 
+  if(overwrite == FALSE & file.exists(paste0(out_dir,"/",out_name,".",out_format))){out("Output file already exists. Change 'out_name' or set 'overwrite' to TRUE.",type = 3)}
   if(raster_only != TRUE){ #m not needed for animate_raster()
     if(missing(m)){
       out("Argument 'm' is missing. Please specify the input movement data.",type=3)
@@ -432,6 +452,10 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
   }else{
     tail_elements <- 0
+  }
+  if(is.na(indi_names[1]) == FALSE){
+    if(is.character(indi_names) == FALSE){out("'indi_names' needs to be of type 'character'.",type=3)
+    }else{if(length(indi_names) != length(m)){out("'indi_names' needs to be of same length as number of input individuals.",type=3)}}
   }
   if(missing(out_dir)){
     out("Argument 'out_dir' is missing. Please specify the output directory.", type=3)
@@ -501,7 +525,6 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }else{
       if(is.list(layer_dt)){
         layer_dt <- as.POSIXct(sapply(layer_dt, function(x){as.character(x)}),tz = "UTC")
-        out("'layer_dt' was converted from list to vector. Please use a vector of POSIXct timestamps instead of a list.",type=2)
       }
     }
     if(length(layer) != length(layer_dt)){
@@ -559,7 +582,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   }
   if(is.na(frames_width)){
     if(stats_create == TRUE & stats_only == FALSE){
-      if(layer_type != "RGB"){frames_width <- 1100}else{frames_width <- 1200}
+      if(layer_type != "RGB"){frames_width <- 1200}else{frames_width <- 1200}
     }else{frames_width <- 600}
   }
   if(is.na(frames_height)){frames_height = 600}
@@ -586,6 +609,27 @@ animate_move <- function(m, out_dir, conv_dir = "",
     if(length(static_data$y)==0){out("'static_data' must contain a column 'y' containing the y coordinates.",type=3)}
     if(length(static_data$names)==0){out("'static_data' must contain a variable 'names' containing the points' namings.",type=3)}
   }
+  if(scalebar_dist != "auto"){
+    if(is.numeric(scalebar_dist) == FALSE){out("'scalebar_dist' needs to be either set to 'auto' or of type 'numeric' (scalebar in kilometers).",type=3)}
+  }
+  
+  if(par == TRUE){
+    n_cores <- detectCores()
+    if(is.na(par_cores) == FALSE){
+      if(par_cores > n_cores){
+        par_cores <- NA
+        out("'par_cores' is exceeding number of available cores. Number of cores will be defined automatically.")
+      }else{
+        n_cores <- par_cores
+      }
+    }
+    if(is.na(par_cores)){
+      if(n_cores > 2){n_cores <- n_cores - 2}else{
+        par <- FALSE
+        out(paste0("'par' set to FALSE, since there are not enough cores for stable parallel processing [cores: ",toString(n_cores),"]"))
+      }
+    }
+  }
   
   
   ## Preprocess move data
@@ -593,7 +637,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   if(raster_only != TRUE){ #101: exclude for raster_only
     global.crs <- crs(m[[1]]) #get crs
     global.crs.str <- as.character(global.crs) #get crs str
-    if(global.crs.str != "+proj=longlat +ellps=WGS84"){m <- lapply(m,function(x){spTransform(x, crs("+proj=longlat +ellps=WGS84"))})}
+    if(length(grep("+proj=longlat +ellps=WGS84",global.crs.str)) == 0){m <- lapply(m,function(x){spTransform(x, crs("+proj=longlat +ellps=WGS84"))})}
     m.stack <- moveStack(m)
     
     uni.stamps.c <- unique(as.numeric(sapply(strsplit(as.character(timestamps(m.stack)),":"), function(x){x[3]}))) #identify unfirom seconds digits
@@ -680,10 +724,11 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
     
     sub.val.true <- sapply(m.df, function(x){t <- apply(x, 2, function(x){is.na(x)})
-    if(length(unique(t[,1])) > 1){return(TRUE)}else{if(unique(t[,1]) == TRUE){return(FALSE)}else{return(TRUE)}}
+      if(length(unique(t[,1])) > 1){return(TRUE)}else{if(unique(t[,1]) == TRUE){return(FALSE)}else{return(TRUE)}}
     })
     m.df <- m.df[which(sub.val.true == TRUE)] #select those df which have values instead of NAs only
     m.stack <- m.stack[[which(sub.val.true)]] #only for selected individuals, no uniform times applied!
+    if(is.na(indi_names[1]) == FALSE){indi_names <- indi_names[which(sub.val.true == TRUE)]} #select indi names of individuals that are used
     global.times <- m.df[[1]]$dt #get global frame times
     
     
@@ -693,7 +738,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     m.ext <- extent(as.numeric(c(min(m.ext.list[1,]),max(m.ext.list[2,]),min(m.ext.list[3,]),max(m.ext.list[4,])))) #create move extent object
     m.corners <- rbind(c(m.ext@xmin,m.ext@ymin),c(m.ext@xmin,m.ext@ymax),c(m.ext@xmax,m.ext@ymax),c(m.ext@xmax,m.ext@ymin)) #create corner coordinates of move extet
     
-    if(global.crs.str != "+proj=longlat +ellps=WGS84"){
+    if(length(grep("+proj=longlat +ellps=WGS84", global.crs.str)) == 0){
       t <- SpatialPointsDataFrame(coords = m.corners, data = data.frame(m.corners), proj4string = global.crs)
       t <- spTransform(t, crs("+proj=longlat +ellps=WGS84"))
       m.corners <- coordinates(t)
@@ -724,7 +769,6 @@ animate_move <- function(m, out_dir, conv_dir = "",
   } #exclude, if animate_raster is called
   if(extent_factor != 0.0001){global.ext <- global.ext*(1+extent_factor)}
   
-  
   ## Accesing and assigning/interpolating basemap raster per frame
   out("Assigning base layers per frame ticks...")
   
@@ -732,7 +776,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     if(layer[1] == "basemap"){
       try <- try(bm.gmap <- gmap(x = global.ext, exp=1, scale =1, type = map_type, lonlat = TRUE, rgb = TRUE, size=c(500,500))) #raster base layer
       if(class(try) == "try-error"){out("Download from Google failed. Please check your internet connection.",type=3)}
-      if(global.crs.str != "+proj=longlat +ellps=WGS84"){bm.gmap <- projectRaster(from = bm.gmap, crs = global.crs)}
+      if(length(grep("+proj=longlat +ellps=WGS84",global.crs.str)) == 0){bm.gmap <- projectRaster(from = bm.gmap, crs = global.crs)}
       bm.df <- data.frame(rasterToPoints(bm.gmap))
       bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = 255)
       bm.frames <- replicate(bm.gmap, n =length(global.times))
@@ -773,7 +817,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   
   #Recalculate extent on basis of basemap
   global.ext <- extent(bm.frames[[1]])
-  
+
   
   
   ## Calculating legend breaks
@@ -931,7 +975,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
               #Create histogram for this frame
               hist <- temp; hist[,2] <- "hist"; hist[,3] <- 0
               hist.v <- data.frame(table(round(getValues(b[[x]]),digits = sd)))
-              hist[,3][match(as.character(hist.v[,1]), as.character(hist[,1]))] <- hist.v[,2]
+              hist[,3][as.numeric(na.omit(match(as.character(hist.v[,1]), as.character(hist[,1]))))] <- hist.v[,2][which(match(as.character(hist.v[,1]), as.character(hist[,1])) >0)]
               hist[,4] <- "grey"
               colnames(hist) <- c("val", "variable", "value","cols")
               rbind(t, sum, hist)
@@ -941,7 +985,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
           })
         }
       }
-      stats_max <- sapply(stats_obj, function(x){sapply(x, function(x){max(x[[length(x)]]$value)})})
+      stats_max <- sapply(stats_obj, function(x){sapply(x, function(x){max(sapply(x, function(x1){max(x1$value)}))})})
       stats_max <- stats_max + round(stats_max*0.1)
       cols <- stats_obj[[1]][[1]][[1]]$cols[seq(1,(n.indiv(m.stack)+2)*length(stats_empty[,1]), by = length(stats_empty[,1]))]
       vals <- unique(stats_obj[[1]][[1]][[1]]$variable)
@@ -966,7 +1010,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   colnames(rec1_leftdown) <- c("x","y")
   
   #Transform to latlon
-  if(global.crs.str != "+proj=longlat +ellps=WGS84"){
+  if(length(grep("+proj=longlat +ellps=WGS84",global.crs.str)) == 0){
     #Transform complete extent
     ext.ll <- as(global.ext, "SpatialPolygons")
     proj4string(ext.ll) <- global.crs.str
@@ -985,12 +1029,14 @@ animate_move <- function(m, out_dir, conv_dir = "",
   
   x_dist <- (distGeo(c(ext.ll@xmin,ext.ll@ymin),
                      c(ext.ll@xmax,ext.ll@ymin)))/1000 #in km
-  x_dist_bar <- round((x_dist/8)*4)/4
-  if(x_dist_bar == 0){x_dist_bar <- round(((x_dist/8)*4),1)/4}
+  if(scalebar_dist == "auto"){
+    x_dist_bar <- round((x_dist/8)*4)/4
+    if(x_dist_bar == 0){x_dist_bar <- round(((x_dist/8)*4),1)/4}
+  }else{x_dist_bar <- scalebar_dist/2}
   
   rec1_rightdown_ll <- data.frame(gcDestination(lon = rec1_leftdown_ll$x, lat = rec1_leftdown_ll$y, bearing = 90, dist = x_dist_bar, dist.units = "km", model = "WGS84"))
   
-  if(global.crs.str != "+proj=longlat +ellps=WGS84"){  
+  if(length(grep("+proj=longlat +ellps=WGS84",global.crs.str)) == 0){  
     x_right <- (spTransform(SpatialPointsDataFrame(coords = rec1_rightdown_ll[,1:2], data = rec1_rightdown_ll,proj4string = crs("+proj=longlat +ellps=WGS84")),
                             CRSobj = global.crs))$long
   }else{x_right <- rec1_rightdown_ll$long}
@@ -1045,7 +1091,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   #Define labs
   if(img_labs[1] != "labs"){labs_x <- img_labs[1]; labs_y <- img_labs[2]
   }else{
-    if(global.crs.str == "+proj=longlat +ellps=WGS84"){
+    if(length(grep("+proj=longlat",global.crs.str)) != 0){
       labs_x <- "Longitude"; labs_y <- "Latitude"
     }else{labs_x <- "x"; labs_y <- "y"}
   }
@@ -1055,7 +1101,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     if(img_sub != "subtitle"){
       
       #Seperating lines due to input length
-      line_break <- 80
+      line_break <- 70
       if(nchar(img_sub)>line_break){
         delim <- round(nchar(img_sub)/line_break)
         img_sub_splt <- unlist(strsplit(img_sub, " "))
@@ -1166,6 +1212,10 @@ animate_move <- function(m, out_dir, conv_dir = "",
   pl_id <- sort(unique(c(frames_layout)))[which(sort(unique(c(frames_layout)))!= 8)] #excluding st legend
   
   
+  ani.duration.time <- seconds_to_period(round(length(global.times)/frames_fps))
+  ani.duration.time <- sprintf('%02d:%02d:%02d', hour(ani.duration.time), minute(ani.duration.time), second(ani.duration.time))
+  out(paste0("Duration of output animation file: ", toString(ani.duration.time), " (hh:mm:ss) [", toString(length(global.times)-tail_elements)," frames, ", toString(frames_fps)," fps]"), type = 1)
+  
   
   ## create frames
   out("Drawing frames...", type=1)
@@ -1179,14 +1229,14 @@ animate_move <- function(m, out_dir, conv_dir = "",
       else{index_list <- c(index_list,n_loop)}
     }
   }
-  if(log_level == 1 & shiny_mode == FALSE){p.out <- txtProgressBar(min = 0, max = n_loop-1+n_reloop, style = 3)}
+  if(log_level == 1 & shiny_mode == FALSE){p.out <- timerProgressBar(min = 0, max = n_loop-1+n_reloop, width = (getOption("width")-25), style = 3, char = "=")} #txtProgressBar #pboptions(type = "timer", char = "=", txt.width = (getOption("width")-25))}
   if(shiny_mode == "ani"){
     progress <- Progress$new(shiny_session, min=1, max=n_loop-1+n_reloop)
     progress$set(message = 'Animating data\n',
                  detail = 'This may take a while...')
   }
   
-  #Draw plots per frame and print to magick device
+  #Draw plots per frame
   if(raster_only != TRUE){
     in.data.list <- list(m.df, bm.gg, n_tail, colours, line_size, paths_alpha, global.times.str,
                          rec1, rec2, if(layer_type == "discrete"){bm.df}else{bm.frames}, layer_col,
@@ -1201,18 +1251,21 @@ animate_move <- function(m, out_dir, conv_dir = "",
   in.plt.list <- list(plt.bm, plt.title, plt_scale_north, plt_time_scale, plt_progress, plt_static, if(stats_create == TRUE){plt_stats_parse}else{NA})
   in.cond.list <- list(raster_only, stats_only, stats_create)
   
+  #Initiate cluster for par processing
+  #if(par == TRUE){cl <- makeCluster(n_cores)}
+  
   p.dir <- quiet(sapply(seq(1:(length(global.times)-tail_elements)), function(x, ld = in.data.list, lp = in.plt.list, lc = in.cond.list, dir = temp_dir){ #length(global.times)
-    if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, x)}
+    if(log_level == 1 & shiny_mode == FALSE){setTimerProgressBar(p.out, x)}
     if(shiny_mode == "ani"){Progress$set(value = x)}
-    
+
     prog_bar <- data.frame(prog_x_st[1],prog_y); prog_bar <- rbind(prog_bar,c(prog_x_end[x],prog_y))
     colnames(prog_bar) <- c("x","y")
-    
+
     if(lc[[1]] == TRUE){plt.path <- ""}else{
       t.str <- c('geom_path(data = data[[',']][,1:2],aes_(x = data[[',']]$x, y = data[[',']]$y, alpha = ld[[6]]), lineend = "round", linejoin = "round", colour = ld[[4]][',',][1:length(data[[',']]$x)], size = ld[[5]][1:length(data[[',']]$x)],na.rm=TRUE, show.legend = FALSE)')
       plt.path <- "+ "
       data <- list()
-      
+
       #Calcualte plot string per individual
       for(g in 1:length(ld[[1]])){
         if(x < ld[[3]]){data[[g]] <- ld[[1]][[g]][1:x,]}else{data[[g]] <- ld[[1]][[g]][(x-ld[[3]]):x,]}
@@ -1220,16 +1273,16 @@ animate_move <- function(m, out_dir, conv_dir = "",
         plt.path <- paste0(plt.path, t.str[1], xs, t.str[2], xs, t.str[3], xs, t.str[4], xs, t.str[5], xs, t.str[6], xs, t.str[7], if(g < length(ld[[1]])){' + '})
       }
     }
-    
+
     #Create plot string
     plt.fin <- paste0(lp[[1]], plt.path, lp[[2]] , lp[[3]], lp[[4]], lp[[5]], lp[[6]])
-    
+
     plt.parse <- parse(text = plt.fin)
-    
+
     #Open PNG device
     fn <- paste0("p",as.character(x),".png")
     png(filename = fn,width = ld[[17]], height = ld[[18]],units = "px",bg = "white", res = ld[[19]])
-    
+
     pl <- list()
     if(lc[[2]] == TRUE){pl[[1]] <- NA}else{pl[[1]] <- quiet(eval(plt.parse))} #spatial plot needed or not
     if(lc[[3]] == TRUE){
@@ -1247,16 +1300,19 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }else{pl <- lapply(pl, FUN = function(pl){ggplotGrob(pl + theme(legend.position = "none"))})}
     if(length(which(ld[[14]]==8))!= 0){pl[[length(pl)+1]] <- ld[[15]]}
     quiet(do.call("grid.arrange",args = list(grobs=pl,layout_matrix=ld[[16]]))) #grobs=c(pl,stleg)
-    
+
     dev.off()
     return(fn)
   }))
+  
+  #if(par == TRUE){stopCluster(cl)}
+  
   p.dir.na <- which(match(p.dir,NA) == 1)
   if(length(p.dir.na) != 0){p.dir <- p.dir[-p.dir.na]}
   
   if(out_format == "gif"){
     og.dir <- sapply(seq(1:n_reloop), function(x, il = index_list, d = p.dir, cd = conv_dir, cm = conv_cmd, fi = frames_fps, n = n_loop){
-      if(log_level == 1 & shiny_mode == FALSE){setTxtProgressBar(p.out, (n+x))}
+      if(log_level == 1 & shiny_mode == FALSE){setTimerProgressBar(p.out, (n+x))}
       if(shiny_mode == "ani"){Progress$set(value = n+x)}
       if(x == 1){range = c(0,il[x])}else{range = c(il[x-1], il[x])}
       
@@ -1284,10 +1340,14 @@ animate_move <- function(m, out_dir, conv_dir = "",
   file.copy(paste0(out_name,".",out_format),paste0(out_dir,"/",out_name,".",out_format), overwrite = TRUE)
   file.remove(list.files(temp_dir))
     
-  if(log_level == 1 & shiny_mode == FALSE){close(p.out)}
+  if(log_level == 1 & shiny_mode == FALSE){closepb(p.out)}
   if(shiny_mode == "ani"){Progress$close()}
   
   setwd(user_wd) #reset to user wd
+  
+  run.stop <- Sys.time()
+  run.dur <- as.character(round(difftime(run.stop,run.start,units = "mins"),digits = 2))
+  out(paste0("Total run time: ",run.dur," minutes"))
   
   if(file.exists(paste0(out_dir,'/',out_name,'.',out_format))){
     if(shiny_mode == FALSE){out(paste0("Done. '",out_name,".",out_format,"' has been saved to '",out_dir,"'."), type=1)}else{out("Done.")}

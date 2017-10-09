@@ -3,10 +3,10 @@ Type: Package
 Title: Movement Data Visualization
 Version: 0.9.6
 Depends: R (>= 2.10)
-Date: 2017-10-05
+Date: 2017-10-09
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
-Description: Tools to visualize movement data of any kind, e. g. by creating path animations from GPS point data.
+Description: Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
 License: GPL-3
 RoxygenNote: 6.0.1
 Imports:
@@ -28,4 +28,7 @@ Imports:
   graphics,
   simecol,
   plyr,
-  zoo
+  zoo,
+  lubridate,
+  parallel,
+  pbapply

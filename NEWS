@@ -1,6 +1,6 @@
 ----------------------------------------------------------
 moveVis 0.9.6 BETA (not on CRAN yet)
-automatic preprocessing, video support, performance increase, bug fixes
+automatic preprocessing, video support, better performance, bug fixes
 -----------------------------------------------------------
 New functions:
  + get_libraries() handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be code for compatibility reasons
@@ -14,6 +14,10 @@ New features:
  + added animate_move() argument "paths_na.hold" for defining how to deal with data gaps (hold or not hold last path location)
  + added animate_move() argument "time_bar_col" for changing colouring of the time bar at the top border of the map
  + added animate_move() argument "out_format" for defining output file format
+ + added animate_move() argument "indi_names" for defining individual names vector manually
+ + added animate_move() argument "scalebar_dist" for defining the scalebar length manually
+ + added animate_move() argument "overwrite" to regulate output file writing behaviour
+ + animate_move() now calculates and displays the final animation duration derived from the total number of output frames and the fps prior to generating each frame, so that the user can already approximate which size the output animation will have.
  
 Improvements:
  + in some situations, the movement data extent was bigger than the cropped layer extent: this works now

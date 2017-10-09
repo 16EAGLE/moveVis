@@ -6,18 +6,19 @@
 \usage{
 animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
   paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1,
-  layer = "basemap", layer_dt = "basemap", layer_int = FALSE,
-  layer_type = "", layer_stretch = "none", layer_col = c("sandybrown",
-  "white", "darkgreen"), layer_nacol = "white", map_type = "satellite",
-  stats_create = FALSE, static_data = NA, static_gg = NA,
-  extent_factor = 1e-04, tail_elements = 10, tail_size = 4,
-  img_title = "title", img_sub = "subtitle", img_caption = "caption",
-  img_labs = "labs", legend_title = "", legend_limits = NA,
-  legend_labels = "auto", map_elements = TRUE, time_scale = TRUE,
-  time_bar_col = "grey", scalebar_col = "white", north_col = "white",
-  frames_layout = 0, frames_nmax = 0, frames_fps = 25, frames_nres = 1,
-  frames_tres = 0, frames_width = NA, frames_height = NA,
-  frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif",
+  indi_names = NA, layer = "basemap", layer_dt = "basemap",
+  layer_int = FALSE, layer_type = "", layer_stretch = "none",
+  layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
+  map_type = "satellite", stats_create = FALSE, static_data = NA,
+  static_gg = NA, extent_factor = 1e-04, tail_elements = 10,
+  tail_size = 4, img_title = "title", img_sub = "subtitle",
+  img_caption = "caption", img_labs = "labs", legend_title = "",
+  legend_limits = NA, legend_labels = "auto", map_elements = TRUE,
+  time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white",
+  scalebar_dist = "auto", north_col = "white", frames_layout = 0,
+  frames_nmax = 0, frames_fps = 25, frames_nres = 1, frames_tres = 0,
+  frames_width = NA, frames_height = NA, frames_pixres = 80,
+  out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE,
   log_level = 1, log_logical = FALSE, ..., conv_cmd = "",
   conv_frames = 100)
 }
@@ -36,9 +37,11 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{paths_alpha}{numeric. Set transparency of pathes. If set to 0, path is invisible. Default is 1.}
 
+\item{indi_names}{character. Optional vector of individual names. Length has to be equal to number of individuals in \code{m}. If NA, individual names are tried to be extracted from \code{m} using \code{\link{idData}}. Default is NA.}
+
 \item{layer}{raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.}
 
-\item{layer_dt}{POSIXct or vector. Single POSIXct date/time stamp or vector of POSIXct date/time stamps corresponding to the acquisition dates of the \code{layer} raster objects.}
+\item{layer_dt}{POSIXct vector or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps representing the acquisition dates of the \code{layer} raster objects.}
 
 \item{layer_int}{logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.}
 
@@ -86,6 +89,8 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
 
+\item{scalebar_dist}{numeric. Distance represented by the scalebar in kilometers.}
+
 \item{north_col}{character. Colour of the north arrow. Default is "white".}
 
 \item{frames_layout}{matrix. Optional layout. Define, which plots should be placed where using a matrix representing the GIF/video frame. Matrix elements can be the following plot identifiers: "map" for the spatial plot, "st_all", "st_per" for the overall and periodic stats plot or "st_allR", "st_perR", "st_allG", "st_perG", "st_allB", "st_perB" for the overall and periodic stats plots per band, when using \code{layer_type = "RGB"}, and 'st_leg' for a stats legend. Alternatively, integers from 1 to 8 corresponding to the described order can be used. Plots not mentioned using \code{frames_layout} identifiers are not displayed. If set to 0, layout is generated automatically. Default is 0.}
@@ -108,6 +113,8 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
 
+\item{overwrite}{logical. If TRUE, files with equal file names to \code{out_name} will be overwritten. Default is FALSE.}
+
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
 \item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
@@ -125,7 +132,9 @@ None or logical (see \code{log_logical}). The output file is written to the oupu
 \code{animate_move} animates movement data provided as \code{move} class objects or a list of them. The function creates an animated GIF or video file and saves it into the output directory. \code{animate_move} can be operated in different timing modes (see \code{paths_mode}) and with different background layer types (see \code{layer}, \code{layer_type} and \code{map_type}).
 }
 \details{
-\code{animate_move} is based on \code{ggplot2}. It preprocesses yout move data depending on the state of the data (see \code{paths_mode} and \code{frames_tres}). Depending on the selected output format (\code{out_format}, it either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
+Make sure you have run \code{\link{get_libraries}} before you use moveVis for the first time: Depending on the selected output format (\code{out_format}, \code{animate_move} either needs the \code{convert} tool of the ImageMagick software package (.gif format) or either \code{ffmpeg} from FFmpeg or \code{avconv} from libav (video formats). The command or directory to the convert tool needs to be provided with \code{conv_dir}. Please use \code{\link{get_libraries}} to search for the needed libraries and command/tool directories on your system or to automatically download and install the required software. See \code{\link{get_libraries}} and \code{out_format} and \code{conv_dir} for details.
+
+\code{animate_move} preprocesses your move data depending on the state of the data (see \code{paths_mode} and \code{frames_tres}). \code{animate_move} is based on \code{ggplot2}.
 }
 \examples{
 
