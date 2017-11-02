@@ -177,7 +177,7 @@
 #' @importFrom zoo na.locf
 #' @importFrom lubridate seconds_to_period hour minute second
 #' @importFrom parallel detectCores makeCluster stopCluster
-#' @importFrom pbapply timerProgressBar getTimerProgressBar setTimerProgressBar
+#' @importFrom pbapply timerProgressBar getTimerProgressBar setTimerProgressBar closepb
 #'  
 #' @export
 
@@ -520,8 +520,10 @@ animate_move <- function(m, out_dir, conv_dir = "",
   }
   if(is.character(paths_col) == FALSE){out("Keword 'paths_col' needs to be character or character vector.",type=3)}
   if(is.character(layer) == FALSE){
-    if(is.character(layer_dt) == TRUE){out("Argument 'layer_dt' needs to be specified if using 'layer'.
-                                           Please provide time data with same length of 'layer'.",type=3)
+    if(length(grep("aster",class(layer))) == 1){layer = list(layer)}
+    if(raster_only == TRUE & length(layer) == 1){out("'layer' needs to be a list of more then one raster object, if animate_raster() is used.", type = 3)}
+    if(is.character(layer_dt) == TRUE){
+      if(length(layer) > 1){out("Argument 'layer_dt' needs to be specified if using 'layer'. Please provide time data with same length of 'layer'.",type=3)}
     }else{
       if(is.list(layer_dt)){
         layer_dt <- as.POSIXct(sapply(layer_dt, function(x){as.character(x)}),tz = "UTC")
@@ -536,13 +538,17 @@ animate_move <- function(m, out_dir, conv_dir = "",
         out("Arguments 'layer' and 'm' have different projections. Please provide movement data and
             background layer data with equal projection or do not use 'layer'.",type=3)
       }
-      }
+    }
     if(is(layer[[1]],"RasterBrick") == TRUE){out("Layer input of class 'RasterBrick' is not supported. Please use 'RasterStack' instead.",type=3)}
     if(layer_type != "gradient" & layer_type != "discrete" & layer_type != "RGB"){out("'layer_type' must be specified (either 'gradient', 'discrete' or 'RGB').",type = 3)}
     }else{
       if(layer != "basemap"){out(paste0("Unknown input '",layer, "'. Argument 'layer' needs to be either a list of raster objects, a single raster object or a string containing 'basemap'."),type=3)}
       layer_type <- ""
     }
+  if(layer_int == TRUE){if(layer_type == "discrete"){
+    layer_int <- FALSE
+    out("'layer_int' = TRUE ignored, since 'layer_type' = 'discrete'. Filled gaps instead interpolating.",type=2)
+  }}
   if(stats_create == TRUE){
     if(layer[1] == "basemap"){
       out("Stats cannot be visualized for stadard Google Maps basemaps. Please use 'layer' to provide single layer basemap data.",type = 3)
@@ -755,6 +761,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
                            m.ext@ymax+(((m.axis.diff[2]/m.axis.dist[2])*m.axis.dist[1])-m.axis.diff[2])/2)
     } #calculate a square extent by the factor of difference between distance and difference of coordinates
     
+    #Define layer_dt, if single layer raster is used without defined layer_dt
+    if(length(grep("aster",class(layer[[1]]))) == 1 & length(layer) == 1 & is.character(layer_dt[1])){layer_dt <- global.times[round(length(global.times)/2)]}
+    
     # if(ext != 0){
     #   m.spdf <- lapply(m, function(x, y = global.crs){SpatialPointsDataFrame(coordinates(x),data=data.frame(timestamps(x)),proj4string = y)})
     #   m.spdf.crop <- lapply(m.spdf, function(x, y = ext){crop(x,y)})
@@ -765,7 +774,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     global.crs <- crs(layer[[1]])
     global.crs.str <- as.character(global.crs)
     global.ext <- extent(layer[[1]])
-    global.times <- layer_dt
+    if(frames_nmax != 0){global.times <- layer_dt[1:frames_nmax]}else{global.times <- layer_dt}
   } #exclude, if animate_raster is called
   if(extent_factor != 0.0001){global.ext <- global.ext*(1+extent_factor)}
   
@@ -791,29 +800,50 @@ animate_move <- function(m, out_dir, conv_dir = "",
       if(layer_int == FALSE){
         bm.frames <- bm.crop[bm.subs]
       }else{
-        if(layer_type == "discrete"){out("'layer_int' = TRUE ignored, since 'layer_type' = 'discrete'. Filled gaps instead interpolating.",type=2)}
         bm.int.subs <- bm.subs[c(1,which(diff(bm.subs) != 0)+1)] #getting bm subs to be interpolated
         if(length(bm.int.subs) == 1){
           bm.frames <- bm.crop[bm.subs]
         }else{
           bm.int.in <- t(sapply(bm.crop[bm.int.subs], function(x){getValues(x)})) #building df for interpolation
-          bm.int.in <- cbind(as.numeric(layer_dt[bm.int.subs]),as.data.frame(bm.int.in))
-          bm.int.out <- approxTime(bm.int.in, as.numeric(global.times)) #interpolation over time
+          bm.int.in <- cbind(as.numeric(layer_dt[bm.int.subs]),bm.int.in)
+          
+          int.n = length(global.times)
+          int.templ <- cbind(as.numeric(global.times), rep(NA, int.n))
+          colnames(int.templ) <- c("time","x")
+          
+          bm.int.out <- apply(bm.int.in, MARGIN = 2, function(x, time = bm.int.in[,1], templ = int.templ){
+            t <- which(is.na(x))
+            if(length(t) == 0){
+              i <- cbind(time,x)
+              return(approxTime(i, as.numeric(templ[,1]))[,2])
+            }else{
+              if(length(t) == length(x)){return(templ[,2])}
+              if(length(t) == length(x)-1){
+                o <- templ[,2]
+                o[which(x == is.numeric(x))] <- x[which(x == is.numeric(x))]
+                return(o)
+              }
+            }
+          }) #fill NA, fill one value or interpolate
+          
           bm.int.out <- apply(bm.int.out, MARGIN = 2, function(x){
             t <- which(is.na(x))
             if(length(t)!= 0){x[t] <- x[min(t)-1]}
             return(x)
           }) #filling NAs with last interpolation value
-          bm.frames <- apply(bm.int.out[,2:length(bm.int.out[1,])], MARGIN = 1, function(x, y = bm.crop[[1]]){setValues(y,x)}) #building back raster frames
+          
+          bm.frames <- apply(bm.int.out[,-1], MARGIN = 1, function(x, y = bm.crop[[1]]){setValues(y,x)}) #building back raster frames
         } #do not interpolate, if only one layer is nearest
       }
-      if(layer_type == "discrete"){bm.df <- lapply(bm.frames, function(x){
-        t <- data.frame(rasterToPoints(x))
-        colnames(t) <- c("x","y","value")
-        return(t)
-      })}
     }
-  }else{bm.frames <- layer}
+  }else{
+    if(frames_nmax != 0){bm.frames <- layer[1:frames_nmax]}else{bm.frames <- layer}
+  }
+  if(layer_type == "discrete"){bm.df <- lapply(bm.frames, function(x){
+    t <- data.frame(rasterToPoints(x))
+    colnames(t) <- c("x","y","value")
+    return(t)
+  })}
   
   #Recalculate extent on basis of basemap
   global.ext <- extent(bm.frames[[1]])
@@ -826,7 +856,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     bm.stack <- stack(bm.frames)
     bm.stack.vals <- getValues(bm.stack)
     if(layer_type == "discrete"){
-      legend_breaks <- seq(min(round(bm.stack.vals)),max(round(bm.stack.vals)))
+      legend_breaks <- seq(min(round(bm.stack.vals), na.rm = TRUE),max(round(bm.stack.vals),  na.rm = TRUE))
     }else{legend_breaks <- pretty(round(bm.stack.vals))}
     
     if(is.na(legend_limits[1])){legend_limits <- c(legend_breaks[1],legend_breaks[length(legend_breaks)])
@@ -906,16 +936,18 @@ animate_move <- function(m, out_dir, conv_dir = "",
       out("Calculating statistics...")
       
       #Calc limits
-      stats_limits <- round(legend_limits,digits = stats_digits)
+      stats_limits <- round(legend_breaks,digits = stats_digits)
       if(stats_digits == 0){stats_floor_mp <- 1}else{stats_floor_mp <- 1/(as.numeric(paste(c("1",as.character(rep(0,stats_digits))),collapse = "")))}
-      stats_empty <- data.frame(cbind(seq(min(legend_breaks), max(legend_breaks), by = stats_floor_mp), 0.))
+      stats_empty <- data.frame(cbind(seq(min(stats_limits), max(stats_limits), by = stats_floor_mp), 0.))
       
       #Change stats_tframe for calculating stats per period
       stats_tframe <- stats_tframe+1
       
       stats_obj <- list()
+      if(length(idData(m.stack)) == 0){out("Could not find individual names through calling move::idData. Names are assigned by the order of appearance.",type=2)}
       for(l in 1:nlayers(bm.frames[[1]])){
-        stats.val.freq.a <- lapply(m.df, function(x, b = bm.frames, d = stats_digits){
+        bm.frames.lay <- lapply(bm.frames, function(x, b = l){x[[b]]})
+        stats.val.freq.a <- lapply(m.df, function(x, b = bm.frames.lay, d = stats_digits){
           t <- NULL
           for(i in 1:length(b)){t <- rbind(t,round(extract(b[[i]],x[i,][1:2]),digits = d))}
           v <- c(na.omit(unique(t[,1])))
@@ -945,13 +977,13 @@ animate_move <- function(m, out_dir, conv_dir = "",
         
         #Build list of data frames
         stats.val.list <- list()
-        if(length(idData(m.stack)) == 0){out("Could not find individual names through calling move::idData. Names were assigned by the order of appearance.",type=2)}
         for(i.p in 1:2){
           stats.val.list[[i.p]] <- lapply(seq(1,length(stats.val.freq[[i.p]])), function(x, v = stats.val.freq[[i.p]], temp = stats_empty, indi = get_indi(m.stack), cl = collist){
             temp[,2] <- indi[x]
             col <- cl[x]
-            return(apply(v[[x]], MARGIN = 1,FUN = function(x, t = temp, c = col){
-              t[,3] <- 0; t[,3][match(names(x), as.character(t[,1]))] <- as.numeric(x)
+            return(apply(v[[x]], MARGIN = 1,FUN = function(xx, t = temp, c = col){
+              t[,3] <- 0
+              t[,3][match(names(xx), as.character(t[,1]))] <- as.numeric(xx)
               t[,4] <- c
               colnames(t) <- c("val", "variable", "value", "cols")
               return(t)
@@ -961,7 +993,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
         
         #Create stats data frame per frame
         for(i.p in 1:2){
-          stats_obj[[i.p]] <- list()
+          if(l == 1){stats_obj[[i.p]] <- list()}
           stats_obj[[i.p]][[l]] <- lapply(seq(1,length(global.times)), function(x, d = stats.val.list[[i.p]], temp = stats_empty, b = bm.frames, sd = stats_digits){
             t <- ldply(lapply(d, `[[`, x))
             
@@ -1154,7 +1186,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   #Defining static_data
   if(!is.na(static_data[1])[1]){
     if(is.na(static_gg)){plt_static <- '+geom_point(data = static_data, aes_(x= ~x, y= ~y),shape=23, fill="white", color="black", size=3) + geom_label(data = static_data, aes_(x= ~x, y= ~y, label= ~names),size=3,colour="black",position = position_nudge(y = -(leg_dist*1.5)))' #scalebar_col
-    }else{plt_static <- static_gg}
+    }else{plt_static <- paste0("+ ",static_gg)}
   }else{plt_static <- ''}
   
   
@@ -1163,19 +1195,14 @@ animate_move <- function(m, out_dir, conv_dir = "",
     plt.bm <- "ld[[2]]"
   }
   if(layer_type == "gradient"){
-    plt.bm <- paste0('gplot(ld[[10]][[x]]) + geom_tile(aes_(fill = ~value)) +
-                     scale_fill_gradientn(colours =c(', paste0('"',layer_col,'"',collapse = ", "),'), na.value = "', as.character(layer_nacol) ,'", ',plt_limits,', guide=guide_colourbar(title = "',legend_title, '", label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) +
-                     scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
+    plt.bm <- paste0('gplot(ld[[10]][[x]]) + geom_tile(aes_(fill = ~value)) + scale_fill_gradientn(colours =c(', paste0('"',layer_col,'"',collapse = ", "),'), na.value = "', as.character(layer_nacol) ,'", ',plt_limits,', guide=guide_colourbar(title = "',legend_title, '", label.vjust = 0.9, title.hjust = 0, title.vjust = 0)) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
   }
   
   if(layer_type == "discrete"){
-    plt.bm <- paste0('ggplot(data=ld[[10]][[x]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) +
-                     scale_fill_manual(values = c(setNames(ld[[11]], 1:length(ld[[11]]))), labels = c(', paste0('"',legend_labels,'"',collapse = ", "),'), drop = FALSE, na.value = "', as.character(layer_nacol) ,'", guide = guide_legend(title = "',legend_title ,'", label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) +
-                     scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
+    plt.bm <- paste0('ggplot(data=ld[[10]][[x]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) + scale_fill_manual(values = c(setNames(ld[[11]], 1:length(ld[[11]]))), labels = c(', paste0('"',legend_labels,'"',collapse = ", "),'), drop = FALSE, na.value = "', as.character(layer_nacol) ,'", guide = guide_legend(title = "',legend_title ,'", label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
   }
   if(layer_type == "RGB"){
-    plt.bm <- paste0('ggRGB(ld[[10]][[x]],r=3,g=2,b=1,stretch="',layer_stretch,'") + scale_fill_identity() +
-                     scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
+    plt.bm <- paste0('ggRGB(ld[[10]][[x]],r=3,g=2,b=1,stretch="',layer_stretch,'") + scale_fill_identity() + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
   }
   
   #stats plot function
@@ -1286,9 +1313,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
     pl <- list()
     if(lc[[2]] == TRUE){pl[[1]] <- NA}else{pl[[1]] <- quiet(eval(plt.parse))} #spatial plot needed or not
     if(lc[[3]] == TRUE){
-      for(k in 1:length(ld[[12]])){
-        for(b in 1:length(ld[[12]][[k]])){
-          pl[[1+k]] <- quiet(eval(lp[[7]]))
+      for(b in 1:length(ld[[12]][[k]])){
+        for(k in 1:length(ld[[12]])){
+          pl[[length(pl)+1]] <- quiet(eval(lp[[7]]))
         }
       }
       if(length(pl) != 7){pl[length(pl)+1:7]=NA}
@@ -1333,7 +1360,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
       file.rename(paste0("out1.",out_format),paste0(out_name,".",out_format))
     }
   }else{
-    quiet(cmd.fun(paste0(conv_dir,' -i ',conv_cmd,' p%d.png -r ',toString(frames_fps),' ',out_name,'.',out_format),ignore.stdout = TRUE,ignore.stderr = TRUE))
+    quiet(cmd.fun(paste0(conv_dir, ' -i ',conv_cmd,' p%d.png -vcodec libx264 -pix_fmt yuv420p -r ',toString(frames_fps),' ',out_name,'.',out_format),ignore.stdout = TRUE,ignore.stderr = TRUE))
   }
   
   #Cleaning up

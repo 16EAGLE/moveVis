@@ -46,7 +46,7 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = 0, l
                            legend_title = "", legend_limits = NA, legend_labels = "auto",
                            map_elements = TRUE, time_bar_col = "grey", scalebar_col = "white", north_col = "white",
                            frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_width = NA, frames_height = NA, frames_pixres = 80,
-                           out_name = "moveVis_ani", out_format = "gif", log_level = 1, log_logical = FALSE, conv_cmd = "", conv_frames = 100){
+                           out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE,  log_level = 1, log_logical = FALSE, conv_cmd = "", conv_frames = 100){
   if(layer_dt == 0){
     time_scale <- FALSE
     layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))
@@ -62,5 +62,5 @@ animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = 0, l
                legend_title = legend_title, legend_limits = legend_limits, legend_labels = legend_labels,
                map_elements = map_elements, time_bar_col = time_bar_col, scalebar_col = scalebar_col, north_col = north_col, time_scale = time_scale,
                frames_nmax =  frames_nmax, frames_fps = frames_fps, frames_nres = frames_nres, frames_width = frames_width, frames_height = frames_height,
-               out_name = out_name, out_format = out_format, log_level = log_level, log_logical = log_logical, conv_cmd = conv_cmd, conv_frames = conv_frames)
+               out_name = out_name, out_format = out_format, overwrite = overwrite, log_level = log_level, log_logical = log_logical, conv_cmd = conv_cmd, conv_frames = conv_frames)
 }

@@ -13,7 +13,8 @@
 #' @return None or logical (see \code{log_logical}). The output GIF or video file is written to the ouput directory.
 #' 
 #' @details \code{animate_stats} is a wrapper function of \code{\link{animate_move}} to create single statistic plots without spatial plotting. For statistic plot animations sidy-by-side with spatial plot animations, use \code{\link{animate_move}} (see \code{stats_create} argument). The function can handle all arguments taken by \code{animate_stats} as well.
-#' Use \code{stats_gg} to provide an own ggplot2 plot design as shown in the examples. The statistics are stored for both plots (periodic and accumulated) withn the variable \code{pdat} (list of two, indexed by k ranging from 1 to 2 for each plot). Both \code{pdat} lists contain the stats elements framewise for each time step. For this, see the \code{stats_gg} example. The variable \code{cols} (list of two, one per plot) contains the defined colour values and namings. 
+#' 
+#' Use \code{stats_gg} to provide an own ggplot2 plot design as shown in the examples. The statistics are stored for both plots (periodic and accumulated) withn the variable \code{stats_obj[[k]][[b]][[x]]} (list of two, indexed by k ranging from 1 to 2 for each plot). Both \code{stats_obj} first-level lists contain one list per band (one list or three lists, if 'RGB', indexed by b). These second-level lists contain the stats elements framewise for each time step. For this, see the \code{stats_gg} example. The variable \code{cols} (list of two, one per plot) contains the defined colour values and namings. 
 #' 
 #' @examples
 #' \dontrun{
@@ -50,16 +51,15 @@
 #'               stats_digits = 1, stats_type = "bar", out_name = "moveVis_ani",
 #'               log_level = 1,frames_nmax = 60)
 #'               
-#' #Define your own ggplot2 plot design
-#' stats_gg <- 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
-#'              geom_smooth() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
+#' stats_gg <- 'ggplot(data = stats_obj[[k]][[b]][[x]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
+#'              geom_line() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
 #'              scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
 #'              scale_x_continuous(expand = c(0,0)) + 
-#'              scale_color_manual(name="",values = cols[[k]]) +
+#'              scale_color_manual(name= "",values = cols) +
 #'              labs(x = "Basemap Value", y="Frequency",
-#'                   title=stats_title[[k]], label=c("123","456")) +
+#'                   title=stats_title[[b]][[k]], label=c("123","456"))+
 #'              theme(plot.title = element_text(hjust = 0.5),
-#'                    plot.subtitle = element_text(hjust = 0.5))'
+#'                   plot.subtitle = element_text(hjust = 0.5))'
 #'                   
 #' #Call animate_stats() with stats_gg
 #' animate_stats(data_ani, out_dir, conv_dir = conv_dir,
@@ -77,7 +77,7 @@ animate_stats <- function(m, out_dir, conv_dir = "convert", layer = "basemap", l
          val_limits = NA, paths_col = "auto",  paths_mode = "true_data",
          stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
          stats_title = "", frames_layout = 0, frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = 800, 
-         frames_height = 300, frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif", log_level = 1, log_logical = FALSE){
+         frames_height = 300, frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE, log_level = 1, log_logical = FALSE){
 
   #Call animate_move (alias function)
   animate_move(m, out_dir, conv_dir = conv_dir, layer = layer, layer_dt = layer_dt, layer_int = layer_int, layer_type = layer_type,
@@ -85,5 +85,5 @@ animate_stats <- function(m, out_dir, conv_dir = "convert", layer = "basemap", l
                stats_create = TRUE, stats_tframe = stats_tframe, frames_layout = frames_layout,
                stats_type = stats_type, stats_title = stats_title, legend_limits = val_limits,
                stats_gg = stats_gg, stats_digits = stats_digits, frames_nmax =  frames_nmax, frames_fps = frames_fps, frames_nres = frames_nres, frames_width = frames_width,
-               frames_height = frames_height, frames_pixres = frames_pixres, out_name = out_name, out_format = out_format, log_level = log_level, log_logical = log_logical,  stats_only = TRUE)
+               frames_height = frames_height, frames_pixres = frames_pixres, out_name = out_name, out_format = out_format, overwrite = overwrite, log_level = log_level, log_logical = log_logical,  stats_only = TRUE)
 }

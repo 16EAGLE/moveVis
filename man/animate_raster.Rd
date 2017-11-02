@@ -14,7 +14,8 @@ animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = 0,
   north_col = "white", frames_nmax = 0, frames_fps = 25,
   frames_nres = 1, frames_width = NA, frames_height = NA,
   frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif",
-  log_level = 1, log_logical = FALSE, conv_cmd = "", conv_frames = 100)
+  overwrite = FALSE, log_level = 1, log_logical = FALSE, conv_cmd = "",
+  conv_frames = 100)
 }
 \arguments{
 \item{layer}{list. List of raster objects.}
@@ -74,6 +75,8 @@ animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = 0,
 \item{out_name}{character. Name of the output file. Default is "moveVis_ani".}
 
 \item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
+
+\item{overwrite}{logical. If TRUE, files with equal file names to \code{out_name} will be overwritten. Default is FALSE.}
 
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 

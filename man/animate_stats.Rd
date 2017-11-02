@@ -11,7 +11,8 @@ animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
   stats_title = "", frames_layout = 0, frames_nmax = 0, frames_fps = 25,
   frames_nres = 1, frames_tres = 0, frames_width = 800,
   frames_height = 300, frames_pixres = 80, out_name = "moveVis_ani",
-  out_format = "gif", log_level = 1, log_logical = FALSE)
+  out_format = "gif", overwrite = FALSE, log_level = 1,
+  log_logical = FALSE)
 }
 \arguments{
 \item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}
@@ -64,6 +65,8 @@ animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
 
 \item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
 
+\item{overwrite}{logical. If TRUE, files with equal file names to \code{out_name} will be overwritten. Default is FALSE.}
+
 \item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
 
 \item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
@@ -76,7 +79,8 @@ None or logical (see \code{log_logical}). The output GIF or video file is writte
 }
 \details{
 \code{animate_stats} is a wrapper function of \code{\link{animate_move}} to create single statistic plots without spatial plotting. For statistic plot animations sidy-by-side with spatial plot animations, use \code{\link{animate_move}} (see \code{stats_create} argument). The function can handle all arguments taken by \code{animate_stats} as well.
-Use \code{stats_gg} to provide an own ggplot2 plot design as shown in the examples. The statistics are stored for both plots (periodic and accumulated) withn the variable \code{pdat} (list of two, indexed by k ranging from 1 to 2 for each plot). Both \code{pdat} lists contain the stats elements framewise for each time step. For this, see the \code{stats_gg} example. The variable \code{cols} (list of two, one per plot) contains the defined colour values and namings.
+
+Use \code{stats_gg} to provide an own ggplot2 plot design as shown in the examples. The statistics are stored for both plots (periodic and accumulated) withn the variable \code{stats_obj[[k]][[b]][[x]]} (list of two, indexed by k ranging from 1 to 2 for each plot). Both \code{stats_obj} first-level lists contain one list per band (one list or three lists, if 'RGB', indexed by b). These second-level lists contain the stats elements framewise for each time step. For this, see the \code{stats_gg} example. The variable \code{cols} (list of two, one per plot) contains the defined colour values and namings.
 }
 \examples{
 \dontrun{
@@ -113,16 +117,15 @@ animate_stats(data_ani, out_dir, conv_dir = conv_dir,
               stats_digits = 1, stats_type = "bar", out_name = "moveVis_ani",
               log_level = 1,frames_nmax = 60)
               
-#Define your own ggplot2 plot design
-stats_gg <- 'ggplot(data = pdat[[k]][[i]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
-             geom_smooth() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
+stats_gg <- 'ggplot(data = stats_obj[[k]][[b]][[x]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
+             geom_line() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
              scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
              scale_x_continuous(expand = c(0,0)) + 
-             scale_color_manual(name="",values = cols[[k]]) +
+             scale_color_manual(name= "",values = cols) +
              labs(x = "Basemap Value", y="Frequency",
-                  title=stats_title[[k]], label=c("123","456")) +
+                  title=stats_title[[b]][[k]], label=c("123","456"))+
              theme(plot.title = element_text(hjust = 0.5),
-                   plot.subtitle = element_text(hjust = 0.5))'
+                  plot.subtitle = element_text(hjust = 0.5))'
                   
 #Call animate_stats() with stats_gg
 animate_stats(data_ani, out_dir, conv_dir = conv_dir,

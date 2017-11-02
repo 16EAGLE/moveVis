@@ -114,7 +114,7 @@ get_libraries <- function(lib.tool = "all", dir = "auto", ...){
   }
   
   if(length(lib.found) != 0){out(paste0("Detected library commands on this system: ",paste0(lib.found, collapse = ", ")))}
-  if(length(grep("convert",lib.notfound)) == 1 | length(lib.found) <= 1){
+  if(length(grep("convert",lib.notfound)) == 1 & length(lib.found) <= 1){
     out(paste0("Could not detect or install the following library commands: ",paste0(lib.notfound, collapse = ", ")), type = 2)
     out(paste0("Please follow installation instructions and then run get_libraries() again."))
   }

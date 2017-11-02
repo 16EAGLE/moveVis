@@ -1,9 +1,9 @@
 ----------------------------------------------------------
-moveVis 0.9.6 BETA (not on CRAN yet)
+moveVis 0.9.6 BETA (to be on CRAN before November 3rd, 2017)
 automatic preprocessing, video support, better performance, bug fixes
 -----------------------------------------------------------
 New functions:
- + get_libraries() handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be code for compatibility reasons
+ + get_libraries() handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be called for code compatibility reasons
  + get_formats() outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.
 
 New features:
@@ -21,23 +21,26 @@ New features:
  + added "overwrite" to animate_move() to regulate output file writing behaviour
  
 Improvements:
+ + it is now possible to use the 'layer' argument to specify one (static) raster object without specifying 'layer_dt', which is only needed, if several raster objects are handed over as a list.
  + in some situations, the movement data extent was bigger than the cropped layer extent: this works now
  + in some situations, stat animation lines were cut off, this should be resolved now
  + recoding of multiple processing steps to increase processing speed and stability
  + increased error handler by several errors likely to occure
  + several bug fixes
  
-Will be implemented in the next version:
+Will be implemented in the next versions (ordered by priority):
+ + "keep tracks" setting to force paths to not disappeare
  + segmentation coulouring [working on this at the moment]
+ + optional user-defined font sizes of all fonts (axis, annotations etc.), colours based on ggplot2 syntax
+ + optional user-defined map elements position vectors
  + user-defined area of interest (AOI), which scales map extent to specific area without excluding tracks "out of sight", enables move-in and move-out of individuals to AOI
  + follow population mode
  + follow individual mode
- 
-Will be included in one of the next versions:
+ + day/night-mode visualization
  + dynamic overplotting, e. g. polygons or points that change over time
  
-Known problems in this BETA (to be fixed befor release):
- + RGB stats
+Known problems in this BETA (to be fixed before release):
+ + none currently
  
 Contributors:
  + AniMove 2017 participants
