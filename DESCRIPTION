@@ -31,4 +31,5 @@ Imports:
   zoo,
   lubridate,
   parallel,
-  pbapply
+  pbapply,
+  RStoolbox
