@@ -94,7 +94,10 @@ get_libraries <- function(lib.tool = "all", dir = "none", ...){
         lib.notfound <- lib.notfound[-match("convert",lib.notfound)]
       }else{
         if(!file.exists(paste0(dir,"/imagick/convert.exe"))){
-          if(nodownload == TRUE){out("'convert' could not be located on this system. Please install ImageMagick including 'convert' manually from 'https://www.imagemagick.org/script/download.php'",type=2)
+          if(nodownload == TRUE){
+            out("No ImageMagick installation could be found. Please install manually.",type=2)
+            out("On Linux, open the terminal, enter 'sudo apt-get install imagemagick'.")
+            out("On other systems, install manually from 'https://www.imagemagick.org/script/download.php'.")
           }else{
             out("Downloading portable ImageMagick binary...")
             ftp.dir <- "ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/"
@@ -110,8 +113,9 @@ get_libraries <- function(lib.tool = "all", dir = "none", ...){
         }
       }
     }else{
-      out("No ImageMagick installation could be found. Please install manually. On Linux, open the terminal, enter 'sudo apt-get install imagemagick'.
-          On other systems, install manually from 'https://www.imagemagick.org/script/download.php'.",type=2)
+      out("No ImageMagick installation could be found. Please install manually.",type=2)
+      out("On Linux, open the terminal, enter 'sudo apt-get install imagemagick'.")
+      out("On other systems, install manually from 'https://www.imagemagick.org/script/download.php'.")
     }  
   }
   if(is.na(match("ffmpeg", lib.notfound)) == FALSE){
