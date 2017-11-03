@@ -12,7 +12,7 @@ get_imconvert(dir = "auto")
 \arguments{
 \item{lib.tool}{character. Vector of libraries to look for. This can be either 'convert', 'ffmpeg', 'avconv' or a combination. Default is "all" to check for all possible libraries.}
 
-\item{dir}{character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used.}
+\item{dir}{character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used. Default is "none", which will cause no automatic installation.}
 
 \item{...}{additional arguments. Currently not used.}
 }

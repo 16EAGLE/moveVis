@@ -6,7 +6,7 @@
 #' \code{get_imconvert} is an alias function of \code{get_libraries} inlcuded for compatibility reasons that does the same as \code{get_libraries}, but is only checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
 #'  
 #' @param lib.tool character. Vector of libraries to look for. This can be either 'convert', 'ffmpeg', 'avconv' or a combination. Default is "all" to check for all possible libraries.
-#' @param dir character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used.
+#' @param dir character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used. Default is "none", which will cause no automatic installation.
 #' @param ... additional arguments. Currently not used.
 #' 
 #' @return A character vector including all found commands or directories to the needed tools of the requested libraries. The return can serve as \code{conv_dir} input to the \code{animate_move} function.
