@@ -5,14 +5,14 @@
 \alias{get_imconvert}
 \title{Detect and/or download and install extern system libraries needed by moveVis}
 \usage{
-get_libraries(lib.tool = "all", dir = "auto", ...)
+get_libraries(lib.tool = "all", dir = "none", ...)
 
 get_imconvert(dir = "auto")
 }
 \arguments{
 \item{lib.tool}{character. Vector of libraries to look for. This can be either 'convert', 'ffmpeg', 'avconv' or a combination. Default is "all" to check for all possible libraries.}
 
-\item{dir}{character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used. Default is "auto".}
+\item{dir}{character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used.}
 
 \item{...}{additional arguments. Currently not used.}
 }
