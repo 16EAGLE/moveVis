@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The package is under ongoing development.  The moveVis package is working hand in hand with the move package by using the move and moveStack class and the raster package. It is based on a ggplot2 plotting architecture.
+This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The package is under ongoing development.  The moveVis package is working hand in hand with the move package by using the move and moveStack class and the raster package. It is based on a ggplot2 plotting architecture and relys on the libraries ImageMagick, ffmpeg and libav.
 
 ## Examples
 
@@ -15,7 +15,6 @@ Output of animate_move(), showing White Storks movement nearby Lake Constance, u
 Output of animate_move(), showing White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background:
 
 ![Alt Text](https://github.com/16EAGLE/AUX_data/blob/master/data/examp2.gif)
-
 
 ## Installation
 
@@ -33,9 +32,9 @@ To install the development version from this GitHub repository, please execute:
 devtools::install_github("16EAGLE/moveVis")
 ```
 
-## Quick Guide for Movement Animation
+## Getting started
 
-This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours. First, you will need to load the move and the moveVis package and possibly the example data:
+You can use moveVis with any move or moveStack object. This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours. First, you will need to load the move and the moveVis package and possibly the example data:
 
 ```s
 #Load packages
@@ -60,11 +59,15 @@ data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +el
                        time = move_data$dt, animal=move_data$individual, data=move_data))
 ```
 
-Please note that the animate_move() function needs to know how to call the convert tool of the ImageMagick software package. By default, animate_move() trys to execute the "convert" command from the command line. To ensure that everything is going right, you should execute the get_imconvert() function prior to the animate_move() call (at least if you run it first). The get_imconvert() function checks, if the convert tool can be found on your system and downloads and installs ImageMagick automatically if necessary, depending on your system. Most Linux distributions have ImageMagick preinstalled. Store the output string of get_imconvert() to a variable to be able to hand it over to animate_move(). If you know the convert tool command or its directory, you can also specify it manually (see the "conv_dir" argument of animate_move()).
+Please note that the animate_move() function needs at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have them all installed, you can use all output formats supported by moveVis. Run get_libraries() to find out, which libraries are installed on your system, to download and to install the needed libraries. get_libraries() returns the library commands that are needed by the animate functions.
 
 ```s
-#Find command or directory to convert tool of ImageMagick
-conv_dir <- get_imconvert()
+#Get libraries 
+conv_dir <- get_libraries()
+
+#Find out, which output file formats can be used
+get_formats()
+
 ```
 
 Last, you need to specify the output directory path and you can specify some optional variables such as the animation title (for details on all the arguments of animate_move() , read the animate_move() help).
@@ -84,9 +87,9 @@ Finally, you are now prepared to call animate_move(), which will have to work fo
 ```s
 #Call animate_move()
 animate_move(data_ani, out_dir, conv_dir = conv_dir, tail_elements = 10,
-             paths_mode = "simple", frames_nmax = 50,
+             paths_mode = "true_data", frames_nmax = 50,
              img_caption = img_caption, img_title = img_title,
-             img_sub = img_sub, log_level = 1)
+             img_sub = img_sub, log_level = 1, out_format = "mov")
 ```
 
 Further examples and explanations on different modes are provided within the function manuals.
@@ -107,10 +110,12 @@ For other news on the work at at the Department of Remote Sensing of the Univers
           
 This initiative is part of the <a target="_blank" href="http://www.fernerkundung.geographie.uni-wuerzburg.de/forschung/projekte/laufende_projekte/opt4environment">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
 
+
+## Aknowledgements
+          
+This initiative is part of the <a target="_blank" href="http://www.fernerkundung.geographie.uni-wuerzburg.de/forschung/projekte/laufende_projekte/opt4environment">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
+
 <p align="justify">
 <a href="http://www.fernerkundung.geographie.uni-wuerzburg.de/en/lehrstuehle_und_arbeitsgruppen/department_of_remote_sensing/startseite//"><img width="150" height="100" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.dlr.de/eoc/en/"><img width="115" height="100" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.bmub.bund.de/"><img width="220" height="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.orn.mpg.de/en/"><img width="200" height="100" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
 
 </p>
-
-
-I am studying the Earth Observation and Geoanalysis of the Living Environment (EAGLE) Master Programme by the University of Wuerzburg, Germany, and the German Aerospace Center (DLR). Visit the Master Programme's website  <a target="_blank" href="http://eagle-science.org">following this link</a> to learn about the possibilites of becoming an EAGLE master student in Wuerzburg, Germany.

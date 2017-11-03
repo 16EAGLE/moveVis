@@ -51,7 +51,8 @@
 #'               stats_digits = 1, stats_type = "bar", out_name = "moveVis_ani",
 #'               log_level = 1,frames_nmax = 60)
 #'               
-#' stats_gg <- 'ggplot(data = stats_obj[[k]][[b]][[x]], aes_(x = ~val, y = ~value, colour = ~variable)) + 
+#' stats_gg <- 'ggplot(data = stats_obj[[k]][[b]][[x]],
+#'              aes_(x = ~val, y = ~value, colour = ~variable)) + 
 #'              geom_line() + geom_point() + theme_bw() + theme(aspect.ratio=1) +
 #'              scale_y_continuous(expand = c(0,0),limits = c(0,stats_max[k])) +
 #'              scale_x_continuous(expand = c(0,0)) + 

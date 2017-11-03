@@ -190,7 +190,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
                          map_elements = TRUE, time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white", scalebar_dist = "auto", north_col = "white", 
                          frames_layout = 0, frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA, frames_pixres = 80,
-                         out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE, log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
+                         out_name = "moveVis", out_format = "gif", overwrite = FALSE, log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
   
   #Start clock
   run.start <- Sys.time()
@@ -587,17 +587,23 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
   }
   if(is.na(frames_width)){
-    if(stats_create == TRUE & stats_only == FALSE){
-      if(layer_type != "RGB"){frames_width <- 1200}else{frames_width <- 1200}
+    if(stats_create == TRUE){
+      if(stats_only == FALSE){
+        if(layer_type != "RGB"){frames_width <- 1200}else{frames_width <- 1600}
+      }else{
+        frames_width <- 1000
+      }
     }else{frames_width <- 600}
   }
-  if(is.na(frames_height)){frames_height = 600}
-  if(frames_width > 1200 | frames_height > 1200){out("High resolution ouptut causes time intensive frame creation.",type = 2)}
+  if(is.na(frames_height)){
+    if(stats_only == TRUE & layer_type == "RGB"){frames_height <- 900}else{frames_height <- 600}
+  }
+  if(frames_width > 1600 | frames_height > 1000){out("High resolution ouptut causes time intensive frame creation.",type = 2)}
   if(frames_layout[1] == 0){
     if(raster_only == TRUE | stats_create == FALSE){frames_layout <- rbind(c(1))}
     else{
       if(stats_only == TRUE){
-        if(layer_type == "RGB"){frames_layout =  rbind(c(2,3),c(4,5),c(6,7),c(8,8))}else{frames_layout = rbind(c(2,3,8))}
+        if(layer_type == "RGB"){frames_layout =  rbind(c(2,4,6,8),c(3,5,7,8))}else{frames_layout = rbind(c(2,3,8))}
       }else{
         if(layer_type == "RGB"){frames_layout = rbind(c(1,1,2,4,6,8),c(1,1,3,5,7,8))}else{frames_layout = rbind(c(1,1,2,8),c(1,1,3,8))} #frames_layout = rbind(c(1,1,9,2,4,6,8),c(1,1,9,3,5,7,8))}else{frames_layout = rbind(c(1,1,9,2,8),c(1,1,9,3,8))}
       }

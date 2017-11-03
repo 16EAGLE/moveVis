@@ -30,7 +30,7 @@
 #' \itemize{
 #'   \item ImageMagick: \url{https://www.imagemagick.org/script/download.php})
 #'   \item FFmpeg from \url{https://www.ffmpeg.org/download.html}
-#'   \item libav from \url{https://www.libav.org/download'}  
+#'   \item libav from \url{https://libav.org/download/'}  
 #' }
 #' @examples
 #' #conv_dir of the animate_move() function

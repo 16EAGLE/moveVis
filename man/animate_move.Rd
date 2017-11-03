@@ -18,7 +18,7 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
   scalebar_dist = "auto", north_col = "white", frames_layout = 0,
   frames_nmax = 0, frames_fps = 25, frames_nres = 1, frames_tres = 0,
   frames_width = NA, frames_height = NA, frames_pixres = 80,
-  out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE,
+  out_name = "moveVis", out_format = "gif", overwrite = FALSE,
   log_level = 1, log_logical = FALSE, ..., conv_cmd = "",
   conv_frames = 100)
 }

@@ -3,7 +3,7 @@ Type: Package
 Title: Movement Data Visualization
 Version: 0.9.6
 Depends: R (>= 2.10)
-Date: 2017-10-09
+Date: 2017-11-01
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
 Description: Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
