@@ -45,7 +45,7 @@ You can install the necessary libraries manually and then run get_libraries to j
 \itemize{
   \item ImageMagick: \url{https://www.imagemagick.org/script/download.php})
   \item FFmpeg from \url{https://www.ffmpeg.org/download.html}
-  \item libav from \url{https://libav.org/download/'}  
+  \item libav from \url{https://libav.org/download/}  
 }
 }
 \examples{

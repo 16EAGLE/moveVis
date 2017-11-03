@@ -30,7 +30,7 @@
 #' \itemize{
 #'   \item ImageMagick: \url{https://www.imagemagick.org/script/download.php})
 #'   \item FFmpeg from \url{https://www.ffmpeg.org/download.html}
-#'   \item libav from \url{https://libav.org/download/'}  
+#'   \item libav from \url{https://libav.org/download/}  
 #' }
 #' @examples
 #' #conv_dir of the animate_move() function
@@ -90,6 +90,8 @@ get_libraries <- function(lib.tool = "all", dir = "none", ...){
     if(.Platform$OS.type == 'windows'){
       if(length(grep("convert.exe",list.files(paste0("C:/Program Files/",grep("ImageMagick", list.files("C:/Program Files/"),value = TRUE))))) != 0){
         conv_dir <- paste0("C:/Program Files/", list.files("C:/Program Files/")[grep("ImageMagick",list.files("C:/Program Files/"))], "/convert.exe")
+        lib.found <- c(lib.found, paste0(dir,"\\imagick\\convert.exe"))
+        lib.notfound <- lib.notfound[-match("convert",lib.notfound)]
       }else{
         if(!file.exists(paste0(dir,"/imagick/convert.exe"))){
           if(nodownload == TRUE){out("'convert' could not be located on this system. Please install ImageMagick including 'convert' manually from 'https://www.imagemagick.org/script/download.php'",type=2)
@@ -102,10 +104,10 @@ get_libraries <- function(lib.tool = "all", dir = "none", ...){
             download.file(url = f.dir, destfile = paste0(dir,"/imagick.zip"),method="auto")
             unzip(paste0(dir,"/imagick.zip"),exdir = paste0(dir,"/imagick"))
             file.remove(paste0(dir,"/imagick.zip"))
+            lib.found <- c(lib.found, paste0(dir,"\\imagick\\convert.exe"))
+            lib.notfound <- lib.notfound[-match("convert",lib.notfound)]
           }
         }
-        lib.found <- c(lib.found, paste0(dir,"\\imagick\\convert.exe"))
-        lib.notfound <- lib.notfound[-match("convert",lib.notfound)]
       }
     }else{
       out("No ImageMagick installation could be found. Please install manually. On Linux, open the terminal, enter 'sudo apt-get install imagemagick'.
