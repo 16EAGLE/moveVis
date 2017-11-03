@@ -72,7 +72,7 @@ get_libraries <- function(lib.tool = "all", dir = "auto", ...){
   }
   
   try.lib <- sapply(lib.tool, function(x){quiet(try(cmd.fun(x,ignore.stdout = TRUE,ignore.stderr = TRUE)))})
-  try.lib.which <- which(try.lib > 100)
+  try.lib.which <- which(try.lib >= 4)
   
   if(length(try.lib.which) == 0){lib.found <- lib.tool
   }else{lib.found <- lib.tool[-try.lib.which]}
