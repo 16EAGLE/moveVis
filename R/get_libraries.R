@@ -46,10 +46,17 @@
 
 get_libraries <- function(lib.tool = "all", dir = "none", ...){
   
-  if(dir == "none"){nodownload <- TRUE}
   arg <- list(...)
   s_try <- try(arg$nodownload)
-  if(class(s_try) == "NULL"){nodownload <-  FALSE}else{nodownload <- arg$nodownload}
+  if(class(s_try) == "NULL"){
+    if(dir == "none"){
+      nodownload <- TRUE
+    }else{
+      nodownload <-  FALSE
+    }
+  }else{
+    nodownload <- arg$nodownload
+  }
   s_try <- try(arg$log_level)
   if(class(s_try) == "NULL"){log_level <-  1}else{log_level <- arg$log_level}
 
