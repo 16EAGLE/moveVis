@@ -34,13 +34,30 @@ devtools::install_github("16EAGLE/moveVis")
 
 ## Getting started
 
-You can use moveVis with any move or moveStack object. This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours. First, you will need to load the move and the moveVis package and possibly the example data:
+You can use moveVis with any move or moveStack object. This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours.
+
+First, load moveVis and the move package:
+
 
 ```s
 #Load packages
-library(move)
 library(moveVis)
+library(move)
+```
 
+moveVis requires at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have 'ImageMagick' and either 'ffmepg' or 'libav' installed, you can use all output formats supported by moveVis.
+
+Run `get_libraries()` to find out, which libraries are installed on your system and to get instructions how to download and to install the needed libraries:
+
+```s
+get_libraries()
+```
+
+For GIF outputs, install ImageMagick from https://www.imagemagick.org/script/download.php. To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide: https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. After the required libraries are once installed, run `get_libraries()` again to check, if they are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation.
+
+You will need to load the example data for this tutorial:
+
+```s
 #Load data (data.frame) (or use your own as data.frame)
 data("move_data")
 ```
@@ -59,9 +76,8 @@ data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +el
                        time = move_data$dt, animal=move_data$individual, data=move_data))
 ```
 
-Please note that the animate_move() function needs at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have them all installed, you can use all output formats supported by moveVis. Run get_libraries() to find out, which libraries are installed on your system, to download and to install the needed libraries. get_libraries() returns the library commands that are needed by the animate functions.
+get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function so that it knows how to call the extern library commands. You can also call get_formats() to see all output formats, you can choose from.
 
-For GIF outputs, install ImageMagick from https://www.imagemagick.org/script/download.php. To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide: https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. After the required libraries are once installed, use `get_libraries()` to check, if they are recognized by moveVis.
 
 ```s
 #Get libraries 
@@ -84,7 +100,7 @@ img_sub <- paste0("including individuals ",indi_names)
 img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 ```
 
-Finally, you are now prepared to call animate_move(), which will have to work for a while depending on your input. Here, we use "frames_nmax" set to 50 to force the function to only produce 50 frames and then finish the GIF, regardless how many  input points you provided. Set "log_level" to 1 to be informed of anything the function is doing.
+Finally, you are now prepared to call animate_move(), which will have to work for a while depending on your input. Here, for demonstrational purposes, we use `frames_nmax` set to 50 to force the function to only produce 50 frames and then finish the animation, regardless how many input points you provided. Set `log_level` to 1 to be informed of anything the function is doing. Set `out_format` to "mov" to get a .mov video output file.
 
 ```s
 #Call animate_move()
@@ -94,7 +110,7 @@ animate_move(data_ani, out_dir, conv_dir = conv_dir, tail_elements = 10,
              img_sub = img_sub, log_level = 1, out_format = "mov")
 ```
 
-Further examples and explanations on different modes are provided within the function manuals.
+After the function is finished, check the output directory. Retry everything with different settings and modes, described in the function manuals. Further examples and explanations are provided within the function manuals.
 
 ## Contact & bug reports
 
