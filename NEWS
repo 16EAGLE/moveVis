@@ -1,5 +1,21 @@
 ----------------------------------------------------------
-moveVis 0.9.6 BETA (to be on CRAN before November 3rd, 2017)
+moveVis 0.9.7 (currently working on, no release so far)
+
+----------------------------------------------------------- 
+ 
+To-Do:
+ + "keep tracks" setting to force paths to not disappeare
+ + segmentation coulouring [working on this at the moment]
+ + optional user-defined font sizes of all fonts (axis, annotations etc.), colours based on ggplot2 syntax
+ + optional user-defined map elements position vectors
+ + user-defined area of interest (AOI), which scales map extent to specific area without excluding tracks "out of sight", enables move-in and move-out of individuals to AOI
+ + follow population mode
+ + follow individual mode
+ + day/night-mode visualization
+ + dynamic overplotting, e. g. polygons or points that change over time
+
+----------------------------------------------------------
+moveVis 0.9.6 (stable release, latest on CRAN)
 automatic preprocessing, video support, better performance, bug fixes
 -----------------------------------------------------------
 New functions:
@@ -27,21 +43,7 @@ Improvements:
  + recoding of multiple processing steps to increase processing speed and stability
  + increased error handler by several errors likely to occure
  + several bug fixes
- 
-Will be implemented in the next versions (ordered by priority):
- + "keep tracks" setting to force paths to not disappeare
- + segmentation coulouring [working on this at the moment]
- + optional user-defined font sizes of all fonts (axis, annotations etc.), colours based on ggplot2 syntax
- + optional user-defined map elements position vectors
- + user-defined area of interest (AOI), which scales map extent to specific area without excluding tracks "out of sight", enables move-in and move-out of individuals to AOI
- + follow population mode
- + follow individual mode
- + day/night-mode visualization
- + dynamic overplotting, e. g. polygons or points that change over time
- 
-Known problems in this BETA (to be fixed before release):
- + none currently
- 
+
 Contributors:
  + AniMove 2017 participants
  
