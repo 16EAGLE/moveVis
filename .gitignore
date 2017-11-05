@@ -3,5 +3,4 @@
 .RData
 .Ruserdata
 moveVis.Rproj
-NEWS
-NEWS.html
+NEWS.Rmd
