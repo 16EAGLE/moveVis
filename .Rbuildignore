@@ -2,5 +2,5 @@
 ^\.Rproj\.user$
 ^LICENSE$
 ^.travis.yml$
-^NEWS.Rmd$
-^NEWS.html$
+^index.Rmd$
+^index.html$
