@@ -61,7 +61,7 @@ data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +el
 
 Please note that the animate_move() function needs at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have them all installed, you can use all output formats supported by moveVis. Run get_libraries() to find out, which libraries are installed on your system, to download and to install the needed libraries. get_libraries() returns the library commands that are needed by the animate functions.
 
-To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide: https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496
+For GIF outputs, install ImageMagick from https://www.imagemagick.org/script/download.php. To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide: https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. After the required libraries are once installed, use `get_libraries()` to check, if they are recognized by moveVis.
 
 ```s
 #Get libraries 
