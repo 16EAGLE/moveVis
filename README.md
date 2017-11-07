@@ -53,7 +53,7 @@ Run `get_libraries()` to find out, which libraries are installed on your system 
 get_libraries()
 ```
 
-For GIF outputs, install ImageMagick from https://www.imagemagick.org/script/download.php. To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide: https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. After the required libraries are once installed, run `get_libraries()` again to check, if they are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation.
+For GIF outputs, install ImageMagick from https://www.imagemagick.org/script/download.php. To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide: https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. After the required libraries are once installed, <b>restart your R session</b> and then run `get_libraries()` again to check, if they are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation.
 
 You will need to load the example data for this tutorial:
 
