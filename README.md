@@ -45,6 +45,8 @@ library(moveVis)
 library(move)
 ```
 
+### External libraries
+
 moveVis requires at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have 'ImageMagick' and either 'ffmepg' or 'libav' installed, you can use all output formats supported by moveVis.
 
 Run `get_libraries()` to find out, which libraries are installed on your system and to get instructions how to download and to install the needed libraries:
@@ -53,11 +55,17 @@ Run `get_libraries()` to find out, which libraries are installed on your system 
 get_libraries()
 ```
 
+#### ImageMagick
+
 For GIF outputs, ImageMagick is needed. On many Linux distributions, ImageMagick is preinstalled or can be installed via the package manager (on Ubuntu: `sudo apt-get install imagemagick`). On Windows, Install ImageMagick from https://www.imagemagick.org/script/download.php. Make sure that you select "Install legacy utilities (e.g. convert)" during the installation process. 
+
+#### ffmpeg/libav
 
 To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide (including the link to the binary download, which you need): https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. Alternatively, moveVis supports libav, which is preinstalled on some Linux distributions.
 
 After the required libraries are once installed, <b>restart your R session</b> and then run `get_libraries()` again to check, if they are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation.
+
+### Data preperation
 
 You will need to load the example data for this tutorial:
 
@@ -79,6 +87,8 @@ Your movement data need to be provided as move class objects to the animate_move
 data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +ellps=WGS84"),
                        time = move_data$dt, animal=move_data$individual, data=move_data))
 ```
+
+### Additional input variables
 
 get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function so that it knows how to call the extern library commands. You can also call get_formats() to see all output formats, you can choose from.
 
@@ -103,6 +113,8 @@ img_title <- "Movement of the white stork population at Lake Constance, Germany"
 img_sub <- paste0("including individuals ",indi_names)
 img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
 ```
+
+### Animate function call
 
 Finally, you are now prepared to call animate_move(), which will have to work for a while depending on your input. Here, for demonstrational purposes, we use `frames_nmax` set to 50 to force the function to only produce 50 frames and then finish the animation, regardless how many input points you provided. Set `log_level` to 1 to be informed of anything the function is doing. Set `out_format` to "mov" to get a .mov video output file.
 
