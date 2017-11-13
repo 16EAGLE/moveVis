@@ -80,10 +80,7 @@
 #' conv_dir <- get_libraries()
 #' 
 #' #Specify the output directory, e.g.
-#' out_dir <- "/out/test"
-#' #or to a temporary directory:
-#' out_dir <- paste0(tempdir(),"/test")
-#' dir.create(out_dir)
+#' out_dir <- paste0(getwd(),"/test")
 #' 
 #' #Specify some optional appearance variables
 #' img_title <- "Movement of the white stork population at Lake Constance, Germany"

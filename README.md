@@ -77,7 +77,7 @@ data("move_data")
 As the provided example data, your data.frame needs to have at least three columns: two columns for your coordinates (here "lat", "lon") and one for the date/time stamp (here "dt"). The date/time stamps need to be converted to POSIXct as follows:
 
 ```s
-move_data$dt <- as.POSIXct(strptime(move_data$dt, "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"))
+move_data$dt <- as.POSIXct(strptime(move_data$dt, "%Y-%m-%d %H:%M:%S", tz = "UTC"))
 ```
 
 Your movement data need to be provided as move class objects to the animate_move() function. For each individual movement path you want to display simultaniously within a single animation, you will need one move class object. The move class objects per path are provided as a list. If your data.frame contains several individuals (e. g. differentiable by a "individuals" column, as the example data.frame does), then subset the data per individual and store the namings. If you just want to display a single path, you do not have to do this.
@@ -106,7 +106,7 @@ Last, you need to specify the output directory path and you can specify some opt
 
 ```s
 #Specify output directory
-out_dir <- "/your/full/output/directory"
+out_dir <- paste0(getwd(),"/test")
 
 #Specify some optional appearance variables
 img_title <- "Movement of the white stork population at Lake Constance, Germany"
