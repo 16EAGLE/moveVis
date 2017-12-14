@@ -72,7 +72,7 @@ animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = 0,
 
 \item{frames_pixres}{numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
 
-\item{out_name}{character. Name of the output file. Default is "moveVis_ani".}
+\item{out_name}{character. Name of the output file. Default is "moveVis".}
 
 \item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
 

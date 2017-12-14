@@ -44,7 +44,7 @@
 #' @param frames_width numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).
 #' @param frames_height numeric. Number of pixels of frame height. Defualt is 600.
 #' @param frames_pixres numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.
-#' @param out_name character. Name of the output file. Default is "moveVis_ani".
+#' @param out_name character. Name of the output file. Default is "moveVis".
 #' @param out_format character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.
 #' @param overwrite logical. If TRUE, files with equal file names to \code{out_name} will be overwritten. Default is FALSE.
 #' @param log_level numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.
