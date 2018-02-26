@@ -4,3 +4,4 @@
 ^.travis.yml$
 ^index.Rmd$
 ^index.html$
+^index_backup.html$
