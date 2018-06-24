@@ -1058,7 +1058,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     plt.bm <- paste0('ggplot(data=ld[[10]][[x]], aes_(x=~x, y=~y)) + geom_tile(aes(fill = factor(value))) + scale_fill_manual(values = c(setNames(ld[[11]], 1:length(ld[[11]]))), labels = c(', paste0('"',legend_labels,'"',collapse = ", "),'), drop = FALSE, na.value = "', as.character(layer_nacol) ,'", guide = guide_legend(title = "',legend_title ,'", label = TRUE, label.vjust = 0.9, title.hjust = 0, title.vjust =0)) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
   }
   if(layer_type == "RGB"){
-    plt.bm <- paste0('ggRGB(ld[[10]][[x]],r=3,g=2,b=1,stretch="',layer_stretch,'") + scale_fill_identity() + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
+    plt.bm <- paste0('ggRGB(ld[[10]][[x]],r=1,g=2,b=3,stretch="',layer_stretch,'") + scale_fill_identity() + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + theme(aspect.ratio=1)')
   }
   
   #stats plot function
