@@ -217,23 +217,16 @@ animate_move <- function(m, out_dir, conv_dir = "",
   #shiny arguments
   s_try <- try(arg$shiny_mode); if(class(s_try) != "NULL"){shiny_mode <- arg$shiny_mode}else{shiny_mode = FALSE} #prev or ani
   s_try <- try(arg$shiny_session); if(class(s_try)[1] != "NULL"){shiny_session <- arg$shiny_session}else{shiny_session = FALSE}
-  if(shiny_mode == FALSE){Progress <- NULL} #for CRAN checks
+  if(shiny_mode == FALSE){Progress <- NULL} #necessary for CRAN checks
   
   #parallel processing set-up
   s_try <- try(arg$par); if(class(s_try) != "NULL"){par <- arg$par}else{par <- FALSE}
   s_try <- try(arg$par_cores); if(class(s_try)[1] != "NULL"){par_cores <- arg$par_cores}else{par_cores = NA}
   
-
-  ## FUNCTION DEFINITION
+  options(moveVis.msg = shiny_mode)
   
-  #Define output handling
-  out <- function(input,type = 1, ll = log_level, msg = shiny_mode){
-    signs <- c("", "")
-    if(type == 2 & ll <= 2){warning(paste0(signs[2],input), call. = FALSE, immediate. = TRUE)}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(ll == 1){
-      if(msg == FALSE){cat(paste0(signs[1],input),sep="\n")
-      }else{message(paste0(signs[1],input))}}}}
-  }
+  
+  ## FUNCTION DEFINITION
   
   #get legend
   g_legend<-function(a.gplot){ 
@@ -271,12 +264,14 @@ animate_move <- function(m, out_dir, conv_dir = "",
   #+++++++++++++++++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++++++++++++++++++++++++
   
   ## PREREQUISITES
+  if(log_level == 1 | log_level == 2 | log_level == 3) options(moveVis.log_level = log_level)
   out("Checking prerequisites...",type=1)
   
   #Plattform dependences
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
 
   if(overwrite == FALSE & file.exists(paste0(out_dir,"/",out_name,".",out_format))){out("Output file already exists. Change 'out_name' or set 'overwrite' to TRUE.",type = 3)}
+  
   if(raster_only != TRUE){ #m not needed for animate_raster()
     if(missing(m)){
       out("Argument 'm' is missing. Please specify the input movement data.",type=3)
@@ -320,6 +315,8 @@ animate_move <- function(m, out_dir, conv_dir = "",
       setwd(temp_dir)
     }
   }
+  
+  #### CONTINUE HERE
   if(is.character(out_format) == FALSE){out("Argument 'out_format' needs to be a character object.", type = 3)}
   if(shiny_mode == FALSE){
     if(is.character(conv_dir) == FALSE){
