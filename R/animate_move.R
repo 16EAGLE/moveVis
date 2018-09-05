@@ -4,7 +4,7 @@
 #'
 #' @param m list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.
 #' @param out_dir character. Output directory of the output file.
-#' @param conv_dir character. Command of or directory to required image/video converter library. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. See also \code{\link{get_libraries}}. If not specified, animate_move() trys to find libraries automatically.
+#' @param conv_dir character. Command of or path to required image/video converter tool. Depends on, what is specified for \code{out_format}. If \code{out_format = "gif"}, animate_move() works with the ImageMagick \code{convert} tool. In this case, specify command of or path to the \code{convert} tool. You can use \code{\link{get_libraries}} to find or download/install \code{convert}. If \code{out_format} is a video format (e.g. "mp4", "mov" ...), animate_move() works with either the FFmpeg \code{ffmepg} tool or the libav \code{avconv} tool. In this case, specify command of or path to the \code{ffmpeg} or \code{avconv} tool. See also \code{\link{get_libraries}}. If not specified, animate_move() trys to find libraries automatically.
 #' @param layer raster, list or character "basemap". Single raster object or list of raster objects to be used as (dynamically changing) basemap layer. Default is \code{"basemap"} to download a static basemap layer. Use a rasterBrick class object and set layer_type to "\code{RGB}" to compute a RGB basemap.
 #' @param layer_dt POSIXct vector or list. Single POSIXct date/time stamp or list of POSIXct date/time stamps representing the acquisition dates of the \code{layer} raster objects.
 #' @param layer_int logical. Whether to interpolate the basemap layer objects over time, if several are provided (\code{TRUE}), or to display them one after another depending on the animation time frame that is displayed (\code{FALSE}). Default is \code{FALSE}.
@@ -321,6 +321,10 @@ animate_move <- function(m, out_dir, conv_dir = "",
     if(!isTRUE(is.character(conv_dir))){
       out("Argument 'conv_dir' needs to be a character object.",type=3)
     }else{
+      if(conv_dir == ""){
+        conv_dir <- get_libraries()
+        if(length(conv_dir) == 0) out("Could not detect 'convert', 'ffmpeg' or 'avconv' on your system. Please use the argument 'conv_dir' to specify the command path to 'convert', 'ffmpeg' or 'avconv' manually.", type = 3)
+      }
       if(out_format == "gif"){
         if(length(conv_dir) > 1){
           if(length(grep("convert",conv_dir)) != 0){
@@ -329,10 +333,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
             out(paste0("Could not detect the 'convert' tool from 'conv_dir'. '",paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '",out_format,"'"),type=2)
           }
         }
-        if(conv_dir == ""){conv_dir <- getOption("moveVis.convert_cmd")}
-        tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
-        if(tryit != 1){out(paste0("'",conv_dir,"' could not be executed. Use get_libraries() to search for 'convert' on your system or to install the required library (ImageMagick)."),type=3)
-        }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
+        out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)
       }else{
         if(length(conv_dir) > 1){
           if(length(grep("ffmpeg",conv_dir)) != 0){
@@ -345,10 +346,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
             }
           }
         }
-        if(conv_dir == ""){conv_dir <- get_libraries(lib.tool = c("ffmpeg","avconv"), log_level = 3)[1]}
-        tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
-        if(tryit > 1){out(paste0("'", conv_dir, "' could not be executed. Use get_libraries() to search for 'ffmpeg'/'avconv' on your system."),type=3)
-        }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
+        out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)
         
         formats.search <- which(get_formats(conv_dir) == out_format)
         if(length(formats.search) == 0){out(paste0("This system's '",conv_dir,"' installation seems to not support '",out_format,"'. Use another format."),type=3)}
