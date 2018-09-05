@@ -8,13 +8,13 @@ This is an R package providing tools to visualize movement data by creating path
 
 ## Examples
 
-Output of animate_move(), showing White Storks movement nearby Lake Constance, using a static land cover/land use map in the background:
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
+<p align="center"><sub>Figure 1: Output of animate_move(), showing White Storks movement nearby Lake Constance, using a static land cover/land use map in the background</sub></p>
+<br>
 
-![Alt Text](https://github.com/16EAGLE/AUX_data/blob/master/data/examp1.gif)
-
-Output of animate_move(), showing White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background:
-
-![Alt Text](https://github.com/16EAGLE/AUX_data/blob/master/data/examp2.gif)
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
+<p align="center"><sub>Figure 2: Output of animate_move(), showing White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background</sub></p>
+<br>
 
 ## Installation
 
