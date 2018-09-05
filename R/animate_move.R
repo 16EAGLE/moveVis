@@ -321,6 +321,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
     if(!isTRUE(is.character(conv_dir))){
       out("Argument 'conv_dir' needs to be a character object.",type=3)
     }else{
+      if(length(unlist(sapply(conv_dir, function(x) grep(".exe", x), USE.NAMES = F))) > 0){
+        cd.exists <- sapply(conv_dir, file.exists, USE.NAMES = F)
+        if(!all(cd.exists)) out(paste0("File '", paste0(conv_dir[!cd.exists], collapse = ", "), " does not exist."), type = 3)
       if(conv_dir[1] == ""){
         conv_dir <- get_libraries()
         if(length(conv_dir) == 0) out("Could not detect 'convert', 'ffmpeg' or 'avconv' on your system. Please use the argument 'conv_dir' to specify the command path to 'convert', 'ffmpeg' or 'avconv' manually.", type = 3)
