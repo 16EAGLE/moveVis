@@ -47,10 +47,10 @@ get_formats <- function(tool = "auto"){
       if(command == "convert"){df <- "gif"}else{df <- detect_formats(command)}
     }
   }else{
-    if(is.na(match(tool,c("convert", "ffmpeg", "avconv"))) == FALSE){
-      if(tool == "convert"){df <- "gif"}else{df <- detect_formats(tool)}
+    if(length(unlist(sapply(c("convert", "ffmpeg", "avconv"), function(x, t = tool) grep(x, t)))) > 0){
+      if(length(grep("convert", tool)) > 0) df <- "gif" else df <- detect_formats(tool)
     }else{
-      out(paste0("'",toString(tool),"' not recognized. 'tool' must either be 'convert', 'ffmpeg' or 'avconv'."), type=3)
+      out(paste0("'",toString(tool),"' not recognized. 'tool' must eithr link to 'convert', 'ffmpeg' or 'avconv'."), type=3)
     }
   }
   vid <- c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")
