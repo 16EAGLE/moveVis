@@ -22,7 +22,7 @@ check.cmd <- function(cmd){
   
   sapply(cmd, function(x){
     run <- try(devtools::system_check(x, quiet = T), silent = TRUE)
-    if(length(grep("Error in system", as.character(run[1]))) != 0) FALSE else TRUE
+    if(length(grep("Error", as.character(run[1]))) != 0) FALSE else TRUE
   })
   
 }
