@@ -34,15 +34,6 @@ get_formats <- function(tool = "auto"){
      return(formats.supp)
   }
   
-  log_level <- 1
-  out <- function(input,type = 1, ll = log_level, msg = FALSE){
-    signs <- c("", "")
-    if(type == 2 & ll <= 2){warning(paste0(signs[2],input), call. = FALSE, immediate. = TRUE)}
-    else{if(type == 3){stop(input,call. = FALSE)}else{if(ll == 1){
-      if(msg == FALSE){cat(paste0(signs[1],input),sep="\n")
-      }else{message(paste0(signs[1],input))}}}}
-  }
-  
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
   
   if(tool == "auto"){

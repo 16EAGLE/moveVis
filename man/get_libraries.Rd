@@ -3,16 +3,14 @@
 \name{get_libraries}
 \alias{get_libraries}
 \alias{get_imconvert}
-\title{Detect and/or download and install extern system libraries needed by moveVis}
+\title{Detect extern system libraries needed by moveVis}
 \usage{
-get_libraries(lib.tool = "all", dir = "none", ...)
+get_libraries(lib.tool = "all", ...)
 
 get_imconvert(dir = "auto")
 }
 \arguments{
 \item{lib.tool}{character. Vector of libraries to look for. This can be either 'convert', 'ffmpeg', 'avconv' or a combination. Default is "all" to check for all possible libraries.}
-
-\item{dir}{character. Directory were to download, unzip and install ImageMagick. If set to "auto", a temporary directory is used. Default is "none", which will cause no automatic installation.}
 
 \item{...}{additional arguments. Currently not used.}
 }
@@ -23,7 +21,7 @@ A character vector including all found commands or directories to the needed too
 \code{get_libraries} trys to detect the libraries on your system that are needed by moveVis to be able to deal with different output file formats. get_libraries() searches for'convert' form the ImageMagick library (needed for .gif support), 'ffmpeg' from the FFmpeg library or 'avconv' from the 'libav-tools' library (both needed for video support).
 You can execute get_libraries() to make sure, these libraries are correctly installed on your system. It is recommended to have ImageMagick including 'convert' and FFmpeg including 'ffmpeg' installed to gain support of all available output file formats. The function's return can serve as \code{conv_dir} input to the animate_move() function.
  
-\code{get_imconvert} is an alias function of \code{get_libraries} inlcuded for compatibility reasons that does the same as \code{get_libraries}, but is only checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
+\code{get_imconvert} is an deprecated alias function of \code{get_libraries} inlcuded for compatibility reasons that does the same as \code{get_libraries}, but is only checking for the \code{convert} tool of ImageMagick. It is recommended to use \code{get_libraries} instead.
 }
 \details{
 The following tools and libraries are needed by moveVis:
@@ -34,18 +32,19 @@ The following tools and libraries are needed by moveVis:
 }
 It is recommmended to have both ImageMagick and one of the mentioned video libraries installed to be able to create all output formats with the animate_move() function (see argument \code{out_format} of \link{animate_move})
 
-If you are running Windows, the function can download and either temporarily or permanently install ImageMagick
-on your Windows system in case that no existing installation can be found. For FFmpeg or libav, a download link will be provided.
-
-If you are running Linux, the function provides a root permission requiring command to be executed once by the user in the terminal
-to install ImageMagick, FFmpeg or libav, if not installed. On standard Ubuntu distributions, ImageMagick and FFmpeg belong to the preinstalled packages by default.
-If you are running macOS (former OSX), manual installation is necessary or installation via a package manager such as 'brew'.
-
-You can install the necessary libraries manually and then run get_libraries to just identify the needed commands:
+If you are running Windows or macOS, use the download links below to install the required software:
 \itemize{
   \item ImageMagick: \url{https://www.imagemagick.org/script/download.php})
   \item FFmpeg from \url{https://www.ffmpeg.org/download.html}
   \item libav from \url{https://libav.org/download/}  
+ }
+If you are running macOS, an installation via a package manager such as 'brew' is recommended.
+
+If you are running Linux, execute the commands below to install the required software:
+\itemize{
+  \item ImageMagick: \code{sudo apt-get install imagemagick}
+  \item ffmpeg: \code{sudo apt-get install ffmpeg}
+  \item libav: \code{sudo apt-get install libav-tools}
 }
 }
 \examples{

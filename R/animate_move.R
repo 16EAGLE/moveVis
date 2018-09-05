@@ -316,10 +316,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
     }
   }
   
-  #### CONTINUE HERE
   if(is.character(out_format) == FALSE){out("Argument 'out_format' needs to be a character object.", type = 3)}
   if(shiny_mode == FALSE){
-    if(is.character(conv_dir) == FALSE){
+    if(!isTRUE(is.character(conv_dir))){
       out("Argument 'conv_dir' needs to be a character object.",type=3)
     }else{
       if(out_format == "gif"){
@@ -330,7 +329,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
             out(paste0("Could not detect the 'convert' tool from 'conv_dir'. '",paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '",out_format,"'"),type=2)
           }
         }
-        if(conv_dir == ""){conv_dir <- get_libraries(lib.tool = "convert", nodownload = TRUE, log_level = 3)}
+        if(conv_dir == ""){conv_dir <- getOption("moveVis.convert_cmd")}
         tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
         if(tryit != 1){out(paste0("'",conv_dir,"' could not be executed. Use get_libraries() to search for 'convert' on your system or to install the required library (ImageMagick)."),type=3)
         }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
@@ -346,9 +345,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
             }
           }
         }
-        if(conv_dir == ""){conv_dir <- get_libraries(lib.tool = c("ffmpeg","avconv"), nodownload = TRUE, log_level = 3)[1]}
+        if(conv_dir == ""){conv_dir <- get_libraries(lib.tool = c("ffmpeg","avconv"), log_level = 3)[1]}
         tryit <- try(cmd.fun(conv_dir,ignore.stdout = TRUE,ignore.stderr = TRUE))
-        if(tryit > 1){out(paste0("'", conv_dir, "' could not be executed. Use get_libraries() to search for 'ffmpeg'/'avconv' on your system or to install the required libraries (FFmpeg, libav)."),type=3)
+        if(tryit > 1){out(paste0("'", conv_dir, "' could not be executed. Use get_libraries() to search for 'ffmpeg'/'avconv' on your system."),type=3)
         }else{out(paste0("Detected 'conv_dir' executable on this system: '",conv_dir,"'"),type=1)}
         
         formats.search <- which(get_formats(conv_dir) == out_format)
