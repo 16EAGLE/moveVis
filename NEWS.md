@@ -1,5 +1,5 @@
-## moveVis 0.9.X
-Future implementations
+## moveVis 1.0.0
+Future implementations (not yet implemented!)
 
 <br>
 **Next version:**
@@ -25,7 +25,7 @@ Future implementations
 ***
 
 ## moveVis 0.9.7
-Windows library detection bugs fixed
+Windows library detection bugs fixed (dev. version)
 
 <br>
 **Bug fixes:**
@@ -36,8 +36,8 @@ Windows library detection bugs fixed
 
 ***
 
-## 0.9.6
-video support, automatic time harmonization, bug fixes
+## moveVis 0.9.6
+video support, automatic time harmonization, bug fixes (CRAN version)
 
 <br>
 **New functions:**
@@ -75,7 +75,7 @@ video support, automatic time harmonization, bug fixes
 
 ***
 
-## 0.9.5
+## moveVis 0.9.5
 adding frames_layout, static_data etc., improvements to workflow
 
 <br>
@@ -101,7 +101,7 @@ adding frames_layout, static_data etc., improvements to workflow
 
 ***
 
-## 0.9.4
+## moveVis 0.9.4
 adding animate_stats() and stats arguments for animate_move()
 
 <br>
@@ -118,7 +118,7 @@ adding animate_stats() and stats arguments for animate_move()
 
 ***
 
-## 0.9.3
+## moveVis 0.9.3
 fixing major bug
 
 <br>
@@ -129,7 +129,7 @@ fixing major bug
 
 ***
 
-## 0.9.2
+## moveVis 0.9.2
 adding frame_width and frame_height arguments
 
 <br>
@@ -144,7 +144,7 @@ adding frame_width and frame_height arguments
 
 ***
 
-## 0.9.1
+## moveVis 0.9.1
 fixing important bug; adding animate_raster()
 
 <br>
@@ -166,7 +166,7 @@ fixing important bug; adding animate_raster()
 
 ***
 
-## 0.9.0
+## moveVis 0.9.0
 initial release
 
 <br>
