@@ -49,7 +49,8 @@ get_libraries <- function(lib.tool = "all", ...){
     out(paste0("'",paste(lib.tool, collapse = ", "),"' is not supported by moveVis. Argument 'lib.tool' can be either 'all' or 'convert', 'ffmpeg', 'avconv' or a combination of the latter three."),type=3)}
   }
   
-  lib.check <- check.cmd(lib.tool)
+  lib.check <- check.cmd(paste0("'", lib.tool, "' -version"))
+  names(lib.check) <- lib.tool
   catch <- sapply(names(lib.check), function(x){
     eval(parse(text = paste0("options(moveVis.", x, "_avail = T)")))
     eval(parse(text = paste0("options(moveVis.", x, "_cmd = '", x, "')")))
