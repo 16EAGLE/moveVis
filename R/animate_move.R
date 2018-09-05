@@ -326,24 +326,27 @@ animate_move <- function(m, out_dir, conv_dir = "",
         if(length(conv_dir) == 0) out("Could not detect 'convert', 'ffmpeg' or 'avconv' on your system. Please use the argument 'conv_dir' to specify the command path to 'convert', 'ffmpeg' or 'avconv' manually.", type = 3)
         out(paste0("Detected 'conv_dir' executable on this system: '", paste0(conv_dir, collapse = ", "), "'"), type=1)
       }
-      if(out_format == "gif"){
-        if(length(conv_dir) > 1) if(length(grep("convert",conv_dir)) == 0) out(paste0("'", paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '", out_format,"'"),type=3)
-      }else{
-        if(length(conv_dir) > 1){
-          if(length(grep("ffmpeg", conv_dir)) != 0){
-            conv_dir <- conv_dir[grep("ffmpeg", conv_dir)]
+    }
+    if(out_format == "gif"){
+      if(length(conv_dir) > 1){
+        conv_dir <- grep("convert", conv_dir, value =T)
+        if(length(conv_dir) == 0) out(paste0("'", paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '", out_format,"'"),type=3)
+      }
+    }else{
+      if(length(conv_dir) > 1){
+        if(length(grep("ffmpeg", conv_dir)) != 0){
+          conv_dir <- conv_dir[grep("ffmpeg", conv_dir)]
+        }else{
+          if(length(grep("avconc",conv_dir)) != 0){
+            conv_dir <- conv_dir[grep("avconv",conv_dir)]
           }else{
-            if(length(grep("avconc",conv_dir)) != 0){
-              conv_dir <- conv_dir[grep("avconv",conv_dir)]
-            }else{
-              out(paste0("'", paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '",out_format,"'"),type=2)
-            }
+            out(paste0("'", paste0(conv_dir, collapse = ", "), "' cannot be used for this output file format: '",out_format,"'"),type=2)
           }
         }
-        formats.search <- which(get_formats(conv_dir) == out_format)
-        if(length(formats.search) == 0){out(paste0("This system's '",conv_dir,"' installation seems to not support '",out_format,"'. Use another format."),type=3)}
       }
     }
+    formats.search <- which(get_formats(conv_dir) == out_format)
+    if(length(formats.search) == 0){out(paste0("out_format = '",out_format,"' with conv_dir = '", conv_dir, "' is not supported."),type=3)}
   }
   
   if(is.numeric(frames_nres) == FALSE){

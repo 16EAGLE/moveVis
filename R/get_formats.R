@@ -31,7 +31,7 @@ get_formats <- function(tool = "auto"){
     formats.supp <- sapply(lapply(cmd.fun(paste0(call," -formats"),intern = TRUE, ignore.stdout = FALSE, ignore.stderr = TRUE),
                                 function(x){substring(x,5,20)}), function(x){unlist(strsplit(x, " "))[1]})
     formats.supp <- formats.supp[5:length(formats.supp)]
-     return(formats.supp)
+    return(grep("gif", formats.supp, value = T, invert = T))
   }
   
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}

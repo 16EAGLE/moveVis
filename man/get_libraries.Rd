@@ -7,7 +7,7 @@
 \usage{
 get_libraries(lib.tool = "all", ...)
 
-get_imconvert(dir = "auto")
+get_imconvert()
 }
 \arguments{
 \item{lib.tool}{character. Vector of libraries to look for. This can be either 'convert', 'ffmpeg', 'avconv' or a combination. Default is "all" to check for all possible libraries.}

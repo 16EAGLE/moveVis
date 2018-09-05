@@ -61,6 +61,6 @@ get_libraries <- function(lib.tool = "all", ...){
 #' @rdname get_libraries
 #' @export
 
-get_imconvert <- function(dir = "auto"){
-  get_libraries(lib.tool = "convert", dir = dir)
+get_imconvert <- function(){
+  get_libraries(lib.tool = "convert")
 }
