@@ -14,7 +14,7 @@ navbar:
     - icon: fa-home fa-lg
       href: index.html
     - text: "Get Started"
-      href: index.html#get-started
+      href: index.html#getting-started
     - text: "Functions"
       href: reference/index.html
     - text: "Changelog"
