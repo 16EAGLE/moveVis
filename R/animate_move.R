@@ -29,6 +29,9 @@
 #' @param map_elements logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.
 #' @param time_scale logical. If \code{FALSE}, time scale is hidden. Default is \code{TRUE}.
 #' @param time_bar_col character. Colour of the time progress bar on the top edge of the map. Default is "grey".
+#' @param time_pos_x numeric between 0 and 1, defines the relative position of the time scale display in the x direction. Default is 0.5 (centered).
+#' @param time_pos_y numeric between 0 and 1, defines the relative position of the time scale display in the y direction. Default is 0.06 (top).
+#' @param time_size numeric. Defines the font size of the time scale display. Default is 3.
 #' @param extent_factor numeric. Defines the distance between the spatial extents of the movement data set and the basemap as proportion of the axis distance. Default is 0.0001. The higher the value, the larger the basemap extent. Ignored, if \code{layer} = "basemap".
 #' @param north_col character. Colour of the north arrow. Default is "white".
 #' @param paths_col character vector. Colours of the individual animation paths. If set to "auto", a predfined colour set will be used. If single colour, all paths will be displayed by the same colour. If more individuals then colours, the colours are repeated.
@@ -186,7 +189,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
-                         map_elements = TRUE, time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white", scalebar_dist = "auto", north_col = "white", 
+                         map_elements = TRUE, time_bar_col = "grey",  time_scale = TRUE, time_pos_x = 0.5, time_pos_y = 0.05, time_size = 3, scalebar_col = "white", scalebar_dist = "auto", north_col = "white", 
                          frames_layout = 0, frames_nmax =  0, frames_fps = 25, frames_nres = 1, frames_tres = 0, frames_width = NA, frames_height = NA, frames_pixres = 80,
                          out_name = "moveVis", out_format = "gif", overwrite = FALSE, log_level = 1, log_logical = FALSE, ..., conv_cmd = "", conv_frames = 100){
   
@@ -311,7 +314,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
       if(!dir.exists(out_dir)){out(paste0("'out_dir' '",out_dir,"' is not existing. Create or change 'out_dir'."),type = 3)}
       user_wd <- getwd()
       temp_dir <- paste0(tempdir(),"/moveVis")
-      quiet(dir.create(temp_dir))
+      if(!dir.exists(temp_dir)) dir.create(temp_dir)
       setwd(temp_dir)
     }
   }
@@ -452,7 +455,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
       }
     }
   }else{
-    quiet(res <- matrix(c(1,2,3,2,3,4,5,6,7,8)[match(frames_layout, c("map","st_per","st_all","st_perR","st_allR","st_perG","st_allG","st_perB","st_allB","st_leg"))], 3))
+    res <- matrix(c(1,2,3,2,3,4,5,6,7,8)[match(frames_layout, c("map","st_per","st_all","st_perR","st_allR","st_perG","st_allG","st_perB","st_allB","st_leg"))], 3)
     res <- ifelse(is.na(res), frames_layout, res)
     frames_layout <- apply(res, 2, as.numeric)
     
@@ -1027,7 +1030,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
     plt_scale_north <- '+ geom_polygon(data = ld[[8]], aes_(x = ~x, y = ~y), fill = "white", colour = "black") + geom_polygon(data = ld[[9]], aes_(x = ~x, y = ~y), fill = "black", colour = "black") + annotate("text", label = paste(leg_text, " km", sep=""), x = leg_coords$x, y = leg_coords$y, size = 3, colour = scalebar_col) + geom_line(arrow=arrow(length=unit(3.7,"mm")),data = arrow, aes_(x=~x, y=~y), colour=north_col,size=1.06) + annotate(x=x_arrow, y=y_down, label="N", colour=north_col, geom="text", size=6.5)'
   }else{plt_scale_north <- ''}
   if(time_scale == TRUE){ #leg_coords$x[2]  rec1_leftdown$y-leg_dist
-    plt_time_scale <- paste0('+ annotate("text", label = ld[[7]][[x]], x = ',as.character(x_bm[[1]]+(x_bm[[2]]-x_bm[[1]])/2),', y = ',as.character(y_bm[[2]]-(abs(leg_dist)*1.5)),', size = 3, colour = "',scalebar_col,'")')
+    plt_time_scale <- paste0('+ annotate("text", label = ld[[7]][[x]], x = ',as.character(x_bm[[1]]+(abs(x_bm[[2]]-x_bm[[1]])*time_pos_x)),', y = ',as.character(y_bm[[2]]-(abs(y_bm[[2]]-y_bm[[1]])*time_pos_y)),', size = ', as.character(time_size), ', colour = "',scalebar_col,'")')
   }else{plt_time_scale <- ''}
   plt_progress <- '+ geom_line(data = prog_bar, aes_(x=~x,y=~y),colour="grey",size=1.8)'
   
@@ -1081,7 +1084,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   }
   
   #Extract stats legend
-  if(stats_create == TRUE){k <- 1; b <- 1; x <- 1; stleg <- quiet(g_legend(eval(plt_stats_parse)))}
+  if(stats_create == TRUE){k <- 1; b <- 1; x <- 1; stleg <- g_legend(eval(plt_stats_parse))}
   
   #Compute plot identifiers
   frames_layout_id <- matrix(seq((min(frames_layout,na.rm = TRUE)-min(frames_layout,na.rm = TRUE)+1),max(frames_layout,na.rm = TRUE))[1:length(sort(unique(c(frames_layout))))][match(frames_layout, sort(unique(c(frames_layout))))], length(frames_layout[,1]))
@@ -1193,25 +1196,26 @@ animate_move <- function(m, out_dir, conv_dir = "",
       
       batch <- paste0('"',cd,'" ', cm,' -loop 0 -delay ',toString(100%/%fi),' ',paste0(d[range[1]:range[2]],collapse = " "),' out',toString(x),'.', out_format)
       
-      if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
-      }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))}
+      if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); cmd.fun("batch.bat >nul 2>1")
+      }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); cmd.fun("./batch.bat")}
       file.remove("batch.bat")
       return(paste0('out',toString(x),'.',out_format))
     })
     
     if(n_reloop > 1){
       batch <- paste0('"',conv_dir,'" ', conv_cmd,' -loop 0 -delay ',toString(100%/%frames_fps),' ',paste0(og.dir,collapse = " "),' ',out_name,'.', out_format)
-      if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); quiet(cmd.fun("batch.bat >nul 2>1"))
-      }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); quiet(cmd.fun("./batch.bat"))}
+      if(.Platform$OS.type == 'windows'){write(batch,"batch.bat"); cmd.fun("batch.bat >nul 2>1")
+      }else{write(batch,"batch.bat"); system("chmod +x batch.bat"); cmd.fun("./batch.bat")}
       file.remove("batch.bat")
     }else{
       file.rename(paste0("out1.",out_format),paste0(out_name,".",out_format))
     }
   }else{
-    quiet(cmd.fun(paste0(conv_dir, ' -i ',conv_cmd,' p%d.png -vcodec libx264 -pix_fmt yuv420p -r ',toString(frames_fps),' ',out_name,'.',out_format),ignore.stdout = TRUE,ignore.stderr = TRUE))
+    cmd.fun(paste0(conv_dir, ' -i ',conv_cmd,' p%d.png -vcodec libx264 -pix_fmt yuv420p -r ',toString(frames_fps),' ',out_name,'.',out_format),ignore.stdout = TRUE,ignore.stderr = TRUE)
   }
   
-  #Cleaning up
+  #Checking result
+  if(!file.exists(paste0(temp_dir, "/", out_name,".",out_format))) out("Output file could not be found.", type = 3)
   file.rename(paste0(temp_dir, "/", out_name,".",out_format), paste0(out_dir,"/",out_name,".",out_format)) #, overwrite = TRUE)
   file.remove(list.files(temp_dir))
     

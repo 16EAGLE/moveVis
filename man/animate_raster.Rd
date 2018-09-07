@@ -7,15 +7,7 @@
 animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = 0,
   layer_type = "gradient", layer_stretch = "none",
   layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
-  static_data = NA, static_gg = NA, img_title = "title",
-  img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
-  legend_title = "", legend_limits = NA, legend_labels = "auto",
-  map_elements = TRUE, time_bar_col = "grey", scalebar_col = "white",
-  north_col = "white", frames_nmax = 0, frames_fps = 25,
-  frames_nres = 1, frames_width = NA, frames_height = NA,
-  frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif",
-  overwrite = FALSE, log_level = 1, log_logical = FALSE, conv_cmd = "",
-  conv_frames = 100)
+  ...)
 }
 \arguments{
 \item{layer}{list. List of raster objects.}
@@ -34,57 +26,7 @@ animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = 0,
 
 \item{layer_nacol}{character. Colour to be displayed for NA values. Default is "white".}
 
-\item{static_data}{data.frame. Data (e.g. static points) to be displayed within the spatial plot of the output animation. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.}
-
-\item{static_gg}{character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.}
-
-\item{img_title}{character. Titel to be displayed above the animated plot. If not specified, no title will be displayed.}
-
-\item{img_sub}{character. Subtitel to be displayed underneath the title. If not specified, no subtitle will be displayed.}
-
-\item{img_caption}{character. Caption to be displayed underneath the plot. If not specified, no caption will be displayed.}
-
-\item{img_labs}{character. Axis titles to be displayed at the x and y axis of the plot. If not specified, labs will be computed depending on the projection or will be "x" and "y".}
-
-\item{legend_title}{character. Title to be displayed above the basemap layer legend (if layer_type is not \code{"RGB"}). Ignored, if \code{layer = "basemap"}.}
-
-\item{legend_limits}{numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if \code{layer_type} is "discrete" or "RGB".}
-
-\item{legend_labels}{character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".}
-
-\item{map_elements}{logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.}
-
-\item{time_bar_col}{character. Colour of the time progress bar on the top edge of the map. Default is "grey".}
-
-\item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
-
-\item{north_col}{character. Colour of the north arrow. Default is "white".}
-
-\item{frames_nmax}{numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).}
-
-\item{frames_fps}{numeric. Frames to display per second (FPS). Note that the \code{gif} format only can handle FPS out of 100, e.g. 25. In that case, \code{frames_fps} input is rounded. Default is 25.}
-
-\item{frames_nres}{numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.}
-
-\item{frames_width}{numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).}
-
-\item{frames_height}{numeric. Number of pixels of frame height. Defualt is 600.}
-
-\item{frames_pixres}{numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.}
-
-\item{out_name}{character. Name of the output file. Default is "moveVis".}
-
-\item{out_format}{character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use \code{\link{get_formats}} to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see \code{\link{get_libraries}}.}
-
-\item{overwrite}{logical. If TRUE, files with equal file names to \code{out_name} will be overwritten. Default is FALSE.}
-
-\item{log_level}{numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.}
-
-\item{log_logical}{logical. For large processing schemes. If \code{TRUE}, the function returns \code{TRUE} when finished processing succesfully.}
-
-\item{conv_cmd}{character. Recommended for expert use only. Passes additional command line options to the conversion command, e.g. with a \code{convert} call adding '-limit' for memory ressource handling. For details, see check the documentations of ImageMagick \code{convert}, FFmpeg \code{ffmpeg} and libav \code{avconv}.}
-
-\item{conv_frames}{numeric. Recommended for expert use only. Only used, if \code{out_format = "gif"}. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if \code{out_format} is not "gif".}
+\item{...}{additional arguments, see \link{animate_move}.}
 }
 \value{
 None or logical (see \code{log_logical}). The output GIF or video file is written to the ouput directory.

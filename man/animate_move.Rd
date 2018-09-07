@@ -14,7 +14,8 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
   tail_size = 4, img_title = "title", img_sub = "subtitle",
   img_caption = "caption", img_labs = "labs", legend_title = "",
   legend_limits = NA, legend_labels = "auto", map_elements = TRUE,
-  time_scale = TRUE, time_bar_col = "grey", scalebar_col = "white",
+  time_bar_col = "grey", time_scale = TRUE, time_pos_x = 0.5,
+  time_pos_y = 0.05, time_size = 3, scalebar_col = "white",
   scalebar_dist = "auto", north_col = "white", frames_layout = 0,
   frames_nmax = 0, frames_fps = 25, frames_nres = 1, frames_tres = 0,
   frames_width = NA, frames_height = NA, frames_pixres = 80,
@@ -83,9 +84,15 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 
 \item{map_elements}{logical. If \code{FALSE}, map elements (north arrow and scale bar) are hidden. Default is \code{TRUE}.}
 
+\item{time_bar_col}{character. Colour of the time progress bar on the top edge of the map. Default is "grey".}
+
 \item{time_scale}{logical. If \code{FALSE}, time scale is hidden. Default is \code{TRUE}.}
 
-\item{time_bar_col}{character. Colour of the time progress bar on the top edge of the map. Default is "grey".}
+\item{time_pos_x}{numeric between 0 and 1, defines the relative position of the time scale display in the x direction. Default is 0.5 (centered).}
+
+\item{time_pos_y}{numeric between 0 and 1, defines the relative position of the time scale display in the y direction. Default is 0.06 (top).}
+
+\item{time_size}{numeric. Defines the font size of the time scale display. Default is 3.}
 
 \item{scalebar_col}{character. Colour of the scalebar text. Default is "white".}
 

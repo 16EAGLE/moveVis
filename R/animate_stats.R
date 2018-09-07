@@ -81,10 +81,5 @@ animate_stats <- function(m, out_dir, conv_dir = "convert", layer = "basemap", l
          frames_height = 300, frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif", overwrite = FALSE, log_level = 1, log_logical = FALSE){
 
   #Call animate_move (alias function)
-  animate_move(m, out_dir, conv_dir = conv_dir, layer = layer, layer_dt = layer_dt, layer_int = layer_int, layer_type = layer_type,
-               tail_elements = 1, paths_col = paths_col, paths_mode = "true_data",
-               stats_create = TRUE, stats_tframe = stats_tframe, frames_layout = frames_layout,
-               stats_type = stats_type, stats_title = stats_title, legend_limits = val_limits,
-               stats_gg = stats_gg, stats_digits = stats_digits, frames_nmax =  frames_nmax, frames_fps = frames_fps, frames_nres = frames_nres, frames_width = frames_width,
-               frames_height = frames_height, frames_pixres = frames_pixres, out_name = out_name, out_format = out_format, overwrite = overwrite, log_level = log_level, log_logical = log_logical,  stats_only = TRUE)
+  eval(parse(text = paste0('animate_move(', paste0(paste0(ls(), " = ", ls(envir = environment())), collapse = ", "), ', tail_elements = 1, stats_create = TRUE, stats_only = TRUE)')))
 }

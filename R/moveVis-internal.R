@@ -1,6 +1,7 @@
 #' Suppress messages and warnings
 #' @noRd 
 quiet <- function(expr){
+  #return(expr)
   return(suppressWarnings(suppressMessages(expr)))
 }
 
