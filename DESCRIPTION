@@ -8,6 +8,7 @@ Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann
   role = c("aut", "cre"))
 Description: Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
 License: GPL-3
+Encoding: UTF-8
 RoxygenNote: 6.0.1
 Imports:
   maptools,
@@ -35,3 +36,5 @@ Imports:
   RStoolbox
 BugReports: http://www.github.com/16eagle/moveVis/issues
 URL: http://www.github.com/16eagle/moveVis
+Suggests: 
+    testthat

@@ -19,8 +19,9 @@ out <- function(input,type = 1, ll = getOption("moveVis.log_level"), msg = getOp
 #' check a command
 #' @noRd 
 check.cmd <- function(cmd){
-  sapply(cmd, function(x){
-    run <- try(system(x, intern = T, ignore.stdout = T, ignore.stderr = T), silent = TRUE)
+  if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
+  sapply(cmd, function(x, cf = cmd.fun){
+    run <- try(cf(x, intern = T, ignore.stdout = T, ignore.stderr = T), silent = TRUE)
     if(inherits(run, "try-error")) FALSE else TRUE
     #if(length(grep("Error", as.character(run[1]))) != 0) FALSE else TRUE
   })
