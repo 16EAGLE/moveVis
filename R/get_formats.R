@@ -64,5 +64,3 @@ get_formats <- function(tool = "auto"){
   vid <- c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")
   return(vid[sort(as.numeric(na.omit(match(df,vid))))])
 }
-
-}
