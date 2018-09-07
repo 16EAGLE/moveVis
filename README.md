@@ -38,8 +38,31 @@ devtools::install_github("16EAGLE/moveVis")
 
 You can use moveVis with any move or moveStack object. This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours.
 
-First, load moveVis and the move package:
+### External libraries
 
+moveVis requires at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have 'ImageMagick' and either 'ffmepg' or 'libav' installed, you can use all output formats supported by moveVis.
+
+Run `get_libraries()` to find out, which libraries are installed on your system:
+
+```s
+get_libraries()
+```
+
+#### Linux
+
+On many Linux distributions, ImageMagick and FFmpeg are preinstalled or can be installed via the package manager. On Ubuntu, use `sudo apt-get install imagemagick` to install ImageMagick containing the `convert` tool and `sudo apt-get install ffmpeg` to install FFmpeg containing the equally called `ffmpeg` tool.
+
+#### Windows
+
+You can download and install both ImageMagick and FFmpeg from https://www.imagemagick.org/script/download.php as binary for Windows. Make sure that you select "Install FFmpeg" and "Install legacy utilities (e.g. convert)" during the installation process. `get_libraries` will recognize both libraries only, if their commands can be called from the command line. Make sure that you select the related option during the installation process. 
+
+#### maxOS/OS X
+
+Visit https://www.macports.org/install.php and follow the instructions there to download and install MacPorts. Execute `sudo port install ImageMagick` to install the latest binary release of ImageMagick for Mac. Visit https://www.ffmpeg.org/download.html to download and install the latest binary release of FFmpeg for Mac.
+
+### Install moveVis
+
+After the required libraries are once installed, <b>restart your R session</b>. First, load moveVis and the move package:
 
 ```s
 #Load packages
@@ -47,25 +70,7 @@ library(moveVis)
 library(move)
 ```
 
-### External libraries
-
-moveVis requires at least one of the three external libraries 'ffmpeg', 'libav' and/or 'ImageMagick'. They support different types of output formats (gif, mov, mp4 etc.). If you have 'ImageMagick' and either 'ffmepg' or 'libav' installed, you can use all output formats supported by moveVis.
-
-Run `get_libraries()` to find out, which libraries are installed on your system and to get instructions how to download and to install the needed libraries:
-
-```s
-get_libraries()
-```
-
-#### ImageMagick
-
-For GIF outputs, ImageMagick is needed. On many Linux distributions, ImageMagick is preinstalled or can be installed via the package manager (on Ubuntu: `sudo apt-get install imagemagick`). On Windows, Install ImageMagick from https://www.imagemagick.org/script/download.php. Make sure that you select "Install legacy utilities (e.g. convert)" during the installation process. 
-
-#### ffmpeg/libav
-
-To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing `sudo apt-get install ffmpeg` from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide (including the link to the binary download, which you need): https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496. Alternatively, moveVis supports libav, which is preinstalled on some Linux distributions.
-
-After the required libraries are once installed, <b>restart your R session</b> and then run `get_libraries()` again to check, if they are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation.
+and then run `get_libraries()` to check, if the  installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument `conv_dir` in the manual of `animate_move()`)
 
 ### Data preperation
 

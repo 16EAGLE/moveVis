@@ -131,27 +131,36 @@
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting started</h2>
 <p>You can use moveVis with any move or moveStack object. This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours.</p>
-<p>First, load moveVis and the move package:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Load packages</span>
-library(moveVis)
-library(move)</code></pre></div>
 <div id="external-libraries" class="section level3">
 <h3 class="hasAnchor">
 <a href="#external-libraries" class="anchor"></a>External libraries</h3>
 <p>moveVis requires at least one of the three external libraries ‘ffmpeg’, ‘libav’ and/or ‘ImageMagick’. They support different types of output formats (gif, mov, mp4 etc.). If you have ‘ImageMagick’ and either ‘ffmepg’ or ‘libav’ installed, you can use all output formats supported by moveVis.</p>
-<p>Run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to find out, which libraries are installed on your system and to get instructions how to download and to install the needed libraries:</p>
+<p>Run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to find out, which libraries are installed on your system:</p>
 <div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><a href="reference/get_libraries.html">get_libraries()</a></code></pre></div>
-<div id="imagemagick" class="section level4">
+<div id="linux" class="section level4">
 <h4 class="hasAnchor">
-<a href="#imagemagick" class="anchor"></a>ImageMagick</h4>
-<p>For GIF outputs, ImageMagick is needed. On many Linux distributions, ImageMagick is preinstalled or can be installed via the package manager (on Ubuntu: <code>sudo apt-get install imagemagick</code>). On Windows, Install ImageMagick from <a href="https://www.imagemagick.org/script/download.php" class="uri">https://www.imagemagick.org/script/download.php</a>. Make sure that you select “Install legacy utilities (e.g. convert)” during the installation process.</p>
+<a href="#linux" class="anchor"></a>Linux</h4>
+<p>On many Linux distributions, ImageMagick and FFmpeg are preinstalled or can be installed via the package manager. On Ubuntu, use <code>sudo apt-get install imagemagick</code> to install ImageMagick containing the <code>convert</code> tool and <code>sudo apt-get install ffmpeg</code> to install FFmpeg containing the equally called <code>ffmpeg</code> tool.</p>
 </div>
-<div id="ffmpeglibav" class="section level4">
+<div id="windows" class="section level4">
 <h4 class="hasAnchor">
-<a href="#ffmpeglibav" class="anchor"></a>ffmpeg/libav</h4>
-<p>To be able to output video formats, ffmpeg is recommended. Ubuntu users can easily install it executing <code>sudo apt-get install ffmpeg</code> from the terminal (similar on other Linux platforms). On Windows, installation takes a little more steps, which are nicely described in this recommended guide (including the link to the binary download, which you need): <a href="https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496" class="uri">https://video.stackexchange.com/questions/20495/how-do-i-set-up-and-use-ffmpeg-in-windows/20496#20496</a>. Alternatively, moveVis supports libav, which is preinstalled on some Linux distributions.</p>
-<p>After the required libraries are once installed, <b>restart your R session</b> and then run <code><a href="reference/get_libraries.html">get_libraries()</a></code> again to check, if they are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation.</p>
+<a href="#windows" class="anchor"></a>Windows</h4>
+<p>You can download and install both ImageMagick and FFmpeg from <a href="https://www.imagemagick.org/script/download.php" class="uri">https://www.imagemagick.org/script/download.php</a> as binary for Windows. Make sure that you select “Install FFmpeg” and “Install legacy utilities (e.g. convert)” during the installation process. <code>get_libraries</code> will recognize both libraries only, if their commands can be called from the command line. Make sure that you select the related option during the installation process.</p>
 </div>
+<div id="maxosos-x" class="section level4">
+<h4 class="hasAnchor">
+<a href="#maxosos-x" class="anchor"></a>maxOS/OS X</h4>
+<p>Visit <a href="https://www.macports.org/install.php" class="uri">https://www.macports.org/install.php</a> and follow the instructions there to download and install MacPorts. Execute <code>sudo port install ImageMagick</code> to install the latest binary release of ImageMagick for Mac. Visit <a href="https://www.ffmpeg.org/download.html" class="uri">https://www.ffmpeg.org/download.html</a> to download and install the latest binary release of FFmpeg for Mac.</p>
+</div>
+</div>
+<div id="install-movevis" class="section level3">
+<h3 class="hasAnchor">
+<a href="#install-movevis" class="anchor"></a>Install moveVis</h3>
+<p>After the required libraries are once installed, <b>restart your R session</b>. First, load moveVis and the move package:</p>
+<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Load packages</span>
+library(moveVis)
+library(move)</code></pre></div>
+<p>and then run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to check, if the installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument <code>conv_dir</code> in the manual of <code><a href="reference/animate_move.html">animate_move()</a></code>)</p>
 </div>
 <div id="data-preperation" class="section level3">
 <h3 class="hasAnchor">
