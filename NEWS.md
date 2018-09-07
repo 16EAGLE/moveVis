@@ -28,6 +28,12 @@ Future implementations (not yet implemented!)
 Windows library detection bugs fixed (dev. version)
 
 <br>
+**New features:**
+* `time_pos_x` and `time_pos_x` allow to specify the location of the timestamp display
+* `time_size` allows to specify the font size of the timestamp display
+* added unit tests
+
+<br>
 **Bug fixes:**
 * Bug causing moveVis to not properly detect installed extern libraries that can be called from the command line
 * Bug causing moveVis to not use conv_dir if it contains a Windows path to a tool of an extern library
