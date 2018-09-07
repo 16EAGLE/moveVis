@@ -21,7 +21,7 @@ out <- function(input,type = 1, ll = getOption("moveVis.log_level"), msg = getOp
 #' @noRd 
 check.cmd <- function(cmd){
   if(.Platform$OS.type == 'windows'){
-    run <- quiet(try(shell(cmd, intern = T), ignore.stdout = T, silent = T))
+    run <- quiet(try(shell(cmd, intern = T), silent = T))
   }else{
     run <- quiet(try(system(cmd, intern = T, ignore.stdout = T, ignore.stderr = T), silent = T))
   }
@@ -49,5 +49,5 @@ check.cmd <- function(cmd){
   if(is.null(getOption("moveVis.ffmpeg_cmd"))) options(moveVis.ffmpeg_cmd = "")
   if(is.null(getOption("moveVis.avconv_cmd"))) options(moveVis.avconv_cmd = "")
   
-  get_libraries()
+  #get_libraries()
 }
