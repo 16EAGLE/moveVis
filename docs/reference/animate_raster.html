@@ -147,15 +147,7 @@
     <pre class="usage"><span class='fu'>animate_raster</span>(<span class='no'>layer</span>, <span class='no'>out_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='st'>"convert"</span>, <span class='kw'>layer_dt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>layer_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>, <span class='kw'>layer_stretch</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
   <span class='kw'>layer_col</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"sandybrown"</span>, <span class='st'>"white"</span>, <span class='st'>"darkgreen"</span>), <span class='kw'>layer_nacol</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
-  <span class='kw'>static_data</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>static_gg</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>img_title</span> <span class='kw'>=</span> <span class='st'>"title"</span>,
-  <span class='kw'>img_sub</span> <span class='kw'>=</span> <span class='st'>"subtitle"</span>, <span class='kw'>img_caption</span> <span class='kw'>=</span> <span class='st'>"caption"</span>, <span class='kw'>img_labs</span> <span class='kw'>=</span> <span class='st'>"labs"</span>,
-  <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>legend_limits</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>legend_labels</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>map_elements</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>time_bar_col</span> <span class='kw'>=</span> <span class='st'>"grey"</span>, <span class='kw'>scalebar_col</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
-  <span class='kw'>north_col</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>frames_nmax</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>frames_fps</span> <span class='kw'>=</span> <span class='fl'>25</span>,
-  <span class='kw'>frames_nres</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>frames_width</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>frames_height</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>frames_pixres</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>out_name</span> <span class='kw'>=</span> <span class='st'>"moveVis_ani"</span>, <span class='kw'>out_format</span> <span class='kw'>=</span> <span class='st'>"gif"</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>log_level</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>log_logical</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conv_cmd</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>conv_frames</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -193,108 +185,8 @@
       <td><p>character. Colour to be displayed for NA values. Default is "white".</p></td>
     </tr>
     <tr>
-      <th>static_data</th>
-      <td><p>data.frame. Data (e.g. static points) to be displayed within the spatial plot of the output animation. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options.</p></td>
-    </tr>
-    <tr>
-      <th>static_gg</th>
-      <td><p>character. One or several <code>ggplot2</code> functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using <code>geom_point</code> and <code>geom_text</code> for displaying points annotated with text. <code>ggplot2 data</code> and <code>aes, aes_</code> arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as <code>geom_point</code> and <code>geom_label</code>.</p></td>
-    </tr>
-    <tr>
-      <th>img_title</th>
-      <td><p>character. Titel to be displayed above the animated plot. If not specified, no title will be displayed.</p></td>
-    </tr>
-    <tr>
-      <th>img_sub</th>
-      <td><p>character. Subtitel to be displayed underneath the title. If not specified, no subtitle will be displayed.</p></td>
-    </tr>
-    <tr>
-      <th>img_caption</th>
-      <td><p>character. Caption to be displayed underneath the plot. If not specified, no caption will be displayed.</p></td>
-    </tr>
-    <tr>
-      <th>img_labs</th>
-      <td><p>character. Axis titles to be displayed at the x and y axis of the plot. If not specified, labs will be computed depending on the projection or will be "x" and "y".</p></td>
-    </tr>
-    <tr>
-      <th>legend_title</th>
-      <td><p>character. Title to be displayed above the basemap layer legend (if layer_type is not <code>"RGB"</code>). Ignored, if <code>layer = "basemap"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>legend_limits</th>
-      <td><p>numeric vector. Fixed minimum and maximum limit values of the legend (gradient layer type). Default is NA for data-depending minimum and maximum values. Ignored, if <code>layer_type</code> is "discrete" or "RGB".</p></td>
-    </tr>
-    <tr>
-      <th>legend_labels</th>
-      <td><p>character vectors. Label for each legend break class. If set to "auto", values are displayed. Default is "auto".</p></td>
-    </tr>
-    <tr>
-      <th>map_elements</th>
-      <td><p>logical. If <code>FALSE</code>, map elements (north arrow and scale bar) are hidden. Default is <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>time_bar_col</th>
-      <td><p>character. Colour of the time progress bar on the top edge of the map. Default is "grey".</p></td>
-    </tr>
-    <tr>
-      <th>scalebar_col</th>
-      <td><p>character. Colour of the scalebar text. Default is "white".</p></td>
-    </tr>
-    <tr>
-      <th>north_col</th>
-      <td><p>character. Colour of the north arrow. Default is "white".</p></td>
-    </tr>
-    <tr>
-      <th>frames_nmax</th>
-      <td><p>numeric. Number of maximum frames. If set, the animation will be stopped, after the specified number of frames is reached. Default is 0 (displaying all frames).</p></td>
-    </tr>
-    <tr>
-      <th>frames_fps</th>
-      <td><p>numeric. Frames to display per second (FPS). Note that the <code>gif</code> format only can handle FPS out of 100, e.g. 25. In that case, <code>frames_fps</code> input is rounded. Default is 25.</p></td>
-    </tr>
-    <tr>
-      <th>frames_nres</th>
-      <td><p>numeric. Interval of which frames of all frames should be used (nth elements). Default is 1 (every frame is used). If set to 2, only every second frame is used.</p></td>
-    </tr>
-    <tr>
-      <th>frames_width</th>
-      <td><p>numeric. Number of pixels of frame width. Default is 600 (with stats plots 1000).</p></td>
-    </tr>
-    <tr>
-      <th>frames_height</th>
-      <td><p>numeric. Number of pixels of frame height. Defualt is 600.</p></td>
-    </tr>
-    <tr>
-      <th>frames_pixres</th>
-      <td><p>numeric. Resolution of output file in pixel in ppi. The higher the ppi, the higher frames_height and frames_width should be to avoid large fonts and overlaps. Default is 80.</p></td>
-    </tr>
-    <tr>
-      <th>out_name</th>
-      <td><p>character. Name of the output file. Default is "moveVis".</p></td>
-    </tr>
-    <tr>
-      <th>out_format</th>
-      <td><p>character. Output format, e.g. "gif", "avi", "3gp", "mov", "mpeg", "mp4". Use <code><a href='get_formats.html'>get_formats</a></code> to get all supported file formats on your system. "gif" is recommended for short animations only (recommended max. frame number around 200 frames; GIF frames are unlimited, but compution time will be very long). Use a video format for long animations. Format "gif" requires ImageMagick, all other video formats require FFmpeg ('ffmpeg') or libav ('avconv') to be installed. For that, also see <code><a href='get_libraries.html'>get_libraries</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>logical. If TRUE, files with equal file names to <code>out_name</code> will be overwritten. Default is FALSE.</p></td>
-    </tr>
-    <tr>
-      <th>log_level</th>
-      <td><p>numeric. Level of console output given by the function. There are three log levels. If set to 3, no messages will be displayed except erros that caused an abortion of the process. If set to 2, warnings and errors will be displayed. If set to 1, a log showing the process activity, wanrnings ans errors will be displayed.</p></td>
-    </tr>
-    <tr>
-      <th>log_logical</th>
-      <td><p>logical. For large processing schemes. If <code>TRUE</code>, the function returns <code>TRUE</code> when finished processing succesfully.</p></td>
-    </tr>
-    <tr>
-      <th>conv_cmd</th>
-      <td><p>character. Recommended for expert use only. Passes additional command line options to the conversion command, e.g. with a <code>convert</code> call adding '-limit' for memory ressource handling. For details, see check the documentations of ImageMagick <code>convert</code>, FFmpeg <code>ffmpeg</code> and libav <code>avconv</code>.</p></td>
-    </tr>
-    <tr>
-      <th>conv_frames</th>
-      <td><p>numeric. Recommended for expert use only. Only used, if <code>out_format = "gif"</code>. Number of frames to be used for creating GIF segments that will be assembled to a final GIF file. Correct number depends on system performance and total frames number. Default is 100. Ignored, if <code>out_format</code> is not "gif".</p></td>
+      <th>...</th>
+      <td><p>additional arguments, see <a href='animate_move.html'>animate_move</a>.</p></td>
     </tr>
     </table>
     

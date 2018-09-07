@@ -154,7 +154,8 @@
   <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>img_title</span> <span class='kw'>=</span> <span class='st'>"title"</span>, <span class='kw'>img_sub</span> <span class='kw'>=</span> <span class='st'>"subtitle"</span>,
   <span class='kw'>img_caption</span> <span class='kw'>=</span> <span class='st'>"caption"</span>, <span class='kw'>img_labs</span> <span class='kw'>=</span> <span class='st'>"labs"</span>, <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>legend_limits</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>legend_labels</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>map_elements</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>time_scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>time_bar_col</span> <span class='kw'>=</span> <span class='st'>"grey"</span>, <span class='kw'>scalebar_col</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='kw'>time_bar_col</span> <span class='kw'>=</span> <span class='st'>"grey"</span>, <span class='kw'>time_scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>time_pos_x</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='kw'>time_pos_y</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>time_size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>scalebar_col</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
   <span class='kw'>scalebar_dist</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>north_col</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>frames_layout</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>frames_nmax</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>frames_fps</span> <span class='kw'>=</span> <span class='fl'>25</span>, <span class='kw'>frames_nres</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>frames_tres</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>frames_width</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>frames_height</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>frames_pixres</span> <span class='kw'>=</span> <span class='fl'>80</span>,
@@ -286,12 +287,24 @@
       <td><p>logical. If <code>FALSE</code>, map elements (north arrow and scale bar) are hidden. Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
+      <th>time_bar_col</th>
+      <td><p>character. Colour of the time progress bar on the top edge of the map. Default is "grey".</p></td>
+    </tr>
+    <tr>
       <th>time_scale</th>
       <td><p>logical. If <code>FALSE</code>, time scale is hidden. Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>time_bar_col</th>
-      <td><p>character. Colour of the time progress bar on the top edge of the map. Default is "grey".</p></td>
+      <th>time_pos_x</th>
+      <td><p>numeric between 0 and 1, defines the relative position of the time scale display in the x direction. Default is 0.5 (centered).</p></td>
+    </tr>
+    <tr>
+      <th>time_pos_y</th>
+      <td><p>numeric between 0 and 1, defines the relative position of the time scale display in the y direction. Default is 0.06 (top).</p></td>
+    </tr>
+    <tr>
+      <th>time_size</th>
+      <td><p>numeric. Defines the font size of the time scale display. Default is 3.</p></td>
     </tr>
     <tr>
       <th>scalebar_col</th>
