@@ -20,7 +20,7 @@ out <- function(input,type = 1, ll = getOption("moveVis.log_level"), msg = getOp
 #' @noRd 
 check.cmd <- function(cmd){
   if(.Platform$OS.type == 'windows'){cmd.fun <- shell}else{cmd.fun <- system}
-  run <- suppressWarnings(cmd.fun(cmd, intern = T, ignore.stdout = F, ignore.stderr = F))
+  run <- quiet(cmd.fun(cmd, intern = T, ignore.stdout = F, ignore.stderr = F))
   if(!is.null(attributes(run))) F else T
   
   #sapply(cmd, function(x, cf = cmd.fun){
