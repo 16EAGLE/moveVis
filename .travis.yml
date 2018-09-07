@@ -22,7 +22,6 @@ before_install:
   - R -e 'install.packages("covr")'
   - sudo apt-get install ffmpeg
   - sudo apt-get install imagemagick
-  - sudo apt-get install libav
 
 r_github_packages:
   - r-lib/covr
