@@ -15,5 +15,5 @@ test_that("get_libraries() - options", {
   
   expect_true(getOption("moveVis.convert_avail"))
   expect_true(getOption("moveVis.ffmpeg_avail"))
-  expect_true(getOption("moveVis.avconv_avail"))
+  expect_false(getOption("moveVis.avconv_avail"))
 })
