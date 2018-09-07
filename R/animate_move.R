@@ -1212,7 +1212,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   }
   
   #Cleaning up
-  file.copy(paste0(out_name,".",out_format),paste0(out_dir,"/",out_name,".",out_format), overwrite = TRUE)
+  file.rename(paste0(temp_dir, "/", out_name,".",out_format), paste0(out_dir,"/",out_name,".",out_format)) #, overwrite = TRUE)
   file.remove(list.files(temp_dir))
     
   if(log_level == 1 & shiny_mode == FALSE){closepb(p.out)}
@@ -1224,10 +1224,6 @@ animate_move <- function(m, out_dir, conv_dir = "",
   run.dur <- as.character(round(difftime(run.stop,run.start,units = "mins"),digits = 2))
   out(paste0("Total run time: ",run.dur," minutes"))
   
-  if(file.exists(paste0(out_dir,'/',out_name,'.',out_format))){
-    if(shiny_mode == FALSE){out(paste0("Done. '",out_name,".",out_format,"' has been saved to '",out_dir,"'."), type=1)}else{out("Done.")}
-    if(log_logical == TRUE){return(TRUE)}
-  }else{
-    out("animate_move failed due to unknown error.",type=3)
-  }
+  if(shiny_mode == FALSE){out(paste0("Done. '",out_name,".",out_format,"' has been saved to '",out_dir,"'."), type=1)}else{out("Done.")}
+  if(log_logical == TRUE){return(TRUE)}
 }
