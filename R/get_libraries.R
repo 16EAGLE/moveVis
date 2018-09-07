@@ -50,7 +50,7 @@ get_libraries <- function(lib.tool = "all", ...){
   }
   
   #lib.check <- check.cmd(paste0("'", lib.tool, "' -version"))
-  lib.check <- check.cmd(paste0(lib.tool, " -version"))
+  lib.check <- sapply(lib.tool, function(x) check.cmd(paste0(x, " -version")), USE.NAMES = F)
   names(lib.check) <- lib.tool
   catch <- sapply(names(lib.check), function(x){
     eval(parse(text = paste0("options(moveVis.", x, "_avail = T)")))
