@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^LICENSE$
 ^\.travis.yml$
+^_pkgdown.yml$
+^\.gitignore$
+^\.Rhistory$
