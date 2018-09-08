@@ -153,14 +153,14 @@
 <p>Visit <a href="https://www.macports.org/install.php" class="uri">https://www.macports.org/install.php</a> and follow the instructions there to download and install MacPorts. Execute <code>sudo port install ImageMagick</code> to install the latest binary release of ImageMagick for Mac. Visit <a href="https://www.ffmpeg.org/download.html" class="uri">https://www.ffmpeg.org/download.html</a> to download and install the latest binary release of FFmpeg for Mac.</p>
 </div>
 </div>
-<div id="install-movevis" class="section level3">
+<div id="load-movevis" class="section level3">
 <h3 class="hasAnchor">
-<a href="#install-movevis" class="anchor"></a>Install moveVis</h3>
-<p>After the required libraries are once installed, <b>restart your R session</b>. First, load moveVis and the move package:</p>
+<a href="#load-movevis" class="anchor"></a>Load moveVis</h3>
+<p>After the required libraries are once installed, <b>restart your R session</b>. Then, load moveVis and the move package:</p>
 <div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Load packages</span>
 library(moveVis)
 library(move)</code></pre></div>
-<p>and then run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to check, if the installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument <code>conv_dir</code> in the manual of <code><a href="reference/animate_move.html">animate_move()</a></code>)</p>
+<p>and run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to check, if the installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument <code>conv_dir</code> in the manual of <code><a href="reference/animate_move.html">animate_move()</a></code>)</p>
 </div>
 <div id="data-preperation" class="section level3">
 <h3 class="hasAnchor">
@@ -175,10 +175,10 @@ data(<span class="st">"move_data"</span>)</code></pre></div>
 data_ani &lt;- split(move(move_data$lon, move_data$lat, proj=CRS(<span class="st">"+proj=longlat +ellps=WGS84"</span>),
                        time = move_data$dt, animal=move_data$individual, data=move_data))</code></pre></div>
 </div>
-<div id="additional-input-variables" class="section level3">
+<div id="additional-arguments" class="section level3">
 <h3 class="hasAnchor">
-<a href="#additional-input-variables" class="anchor"></a>Additional input variables</h3>
-<p>get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function so that it knows how to call the extern library commands. You can also call get_formats() to see all output formats, you can choose from.</p>
+<a href="#additional-arguments" class="anchor"></a>Additional arguments</h3>
+<p>get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function. You can also call get_formats() to see all output formats, you can choose from.</p>
 <div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Get libraries </span>
 conv_dir &lt;- get_libraries()
 

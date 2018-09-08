@@ -60,9 +60,9 @@ You can download and install both ImageMagick and FFmpeg from https://www.imagem
 
 Visit https://www.macports.org/install.php and follow the instructions there to download and install MacPorts. Execute `sudo port install ImageMagick` to install the latest binary release of ImageMagick for Mac. Visit https://www.ffmpeg.org/download.html to download and install the latest binary release of FFmpeg for Mac.
 
-### Install moveVis
+### Load moveVis
 
-After the required libraries are once installed, <b>restart your R session</b>. First, load moveVis and the move package:
+After the required libraries are once installed, <b>restart your R session</b>. Then, load moveVis and the move package:
 
 ```s
 #Load packages
@@ -70,7 +70,7 @@ library(moveVis)
 library(move)
 ```
 
-and then run `get_libraries()` to check, if the  installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument `conv_dir` in the manual of `animate_move()`)
+and run `get_libraries()` to check, if the  installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument `conv_dir` in the manual of `animate_move()`)
 
 ### Data preperation
 
@@ -95,9 +95,9 @@ data_ani <- split(move(move_data$lon, move_data$lat, proj=CRS("+proj=longlat +el
                        time = move_data$dt, animal=move_data$individual, data=move_data))
 ```
 
-### Additional input variables
+### Additional arguments
 
-get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function so that it knows how to call the extern library commands. You can also call get_formats() to see all output formats, you can choose from.
+get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function. You can also call get_formats() to see all output formats, you can choose from.
 
 
 ```s
