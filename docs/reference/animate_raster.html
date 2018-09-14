@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moveVis</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.7</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.8</span>
       </span>
     </div>
 
@@ -144,7 +144,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>animate_raster</span>(<span class='no'>layer</span>, <span class='no'>out_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='st'>"convert"</span>, <span class='kw'>layer_dt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+    <pre class="usage"><span class='fu'>animate_raster</span>(<span class='no'>layer</span>, <span class='no'>out_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='st'>"convert"</span>, <span class='kw'>layer_dt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>layer_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>, <span class='kw'>layer_stretch</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
   <span class='kw'>layer_col</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"sandybrown"</span>, <span class='st'>"white"</span>, <span class='st'>"darkgreen"</span>), <span class='kw'>layer_nacol</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
   <span class='no'>...</span>)</pre>
@@ -207,23 +207,21 @@
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'>#Create a list of several raster objects to be displayed one after another</span>
 <span class='co'>#If layer_type = RGB, use a brick class obejct with RGB bands!</span>
-<span class='no'>layer</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='no'>raster1</span>, <span class='no'>raster2</span>, <span class='no'>raster2</span>)
+<span class='fu'>data</span>(<span class='st'>"basemap_data"</span>) <span class='co'>#example MODIS dataset</span>
+<span class='no'>layer</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]] <span class='co'>#list of rasters</span>
 
 <span class='co'>#Get your convert directory/command</span>
 <span class='no'>conv_dir</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_libraries.html'>get_libraries</a></span>()
 
 <span class='co'>#Specify the output directory, e.g.</span>
 <span class='no'>out_dir</span> <span class='kw'>&lt;-</span> <span class='st'>"/out/test"</span>
-<span class='co'>#or to a temporary directory:</span>
-<span class='no'>out_dir</span> <span class='kw'>&lt;-</span> <span class='fu'>paste0</span>(<span class='fu'>tempdir</span>(),<span class='st'>"/test"</span>)
-<span class='fu'>dir.create</span>(<span class='no'>out_dir</span>)
 
 <span class='co'>#Call animate_raster</span>
-<span class='fu'>animate_raster</span>(<span class='no'>layer</span>,<span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='no'>our_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='no'>conv_dir</span>, <span class='kw'>layer_type</span> <span class='kw'>=</span> <span class='st'>"RGB"</span>,
+<span class='fu'>animate_raster</span>(<span class='no'>layer</span>,<span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='no'>out_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='no'>conv_dir</span>, <span class='kw'>layer_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                <span class='kw'>out_format</span> <span class='kw'>=</span> <span class='st'>"gif"</span>)
 
 <span class='co'>#use another file format for longer videos</span>
-<span class='fu'>animate_raster</span>(<span class='no'>layer</span>,<span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='no'>our_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='no'>conv_dir</span>, <span class='kw'>layer_type</span> <span class='kw'>=</span> <span class='st'>"RGB"</span>,
+<span class='fu'>animate_raster</span>(<span class='no'>layer</span>,<span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='no'>out_dir</span>, <span class='kw'>conv_dir</span> <span class='kw'>=</span> <span class='no'>conv_dir</span>, <span class='kw'>layer_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                <span class='kw'>out_format</span> <span class='kw'>=</span> <span class='st'>"mov"</span>)
 <span class='co'># }</span><div class='input'>
 </div></pre>

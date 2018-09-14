@@ -24,6 +24,17 @@ Future implementations (not yet implemented!)
 
 ***
 
+## moveVis 0.9.8
+Updating unit tests for CRAN checks
+
+<br>
+**Bug fixes:**
+* Bug causing unit tests to fail on machines with different external tools available
+* added SystemRequirements field in DESCRIPTION
+<br>
+
+***
+
 ## moveVis 0.9.7
 Windows library detection bugs fixed (dev. version)
 
