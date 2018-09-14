@@ -12,7 +12,7 @@ MODIS 2013 freely available data, acsessed using \code{MODIS} R package
 basemap_data
 }
 \description{
-Dataset containing five MODIS NDVI scenes of 2013 covering the Lake Constance area.
+Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.
 }
 \details{
 The example data have been pre-processed and have euqal extents and projections.

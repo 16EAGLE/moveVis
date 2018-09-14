@@ -14,23 +14,21 @@
 #' \dontrun{
 #' #Create a list of several raster objects to be displayed one after another
 #' #If layer_type = RGB, use a brick class obejct with RGB bands!
-#' layer <- list(raster1, raster2, raster2)
+#' data("basemap_data") #example MODIS dataset
+#' layer <- basemap_data[[1]] #list of rasters
 #' 
 #' #Get your convert directory/command
 #' conv_dir <- get_libraries()
 #' 
 #' #Specify the output directory, e.g.
 #' out_dir <- "/out/test"
-#' #or to a temporary directory:
-#' out_dir <- paste0(tempdir(),"/test")
-#' dir.create(out_dir)
 #' 
 #' #Call animate_raster
-#' animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB",
+#' animate_raster(layer,out_dir = out_dir, conv_dir = conv_dir, layer_type = "gradient",
 #'                out_format = "gif")
 #'                
 #' #use another file format for longer videos
-#' animate_raster(layer,out_dir = our_dir, conv_dir = conv_dir, layer_type = "RGB",
+#' animate_raster(layer,out_dir = out_dir, conv_dir = conv_dir, layer_type = "gradient",
 #'                out_format = "mov")
 #' }
 #' 
@@ -39,9 +37,9 @@
 #' 
 #' @export
 
-animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = 0, layer_type = "gradient", layer_stretch = "none",
+animate_raster <- function(layer, out_dir, conv_dir = "convert", layer_dt = NULL, layer_type = "gradient", layer_stretch = "none",
                            layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", ...){
-  if(layer_dt == 0){
+  if(is.null(layer_dt)){
     time_scale <- FALSE
     layer_dt <- seq.POSIXt(as.POSIXct("2000-01-01"),by=1,length.out=length(layer))
   }else{

@@ -635,8 +635,20 @@ animate_move <- function(m, out_dir, conv_dir = "",
   
   if(raster_only != TRUE){
     if(layer[1] == "basemap"){
-      try <- try(bm.gmap <- gmap(x = global.ext, exp=1, scale =1, type = map_type, lonlat = TRUE, rgb = TRUE, size=c(500,500))) #raster base layer
-      if(class(try) == "try-error"){out("Download from Google failed. Please check your internet connection.",type=3)}
+      
+      # Download map from Google
+      n.retry <- 0
+      retry <- T
+      while(isTRUE(retry)){
+        s_try <- try(bm.gmap <- gmap(x = global.ext, exp=1, scale =1, type = map_type, lonlat = TRUE, rgb = TRUE, size=c(500,500))) #raster base layer
+        if(class(s_try) == "try-error"){
+          n.retry <- n.retry+1
+          if(n.retry >= 4) out("Download from Google failed. Please check your internet connection.", type=3)
+        }else{
+          retry <- F
+        }
+      }
+      
       if(length(grep("+proj=longlat +ellps=WGS84",global.crs.str)) == 0){bm.gmap <- projectRaster(from = bm.gmap, crs = global.crs)}
       bm.df <- data.frame(rasterToPoints(bm.gmap))
       bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = 255)

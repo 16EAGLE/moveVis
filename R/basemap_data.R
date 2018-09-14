@@ -1,6 +1,6 @@
 #' MODIS NDVI 2013 example data of Lake Constance area, Germany
 #'
-#' Dataset containing five MODIS NDVI scenes of 2013 covering the Lake Constance area.
+#' Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.
 #'
 #' @details The example data have been pre-processed and have euqal extents and projections. 
 #' 
