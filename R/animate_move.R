@@ -12,7 +12,8 @@
 #' @param layer_stretch character. Ignored, if \code{layer_type} is not "RGB". Either "none", "lin", "hist", "sqrt" or "log" for no stretch, linear, histogram, square-root or logarithmic stretch. Default is "none".
 #' @param layer_col character vector.  Two or more colours to be used for displaying the background layer. If \code{layer_type = "gradient"}, a colour ramp between the colous is calcualted. If \code{layer_type = "discrete"}, the colours will be used per value range. Ignored, if \code{layer_type = "RGB"}.
 #' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
-#' @param map_type character.  Static basemap type. Chosse from "roadmap", "satellite", "hybrid", "terrain".
+#' @param map_type character. Static basemap type. Either Bing Maps options "satellite" (default), "hybrid" or OpenStreetMaps options "roadmap", "roadmap_dark", "roadmap_bw", "roadmap_watercolor".
+#' @param api_key character. For \code{basemap="satellite"} and \code{basemap="hybrid"}, the Microsoft Bing Maps service is used. If you use this option often, please get your own (free) API key by registering at the \href{https://msdn.microsoft.com/en-us/library/ff428642.aspx}{Microsoft website}.
 #' @param static_data data.frame. Data (e.g. static points) to be displayed within the spatial plot of the output animation. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options. 
 #' @param static_gg character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.
 #' @param tail_elements numeric. Number of points to be displayed as path tail of the animation paths. Default is 10.
@@ -88,9 +89,9 @@
 #' #Specify some optional appearance variables
 #' img_title <- "Movement of the white stork population at Lake Constance, Germany"
 #' img_sub <- paste0("including individuals ",paste(rownames(idData(m)), collapse=', '))
-#' img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"
+#' img_caption <- "Projection: Geographical, WGS84; Sources: Movebank 2013; Bing Maps"
 #' 
-#' #Call animate_move() with an automatic basemap from Google, maximum frames at 50
+#' #Call animate_move() with an automatic basemap from Bing, maximum frames at 50
 #' #output format "gif"
 #' animate_move(m, out_dir, conv_dir, tail_elements = 10,
 #'              paths_mode = "true_data", frames_nmax = 50,
@@ -161,7 +162,6 @@
 #' @importFrom raster nlayers crs extent projectRaster raster getValues setValues rasterToPoints res crop extract unstack sampleRegular brick ncell stack
 #' @importFrom sp SpatialPointsDataFrame spTransform coordinates proj4string proj4string<-
 #' @importFrom geosphere distGeo
-#' @importFrom dismo gmap
 #' @importFrom maptools gcDestination
 #' @importFrom rasterVis gplot
 #' @importFrom grid arrow unit
@@ -185,7 +185,7 @@
 animate_move <- function(m, out_dir, conv_dir = "",
                          paths_mode = "true_data",  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1, indi_names = NA,
                          layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
-                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", stats_create = FALSE, static_data = NA, static_gg = NA,
+                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", api_key = NULL, stats_create = FALSE, static_data = NA, static_gg = NA,
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
@@ -397,7 +397,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   }}
   if(stats_create == TRUE){
     if(layer[1] == "basemap"){
-      out("Stats cannot be visualized for stadard Google Maps basemaps. Please use 'layer' to provide single layer basemap data.",type = 3)
+      out("Stats cannot be visualized for stadard Bing Maps basemaps. Please use 'layer' to provide single layer basemap data.",type = 3)
     }else{
       if(stats_type == ""){
         if(layer_type == "gradient"){stats_type <- "line"}
@@ -636,30 +636,18 @@ animate_move <- function(m, out_dir, conv_dir = "",
   if(raster_only != TRUE){
     if(layer[1] == "basemap"){
       
-      # Download map from Google
-      n.retry <- 0
-      retry <- T
-      while(isTRUE(retry)){
-        s_try <- try(bm.gmap <- gmap(x = global.ext, exp=1, scale =1, type = map_type, lonlat = TRUE, rgb = TRUE, size=c(500,500))) #raster base layer
-        if(class(s_try) == "try-error"){
-          n.retry <- n.retry+1
-          if(n.retry >= 4) out("Download from Google failed. Please check your internet connection.", type=3)
-        }else{
-          retry <- F
-        }
-      }
-      
-      if(length(grep("+proj=longlat +ellps=WGS84",global.crs.str)) == 0){bm.gmap <- projectRaster(from = bm.gmap, crs = global.crs)}
-      bm.df <- data.frame(rasterToPoints(bm.gmap))
+      bm.down <- suppressWarnings(.get_bm(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height))
+      bm.df <- data.frame(rasterToPoints(bm.down))
       bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = 255)
-      bm.frames <- replicate(bm.gmap, n =length(global.times))
+      bm.frames <- replicate(bm.down, n=length(global.times))
+      
     }else{
       global.ext.r <- raster(xmn = global.ext@xmin, xmx = global.ext@xmax, ymn=global.ext@ymin, ymx = global.ext@ymax, resolution = res(layer[[1]]))
       global.ext.r <- setValues(global.ext.r,1)
       bm.crop <- lapply(layer, function(x,y=global.ext.r){crop(x,y,snap = "out")})
       bm.subs <- unlist(lapply(global.times, function(x, y=layer_dt){
         t <- abs(difftime(x,y,units = "mins"))
-        which(t == min(t))
+        which(t == min(t))[1]
       }))
       if(layer_int == FALSE){
         bm.frames <- bm.crop[bm.subs]
@@ -718,7 +706,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   
   if(layer_type == "gradient" | layer_type == "discrete"){
     bm.stack <- stack(bm.frames)
-    bm.stack.vals <- getValues(bm.stack)
+    bm.stack.vals <- getValues(bm.stack) #[[1]])
     if(layer_type == "discrete"){
       legend_breaks <- seq(min(round(bm.stack.vals), na.rm = TRUE),max(round(bm.stack.vals),  na.rm = TRUE))
     }else{legend_breaks <- pretty(round(bm.stack.vals))}
@@ -1030,12 +1018,12 @@ animate_move <- function(m, out_dir, conv_dir = "",
                             theme(plot.title = element_text(hjust = 0.5), 
                             plot.caption = element_text(hjust = 0.5))')
       }
-      }
-      }else{
-        if(img_caption != "caption"){plt.title <- paste0('+ labs(x = "',labs_x,'", y="',labs_y,'", caption="',img_caption,'",label=c("123"))+
+    }
+  }else{
+    if(img_caption != "caption"){plt.title <- paste0('+ labs(x = "',labs_x,'", y="',labs_y,'", caption="',img_caption,'",label=c("123"))+
                                                          theme(plot.caption = element_text(hjust = 0.5))')
-        }else{plt.title <- paste0('+ labs(x = "',labs_x,'", y="',labs_y,'")')}
-        }
+    }else{plt.title <- paste0('+ labs(x = "',labs_x,'", y="',labs_y,'")')}
+  }
   
   #Defining map elements
   if(map_elements == TRUE){
