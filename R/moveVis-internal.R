@@ -63,7 +63,7 @@ check.cmd <- function(cmd){
     if(map_type == "roadmap") type <- "osm"
     if(map_type == "roadmap_dark") type <- "cartodark"
     if(map_type == "roadmap_bw") type <- "stamenbw"
-    if(map_type == "roadmap_coloured") type <- "stamenwatercolor"
+    if(map_type == "roadmap_watercolor") type <- "stamenwatercolor"
     
     bm <- quiet(osm.raster(e.bb, projection = global.crs, crop=TRUE, type = type, zoomin = -1))
   }
