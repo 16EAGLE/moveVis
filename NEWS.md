@@ -30,7 +30,7 @@ Reorganizing standard basemap usage by moveVis
 
 <br>
 **New features:**
-* Static basemaps defined through `map_type` are now retrieved from either OpenStreetMaps for thematic imagery or Microsoft Bing Maps for satellite/hybrid imagery. The usage of OpenStreetMaps is free. For intensive use of the Bing Maps basemap options, please provide your own Bing Maps API key by registering at Microsoft here: https://msdn.microsoft.com/en-us/library/ff428642.aspx. Google Maps services will be implemented in a future update for restricted usage using an API key.
+* Static basemaps defined through `map_type` are now retrieved from either OpenStreetMaps for thematic imagery or Microsoft Bing Maps for satellite/hybrid imagery. The usage of OpenStreetMaps is free. For intensive use of the Bing Maps basemap options, please provide your own Bing Maps API key through the `api_key` argument, after registering at Microsoft here: https://msdn.microsoft.com/en-us/library/ff428642.aspx. Google Maps services will be implemented in a future update for restricted usage using an API key.
 * New baemaps options via `map_type`: "satellite" (default), "hybrid", "roadmap", "roadmap_dark", "roadmap_bw", "roadmap_watercolor".
 
 <br>

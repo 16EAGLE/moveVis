@@ -38,6 +38,7 @@ check.cmd <- function(cmd){
 #' @importFrom rosm bmaps.plot osm.raster set_default_cachedir
 #' @importFrom raster stack crs crs<- extent extent<-
 #' @importFrom sp bbox
+#' @importFrom graphics par
 #' @noRd 
 .get_bm <- function(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height){
   
