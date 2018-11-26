@@ -14,6 +14,7 @@
 #' @param layer_nacol character. Colour to be displayed for NA values. Default is "white".
 #' @param map_type character. Static basemap type. Either Bing Maps options "satellite" (default), "hybrid" or OpenStreetMaps options "roadmap", "roadmap_dark", "roadmap_bw", "roadmap_watercolor".
 #' @param api_key character. For \code{basemap="satellite"} and \code{basemap="hybrid"}, the Microsoft Bing Maps service is used. If you use this option often, please get your own (free) API key by registering at the \href{https://msdn.microsoft.com/en-us/library/ff428642.aspx}{Microsoft website}.
+#' @param map_zoom numeric. Increase or decrease the degree of detail of a static basemap. -1 or smaller integers decrease zoom, +1 or greate integers increase zoom. Default is 0. Ignored, if custom basemap is used.
 #' @param static_data data.frame. Data (e.g. static points) to be displayed within the spatial plot of the output animation. At least, "x", "y" columns for the coordinates and "names" for the naming of the point have to be included. If "static_gg" remains unspecified, "static_data" is plottet as points to the output map, annotated with their namings. Points outside the frame extent are not displayed. See "static_gg" for further options. 
 #' @param static_gg character. One or several \code{ggplot2} functions, concatenated by "+" specifying how "static_data" should be displayed, e.g. using \code{geom_point} and \code{geom_text} for displaying points annotated with text. \code{ggplot2 data} and \code{aes, aes_} arguments etc. need to referr to the columns specified in "static_data". As default, "static_data" is plotted as \code{geom_point} and \code{geom_label}.
 #' @param tail_elements numeric. Number of points to be displayed as path tail of the animation paths. Default is 10.
@@ -185,7 +186,7 @@
 animate_move <- function(m, out_dir, conv_dir = "",
                          paths_mode = "true_data",  paths_na.hold = TRUE, paths_col = "auto", paths_alpha = 1, indi_names = NA,
                          layer = "basemap", layer_dt = "basemap", layer_int = FALSE, layer_type = "", layer_stretch = "none",
-                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", api_key = NULL, stats_create = FALSE, static_data = NA, static_gg = NA,
+                         layer_col = c("sandybrown","white","darkgreen"), layer_nacol = "white", map_type="satellite", api_key = NULL, map_zoom = 0, stats_create = FALSE, static_data = NA, static_gg = NA,
                          extent_factor = 0.0001, tail_elements = 10, tail_size = 4,
                          img_title = 'title', img_sub = 'subtitle', img_caption = "caption", img_labs = "labs",
                          legend_title = "", legend_limits = NA, legend_labels = "auto",
@@ -636,9 +637,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
   if(raster_only != TRUE){
     if(layer[1] == "basemap"){
       
-      bm.down <- suppressWarnings(.get_bm(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height))
+      bm.down <- suppressWarnings(.get_bm(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height, map_zoom))
       bm.df <- data.frame(rasterToPoints(bm.down))
-      bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = 255)
+      bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = if(any(maxValue(bm.down) > 255)) max(maxValue(bm.down)) else 255)
       bm.frames <- replicate(bm.down, n=length(global.times))
       
     }else{

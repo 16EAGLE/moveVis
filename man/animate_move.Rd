@@ -9,13 +9,13 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
   indi_names = NA, layer = "basemap", layer_dt = "basemap",
   layer_int = FALSE, layer_type = "", layer_stretch = "none",
   layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
-  map_type = "satellite", api_key = NULL, stats_create = FALSE,
-  static_data = NA, static_gg = NA, extent_factor = 1e-04,
-  tail_elements = 10, tail_size = 4, img_title = "title",
-  img_sub = "subtitle", img_caption = "caption", img_labs = "labs",
-  legend_title = "", legend_limits = NA, legend_labels = "auto",
-  map_elements = TRUE, time_bar_col = "grey", time_scale = TRUE,
-  time_pos_x = 0.5, time_pos_y = 0.05, time_size = 3,
+  map_type = "satellite", api_key = NULL, map_zoom = 0,
+  stats_create = FALSE, static_data = NA, static_gg = NA,
+  extent_factor = 1e-04, tail_elements = 10, tail_size = 4,
+  img_title = "title", img_sub = "subtitle", img_caption = "caption",
+  img_labs = "labs", legend_title = "", legend_limits = NA,
+  legend_labels = "auto", map_elements = TRUE, time_bar_col = "grey",
+  time_scale = TRUE, time_pos_x = 0.5, time_pos_y = 0.05, time_size = 3,
   scalebar_col = "white", scalebar_dist = "auto", north_col = "white",
   frames_layout = 0, frames_nmax = 0, frames_fps = 25, frames_nres = 1,
   frames_tres = 0, frames_width = NA, frames_height = NA,
@@ -57,6 +57,8 @@ animate_move(m, out_dir, conv_dir = "", paths_mode = "true_data",
 \item{map_type}{character. Static basemap type. Either Bing Maps options "satellite" (default), "hybrid" or OpenStreetMaps options "roadmap", "roadmap_dark", "roadmap_bw", "roadmap_watercolor".}
 
 \item{api_key}{character. For \code{basemap="satellite"} and \code{basemap="hybrid"}, the Microsoft Bing Maps service is used. If you use this option often, please get your own (free) API key by registering at the \href{https://msdn.microsoft.com/en-us/library/ff428642.aspx}{Microsoft website}.}
+
+\item{map_zoom}{numeric. Increase or decrease the degree of detail of a static basemap. -1 or smaller integers decrease zoom, +1 or greate integers increase zoom. Default is 0. Ignored, if custom basemap is used.}
 
 \item{stats_create}{logical. \code{TRUE} to create statistic plots side by side with the spatial plot. Use the arguments explained for \code{\link{animate_stats}} to adjust the plotting behaviour. Default is \code{FALSE}.}
 
