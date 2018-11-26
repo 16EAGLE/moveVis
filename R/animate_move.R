@@ -160,7 +160,7 @@
 #' @seealso \code{\link{get_libraries}}, \code{\link{animate_stats}}, \code{\link{animate_raster}}
 #' 
 #' @import ggplot2
-#' @importFrom raster nlayers crs extent projectRaster raster getValues setValues rasterToPoints res crop extract unstack sampleRegular brick ncell stack
+#' @importFrom raster nlayers crs extent projectRaster raster getValues setValues rasterToPoints res crop extract unstack sampleRegular brick ncell stack maxValue
 #' @importFrom sp SpatialPointsDataFrame spTransform coordinates proj4string proj4string<-
 #' @importFrom geosphere distGeo
 #' @importFrom maptools gcDestination
