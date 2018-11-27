@@ -36,11 +36,11 @@ check.cmd <- function(cmd){
 
 #' get base map
 #' @importFrom rosm bmaps.plot osm.plot set_default_cachedir
-#' @importFrom raster stack crs crs<- extent extent<- projectRaster
+#' @importFrom raster stack crs crs<- extent extent<- projectRaster crop
 #' @importFrom sp bbox
 #' @importFrom graphics par
 #' @noRd 
-.get_bm <- function(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height, map_zoom){
+.get_bm <- function(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height, map_zoom, map_crop){
   
   e.bb <- bbox(global.ext)
   rownames(e.bb) <- c("x", "y")
@@ -53,10 +53,10 @@ check.cmd <- function(cmd){
   set_default_cachedir(cache.dir)
   
   png.file <- paste0(tempdir(), "/moveVis/bm.png")
+  png(png.file, width = frames_height, height = frames_height)
+  par(mar=c(0,0,0,0))
   
   if(map_type == "satellite" | map_type == "hybrid"){
-    png(png.file, width = frames_height, height = frames_height)
-    par(mar=c(0,0,0,0))
     bmaps.plot(e.bb, type = if(map_type == "satellite"){"Aerial"}else{"AerialWithLabels"}, key = api_key, res = frames_pixres, stoponlargerequest = F, project = T, zoomin = map_zoom)
   }else{
     if(map_type == "roadmap") type <- "osm"
@@ -65,9 +65,7 @@ check.cmd <- function(cmd){
     if(map_type == "roadmap_watercolor") type <- "stamenwatercolor"
     
     #bm <- quiet(osm.raster(e.bb, projection = global.crs, crop=TRUE, type = type, zoomin = 0)
-    png(png.file, width = frames_height, height = frames_height)
-    par(mar=c(0,0,0,0))
-    osm.plot(e.bb, type = type, res = 150, stoponlargerequest = F, project = T, zoomin = map_zoom)
+    osm.plot(e.bb, type = type, res = frames_pixres, stoponlargerequest = F, project = T, zoomin = map_zoom)
   }
   
   e.file <- par("usr")
@@ -77,6 +75,7 @@ check.cmd <- function(cmd){
   crs(bm) <- crs("+init=epsg:3857")
   extent(bm) <- extent(e.file)
   bm <- projectRaster(bm, crs = global.crs)
+  if(isTRUE(map_crop)) bm <- crop(bm, global.ext)
   
   names(bm) <- c("red", "green", "blue")
   unlink(cache.dir, recursive = T, force = T)
