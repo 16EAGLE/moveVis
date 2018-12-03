@@ -6,6 +6,7 @@ test_that("get_libraries() – all", {
 })
 
 test_that("get_libraries() - options", {
+  skip_on_cran()
   expect_is(getOption("moveVis.convert_cmd"), "character")
   expect_is(getOption("moveVis.ffmpeg_cmd"), "character")
    
