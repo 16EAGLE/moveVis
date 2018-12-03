@@ -2,7 +2,7 @@ context("test-get_libraries")
 
 test_that("get_libraries() – all", {
   skip_on_cran()
-  expect_identical(x <- get_libraries(), c("convert", "ffmpeg"))
+  expect_true(all(get_libraries() %in% c("convert", "ffmpeg")))
 })
 
 test_that("get_libraries() - options", {
