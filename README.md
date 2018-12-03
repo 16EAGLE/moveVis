@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The package is under ongoing development.  The moveVis package is working hand in hand with the move package by using the move and moveStack class and the raster package. It is based on a ggplot2 plotting architecture and relys on the libraries ImageMagick, ffmpeg and libav. To be informed about updates, new features and the current version, visit [news.movevis.org](http://news.movevis.org).
+This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The moveVis package is working hand in hand with the move package by using the move and moveStack class and the raster package. It is based on a ggplot2 plotting architecture and relys on the libraries ImageMagick, ffmpeg and libav. To be informed about updates, new features and the current version, visit [news.movevis.org](http://news.movevis.org).
 
 ## Examples
 
