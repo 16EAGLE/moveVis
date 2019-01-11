@@ -201,7 +201,7 @@ animate_move <- function(m, out_dir, conv_dir = "",
   #Checking for additional arguments
   arg <- list(...)
   s_try <- try(arg$stats_only)
-  if(class(s_try) == "NULL"){stats_only <-  FALSE}else{stats_only <- arg$stats_only}
+  if(class(s_try) == "NULL"){stats_only <- FALSE}else{stats_only <- arg$stats_only}
   s_try <- try(arg$stats_type)
   if(class(s_try) == "NULL"){stats_type  <- ""}else{stats_type <- arg$stats_type}
   s_try <- try(arg$stats_gg)
@@ -640,7 +640,9 @@ animate_move <- function(m, out_dir, conv_dir = "",
       
       bm.down <- suppressWarnings(.get_bm(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height, map_zoom, map_crop))
       bm.df <- data.frame(rasterToPoints(bm.down))
-      bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = if(any(maxValue(bm.down) > 255)) max(maxValue(bm.down)) else 255)
+      bm.df[,3:5][bm.df[,3:5] > 255] <- 255
+      bm.df[,3:5][bm.df[,3:5] < 0] <- 0
+      bm.rgb <- rgb(bm.df$red,bm.df$green,bm.df$blue, maxColorValue = 255) #if(any(maxValue(bm.down) > 255)) max(maxValue(bm.down)) else
       bm.frames <- replicate(bm.down, n=length(global.times))
       
     }else{
