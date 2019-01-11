@@ -7,12 +7,12 @@
 animate_stats(m, out_dir, conv_dir = "convert", layer = "basemap",
   layer_dt = "basemap", layer_int = FALSE, layer_type = "",
   val_limits = NA, paths_col = "auto", paths_mode = "true_data",
-  stats_type = "", stats_gg = "", stats_digits = 1, stats_tframe = 5,
-  stats_title = "", frames_layout = 0, frames_nmax = 0, frames_fps = 25,
-  frames_nres = 1, frames_tres = 0, frames_width = 800,
-  frames_height = 300, frames_pixres = 80, out_name = "moveVis_ani",
-  out_format = "gif", overwrite = FALSE, log_level = 1,
-  log_logical = FALSE)
+  stats_type = "", stats_gg = "", stats_digits = 1,
+  stats_tframe = 5, stats_title = "", frames_layout = 0,
+  frames_nmax = 0, frames_fps = 25, frames_nres = 1,
+  frames_tres = 0, frames_width = 800, frames_height = 300,
+  frames_pixres = 80, out_name = "moveVis_ani", out_format = "gif",
+  overwrite = FALSE, log_level = 1, log_logical = FALSE)
 }
 \arguments{
 \item{m}{list or \code{moveStack} class object. Needs to contain one or several \code{move} class objects (one for each individual path to be displayed) containing point coordinates, timestamps, projection and individual ID.}

@@ -6,8 +6,8 @@
 \usage{
 animate_raster(layer, out_dir, conv_dir = "convert", layer_dt = NULL,
   layer_type = "gradient", layer_stretch = "none",
-  layer_col = c("sandybrown", "white", "darkgreen"), layer_nacol = "white",
-  ...)
+  layer_col = c("sandybrown", "white", "darkgreen"),
+  layer_nacol = "white", ...)
 }
 \arguments{
 \item{layer}{list. List of raster objects.}

@@ -9,7 +9,7 @@ Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann
 Description: Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Imports:
   maptools,
   ggplot2,
