@@ -6,3 +6,4 @@
 ^\.gitignore$
 ^\.Rhistory$
 docs
+dev
