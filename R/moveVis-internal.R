@@ -1,101 +1,52 @@
-#' Suppress messages and warnings
+#' square it
 #' @noRd 
-quiet <- function(expr){
-  #return(expr)
-  return(suppressWarnings(suppressMessages(expr)))
-}
-
-
-#' Suppress messages and warnings
-#' @noRd 
-out <- function(input,type = 1, ll = getOption("moveVis.log_level"), msg = getOption("moveVis.msg")){
-  signs <- c("", "")
-  if(type == 2 & ll <= 2){warning(paste0(signs[2],input), call. = FALSE, immediate. = TRUE)}
-  else{if(type == 3){stop(input,call. = FALSE)}else{if(ll == 1){
-    if(msg == FALSE){cat(paste0(signs[1],input),sep="\n")
-    }else{message(paste0(signs[1],input))}}}}
-}
-
-
-#' check a command
-#' @noRd 
-check.cmd <- function(cmd){
-  if(.Platform$OS.type == 'windows'){
-    run <- quiet(try(shell(cmd, intern = T), silent = T))
-  }else{
-    run <- quiet(try(system(cmd, intern = T, ignore.stdout = T, ignore.stderr = T), silent = T))
+.squared <- function(ext, margin_factor = 1){
+  
+  # calculate corner coordinates
+  corn <- rbind(c(ext[1], ext[2]), c(ext[1], ext[4]), c(ext[3], ext[2]), c(ext[3], ext[4]))
+  colnames(corn) <- c("x", "y")
+  
+  # calculate difference and distance
+  ax.dist <- c(distGeo(corn[1,], corn[3,]), distGeo(corn[1,], corn[2,]))
+  ax.diff <- c(ext[3]-ext[1],ext[4]-ext[2])
+  
+  # add difference to match equal distances
+  if(ax.dist[1] < ax.dist[2]){
+    x.devi <- (ax.diff[1]/ax.dist[1])*((ax.dist[2]-ax.dist[1])*margin_factor)/2
+    y.devi <- ((ax.diff[2]/ax.dist[2])*(ax.dist[2]*margin_factor))-ax.diff[2]
+  } else{
+    x.devi <- ((ax.diff[1]/ax.dist[1])*(ax.dist[1]*margin_factor))-ax.diff[2]
+    y.devi <- (ax.diff[2]/ax.dist[2])*((ax.dist[1]-ax.dist[2])*margin_factor)/2
   }
-  if(!is.null(attributes(run))) F else T
-  
-  #sapply(cmd, function(x, cf = cmd.fun){
-  #  run <- try(cf(x, intern = T, ignore.stdout = T, ignore.stderr = T), silent = TRUE)
-  #  if(inherits(run, "try-error")) FALSE else TRUE
-  #  #if(length(grep("Error", as.character(run[1]))) != 0) FALSE else TRUE
-  #})
+  return(st_bbox(c(ext[1]-x.devi, ext[3]+x.devi, ext[2]-y.devi, ext[4]+y.devi)))
 }
 
-#' get base map
-#' @importFrom rosm bmaps.plot osm.plot set_default_cachedir
-#' @importFrom raster stack crs crs<- extent extent<- projectRaster crop
-#' @importFrom sp bbox
-#' @importFrom graphics par
+#' split movement by tail length
 #' @noRd 
-.get_bm <- function(global.ext, global.crs, map_type, api_key, frames_pixres, frames_height, map_zoom, map_crop){
-  
-  e.bb <- bbox(global.ext)
-  rownames(e.bb) <- c("x", "y")
-  e.diff <- e.bb[,2]-e.bb[,1]
-  e.add <- (e.diff[which.max(e.diff)]-e.diff[which.min(e.diff)])/2
-  e.bb[which.min(e.diff),] <- e.bb[which.min(e.diff),] + c(-e.add,e.add)
-  
-  cache.dir <- paste0(tempdir(), "/moveVis/rosm.cache")
-  if(!dir.exists(cache.dir)) dir.create(cache.dir)
-  set_default_cachedir(cache.dir)
-  
-  png.file <- paste0(tempdir(), "/moveVis/bm.png")
-  png(png.file, width = frames_height, height = frames_height)
-  par(mar=c(0,0,0,0))
-  
-  if(map_type == "satellite" | map_type == "hybrid"){
-    bmaps.plot(e.bb, type = if(map_type == "satellite"){"Aerial"}else{"AerialWithLabels"}, key = api_key, res = frames_pixres, stoponlargerequest = F, project = T, zoomin = map_zoom)
-  }else{
-    if(map_type == "roadmap") type <- "osm"
-    if(map_type == "roadmap_dark") type <- "cartodark"
-    if(map_type == "roadmap_bw") type <- "stamenbw"
-    if(map_type == "roadmap_watercolor") type <- "stamenwatercolor"
+.split <- function(m, n_tail, cols){
+  lapply(1:(max(m$frame)-n_tail), function(i){
     
-    #bm <- quiet(osm.raster(e.bb, projection = global.crs, crop=TRUE, type = type, zoomin = 0)
-    osm.plot(e.bb, type = type, res = frames_pixres, stoponlargerequest = F, project = T, zoomin = map_zoom)
-  }
-  
-  e.file <- par("usr")
-  dev.off()
-  
-  bm <- stack(png.file)
-  crs(bm) <- crs("+init=epsg:3857")
-  extent(bm) <- extent(e.file)
-  bm <- projectRaster(bm, crs = global.crs)
-  if(isTRUE(map_crop)) bm <- crop(bm, global.ext)
-  
-  names(bm) <- c("red", "green", "blue")
-  unlink(cache.dir, recursive = T, force = T)
-  return(bm)
+    # extract all rows of frame time range
+    y <- m[!is.na(match(m$frame,i:(i+n_tail))),]
+    y <- y[order(y$id),]
+    
+    # compute colour ramp from id count
+    y$colour <- unlist(mapply(x = cols[unique(y$id)], y = table(y$id), function(x, y){
+      f <- colorRampPalette(c(x, "white"))
+      rev(f(y+4)[1:y])
+    }, SIMPLIFY = F))
+    return(y)
+  })
 }
 
 
-#' package startup
+#' plot function
 #' @noRd 
-.onLoad <- function(libname, pkgname){
-  if(is.null(getOption("moveVis.log_level")))  options(moveVis.log_level = 1)
-  if(is.null(getOption("moveVis.msg")))  options(moveVis.msg = FALSE)
-  
-  if(is.null(getOption("moveVis.convert_avail"))) options(moveVis.convert_avail = F)
-  if(is.null(getOption("moveVis.ffmpeg_avail"))) options(moveVis.ffmpeg_avail = F)
-  if(is.null(getOption("moveVis.avconv_avail"))) options(moveVis.avconv_avail = F)
-  
-  if(is.null(getOption("moveVis.convert_cmd"))) options(moveVis.convert_cmd = "")
-  if(is.null(getOption("moveVis.ffmpeg_cmd"))) options(moveVis.ffmpeg_cmd = "")
-  if(is.null(getOption("moveVis.avconv_cmd"))) options(moveVis.avconv_cmd = "")
-  
-  #get_libraries()
+.gg <- function(l, ggbmap, print_plot = T){
+  lapply(l, function(x){
+    p <- ggbmap + geom_path(aes(x = lon, y = lat, group = id), data = x, size = 3,
+                            lineend = "round", linejoin = "round", colour = x$colour) +
+      theme(aspect.ratio = 1) + scale_fill_identity() + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    if(isTRUE(print_plot)) print(p) else return(p)
+  })
 }
