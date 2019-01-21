@@ -1,4 +1,31 @@
+#' Suppress messages and warnings
+#' @noRd 
+quiet <- function(expr){
+  #return(expr)
+  return(suppressWarnings(suppressMessages(expr)))
+}
+
+#' Outputs errors, warnings and messages
+#'
+#' @param input character
+#' @param type numeric, 1 = message/cat, 2 = warning, 3 = error and stop
+#' @param msg logical. If \code{TRUE}, \code{message} is used instead of \code{cat}. Default is \code{FALSE}.
+#' @param sign character. Defines the prefix string.
+#'
+#' @keywords internal
+#' @noRd
+
+out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = getOption("moveVis.verbose")){
+  if(is.null(ll)) if(isTRUE(verbose)) ll <- 1 else ll <- 2
+  if(type == 2 & ll <= 2){warning(paste0(sign,input), call. = FALSE, immediate. = TRUE)}
+  else{if(type == 3){stop(input, call. = FALSE)}else{if(ll == 1){
+    if(msg == FALSE){ cat(paste0(sign,input),sep="\n")
+    } else{message(paste0(sign,input))}}}}
+}
+
 #' square it
+#' @importFrom geosphere distGeo
+#' @importFrom sf st_bbox
 #' @noRd 
 .squared <- function(ext, margin_factor = 1){
   
@@ -23,7 +50,7 @@
 
 #' split movement by tail length
 #' @noRd 
-.split <- function(m, n_tail, cols){
+.split <- function(m, n_tail){
   lapply(1:(max(m$frame)-n_tail), function(i){
     
     # extract all rows of frame time range
@@ -31,7 +58,7 @@
     y <- y[order(y$id),]
     
     # compute colour ramp from id count
-    y$colour <- unlist(mapply(x = cols[unique(y$id)], y = table(y$id), function(x, y){
+    y$tail_colour <- unlist(mapply(x = unique(y$colour), y = table(y$id), function(x, y){
       f <- colorRampPalette(c(x, "white"))
       rev(f(y+4)[1:y])
     }, SIMPLIFY = F))
@@ -41,12 +68,27 @@
 
 
 #' plot function
+#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous
 #' @noRd 
-.gg <- function(l, ggbmap, print_plot = T){
-  lapply(l, function(x){
+.gg <- function(m.split, ggbmap, print_plot = T){
+  lapply(m.split, function(x){
+    
+    ## plot frame
     p <- ggbmap + geom_path(aes(x = lon, y = lat, group = id), data = x, size = 3,
-                            lineend = "round", linejoin = "round", colour = x$colour) +
-      theme(aspect.ratio = 1) + scale_fill_identity() + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+                            lineend = "round", linejoin = "round", colour = x$tail_colour) + theme(aspect.ratio = 1) +
+                            scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
     if(isTRUE(print_plot)) print(p) else return(p)
   })
+}
+
+#' add to frames
+#' @noRd 
+.addToFrames <- function(frames, eval) lapply(frames, function(x, y = eval){
+  x + y
+})
+
+#' package startup
+#' @noRd 
+.onLoad <- function(libname, pkgname){
+  if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
 }
