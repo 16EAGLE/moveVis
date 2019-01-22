@@ -87,6 +87,19 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   x + y
 })
 
+#' convert units
+#' @noRd 
+.convert_units <- function(unit){
+  unit.c <- c("secs" = "%S", "mins" = "%M", "hours" = "%H", "days" = "%d")
+  sub <- match(unit, unit.c)
+  if(is.na(sub)){
+    sub <- match(unit, names(unit.c))
+    if(is.na(sub)) out(paste0("Unit '", unit, "' is not supported."), type = 3) else unit.c[sub]
+  } else{
+    return(names(unit.c)[sub])
+  }
+}
+
 #' package startup
 #' @noRd 
 .onLoad <- function(libname, pkgname){

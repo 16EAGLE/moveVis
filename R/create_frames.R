@@ -19,6 +19,7 @@
 #' @importFrom RStoolbox ggRGB
 #' 
 #' @export
+
 create_frames <- function(m, token, verbose = TRUE,  dir.bm = paste0(tempdir(), "/moveVis/basemap")){
   
   ## checks
