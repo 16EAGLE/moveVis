@@ -50,11 +50,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' split movement by tail length
 #' @noRd 
-.split <- function(m, n_tail){
-  lapply(1:(max(m$frame)-n_tail), function(i){
+.split <- function(m.df, tail_length, path_size, tail_size){
+  lapply(1:(max(m.df$frame)-tail_length), function(i){
     
     # extract all rows of frame time range
-    y <- m[!is.na(match(m$frame,i:(i+n_tail))),]
+    y <- m.df[!is.na(match(m.df$frame,i:(i+tail_length))),]
     y <- y[order(y$id),]
     
     # compute colour ramp from id count
@@ -62,21 +62,25 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       f <- colorRampPalette(c(x, "white"))
       rev(f(y+4)[1:y])
     }, SIMPLIFY = F))
+    
+    # compute tail size from id count
+    y$tail_size <- unlist(lapply(table(y$id), function(x) seq(tail_size, path_size, length.out = x)))
     return(y)
   })
 }
 
-
 #' plot function
 #' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous
 #' @noRd 
-.gg <- function(m.split, ggbmap, print_plot = T){
+.gg <- function(m.split, ggbmap, path_size = 3, path_end = "round", path_join = "round", squared = T, 
+                path_mitre = 10, path_arrow = NULL, print_plot = T){
   lapply(m.split, function(x){
     
     ## plot frame
-    p <- ggbmap + geom_path(aes(x = lon, y = lat, group = id), data = x, size = 3,
-                            lineend = "round", linejoin = "round", colour = x$tail_colour) + theme(aspect.ratio = 1) +
+    p <- ggbmap + geom_path(aes(x = x, y = y, group = id), data = x, size = x$tail_size, lineend = path_end, linejoin = path_join,
+                            linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) + 
                             scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
     if(isTRUE(print_plot)) print(p) else return(p)
   })
 }
@@ -98,6 +102,14 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   } else{
     return(names(unit.c)[sub])
   }
+}
+
+#' detect time gaps
+#' @noRd 
+.time_gaps <- function(m){
+  ts.digits <- lapply(c("secs", "mins", "hours", "days"), function(x, ts = timestamps(m)) sort(unique(as.numeric(format(unique(timestamps(m)), .convert_units(x))))))
+  ts.dl <- lapply(ts.digits, function(x) length(unique(diff(x))))
+  sapply(ts.dl, function(x) x > 1)
 }
 
 #' package startup

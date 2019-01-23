@@ -9,6 +9,8 @@ add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 \arguments{
 \item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
 
+\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+
 \item{title}{character, frame title.}
 
 \item{subtitle}{character, frame subtitle.}

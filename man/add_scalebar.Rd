@@ -22,6 +22,8 @@ add_scalebar(frames, title = waiver(), subtitle = waiver(),
 \item{x}{character, label of the x axis.}
 
 \item{y}{character, label of the y axis.}
+
+\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
 List of frames.

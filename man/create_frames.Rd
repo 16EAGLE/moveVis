@@ -4,19 +4,49 @@
 \alias{create_frames}
 \title{Create movement animation frames from movement data}
 \usage{
-create_frames(m, token, verbose = TRUE, dir.bm = paste0(tempdir(),
-  "/moveVis/basemap"))
+create_frames(m, tail_length = 19, path_size = 3, tail_size = 1,
+  path_end = "round", path_join = "round", path_mitre = 10,
+  path_arrow = NULL, margin_factor = 1.1, ext = NULL, token = NULL,
+  dir.bm = paste0(tempdir(), "/moveVis/basemap"), verbose = TRUE)
 }
 \arguments{
-\item{m}{movement}
+\item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
 
-\item{token}{mapbox token}
+\item{tail_length}{numeric, length of tail per movement path.}
+
+\item{path_size}{numeric, size of each path. Default is 3.}
+
+\item{tail_size}{numeric, size of the last tail element. Default is 1.}
+
+\item{path_end}{character, either \code{"round"}, \code{"butt"} or \code{"square"}, indicating the path end style.}
+
+\item{path_join}{character, either \code{"round"}, \code{"mitre"} or \code{"bevel"}, indicating the path join style.}
+
+\item{path_mitre}{numeric, path mitre limit (number greater than 1).}
+
+\item{path_arrow}{arrow, path arrow specification, as created by grid::arrow().}
+
+\item{margin_factor}{numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.}
+
+\item{ext}{\code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).}
+
+\item{token}{character, mapbox token for mapbox basemaps}
+
+\item{dir.bm}{character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
+If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
+so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.}
+
+\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
 List of ggplot objects, each representing a single frame.
 }
 \description{
 \code{create_frames} creates a list of \code{ggplot} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+}
+\details{
+Path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
+Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
 }
 \seealso{
 \code{\link{animate_frames}}

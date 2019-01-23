@@ -22,8 +22,7 @@ Imports:
   magick,
   av,
   curl,
-  glue,
-  purrr
+  plyr
 Remotes:
   MilesMcBain/slippymath
 BugReports: http://www.github.com/16eagle/moveVis/issues
