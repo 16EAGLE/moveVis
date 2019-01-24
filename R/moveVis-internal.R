@@ -72,17 +72,19 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' plot function
 #' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous
 #' @noRd 
-.gg <- function(m.split, ggbmap, path_size = 3, path_end = "round", path_join = "round", squared = T, 
+.gg <- function(m.split, gg.bmap, path_size = 3, path_end = "round", path_join = "round", squared = T, 
                 path_mitre = 10, path_arrow = NULL, print_plot = T){
-  lapply(m.split, function(x){
-    
-    ## plot frame
-    p <- ggbmap + geom_path(aes(x = x, y = y, group = id), data = x, size = x$tail_size, lineend = path_end, linejoin = path_join,
+  
+  # frame plotting function
+  gg.fun <- function(x, y){
+    p <- y + geom_path(aes(x = x, y = y, group = id), data = x, size = x$tail_size, lineend = path_end, linejoin = path_join,
                             linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) + 
                             scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
     if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
     if(isTRUE(print_plot)) print(p) else return(p)
-  })
+  }
+  
+  if(length(gg.bmap) > 1) mapply(x = m.split, y = gg.bmap, gg.fun, SIMPLIFY = F, USE.NAMES = F) else lapply(m.split, gg.fun, y = gg.bmap[[1]])
 }
 
 #' add to frames
@@ -110,6 +112,84 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   ts.digits <- lapply(c("secs", "mins", "hours", "days"), function(x, ts = timestamps(m)) sort(unique(as.numeric(format(unique(timestamps(m)), .convert_units(x))))))
   ts.dl <- lapply(ts.digits, function(x) length(unique(diff(x))))
   sapply(ts.dl, function(x) x > 1)
+}
+
+#' get map
+#' @importFrom slippymath bb_to_tg tg_composite
+#' @importFrom curl curl_download
+#' @importFrom raster projectRaster crs extent
+#' @noRd 
+.getMap <- function(gg.ext, map_service, map_type, map_token, map_dir){
+
+  ## calculate tiles and get map imagery
+  tg <- bb_to_tg(gg.ext, max_tiles = 20)
+  images <- apply(tg$tiles, MARGIN = 1, function(x){
+    file <- paste0(map_dir, x[1], "_", x[2], ".jpg")
+    if(!isTRUE(file.exists(file))){
+      curl_download(url = paste0("https://api.mapbox.com/v4/mapbox.satellite/", tg$zoom, "/", x[1], "/", x[2], ".jpg90", "?access_token=", map_token))
+    }
+    return(file)
+  })
+  
+  ## composite imagery
+  r <- tg_composite(tg, images)
+  list(crop(projectRaster(r, crs = crs(m)), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
+}
+
+#' assign raster to frames
+#' @importFrom raster nlayers unstack crop extent setValues stack approxNA
+#' @importFrom RStoolbox ggRGB ggR
+#' @noRd
+.ggFrames <- function(r_list, r_times, r_type, m.split, gg.ext, fade_raster = T, ...){
+  
+  if(!is.list(r_list)){
+    r_list <- list(r_list)
+    n <- 1
+  } else n <- length(m.split)
+  
+  ## rearrange bandwise and crop
+  r.nlay <- nlayers(r_list[[1]])
+  if(r.nlay > 1) r_list <- lapply(1:r.nlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list)
+
+  r.crop <- lapply(r_list, function(r.lay) lapply(r.lay, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
+  
+  if(n > 1){
+    
+    ## calcualte time differences
+    pos_diff <- lapply(r_times, function(x) sapply(lapply(m.split, function(x) max(unique(x$time))), difftime, time2 = x))
+    pos_r <- sapply(pos_diff, which.min)
+    
+    ## create frame list, top list is bands, second list is times
+    r.dummy <- setValues(r.crop[[1]][[1]], NA)
+    r_list <- rep(list(rep(list(r.dummy), n)), r.nlay)
+    
+    if(!isTRUE(fade_raster)){
+      
+      ## assign rasters to all frames, hard changes with distance of frame times to raster times
+      pos_frames <- c(head(pos_r, n=-1) + round(diff(pos_r)/2))
+      pos_frames <- cbind(c(pos_r[1], pos_frames), c(pos_frames-1, n), 1:length(r_times))
+      if(pos_frames[1,1] != 1) pos_frames[1,1] <- 1
+      pos_frames <- cbind(1:n, unlist(apply(pos_frames, MARGIN = 1, function(x) rep(x[3], diff(x[1:2])+1))))
+    } else{
+      
+      ## assign rasters to frames only to frames with closest raster times
+      pos_frames <- cbind(pos_r, 1:length(pos_r))
+      if(pos_frames[1,1] != 1) pos_frames[1,1] <- 1
+    }
+    for(i in 1:r.nlay) r_list[[i]][pos_frames[,1]] <- r.crop[[i]][pos_frames[,2]]
+    
+    ## interpolate/extrapolate
+    if(isTRUE(fade_raster)){
+      for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
+      r_list <- lapply(r_list, function(x) unstack(approxNA(x, rule = 2)))
+    }
+  } else{ r_list <- r.crop}
+  
+  if(length(r_list) == 1){
+    if(r_type == "gradient") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
+    if(r_type == "discrete") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
+  } else{ gg.bmap <- lapply(1:n, function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T))}
+  return(gg.bmap)
 }
 
 #' package startup

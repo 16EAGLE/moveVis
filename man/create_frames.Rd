@@ -4,13 +4,35 @@
 \alias{create_frames}
 \title{Create movement animation frames from movement data}
 \usage{
-create_frames(m, tail_length = 19, path_size = 3, tail_size = 1,
-  path_end = "round", path_join = "round", path_mitre = 10,
-  path_arrow = NULL, margin_factor = 1.1, ext = NULL, token = NULL,
-  dir.bm = paste0(tempdir(), "/moveVis/basemap"), verbose = TRUE)
+create_frames(m, r_list = NULL, r_times = NULL, r_type = "gradient",
+  fade_raster = TRUE, map_service = "mapbox", map_type = "satellite",
+  map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
+  margin_factor = 1.1, ext = NULL, tail_length = 19, path_size = 3,
+  tail_size = 1, path_end = "round", path_join = "round",
+  path_mitre = 10, path_arrow = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
+
+\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
+
+\item{r_times}{list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
+
+\item{r_type}{character, either \code{"gardient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
+
+\item{map_service}{character, either \code{"mapbox"}, \code{"osm"} or \code{"bing"}.}
+
+\item{map_type}{character, either \code{"satellite"}, ...}
+
+\item{map_token}{character, mapbox map_token for mapbox basemaps}
+
+\item{map_dir}{character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
+If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
+so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.}
+
+\item{margin_factor}{numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.}
+
+\item{ext}{\code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).}
 
 \item{tail_length}{numeric, length of tail per movement path.}
 
@@ -26,16 +48,6 @@ create_frames(m, tail_length = 19, path_size = 3, tail_size = 1,
 
 \item{path_arrow}{arrow, path arrow specification, as created by grid::arrow().}
 
-\item{margin_factor}{numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.}
-
-\item{ext}{\code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).}
-
-\item{token}{character, mapbox token for mapbox basemaps}
-
-\item{dir.bm}{character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
-If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
-so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.}
-
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
@@ -47,6 +59,8 @@ List of ggplot objects, each representing a single frame.
 \details{
 Path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
 Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
+
+Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 }
 \seealso{
 \code{\link{animate_frames}}

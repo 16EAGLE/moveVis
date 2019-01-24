@@ -1,0 +1,39 @@
+#' Add scale to frames
+#'
+#' This function adjust the colour scales of the animation frames created with \code{\link{create_frames}}.
+#'
+#' @inheritParams add_labels
+#' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{create_frames}}).
+#' @param colours character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}
+#' @param labels character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.
+#' @param legend_title character, a legend title.
+#'
+#' @return List of frames.
+#' @author Jakob Schwalb-Willmann
+#'
+#' @importFrom ggplot2 scale_fill_gradientn scale_colour_manual
+#'
+#' @seealso \link{create_frames}
+#' @export
+
+add_colourscale <- function(frames, type, colours, labels = waiver(), legend_title = NULL, verbose = TRUE){
+  
+  ## checks
+  if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
+  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See create_frames()).", type = 3)
+  if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
+  
+  if(!inherits(type, "character")) out("Argument 'type' must be of type 'character'.", type = 3)
+  if(!any(c("gradient", "discrete") %in% type)) out("Argument 'type' must either be 'gradient' or 'discrete'.", type = 3)
+  if(!inherits(colours, "character")) out("Argument 'colours' must be of type 'character'.", type = 3)
+  if(length(colours) == 0) out("Argument 'colours' must have length greater than 0.", type = 3)
+  if(all(type == "discrete", !inherits(labels, "waiver"))){
+    if(!inherits(labels, "character")) out("Argument 'labels' must be of type 'character'.", type = 3)
+    if(length(labels) != length(colours)) out("Arguments 'colours' and 'labels' must have equal lengths.", type = 3)
+  }
+  
+  if(type == "gradient") gg.scale <- scale_fill_gradientn(name = legend_title, colours = colours)
+  if(type == "discrete") gg.scale <- scale_fill_manual(name = legend_title, values = colours, labels = labels)
+  
+  .addToFrames(frames = frames, eval = gg.scale) 
+}
