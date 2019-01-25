@@ -164,15 +164,15 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     ## create frame list, top list is bands, second list is times
     r.dummy <- setValues(r.crop[[1]][[1]], NA)
-    r_list <- rep(list(rep(list(r.dummy), n)), r.nlay)
+    r_list <- rep(list(rep(list(r.dummy), length(m.split))), r.nlay)
     
     if(!isTRUE(fade_raster)){
       
       ## assign rasters to all frames, hard changes with distance of frame times to raster times
       pos_frames <- c(head(pos_r, n=-1) + round(diff(pos_r)/2))
-      pos_frames <- cbind(c(pos_r[1], pos_frames), c(pos_frames-1, n), 1:length(r_times))
+      pos_frames <- cbind(c(pos_r[1], pos_frames), c(pos_frames-1, length(m.split)), 1:length(r_times))
       if(pos_frames[1,1] != 1) pos_frames[1,1] <- 1
-      pos_frames <- cbind(1:n, unlist(apply(pos_frames, MARGIN = 1, function(x) rep(x[3], diff(x[1:2])+1))))
+      pos_frames <- cbind(1:length(m.split), unlist(apply(pos_frames, MARGIN = 1, function(x) rep(x[3], diff(x[1:2])+1))))
     } else{
       
       ## assign rasters to frames only to frames with closest raster times
@@ -191,7 +191,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(length(r_list) == 1){
     if(r_type == "gradient") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
     if(r_type == "discrete") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
-  } else{ gg.bmap <- lapply(1:n, function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T))}
+  } else{ gg.bmap <- lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T))}
   return(gg.bmap)
 }
 

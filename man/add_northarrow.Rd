@@ -4,26 +4,7 @@
 \alias{add_northarrow}
 \title{Add visual elements to animation frames}
 \usage{
-add_northarrow(frames, title = waiver(), subtitle = waiver(),
-  caption = waiver(), tag = waiver(), x = waiver(), y = waiver(),
-  verbose = TRUE)
-}
-\arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
-
-\item{title}{character, frame title.}
-
-\item{subtitle}{character, frame subtitle.}
-
-\item{caption}{character, frame caption.}
-
-\item{tag}{character, frame tag.}
-
-\item{x}{character, label of the x axis.}
-
-\item{y}{character, label of the y axis.}
-
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+add_northarrow(frames, ..., verbose = TRUE)
 }
 \value{
 List of frames.

@@ -14,7 +14,7 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 labs waiver theme element_text
+#' @importFrom ggplot2 labs waiver theme element_text expr
 #'
 #' @seealso \link{create_frames}
 #' @export
@@ -32,6 +32,6 @@ add_labels <- function(frames, title = waiver(), subtitle = waiver(), caption = 
   if(all(waiver.which)) out("At least one label argument has to be defined.", type = 3)
   if(any(!sapply(waiver.args[!waiver.which], function(x) inherits(x, "character")))) out("Label arguments must be of type character.", type = 3)
   
-  .addToFrames(frames = frames, eval = list(labs(title = title, subtitle = subtitle, caption = caption, x = x, y = y),
-                                                 theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5))))
+  add_gg(frames, expr(list(labs(title = title, subtitle = subtitle, caption = caption, x = x, y = y),
+                           theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5)))))
 }

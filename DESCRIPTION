@@ -22,7 +22,8 @@ Imports:
   magick,
   av,
   curl,
-  plyr
+  plyr,
+  dplyr
 Remotes:
   MilesMcBain/slippymath
 BugReports: http://www.github.com/16eagle/moveVis/issues

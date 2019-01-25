@@ -11,7 +11,7 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 scale_fill_gradientn scale_colour_manual
+#' @importFrom ggplot2 scale_fill_gradientn scale_colour_manual expr
 #'
 #' @seealso \link{create_frames}
 #' @export
@@ -32,8 +32,8 @@ add_colourscale <- function(frames, type, colours, labels = waiver(), legend_tit
     if(length(labels) != length(colours)) out("Arguments 'colours' and 'labels' must have equal lengths.", type = 3)
   }
   
-  if(type == "gradient") gg.scale <- scale_fill_gradientn(name = legend_title, colours = colours)
-  if(type == "discrete") gg.scale <- scale_fill_manual(name = legend_title, values = colours, labels = labels)
+  if(type == "gradient") gg.scale <- expr(scale_fill_gradientn(name = legend_title, colours = colours))
+  if(type == "discrete") gg.scale <- expr(scale_fill_manual(name = legend_title, values = colours, labels = labels))
   
-  .addToFrames(frames = frames, eval = gg.scale) 
+  add_gg(frames, gg.scale)
 }
