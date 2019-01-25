@@ -12,7 +12,7 @@ add_colourscale(frames, type, colours, labels = waiver(),
 
 \item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{create_frames}}).}
 
-\item{colours}{character, a vector of colours. If \code{type = "categorcial"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created.}
+\item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}}
 
 \item{labels}{character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.}
 

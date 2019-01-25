@@ -51,10 +51,13 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' split movement by tail length
 #' @noRd 
 .split <- function(m.df, tail_length, path_size, tail_size){
-  lapply(1:(max(m.df$frame)-tail_length), function(i){
+  lapply(1:(max(m.df$frame)), function(i){
+    
+    i.range <- seq(i-tail_length, i)
+    i.range <- i.range[i.range > 0]
     
     # extract all rows of frame time range
-    y <- m.df[!is.na(match(m.df$frame,i:(i+tail_length))),]
+    y <- m.df[!is.na(match(m.df$frame,i.range)),]
     y <- y[order(y$id),]
     
     # compute colour ramp from id count
@@ -145,7 +148,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(!is.list(r_list)){
     r_list <- list(r_list)
     n <- 1
-  } else n <- length(m.split)
+  } else n <- length(r_list)
   
   ## rearrange bandwise and crop
   r.nlay <- nlayers(r_list[[1]])
