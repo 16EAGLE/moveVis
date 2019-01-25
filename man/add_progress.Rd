@@ -27,7 +27,7 @@ add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 List of frames.
 }
 \description{
-This function adds a progress bar to to animation frames created with \code{\link{create_frames}}.
+This function adds a progress bar to animation frames created with \code{\link{create_frames}}.
 }
 \seealso{
 \link{create_frames}
