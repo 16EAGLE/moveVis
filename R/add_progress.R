@@ -13,7 +13,7 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 geom_line aes ggplot_build
+#' @importFrom ggplot2 geom_line aes ggplot_build expr
 #' @importFrom dplyr bind_rows
 #'
 #' @seealso \link{create_frames}
@@ -29,15 +29,15 @@ add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){
   if(!inherits(colour, "character")) out("Argument 'colour' needs to be of type 'character'.", type = 3)
   if(!inherits(size, "numeric")) out("Argument 'size' needs to be of type 'numeric'.", type = 3)
   
-  gg.xy <- lapply(ggplot_build(frames[[1]])$data, function(x) cbind.data.frame(x = x$x, y= x$y))
-  gg.xy <- bind_rows(gg.xy[!sapply(gg.xy, is.null)])
+  gg.xy <- ggplot_build(frames[[1]])$data[[1]]
+  # gg.xy <- lapply(ggplot_build(frames[[1]])$data, function(x) cbind.data.frame(x = x$x, xmin = x$xmin, xmax = x$xmax,
+  #                                                                              y = x$y, ymin = x$ymin, ymax = x$ymax))
+  # gg.xy <- bind_rows(gg.xy[!sapply(gg.xy, is.null)])
   
-  progress <- lapply(seq(min(gg.xy$x), max(gg.xy$x), length.out = length(frames)), function(x, x.min = min(gg.xy$x), y = max(gg.xy$y)){
+  progress <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(x, x.min = min(gg.xy$xmin), y = max(gg.xy$ymax)){
     cbind.data.frame(x = c(x.min, x), y = c(y, y))
   })
   
-  # test <- add_gg(frames, gg = expr(geom_line(aes(x = x, y = data), data = data, colour = colour, size = size)),
-  #        data = progress, colour = colour, size = size) # still not working!!!!!!!!! <--------------------------------
-  
-  mapply(x = frames, y = progress, function(x, y) x + geom_line(aes(x = x, y = y), data = y, colour = colour, size = size), SIMPLIFY = F)
+  add_gg(frames, gg = expr(geom_line(aes(x = x, y = y), data = data, colour = colour, size = size)),
+         data = progress, colour = colour, size = size)
 }

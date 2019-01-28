@@ -4,12 +4,12 @@
 \alias{add_scalebar}
 \title{Add visual elements to animation frames}
 \usage{
-add_scalebar(frames, title = waiver(), subtitle = waiver(),
-  caption = waiver(), tag = waiver(), x = waiver(), y = waiver(),
-  verbose = TRUE)
+add_scalebar(frames, verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+
+\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 
 \item{title}{character, frame title.}
 
@@ -22,8 +22,6 @@ add_scalebar(frames, title = waiver(), subtitle = waiver(),
 \item{x}{character, label of the x axis.}
 
 \item{y}{character, label of the y axis.}
-
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
 List of frames.

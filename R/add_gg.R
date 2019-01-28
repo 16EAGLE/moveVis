@@ -34,19 +34,12 @@
 #'
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
-#'
+#' 
 #'
 #' @seealso \link{create_frames}
 #' @export
 
 add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
-  
-  ## plotting function
-  add <- function(x, y, data, ... ){
-    arg <- list(...)
-    if(length(arg) > 0) for(i in 1:length(arg)) assign(names(arg)[[i]], arg[[i]])
-    return(x + eval(y)) #parse(text = paste0(y, collapse = " + ")))
-  }
   
   ## check data and replicate if necessary
   if(is.list(data)){
@@ -63,5 +56,8 @@ add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
   }
   if(!is.call(gg[[1]])) out("Argument 'gg' must be an expression or a list of expressions (see ?moveVis::add_gg and ?ggplot2::expr).", type = 3)
   
-  mapply(x = frames, y = gg, data = data, add, ..., USE.NAMES = F, SIMPLIFY = F)
+  mapply(.frame = frames, .gg = gg, data = data, function(.frame, .gg, data, arg = list(...)){
+    if(length(arg) > 0) for(i in 1:length(arg)) assign(names(arg)[[i]], arg[[i]])
+    return(.frame + eval(.gg)) #parse(text = paste0(y, collapse = " + ")))
+  }, USE.NAMES = F, SIMPLIFY = F)
 }

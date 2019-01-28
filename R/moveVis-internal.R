@@ -191,7 +191,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(length(r_list) == 1){
     if(r_type == "gradient") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
     if(r_type == "discrete") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
-  } else{ gg.bmap <- lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T))}
+  } else{ gg.bmap <- lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T))}
   return(gg.bmap)
 }
 

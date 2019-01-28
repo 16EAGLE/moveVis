@@ -35,5 +35,5 @@ add_colourscale <- function(frames, type, colours, labels = waiver(), legend_tit
   if(type == "gradient") gg.scale <- expr(scale_fill_gradientn(name = legend_title, colours = colours))
   if(type == "discrete") gg.scale <- expr(scale_fill_manual(name = legend_title, values = colours, labels = labels))
   
-  add_gg(frames, gg.scale)
+  add_gg(frames, gg.scale, colours = colours, legend_title = legend_title)
 }
