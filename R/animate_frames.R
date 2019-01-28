@@ -13,6 +13,8 @@
 #'
 #' @return None or an R graphics window displaying the animation
 #' 
+#' @importFrom av av_capture_graphics
+#' 
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{create_frames}}
 #' 

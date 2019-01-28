@@ -4,7 +4,7 @@
 \alias{add_text}
 \title{Add static or dynamic text to frames}
 \usage{
-add_text(frames, labels, x, y, colour = "white", size = 3,
+add_text(frames, labels, x, y, colour = "black", size = 3,
   type = "text", verbose = TRUE)
 }
 \arguments{

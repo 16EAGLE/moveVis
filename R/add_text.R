@@ -19,7 +19,7 @@
 #' @seealso \link{create_frames}
 #' @export
 
-add_text <- function(frames, labels, x, y, colour = "white", size = 3, type = "text", verbose = TRUE){
+add_text <- function(frames, labels, x, y, colour = "black", size = 3, type = "text", verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -36,7 +36,7 @@ add_text <- function(frames, labels, x, y, colour = "white", size = 3, type = "t
   check <- list("labels" = labels, "x" = x, "y" = y, "colour" = colour, "size" = size)
   at <- sapply(1:length(check), function(i){
     if(length(check[[i]]) == 1) v <- rep(check[[i]], length(frames)) else v <- check[[i]]
-    if(length(v) != length(frames)) out(paste0("Length of argument ", names(check)[[i]], " must either be 1 or equal to the length of agrument 'frames'."))
+    if(length(v) != length(frames)) out(paste0("Length of argument ", names(check)[[i]], " must either be 1 or equal to the length of agrument 'frames'."), type = 3)
     return(v)
   }, simplify = F)
   at <- as.data.frame(bind_cols(at), stringsAsFactors = F)

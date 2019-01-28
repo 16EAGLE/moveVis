@@ -2,35 +2,36 @@
 % Please edit documentation in R/add_scalebar.R
 \name{add_scalebar}
 \alias{add_scalebar}
-\title{Add visual elements to animation frames}
+\title{Add scalebar to frames}
 \usage{
-add_scalebar(frames, verbose = TRUE)
+add_scalebar(frames, distance = NULL, height = 0.018,
+  position = "bottomleft", x = NULL, y = NULL,
+  label_colour = "white", label_margin = 1, verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
 
+\item{distance}{numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.}
+
+\item{height}{numeric, height of the scalebar in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.02.}
+
+\item{position}{character, position of the scalebar on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.}
+
+\item{x}{numeric, position of the bottom left corner of the scalebar on the x axis. If not set, \code{position} is used to calculate the position of the scalebar.}
+
+\item{y}{numeric, position of the bottom left corner of the scalebar on the y axis. If not set, \code{position} is used to calculate the position of the scalebar.}
+
+\item{label_colour}{character, colour of the distance labels. Default is \code{"white"}.}
+
+\item{label_margin}{numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height). Default is 1.}
+
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
-
-\item{title}{character, frame title.}
-
-\item{subtitle}{character, frame subtitle.}
-
-\item{caption}{character, frame caption.}
-
-\item{tag}{character, frame tag.}
-
-\item{x}{character, label of the x axis.}
-
-\item{y}{character, label of the y axis.}
 }
 \value{
 List of frames.
 }
 \description{
-Functions that add visual elements to animation frames created with \code{links{create_frames}} to adjust the appearance of the movement animation before calling \code{\link{animate_frames}}.
-}
-\details{
-\code{add_labels} adds title, sub title and axis labels to all frames
+This function adds a scalebar to the animation frames created with \code{\link{create_frames}}.
 }
 \seealso{
 \link{create_frames}
