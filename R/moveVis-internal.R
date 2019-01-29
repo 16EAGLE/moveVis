@@ -49,9 +49,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' split movement by tail length
+#' @importFrom pbapply pblapply
 #' @noRd 
 .split <- function(m.df, tail_length, path_size, tail_size){
-  lapply(1:(max(m.df$frame)), function(i){
+  pboptions(type = "timer", char = "=", txt.width = getOption("width")-30)
+  pblapply(1:(max(m.df$frame)), function(i){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
@@ -139,9 +141,15 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   list(crop(projectRaster(r, crs = crs(m)), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
 }
 
+#' interpolate over NAs
+#' @importFrom zoo na.approx
+#' @noRd
+.approxNA <- function(x) na.approx(x, rule = 2)
+
 #' assign raster to frames
 #' @importFrom raster nlayers unstack crop extent setValues stack approxNA
 #' @importFrom RStoolbox ggRGB ggR
+#' @importFrom pbapply pblapply
 #' @noRd
 .ggFrames <- function(r_list, r_times, r_type, m.split, gg.ext, fade_raster = T, ...){
   
@@ -183,20 +191,26 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     ## interpolate/extrapolate
     if(isTRUE(fade_raster)){
+      
       for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
-      r_list <- lapply(r_list, function(x) unstack(approxNA(x, rule = 2)))
+      r_list <- lapply(r_list, function(x) unstack(calc(x, .approxNA))) # 14 sec for >5000 single-layer frames interpolation
+      
+      #for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
+      #r_list <- lapply(r_list, function(x) unstack(approxNA(x, rule = 2))) # unstack is super slow! This line slows down everything.
     }
   } else{ r_list <- r.crop}
   
   if(length(r_list) == 1){
-    if(r_type == "gradient") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
-    if(r_type == "discrete") gg.bmap <- lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
-  } else{ gg.bmap <- lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T))}
+    if(r_type == "gradient") gg.bmap <- pblapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
+    if(r_type == "discrete") gg.bmap <- pblapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
+  } else{ gg.bmap <- pblapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T))}
   return(gg.bmap)
 }
 
 #' package startup
+#' @importFrom pbapply pboptions
 #' @noRd 
 .onLoad <- function(libname, pkgname){
+  pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
 }

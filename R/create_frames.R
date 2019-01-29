@@ -42,7 +42,7 @@
 #' @export
 
 create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "mapbox", map_type = "satellite", map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
-                          margin_factor = 1.1, ext = NULL, tail_length = 19, path_size = 3, tail_size = 1, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, verbose = TRUE, ...){
+                          margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, verbose = TRUE, ...){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -61,7 +61,6 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   
   
   ## create data.frame from m with frame time
-  out("Processing movement data...")
   m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
                 time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
   colnames(m.df)[1:2] <- c("x", "y")
@@ -85,6 +84,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   }else gg.ext <- .squared(m.ext, margin_factor = margin_factor)
   
   ## split m by size of tail, requires m with col x, y, id and frame time (integer)
+  out("Processing movement data...")
   m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size)
   
   ## calculate tiles and get map imagery

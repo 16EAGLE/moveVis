@@ -23,7 +23,8 @@ Imports:
   av,
   curl,
   plyr,
-  dplyr
+  dplyr,
+  zoo
 Remotes:
   MilesMcBain/slippymath
 BugReports: http://www.github.com/16eagle/moveVis/issues

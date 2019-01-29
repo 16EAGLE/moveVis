@@ -4,13 +4,15 @@
 \alias{animate_frames}
 \title{Animate frames}
 \usage{
-animate_frames(frames, out_file, framerate = 2, width = 800,
-  height = 800, display = TRUE, render_function = NULL, ...)
+animate_frames(frames, out_file, fps = 25, width = 900, height = 900,
+  res = 130, display = TRUE, verbose = TRUE, ...)
 }
 \arguments{
-\item{out_file}{character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a known video/image format such as mp4, mkv, mov, flv or gif.}
+\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
 
-\item{framerate}{numeric, the number of frames to be displayed per second. Default is 2.}
+\item{out_file}{character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use \code{\link{suggest_formats}} to get a vector of suggested known file formats.}
+
+\item{fps}{numeric, the number of frames to be displayed per second. Default is 2.}
 
 \item{width}{numeric, width of the output animation in pixels.}
 
@@ -18,7 +20,7 @@ animate_frames(frames, out_file, framerate = 2, width = 800,
 
 \item{display}{logical, whether the animation should be displayed after rendering or not.}
 
-\item{render_function}{function, an optional render function. If undefined (default), an appropriate render function is selected automatically depending on the output file extension and the available system libraries.}
+\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 
 \item{...}{additional arguments to be passed to the render function.}
 }
@@ -27,6 +29,9 @@ None or an R graphics window displaying the animation
 }
 \description{
 \code{animate_frames} creates an animation from a list of frames computed with \code{\link{create_frames}}.
+}
+\details{
+An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
 }
 \seealso{
 \code{\link{create_frames}}

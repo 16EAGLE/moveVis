@@ -4,7 +4,7 @@
 \alias{align_move}
 \title{Align movement data}
 \usage{
-align_move(m, res = "min", unit.digit = "min", unit = "secs",
+align_move(m, res = "min", digit = "min", unit = "secs",
   spaceMethod = "greatcircle")
 }
 \arguments{
@@ -17,14 +17,14 @@ align_move(m, res = "min", unit.digit = "min", unit = "secs",
   \item \code{"mean"} to use the rounded average temporal resolution of \code{m}
 }}
 
-\item{unit.digit}{either numeric, indicating to which digits of a specifc unit (see argument \code{unit}) the time scale of \code{m} should be aligned (e.g. 0 to align the time scale to second ":00", if \code{unit} is set to \code{secs}), or character:
+\item{digit}{either numeric, indicating to which digits of a specifc unit (see argument \code{unit}) the time scale of \code{m} should be aligned (e.g. 0 to align the time scale to second ":00", if \code{unit} is set to \code{secs}), or character:
 \itemize{
   \item \code{"min"} to use the smallest digit of the defined \code{unit} (default)
   \item \code{"max"} to use the largest digit of the defined \code{unit}
   \item \code{"mean"} to use the rounded average digit of the defined \code{unit}
 }}
 
-\item{unit}{character, either \code{"secs"}, \code{"mins"}, \code{"hours"}, \code{"days"}, indicating the temporal unit, to which \code{res} and \code{unit.digit} are referring.}
+\item{unit}{character, either \code{"secs"}, \code{"mins"}, \code{"hours"}, \code{"days"}, indicating the temporal unit, to which \code{res} and \code{digit} are referring.}
 
 \item{spaceMethod}{character, either \code{"euclidean"}, \code{"greatcircle"} or \code{"rhumbline"}, indicating the interpolation function to be used to interpolate locations of \code{m} to the aligned time scale. Interpolation is performed using \code{move::interpolateTime}.}
 }

@@ -27,7 +27,7 @@ add_timestamps <- function(frames, m, x = NULL, y = NULL, ..., verbose = TRUE){
   
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   
-  ts <- as.character(unique(timestamps(m)))
+  ts <- as.character(sort(unique(timestamps(m))))
   if(length(ts) != length(frames)) out("Unique timestamps of 'm' must be of same length as 'frames'. Do only use the same move or moveStack object that you have used to create 'frames'.", type = 3)
   
   if(is.null(x)){
