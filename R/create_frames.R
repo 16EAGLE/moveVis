@@ -17,6 +17,7 @@
 #' @param ext \code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).
 #' @param map_service character, either \code{"mapbox"}, \code{"osm"} or \code{"bing"}.
 #' @param map_type character, either \code{"satellite"}, ...
+#' @param map_res numeric, resolution of base map in range from 0 to 1.
 #' @param map_token character, mapbox map_token for mapbox basemaps
 #' @param map_dir character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
 #' If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
@@ -41,7 +42,7 @@
 #' 
 #' @export
 
-create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "mapbox", map_type = "satellite", map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
+create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "mapbox", map_type = "satellite", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
                           margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, verbose = TRUE, ...){
   
   ## checks
@@ -90,7 +91,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
-    r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir)
+    r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res)
     r_type <- "RGB"
   }
   out("Assigning raster maps to frames...")

@@ -5,7 +5,8 @@
 \title{Animate frames}
 \usage{
 animate_frames(frames, out_file, fps = 25, width = 900, height = 900,
-  res = 130, display = TRUE, verbose = TRUE, ...)
+  res = 130, display = TRUE, overwrite = FALSE, verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}

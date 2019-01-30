@@ -8,7 +8,7 @@
 #' @param position character, position of the scalebar on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.
 #' @param x numeric, position of the bottom left corner of the scalebar on the x axis. If not set, \code{position} is used to calculate the position of the scalebar.
 #' @param y numeric, position of the bottom left corner of the scalebar on the y axis. If not set, \code{position} is used to calculate the position of the scalebar.
-#' @param label_colour character, colour of the distance labels. Default is \code{"white"}.
+#' @param colour character, colour of the distance labels. Default is \code{"black"}.
 #' @param label_margin numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height). Default is 1.
 #'
 #' @return List of frames.
@@ -20,7 +20,7 @@
 #' @seealso \link{create_frames}
 #' @export
 
-add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bottomleft", x = NULL, y = NULL, label_colour = "white", label_margin = 1, verbose = TRUE){
+add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -64,7 +64,7 @@ add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bo
   text.data <- cbind.data.frame(x = c(min(scale.outer$x), min(scale.inner$x), max(scale.outer$x)),
                                 y = (min(scale.outer$y)-text.margin),
                                 label = paste0(c(0, scale.dist/2, scale.dist), " km"),
-                                col = label_colour, stringsAsFactors = F)
+                                col = colour, stringsAsFactors = F)
   
   add_gg(frames, gg = expr(list(geom_polygon(aes(x = x, y = y), data = scale.outer, fill = "white", colour = "black"), 
                                 geom_polygon(aes(x = x, y = y), data = scale.inner, fill = "black", colour = "black"),

@@ -6,10 +6,11 @@
 \usage{
 create_frames(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   fade_raster = TRUE, map_service = "mapbox", map_type = "satellite",
-  map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
-  margin_factor = 1.1, ext = NULL, tail_length = 19, path_size = 3,
-  tail_size = 1, path_end = "round", path_join = "round",
-  path_mitre = 10, path_arrow = NULL, verbose = TRUE, ...)
+  map_res = 1, map_token = NULL, map_dir = paste0(tempdir(),
+  "/moveVis/basemap"), margin_factor = 1.1, ext = NULL,
+  tail_length = 19, tail_size = 1, path_size = 3,
+  path_end = "round", path_join = "round", path_mitre = 10,
+  path_arrow = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -24,6 +25,8 @@ create_frames(m, r_list = NULL, r_times = NULL, r_type = "gradient",
 
 \item{map_type}{character, either \code{"satellite"}, ...}
 
+\item{map_res}{numeric, resolution of base map in range from 0 to 1.}
+
 \item{map_token}{character, mapbox map_token for mapbox basemaps}
 
 \item{map_dir}{character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
@@ -36,9 +39,9 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{tail_length}{numeric, length of tail per movement path.}
 
-\item{path_size}{numeric, size of each path. Default is 3.}
-
 \item{tail_size}{numeric, size of the last tail element. Default is 1.}
+
+\item{path_size}{numeric, size of each path. Default is 3.}
 
 \item{path_end}{character, either \code{"round"}, \code{"butt"} or \code{"square"}, indicating the path end style.}
 

@@ -2,18 +2,41 @@
 % Please edit documentation in R/add_northarrow.R
 \name{add_northarrow}
 \alias{add_northarrow}
-\title{Add visual elements to animation frames}
+\title{Add north arrow to frames}
 \usage{
-add_northarrow(frames, ..., verbose = TRUE)
+add_northarrow(frames, height = 0.05, position = "bottomright",
+  x = NULL, y = NULL, colour = "black", size = 1,
+  label_text = "N", label_margin = 0.4, label_size = 5,
+  verbose = TRUE)
+}
+\arguments{
+\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+
+\item{height}{numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.5.}
+
+\item{position}{character, position of the north arrow on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.}
+
+\item{x}{numeric, position of the bottom left corner of the north arrow on the x axis. If not set, \code{position} is used to calculate the position of the north arrow.}
+
+\item{y}{numeric, position of the bottom left corner of the north arrow on the y axis. If not set, \code{position} is used to calculate the position of the north arrow.}
+
+\item{colour}{character, colour. Default is \code{"black"}.}
+
+\item{size}{numeric, arrow size. Default is 1.}
+
+\item{label_text}{character, text below the north arrow. Default is "North".}
+
+\item{label_margin}{numeric, margin between label and north arrow as a proportion of the size of the north arrow. Default is 0.3.}
+
+\item{label_size}{numeric, label font size. Default is 4.}
+
+\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
 List of frames.
 }
 \description{
-Functions that add visual elements to animation frames created with \code{links{create_frames}} to adjust the appearance of the movement animation before calling \code{\link{animate_frames}}.
-}
-\details{
-\code{add_labels} adds title, sub title and axis labels to all frames
+This function adds a north arrow to the animation frames created with \code{\link{create_frames}}.
 }
 \seealso{
 \link{create_frames}

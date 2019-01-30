@@ -5,8 +5,8 @@
 \title{Add scalebar to frames}
 \usage{
 add_scalebar(frames, distance = NULL, height = 0.018,
-  position = "bottomleft", x = NULL, y = NULL,
-  label_colour = "white", label_margin = 1, verbose = TRUE)
+  position = "bottomleft", x = NULL, y = NULL, colour = "black",
+  label_margin = 1, verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
@@ -21,7 +21,7 @@ add_scalebar(frames, distance = NULL, height = 0.018,
 
 \item{y}{numeric, position of the bottom left corner of the scalebar on the y axis. If not set, \code{position} is used to calculate the position of the scalebar.}
 
-\item{label_colour}{character, colour of the distance labels. Default is \code{"white"}.}
+\item{colour}{character, colour of the distance labels. Default is \code{"black"}.}
 
 \item{label_margin}{numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height). Default is 1.}
 

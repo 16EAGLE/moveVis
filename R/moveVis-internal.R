@@ -124,14 +124,14 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom curl curl_download
 #' @importFrom raster projectRaster crs extent
 #' @noRd 
-.getMap <- function(gg.ext, map_service, map_type, map_token, map_dir){
+.getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res){
 
   ## calculate tiles and get map imagery
-  tg <- bb_to_tg(gg.ext, max_tiles = 20)
+  tg <- bb_to_tg(gg.ext, max_tiles = ceiling(map_res*20))
   images <- apply(tg$tiles, MARGIN = 1, function(x){
     file <- paste0(map_dir, x[1], "_", x[2], ".jpg")
     if(!isTRUE(file.exists(file))){
-      curl_download(url = paste0("https://api.mapbox.com/v4/mapbox.satellite/", tg$zoom, "/", x[1], "/", x[2], ".jpg90", "?access_token=", map_token))
+      curl_download(url = paste0("https://api.mapbox.com/v4/mapbox.satellite/", tg$zoom, "/", x[1], "/", x[2], ".jpg90", "?access_token=", map_token), destfile = file)
     }
     return(file)
   })
