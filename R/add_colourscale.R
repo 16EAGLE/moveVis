@@ -1,6 +1,6 @@
 #' Add scale to frames
 #'
-#' This function adjust the colour scales of the animation frames created with \code{\link{create_frames}}.
+#' This function adjusts the colour scales of the animation frames created with \code{\link{create_frames}} and custom map imagery.
 #'
 #' @inheritParams add_labels
 #' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{create_frames}}).

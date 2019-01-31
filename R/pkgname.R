@@ -1,30 +1,25 @@
-#' Overview of moveVis tools
+#' Tools to visualize movement data in R
 #'
-#' \code{moveVis} provides tools to visualize movement data of any kind, e. g by creating path animations from GPS point data.
-#' The package is under ongoing development, new functionalities are added constantly.
-#' The \code{moveVis} package is closely connected to the \code{move} package and mainly builds up on \code{ggplot2}.
+#' \code{moveVis} provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
+#' The \code{moveVis} package is closely connected to the \code{move} package and builds up on \code{ggplot2}.
 #'
-#' @details At the moment, the package includes the following functions:
+#' @details The package includes the following functions, sorted by the order they would be applied to create an animation form movement data:
 #' 
-#' \code{\link{animate_move}}, which can create spatial movement data animations as GIF file. Among other funtionalities, the function is able to
 #' \itemize{
-#'   \item visualize move class point data as (multiple) movement paths,
-#'   \item display static basemap layers downloaded from Google Maps,
-#'   \item display static basemap layers provided by the user,
-#'   \item display dynamic, time-referenced raster data, e. g. to visualize land cover changes etc.,
-#'   \item compute temporal interpolations from time-referneced raster data,
-#'   \item create statistic plots, displaying the interaction of the individual movement paths with environmental data.
-#'   ...
+#'    \item \code{\link{align_move}} aligns (multi-individual) movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it.
+#'    \item \code{\link{get_maptypes}} returns a character vector of available map types that can be used with \code{\link{create_frames}}. \code{moveVis} supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to \code{\link{create_frames}}.
+#'    \item \code{\link{create_frames}} creates a list of \code{ggplot2} animation frames from movement and optional additional imager data. These frames can be further manipulated before they are rendered into a video or GIF file.
+#'    \item \code{\link{add_gg}} adds \code{ggplot2} functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with \code{\link{create_frames}}. Instead of creating your own \code{ggplot2} functions, you can use one of the other moveVis \code{add_} functions:
+#'    \item \code{\link{add_labels}} adds character labels such as title or axis labels to animation frames created with \code{\link{create_frames}}.
+#'    \item \code{\link{add_scalebar}} adds a scalebar to the animation frames created with \code{\link{create_frames}}.
+#'    \item \code{\link{add_northarrow}} adds a north arrow to the animation frames created with \code{\link{create_frames}}.
+#'    \item \code{\link{add_progress}} adds a progress bar to animation frames created with \code{\link{create_frames}}.
+#'    \item \code{\link{add_timestamps}} adds timestamps to animation frames created with \code{\link{create_frames}}.
+#'    \item \code{\link{add_text}} adds static or dynamically changing text to the animation frames created with \code{\link{create_frames}}.
+#'    \item \code{\link{add_colourscale}} adjusts the colour scales of the animation frames created with \code{\link{create_frames}} and custom map imagery.
+#'    \item \code{\link{suggest_formats}} returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
+#'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{create_frames}}.
 #' }
 #' 
-#' \code{\link{animate_stats}}, which can create animated statistic plots from movement and basemap data as GIF file.
-#' 
-#' \code{\link{animate_raster}}, which can create animated spatial plots of basemap data as GIF file.
-#' 
-#' \code{\link{get_libraries}}, a helper function to locate/download/install the extern libraries ImageMagick, FFmpeg and libav and their tools, which are needed for different output file format support.
-#' 
-#' \code{\link{get_formats}}, a helper function which returns all available output file formats (system-dependent).
-#' 
-#' @seealso \code{\link{animate_move}}
-#' @author Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann jakob@schwalb-willmann.de
+#' @author Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann moveVis@schwalb-willmann.de
 "_PACKAGE"

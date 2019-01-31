@@ -1,9 +1,9 @@
-#' Add \code{ggplot} function to frames
+#' Add \code{ggplot2} function to frames
 #'
-#' This function adds \code{ggplot} functions (e.g. to add layers, change scales et.c) to the animation frames created with \code{\link{create_frames}}.
+#' This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{create_frames}}.
 #'
 #' @inheritParams add_labels
-#' @param gg \code{ggplot} expressions (see details), either as
+#' @param gg \code{ggplot2} expressions (see details), either as
 #' \itemize{
 #'   \item an expression of one or a list of \code{ggplot2} functions to be added to every frame,
 #'   \item a list of such of the same length as \code{frames} to add different \code{ggplot2} expressions per frame

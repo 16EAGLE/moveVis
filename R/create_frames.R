@@ -1,6 +1,6 @@
 #' Create movement animation frames from movement data
 #'
-#' \code{create_frames} creates a list of \code{ggplot} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+#' \code{create_frames} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 #'
 #' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
 #' @param r_list list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
@@ -29,7 +29,7 @@
 #' 
 #' Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 #'
-#' @return List of ggplot objects, each representing a single frame.
+#' @return List of ggplot2 objects, each representing a single frame.
 #' 
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{animate_frames}}
