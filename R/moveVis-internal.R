@@ -83,8 +83,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # frame plotting function
   gg.fun <- function(x, y){
     p <- y + geom_path(aes(x = x, y = y, group = id), data = x, size = x$tail_size, lineend = path_end, linejoin = path_join,
-                            linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) + 
-                            scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+                       linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) + 
+      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
     if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
     if(isTRUE(print_plot)) print(p) else return(p)
   }
@@ -126,7 +126,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom magick image_read image_write
 #' @noRd 
 .getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res){
-
+  
   ## calculate needed slippy tiles using slippymath
   tg <- bb_to_tg(gg.ext, max_tiles = ceiling(map_res*20))
   images <- apply(tg$tiles, MARGIN = 1, function(x){
@@ -142,7 +142,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     }
     return(file)
   })
-
+  
   ## composite imagery
   r <- tg_composite(tg, images)
   list(crop(projectRaster(r, crs = crs(m)), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
@@ -158,7 +158,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom RStoolbox ggRGB ggR
 #' @importFrom pbapply pblapply
 #' @noRd
-.ggFrames <- function(r_list, r_times, r_type, m.split, gg.ext, fade_raster = T, ...){
+.rFrames <- function(r_list, r_times, r_type, m.split, gg.ext, fade_raster = T, ...){
   
   if(!is.list(r_list)){
     r_list <- list(r_list)
@@ -168,7 +168,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   ## rearrange bandwise and crop
   r.nlay <- nlayers(r_list[[1]])
   if(r.nlay > 1) r_list <- lapply(1:r.nlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list)
-
+  
   r.crop <- lapply(r_list, function(r.lay) lapply(r.lay, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
   
   if(n > 1){
@@ -205,13 +205,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       #for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
       #r_list <- lapply(r_list, function(x) unstack(approxNA(x, rule = 2))) # unstack is super slow! This line slows down everything.
     }
-  } else{ r_list <- r.crop}
-  
-  if(length(r_list) == 1){
-    if(r_type == "gradient") gg.bmap <- pblapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
-    if(r_type == "discrete") gg.bmap <- pblapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
-  } else{ gg.bmap <- pblapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T))}
-  return(gg.bmap)
+  } else{r_list <- r.crop}
+  return(r_list)
 }
 
 #' package startup

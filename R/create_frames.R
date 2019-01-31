@@ -58,7 +58,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
     if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
     if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
     if(length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
-    if(inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
+    if(!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
     if(!isTRUE(r_type %in% c("gradient", "discrete", "RGB"))) out("Argument 'r_type' must eihter be 'gradient' or 'discrete'.", type = 3)
     if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
   } else{
@@ -112,7 +112,20 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
     r_type <- "RGB"
   }
   out("Assigning raster maps to frames...")
-  gg.bmap <- .ggFrames(r_list, r_times, r_type, m.split, gg.ext, fade_raster)
+  r_list <- .rFrames(r_list, r_times, r_type, m.split, gg.ext, fade_raster)
+  
+  ## extract values
+  coord.extr <- lapply(m.split, function(x) x[x$frame == max(x$frame),])
+  val.extr <- do.call(rbind, mapply(x = r_list[[1]], y = coord.extr, function(x, y){
+    y$val <- extract(x, y[c("x", "y")])
+    return(y)
+  }, SIMPLIFY = F))
+  
+  ## plot basemap
+  if(length(r_list) == 1){
+    if(r_type == "gradient") gg.bmap <- pblapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
+    if(r_type == "discrete") gg.bmap <- pblapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
+  } else{ gg.bmap <- pblapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T))}
   
   ## return frames
   out("Creating frames...")
