@@ -8,7 +8,7 @@ add_colourscale(frames, type, colours, labels = waiver(),
   legend_title = NULL, verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
 
 \item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{create_frames}}).}
 
@@ -24,7 +24,7 @@ add_colourscale(frames, type, colours, labels = waiver(),
 List of frames.
 }
 \description{
-This function adjust the colour scales of the animation frames created with \code{\link{create_frames}}.
+This function adjusts the colour scales of the animation frames created with \code{\link{create_frames}} and custom map imagery.
 }
 \seealso{
 \link{create_frames}

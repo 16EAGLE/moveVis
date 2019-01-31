@@ -54,10 +54,10 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
-List of ggplot objects, each representing a single frame.
+List of ggplot2 objects, each representing a single frame.
 }
 \description{
-\code{create_frames} creates a list of \code{ggplot} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+\code{create_frames} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 }
 \details{
 Path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.

@@ -42,7 +42,7 @@ moveVis is being developed and maintained by Jakob Schwalb-Willmann. For bug rep
 ## What else are we doing?
 
 The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
- * <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatgialData</a>, a package to query, preview and download satellite data,
+ * <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,
  * <a target="_blank" href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,
  * <a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.
 

@@ -9,7 +9,7 @@ animate_frames(frames, out_file, fps = 25, width = 900, height = 900,
   ...)
 }
 \arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
 
 \item{out_file}{character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use \code{\link{suggest_formats}} to get a vector of suggested known file formats.}
 

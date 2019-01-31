@@ -9,7 +9,7 @@ add_scalebar(frames, distance = NULL, height = 0.018,
   label_margin = 1, verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
 
 \item{distance}{numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.}
 

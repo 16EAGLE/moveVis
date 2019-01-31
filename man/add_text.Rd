@@ -8,7 +8,7 @@ add_text(frames, labels, x, y, colour = "black", size = 3,
   type = "text", verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
 
 \item{labels}{character, text to be added to frames. Either a single character value or a character vector of same length as \code{frames}.}
 

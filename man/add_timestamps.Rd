@@ -7,7 +7,7 @@
 add_timestamps(frames, m, x = NULL, y = NULL, ..., verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
 
 \item{m}{\code{move} or \code{moveStack} used to create \code{frames} with \code{\link{create_frames}} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}}.}
 

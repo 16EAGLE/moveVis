@@ -2,14 +2,14 @@
 % Please edit documentation in R/add_gg.R
 \name{add_gg}
 \alias{add_gg}
-\title{Add \code{ggplot} function to frames}
+\title{Add \code{ggplot2} function to frames}
 \usage{
 add_gg(frames, gg, data = NULL, ..., verbose = T)
 }
 \arguments{
-\item{frames}{list of \code{ggplot} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
 
-\item{gg}{\code{ggplot} expressions (see details), either as
+\item{gg}{\code{ggplot2} expressions (see details), either as
 \itemize{
   \item an expression of one or a list of \code{ggplot2} functions to be added to every frame,
   \item a list of such of the same length as \code{frames} to add different \code{ggplot2} expressions per frame
@@ -29,7 +29,7 @@ add_gg(frames, gg, data = NULL, ..., verbose = T)
 List of frames.
 }
 \description{
-This function adds \code{ggplot} functions (e.g. to add layers, change scales et.c) to the animation frames created with \code{\link{create_frames}}.
+This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{create_frames}}.
 }
 \details{
 Agrument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link{expr}}) to avoid their evaluation
