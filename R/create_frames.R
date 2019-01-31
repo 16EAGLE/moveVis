@@ -15,10 +15,10 @@
 #' @param path_arrow arrow, path arrow specification, as created by grid::arrow().
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
 #' @param ext \code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).
-#' @param map_service character, either \code{"mapbox"}, \code{"osm"} or \code{"bing"}.
-#' @param map_type character, either \code{"satellite"}, ...
+#' @param map_service character, either \code{"mapbox"} or \code{"osm"}. Default is \code{"osm"}.
+#' @param map_type character, a map type, e.g. \code{"streets"}. For a full list of available map types, see \code{\link{get_maptypes}}.
 #' @param map_res numeric, resolution of base map in range from 0 to 1.
-#' @param map_token character, mapbox map_token for mapbox basemaps
+#' @param map_token character, mapbox authentification token for mapbox basemaps. Register at \url{https://www.mapbox.com/} to get a mapbox token. Mapbox is free of charge after registration for up to 50.000 map requests per month. Ignored, if \code{map_service = "osm"}.
 #' @param map_dir character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
 #' If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
 #' so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.
@@ -42,10 +42,10 @@
 #' 
 #' @export
 
-create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "mapbox", map_type = "satellite", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
+create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
                           margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, verbose = TRUE, ...){
   
-  ## checks
+  ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(!isTRUE(dir.exists(map_dir))) dir.create(map_dir, recursive = T)
   if(!inherits(map_token, "character")) out("Argument 'map_token' must be of class 'character'.", type = 3)
@@ -58,8 +58,25 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
     if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
     if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
     if(length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
+    if(inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
+    if(!isTRUE(r_type %in% c("gradient", "discrete", "RGB"))) out("Argument 'r_type' must eihter be 'gradient' or 'discrete'.", type = 3)
+    if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
+  } else{
+    if(!isTRUE(map_service %in% c("mapbox", "osm"))) out("Argument 'map_service' must be 'mapbox' or 'osm'.")
+    if(!isTRUE(map_type %in% get_maptypes(map_service))) out("The defined map type is not supported for the selected service. Use get_maptypes() to get all available map types.", type = 3)
+    if(!is.numeric(map_res)) out("Argument 'map_res' must be 'numeric'.", type = 3)
+    if(any(map_res < 0, map_res > 1)) out("Argument 'map_res' must be a value between 0 and 1.", type = 3)
+    if(!is.character(map_token)) out("Argument 'map_token' must be defined to access a basemap, if 'r_list' is not defined.", type = 3)
+    if(map_service == "mapbox") if(!is.character(map_dir)) out("Argument 'map_dir' must be of type 'character'.", type = 3)
+    if(!dir.exists(map_dir)) out("The directory defined with 'map_dir' does not exists.", type = 3)
   }
+  num.args <- c(margin_factor = margin_factor, tail_length = tail_length, tail_size = tail_size, path_size = path_size, path_mitre = path_mitre)
+  catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
+  char.args <- c(path_end = path_end, path_join = path_join)
+  catch <- sapply(1:length(char.args), function(i) if(!is.character(char.args[[i]])) out(paste0("Argument '", names(char.args)[[i]], "' must be of type 'numeric'."), type = 3))
   
+  if(!is.null(ext)) if(!inherits(ext, "Extent")) out("Argument 'ext' must be of type 'Extent' (see raster::extent), if defined.", type = 3)
+  if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
   
   ## create data.frame from m with frame time
   m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
@@ -80,7 +97,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   ## calcualte square extent
   m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = st_crs(proj4string(m)))
   if(!is.null(ext)){
-    if(inherits(ext, "Extent")) gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = st_crs(proj4string(m)))
+    gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = st_crs(proj4string(m)))
     if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
   }else gg.ext <- .squared(m.ext, margin_factor = margin_factor)
   

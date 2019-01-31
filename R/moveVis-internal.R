@@ -123,19 +123,26 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom slippymath bb_to_tg tg_composite
 #' @importFrom curl curl_download
 #' @importFrom raster projectRaster crs extent
+#' @importFrom magick image_read image_write
 #' @noRd 
 .getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res){
 
-  ## calculate tiles and get map imagery
+  ## calculate needed slippy tiles using slippymath
   tg <- bb_to_tg(gg.ext, max_tiles = ceiling(map_res*20))
   images <- apply(tg$tiles, MARGIN = 1, function(x){
-    file <- paste0(map_dir, x[1], "_", x[2], ".jpg")
+    file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
     if(!isTRUE(file.exists(file))){
-      curl_download(url = paste0("https://api.mapbox.com/v4/mapbox.satellite/", tg$zoom, "/", x[1], "/", x[2], ".jpg90", "?access_token=", map_token), destfile = file)
+      
+      ## download tiles
+      if(map_service == "mapbox") curl_download(url = paste0(getOption("moveVis.map_api")$mapbox, getOption("moveVis.mapbox_types")[[map_type]], "/", tg$zoom, "/", x[1], "/", x[2], ".png", "?access_token=", map_token), destfile = file)
+      if(map_service == "osm") curl_download(url = paste0(getOption("moveVis.map_api")$osm[[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png"), destfile = file)
+      
+      ## covnert imagery
+      image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
     }
     return(file)
   })
-  
+
   ## composite imagery
   r <- tg_composite(tg, images)
   list(crop(projectRaster(r, crs = crs(m)), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
@@ -213,4 +220,22 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .onLoad <- function(libname, pkgname){
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
+  if(is.null(getOption("moveVis.mapbox_types"))){
+    options(moveVis.mapbox_types = list(satellite = "mapbox.satellite", streets = "mapbox.streets", streets_basic = "mapbox.streets-basic",
+                                        hybrid = "mapbox.streets-satellite", light = "mapbox.light", dark = "mapbox.dark",
+                                        high_contrast = "mapbox.high-contrast", outdoors = "mapbox.outdoors", hike = "mapbox.run-bike-hike",
+                                        wheatpaste = "mapbox.wheatpaste", pencil = "mapbox.pencil", comic = "mapbox.comic",
+                                        pirates = "mapbox.pirates", emerald = "mapbox.emerald" ))
+  }
+  if(is.null(getOption("moveVis.map_api"))){
+    options(moveVis.map_api = list(mapbox = "https://api.mapbox.com/v4/",
+                                   osm = list(streets = "https://tile.openstreetmap.org/",
+                                              humanitarian = "http://a.tile.openstreetmap.fr/hot/",
+                                              hike = "http://toolserver.org/tiles/hikebike/",
+                                              #hillshade = "http://c.tiles.wmflabs.org/hillshading/",
+                                              grayscale = "https://tiles.wmflabs.org/bw-mapnik/",
+                                              no_labels = "https://tiles.wmflabs.org/osm-no-labels/",
+                                              toner = "http://a.tile.stamen.com/toner/",
+                                              watercolor = "http://c.tile.stamen.com/watercolor/")))
+  }
 }

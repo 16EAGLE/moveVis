@@ -5,7 +5,7 @@
 \title{Create movement animation frames from movement data}
 \usage{
 create_frames(m, r_list = NULL, r_times = NULL, r_type = "gradient",
-  fade_raster = TRUE, map_service = "mapbox", map_type = "satellite",
+  fade_raster = TRUE, map_service = "osm", map_type = "streets",
   map_res = 1, map_token = NULL, map_dir = paste0(tempdir(),
   "/moveVis/basemap"), margin_factor = 1.1, ext = NULL,
   tail_length = 19, tail_size = 1, path_size = 3,
@@ -21,13 +21,13 @@ create_frames(m, r_list = NULL, r_times = NULL, r_type = "gradient",
 
 \item{r_type}{character, either \code{"gardient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
 
-\item{map_service}{character, either \code{"mapbox"}, \code{"osm"} or \code{"bing"}.}
+\item{map_service}{character, either \code{"mapbox"} or \code{"osm"}. Default is \code{"osm"}.}
 
-\item{map_type}{character, either \code{"satellite"}, ...}
+\item{map_type}{character, a map type, e.g. \code{"streets"}. For a full list of available map types, see \code{\link{get_maptypes}}.}
 
 \item{map_res}{numeric, resolution of base map in range from 0 to 1.}
 
-\item{map_token}{character, mapbox map_token for mapbox basemaps}
+\item{map_token}{character, mapbox authentification token for mapbox basemaps. Register at \url{https://www.mapbox.com/} to get a mapbox token. Mapbox is free of charge after registration for up to 50.000 map requests per month. Ignored, if \code{map_service = "osm"}.}
 
 \item{map_dir}{character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
 If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
