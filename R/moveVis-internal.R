@@ -23,6 +23,31 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     } else{message(paste0(sign,input))}}}}
 }
 
+#' split movement by tail length
+#' @importFrom plyr mapvalues
+#' @importFrom sp coordinates
+#' @importFrom move n.indiv timestamps trackId
+#' @noRd 
+.m2df <- function(m){
+  
+  ## create data.frame from m with frame time and colour
+  m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
+        time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
+  colnames(m.df)[1:2] <- c("x", "y")
+  m.df$frame <- as.numeric(mapvalues(m.df$time_chr, unique(m.df$time_chr), 1:length(unique(m.df$time_chr))))
+  
+  ## handle colours, either provided as a field in m or computed, if not
+  m.info <- as.data.frame(m)
+  if(!is.null(m.info$colour)){
+    m.df$colour <- m.info$colour
+  }else{
+    def.colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
+    def.colours <- c(def.colours, sample(colours()[-sapply(def.colours, match, table = colours())]))
+    m.df$colour <- mapvalues(m.df$id, unique(m.df$id), def.colours[1:n.indiv(m)])
+  }
+  return(m.df)
+}
+
 #' square it
 #' @importFrom geosphere distGeo
 #' @importFrom sf st_bbox
@@ -48,12 +73,36 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(st_bbox(c(ext[1]-x.devi, ext[3]+x.devi, ext[2]-y.devi, ext[4]+y.devi)))
 }
 
+#' generate extent
+#' @importFrom sf st_bbox st_crs st_intersects st_as_sfc
+#' @importFrom sp proj4string
+#' @noRd 
+.ext <- function(m.df, ext, margin_factor){
+  
+  ## calcualte square or user extent
+  m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = st_crs(proj4string(m)))
+  if(!is.null(ext)){
+    gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = st_crs(proj4string(m)))
+    if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
+  }else gg.ext <- .squared(m.ext, margin_factor = margin_factor)
+  return(gg.ext)
+}
+
 #' split movement by tail length
 #' @importFrom pbapply pblapply
 #' @noRd 
-.split <- function(m.df, tail_length, path_size, tail_size){
-  pboptions(type = "timer", char = "=", txt.width = getOption("width")-30)
-  pblapply(1:(max(m.df$frame)), function(i){
+.split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1){
+  
+  # m.names <- unique(as.character(m.df$name))
+  # dummy <- lapply(m.names, function(mn){
+  #   y <- m.df[which(m.df$name == mn)[1],]
+  #   y <- cbind(y, tail_colour = NA, tail_size = NA)
+  #   y[,c("x", "y", "time", "time_chr")] <- NA
+  #   return(y)
+  # })
+  # names(dummy) <- m.names
+  
+  pblapply(1:(max(m.df$frame)), function(i){ # , mn = m.names, d = dummy){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
@@ -70,6 +119,16 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     # compute tail size from id count
     y$tail_size <- unlist(lapply(table(y$id), function(x) seq(tail_size, path_size, length.out = x)))
+    
+    # add NA rows, if needed ---> WRONG WAY: DO THIS FOR THE DATA.FRAME ALREADY, THAN trim leading and trailing NAs
+    # missing.names <- sapply(mn, function(x) x %in% y$name)
+    # if(!all(missing.names)){
+    #   add.rows <- do.call(rbind, lapply(d[!missing.names], function(x){
+    #     x$frame <- max(y$frame)
+    #     return(x)
+    #   }))
+    #   y <- rbind(y, add.rows)
+    # }
     return(y)
   })
 }
@@ -77,8 +136,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' plot function
 #' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous
 #' @noRd 
-.gg <- function(m.split, gg.bmap, path_size = 3, path_end = "round", path_join = "round", squared = T, 
-                path_mitre = 10, path_arrow = NULL, print_plot = T){
+.gg_spatial <- function(m.split, gg.bmap, path_size = 3, path_end = "round", path_join = "round", squared = T, 
+                        path_mitre = 10, path_arrow = NULL, print_plot = T){
   
   # frame plotting function
   gg.fun <- function(x, y){
@@ -158,7 +217,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom RStoolbox ggRGB ggR
 #' @importFrom pbapply pblapply
 #' @noRd
-.rFrames <- function(r_list, r_times, r_type, m.split, gg.ext, fade_raster = T, ...){
+.rFrames <- function(r_list, r_times, m.split, gg.ext, fade_raster = T, ...){
   
   if(!is.list(r_list)){
     r_list <- list(r_list)

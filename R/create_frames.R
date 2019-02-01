@@ -34,11 +34,7 @@
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{animate_frames}}
 #' 
-#' @importFrom sf st_bbox st_crs st_intersects st_as_sfc
 #' @importFrom raster compareCRS nlayers
-#' @importFrom sp proj4string coordinates
-#' @importFrom plyr mapvalues
-#' @importFrom move n.indiv timestamps trackId
 #' 
 #' @export
 
@@ -78,32 +74,11 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   if(!is.null(ext)) if(!inherits(ext, "Extent")) out("Argument 'ext' must be of type 'Extent' (see raster::extent), if defined.", type = 3)
   if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
   
-  ## create data.frame from m with frame time
-  m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
-                time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
-  colnames(m.df)[1:2] <- c("x", "y")
-  m.df$frame <- as.numeric(mapvalues(m.df$time_chr, unique(m.df$time_chr), 1:length(unique(m.df$time_chr))))
-  
-  ## handle colours, either provided as a field in m or computed, if not
-  m.info <- as.data.frame(m)
-  if(!is.null(m.info$colour)){
-    m.df$colour <- m.info$colour
-  }else{
-    def.colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
-    def.colours <- c(def.colours, sample(colours()[-sapply(def.colours, match, table = colours())]))
-    m.df$colour <- mapvalues(m.df$id, unique(m.df$id), def.colours[1:n.indiv(m)])
-  }
-  
-  ## calcualte square extent
-  m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = st_crs(proj4string(m)))
-  if(!is.null(ext)){
-    gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = st_crs(proj4string(m)))
-    if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
-  }else gg.ext <- .squared(m.ext, margin_factor = margin_factor)
-  
-  ## split m by size of tail, requires m with col x, y, id and frame time (integer)
+  ## preprocess movement data
   out("Processing movement data...")
-  m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size)
+  m.df <- .m2df(m) # create data.frame from m with frame time and colour
+  gg.ext <- .ext(m.df, ext, margin_factor) # calcualte square extent
+  m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size) # split m by size of tail
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
@@ -112,14 +87,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
     r_type <- "RGB"
   }
   out("Assigning raster maps to frames...")
-  r_list <- .rFrames(r_list, r_times, r_type, m.split, gg.ext, fade_raster)
-  
-  ## extract values
-  coord.extr <- lapply(m.split, function(x) x[x$frame == max(x$frame),])
-  val.extr <- do.call(rbind, mapply(x = r_list[[1]], y = coord.extr, function(x, y){
-    y$val <- extract(x, y[c("x", "y")])
-    return(y)
-  }, SIMPLIFY = F))
+  r_list <- .rFrames(r_list, r_times, m.split, gg.ext, fade_raster)
   
   ## plot basemap
   if(length(r_list) == 1){
@@ -129,7 +97,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   
   ## return frames
   out("Creating frames...")
-  return(.gg(m.split = m.split, gg.bmap = gg.bmap, squared = if(is.null(ext)) T else F,
-             path_size = path_size, path_end = path_end, path_join = path_join, path_mitre = path_mitre, path_arrow = path_arrow,
-             print_plot = F))
+  return(.gg_spatial(m.split = m.split, gg.bmap = gg.bmap, squared = if(is.null(ext)) T else F,
+                     path_size = path_size, path_end = path_end, path_join = path_join, path_mitre = path_mitre, path_arrow = path_arrow,
+                     print_plot = F))
 }
