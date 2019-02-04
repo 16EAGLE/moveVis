@@ -47,9 +47,9 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   if(!inherits(map_token, "character")) out("Argument 'map_token' must be of class 'character'.", type = 3)
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   
-  if(length(unique(unlist(timeLag(m, "secs")))) > 1) out("The temporal resolution of 'm' is diverging. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
-  if(any(.time_gaps(m))) out("Times of 'm' contain time gaps. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
-  
+  ## check m time conformities
+  .time_conform(m)
+
   if(!is.null(r_list)){
     if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
     if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)

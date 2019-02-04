@@ -28,13 +28,28 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom sp coordinates
 #' @importFrom move n.indiv timestamps trackId
 #' @noRd 
-.m2df <- function(m){
+.m2df <- function(m, skip_gaps = F){
   
   ## create data.frame from m with frame time and colour
   m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
         time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
   colnames(m.df)[1:2] <- c("x", "y")
+  
+  ## append data.frame by times missing per track
+  # ts <- unique(m.df$time)
+  # m.df <- do.call(rbind, lapply(unique(m.df$name), function(x){
+  #   df <- m.df[m.df$name == x,]
+  #   dummy <- df[1,]
+  #   dummy[,c("x", "y", "time", "time_chr")] <- NA
+  #   rbind(df, do.call(rbind, lapply(ts[!sapply(ts, function(y) y %in% df$time)], function(z, d = dummy){
+  #     d$time <- z
+  #     d$time_chr <- as.character(z)
+  #     return(d)
+  #   })))
+  # }))
+  
   m.df$frame <- as.numeric(mapvalues(m.df$time_chr, unique(m.df$time_chr), 1:length(unique(m.df$time_chr))))
+  # m.df <- m.df[order(m.df$frame),]
   
   ## handle colours, either provided as a field in m or computed, if not
   m.info <- as.data.frame(m)
@@ -172,10 +187,37 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' detect time gaps
 #' @noRd 
-.time_gaps <- function(m){
-  ts.digits <- lapply(c("secs", "mins", "hours", "days"), function(x, ts = timestamps(m)) sort(unique(as.numeric(format(unique(timestamps(m)), .convert_units(x))))))
-  ts.dl <- lapply(ts.digits, function(x) length(unique(diff(x))))
-  sapply(ts.dl, function(x) x > 1)
+.time_conform <- function(m){
+  
+  m.indi <- if(inherits(m, "MoveStack")) split(m) else list(m)
+  ts <- lapply(m.indi, timestamps)
+  tl <- lapply(m.indi, timeLag, unit = "secs")
+  
+  ## check time lag
+  uni.lag <- length(unique(unlist(tl))) <= 1
+  if(!isTRUE(uni.lag)) out("The temporal resolution of 'm' is diverging. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
+  
+  ## check temporal consistence per individual (consider to remove, if NA timestamps should be allowed)
+  uni.intra <- mapply(x = tl, y = ts, function(x, y) length(c(min(y), min(y) + cumsum(x))) == length(y))
+  if(!all(uni.intra)) out("For at least one movement track, variating time lags have been detected. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
+  
+  ## check overall consistence of timestamps
+  ts.art <- seq.POSIXt(min(do.call(c, ts)), max(do.call(c, ts)), by = unique(unlist(tl)))
+  uni.all <- all(sapply(unique(timestamps(m)), function(x, ta = ts.art) x %in% ta))
+  if(!isTRUE(uni.all)) out("For at least one movement track, timestamps diverging from those of the other tracks have been detected. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
+  
+  ## snippet:: 
+  # ts.origin <- as.POSIXct(0, origin = min(ts), tz = tz(ls)) 
+  # set.fun <- list("secs" = function(x) `second<-`(x, 0), "mins" = function(x) `minute<-`(x, 0),
+  #                 "hours" = function(x) `hour<-`(x, 0), "days" = function(x) `day<-`(x, 1))
+  # ts.origin <- lapply(names(set.fun), function(x, fun = set.fun, to = ts.origin) magrittr::freduce(to, fun[!(x == names(fun))]))
+  
+  ## former::
+  # ts.digits <- lapply(c("secs", "mins", "hours", "days"), function(x, ts = timestamps(m)){
+  #   sort(unique(as.numeric(format(unique(ts), .convert_units(x)))))
+  # })
+  # ts.dl <- lapply(ts.digits, function(x) length(unique(diff(x))))
+  # sapply(ts.dl, function(x) x > 1)
 }
 
 #' get map
