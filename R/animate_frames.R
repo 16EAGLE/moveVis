@@ -36,13 +36,13 @@ animate_frames <- function(frames, out_file, fps = 25, width = 900, height = 900
   
   out_ext <- tolower(tail(unlist(strsplit(out_file, "[.]")), n=1))
   out("Rendering animation...")
-  frames_expr <- expr(.lapply(frames, function(x) quiet(print(x))))
+  frames_expr <- expr(moveVis:::.lapply(frames, function(x) quiet(print(x))))
   
   if(out_ext == "gif"){
     if(length(frames) > 400) out("The number of frames exceeds 400 and the GIF format is used. This format may not be suitable for animations with a high number of frames, since it causes large file sizes. Consider using a video file format instead.", type = 2)
     save_gif(frames_expr, gif_file = out_file, width = width, height = height, delay = (1/fps), progress = T, res = res, ...)
   }else{
-    av_capture_graphics(frames_expr, output = out_file, width = width, height = height, res = res, framerate = fps, ...) #, vfilter =' framerate=fps=10') 
+    av_capture_graphics(frames_expr, output = out_file, width = width, height = height, res = res, framerate = fps, verbose = verbose, ...) #, vfilter =' framerate=fps=10') 
   }
   if(isTRUE(display)) utils::browseURL(out_file)
 }

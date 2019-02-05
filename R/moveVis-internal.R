@@ -201,7 +201,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       l.df$name <- factor(l.df$name, level = l.df$name)
       l.df <- rbind(l.df, l.df)
       
-      p <- p + geom_path(data = l.df, aes(x = x, y = y, colour = name, linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title)
+      p <- p + geom_path(data = l.df, aes(x = x, y = y, colour = name, linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) + guides(color = guide_legend(order = 1))
     }    
     
     if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
