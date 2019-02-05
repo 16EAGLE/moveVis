@@ -23,12 +23,21 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     } else{message(paste0(sign,input))}}}}
 }
 
+#' verbose lapply
+#'
+#' @importFrom pbapply pblapply
+#' @noRd 
+.lapply <- function(X, FUN, ...){
+  verbose = getOption("moveVis.verbose")
+  if(isTRUE(verbose)) pblapply(X, FUN, ...) else lapply(X, FUN, ...)
+}
+
 #' split movement by tail length
 #' @importFrom plyr mapvalues
 #' @importFrom sp coordinates
-#' @importFrom move n.indiv timestamps trackId
+#' @importFrom move n.indiv timestamps trackId 
 #' @noRd 
-.m2df <- function(m, skip_gaps = F){
+.m2df <- function(m, path_colours = NA){
   
   ## create data.frame from m with frame time and colour
   m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
@@ -51,15 +60,37 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   m.df$frame <- as.numeric(mapvalues(m.df$time_chr, unique(m.df$time_chr), 1:length(unique(m.df$time_chr))))
   # m.df <- m.df[order(m.df$frame),]
   
-  ## handle colours, either provided as a field in m or computed, if not
-  m.info <- as.data.frame(m)
-  if(!is.null(m.info$colour)){
-    m.df$colour <- m.info$colour
-  }else{
-    def.colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
-    def.colours <- c(def.colours, sample(colours()[-sapply(def.colours, match, table = colours())]))
-    m.df$colour <- mapvalues(m.df$id, unique(m.df$id), def.colours[1:n.indiv(m)])
+  ## handle colours, either provided as a field in m or argument or computed randomly
+  m.info <- as(m, "data.frame")
+  if(all(!is.character(path_colours), !is.null(m.info$colour))){
+    
+    ## get colours from column
+    m.df$colour <- as.character(m.info$colour)
+  } else{
+    if(!is.character(path_colours)){
+      
+      ## get random colours
+      path_colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
+      path_colours <- c(path_colours, sample(colours()[-sapply(path_colours, match, table = colours())]))
+      path_colours <- sample(rep(path_colours, ceiling(n.indiv(m) / length(path_colours))))
+    }
+    m.df$colour <- mapvalues(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
   }
+  
+  # if(!is.null(m.info$colour)){
+  #   m.df$colour <- as.character(m.info$colour)
+  # }else{
+  #   if(is.na(path_colours)){
+  #     path_colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
+  #     path_colours <- c(path_colours, sample(colours()[-sapply(path_colours, match, table = colours())]))
+  #     path_colours <- rep(path_colours, ceiling(n.indiv(m) / length(path_colours)))
+  #   }
+  #   m.df$colour <- mapvalues(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
+  # }
+  
+  #m.df$colour <- factor(as.character(m.df$colour), level = unique(as.character(m.df$colour)))
+  m.df <- m.df[order(m.df$frame),]
+  m.df$name <- factor(as.character(m.df$name), level = unique(as.character(m.df$name)))
   return(m.df)
 }
 
@@ -92,7 +123,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom sf st_bbox st_crs st_intersects st_as_sfc
 #' @importFrom sp proj4string
 #' @noRd 
-.ext <- function(m.df, ext, margin_factor){
+.ext <- function(m.df, ext = NULL, margin_factor = 1.1){
   
   ## calcualte square or user extent
   m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = st_crs(proj4string(m)))
@@ -104,7 +135,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' split movement by tail length
-#' @importFrom pbapply pblapply
 #' @noRd 
 .split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1){
   
@@ -117,7 +147,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # })
   # names(dummy) <- m.names
   
-  pblapply(1:(max(m.df$frame)), function(i){ # , mn = m.names, d = dummy){
+  .lapply(1:(max(m.df$frame)), function(i){ # , mn = m.names, d = dummy){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
@@ -134,6 +164,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     # compute tail size from id count
     y$tail_size <- unlist(lapply(table(y$id), function(x) seq(tail_size, path_size, length.out = x)))
+    #y$colour <- factor(as.character(y$colour), level = unique(as.character(m.df$colour)))
+    #y$name <- factor(as.character(y$name), level = unique(as.character(m.df$name)))
     
     # add NA rows, if needed ---> WRONG WAY: DO THIS FOR THE DATA.FRAME ALREADY, THAN trim leading and trailing NAs
     # missing.names <- sapply(mn, function(x) x %in% y$name)
@@ -148,23 +180,65 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   })
 }
 
-#' plot function
-#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous
+#' spatial plot function
+#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
 #' @noRd 
-.gg_spatial <- function(m.split, gg.bmap, path_size = 3, path_end = "round", path_join = "round", squared = T, 
-                        path_mitre = 10, path_arrow = NULL, print_plot = T){
+.gg_spatial <- function(m.split, gg.bmap, m.df, path_size = 3, path_end = "round", path_join = "round", squared = T, 
+                        path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names"){
   
   # frame plotting function
   gg.fun <- function(x, y){
+    
+    ## base plot
     p <- y + geom_path(aes(x = x, y = y, group = id), data = x, size = x$tail_size, lineend = path_end, linejoin = path_join,
-                       linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) + 
+                       linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) +  theme_bw() +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    
+    ## add legend?
+    if(isTRUE(path_legend)){
+      l.df <- cbind.data.frame(x = x[1,]$x, y = x[1,]$y, name = levels(m.df$name),
+                                  colour = as.character(m.df$colour[sapply(as.character(unique(m.df$name)), function(x) match(x, m.df$name)[1] )]), stringsAsFactors = F)
+      l.df$name <- factor(l.df$name, level = l.df$name)
+      l.df <- rbind(l.df, l.df)
+      
+      p <- p + geom_path(data = l.df, aes(x = x, y = y, colour = name, linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title)
+    }    
+    
     if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
     if(isTRUE(print_plot)) print(p) else return(p)
   }
   
   if(length(gg.bmap) > 1) mapply(x = m.split, y = gg.bmap, gg.fun, SIMPLIFY = F, USE.NAMES = F) else lapply(m.split, gg.fun, y = gg.bmap[[1]])
 }
+
+
+#' stats plot function
+#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
+#' @noRd
+.gg_stats <- function(m.split, gg.df, path_legend, path_legend_title, path_size){
+  
+  ## stats plot function
+  gg.fun <- function(x, y, pl, plt, ps){
+    
+    ## generate base plot
+    p <- ggplot(x, aes(x = frame, y = value)) + geom_path(aes(group = id), size = ps, show.legend = F, colour = x$colour) + 
+      coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(y$value, na.rm = T), max(y$value, na.rm = T))) +
+      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    
+    ## add legend
+    if(isTRUE(pl)){
+      l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name), colour = as.character(m.df$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
+      l.df$name <- factor(l.df$name, level = l.df$name)
+      l.df <- rbind(l.df, l.df)
+      p <- p + geom_path(data = l.df, aes(x = frame, y = value, colour = name, linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
+    }  
+    return(p)
+  }
+  
+  .lapply(1:length(m.split), function(i) gg.fun(x = do.call(rbind, m.split[1:i])[,c("frame", "value", "time_chr", "id", "colour", "name")],
+                                                 y = gg.df, pl = path_legend, plt = path_legend_title, ps = path_size))
+}
+
 
 #' add to frames
 #' @noRd 
@@ -257,7 +331,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' assign raster to frames
 #' @importFrom raster nlayers unstack crop extent setValues stack approxNA
 #' @importFrom RStoolbox ggRGB ggR
-#' @importFrom pbapply pblapply
 #' @noRd
 .rFrames <- function(r_list, r_times, m.split, gg.ext, fade_raster = T, ...){
   
