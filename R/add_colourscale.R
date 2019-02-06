@@ -1,9 +1,9 @@
 #' Add scale to frames
 #'
-#' This function adjusts the colour scales of the animation frames created with \code{\link{create_frames}} and custom map imagery.
+#' This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
 #'
 #' @inheritParams add_labels
-#' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{create_frames}}).
+#' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).
 #' @param colours character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}
 #' @param labels character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.
 #' @param legend_title character, a legend title.
@@ -13,14 +13,14 @@
 #'
 #' @importFrom ggplot2 scale_fill_gradientn scale_colour_manual expr
 #'
-#' @seealso \link{create_frames}
+#' @seealso \link{frames_spatial}
 #' @export
 
 add_colourscale <- function(frames, type, colours, labels = waiver(), legend_title = NULL, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See create_frames()).", type = 3)
+  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
   if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
   
   if(!inherits(type, "character")) out("Argument 'type' must be of type 'character'.", type = 3)

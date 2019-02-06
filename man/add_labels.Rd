@@ -9,7 +9,7 @@ add_labels(frames, title = waiver(), subtitle = waiver(),
   verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{title}{character, frame title. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
 
@@ -29,10 +29,10 @@ add_labels(frames, title = waiver(), subtitle = waiver(),
 List of frames.
 }
 \description{
-This function adds character labels such as title or axis labels to animation frames created with \code{\link{create_frames}}.
+This function adds character labels such as title or axis labels to animation frames created with \code{\link{frames_spatial}}.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

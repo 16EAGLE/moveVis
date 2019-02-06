@@ -10,7 +10,7 @@ add_northarrow(frames, height = 0.05, position = "bottomright",
   verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{height}{numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.5.}
 
@@ -36,10 +36,10 @@ add_northarrow(frames, height = 0.05, position = "bottomright",
 List of frames.
 }
 \description{
-This function adds a north arrow to the animation frames created with \code{\link{create_frames}}.
+This function adds a north arrow to the animation frames created with \code{\link{frames_spatial}}.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

@@ -9,7 +9,7 @@ add_scalebar(frames, distance = NULL, height = 0.018,
   label_margin = 1, verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{distance}{numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.}
 
@@ -31,10 +31,10 @@ add_scalebar(frames, distance = NULL, height = 0.018,
 List of frames.
 }
 \description{
-This function adds a scalebar to the animation frames created with \code{\link{create_frames}}.
+This function adds a scalebar to the animation frames created with \code{\link{frames_spatial}}.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

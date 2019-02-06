@@ -1,6 +1,6 @@
 #' Add static or dynamic text to frames
 #'
-#' This function adds static or dynamically changing text to the animation frames created with \code{\link{create_frames}}.
+#' This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param labels character, text to be added to frames. Either a single character value or a character vector of same length as \code{frames}.
@@ -16,14 +16,14 @@
 #' @importFrom ggplot2 annotate expr
 #' @importFrom dplyr bind_cols
 #'
-#' @seealso \link{create_frames}
+#' @seealso \link{frames_spatial}
 #' @export
 
 add_text <- function(frames, labels, x, y, colour = "black", size = 3, type = "text", verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See create_frames()).", type = 3)
+  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
   if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
   
   if(!is.character(labels)) out("Argument 'labels' must be of type 'character'.", type = 3)

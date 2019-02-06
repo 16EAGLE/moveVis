@@ -8,7 +8,7 @@ add_text(frames, labels, x, y, colour = "black", size = 3,
   type = "text", verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{labels}{character, text to be added to frames. Either a single character value or a character vector of same length as \code{frames}.}
 
@@ -28,10 +28,10 @@ add_text(frames, labels, x, y, colour = "black", size = 3,
 List of frames.
 }
 \description{
-This function adds static or dynamically changing text to the animation frames created with \code{\link{create_frames}}.
+This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

@@ -1,6 +1,6 @@
-#' Create spatial frames from movement data for movement animation
+#' Create frames of spatial movement maps for animation
 #'
-#' \code{create_frames} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+#' \code{frames_spatial} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 #'
 #' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
 #' @param r_list list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
@@ -36,14 +36,14 @@
 #' @return List of ggplot2 objects, each representing a single frame.
 #' 
 #' @author Jakob Schwalb-Willmann
-#' @seealso \code{\link{animate_frames}}
+#' @seealso \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' 
 #' @importFrom raster compareCRS nlayers
 #' @importFrom move n.indiv
 #' 
 #' @export
 
-create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
+frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
                           margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, 
                           path_legend = TRUE, path_legend_title = "Names", verbose = TRUE, ...){
   
@@ -79,7 +79,7 @@ create_frames <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   
   if(!is.null(ext)) if(!inherits(ext, "Extent")) out("Argument 'ext' must be of type 'Extent' (see raster::extent), if defined.", type = 3)
   if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
-  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?create_frames).", type = 3)
+  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   
   ## preprocess movement data

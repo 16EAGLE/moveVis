@@ -212,10 +212,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 
-#' stats plot function
+#' flow stats plot function
 #' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
 #' @noRd
-.gg_stats <- function(m.split, gg.df, path_legend, path_legend_title, path_size){
+.gg_flow <- function(m.split, gg.df, path_legend, path_legend_title, path_size){
   
   ## stats plot function
   gg.fun <- function(x, y, pl, plt, ps){
@@ -227,7 +227,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     ## add legend
     if(isTRUE(pl)){
-      l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name), colour = as.character(m.df$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
+      l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name),
+                               colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
       l.df$name <- factor(l.df$name, level = l.df$name)
       l.df <- rbind(l.df, l.df)
       p <- p + geom_path(data = l.df, aes(x = frame, y = value, colour = name, linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
@@ -237,6 +238,34 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   .lapply(1:length(m.split), function(i) gg.fun(x = do.call(rbind, m.split[1:i])[,c("frame", "value", "time_chr", "id", "colour", "name")],
                                                  y = gg.df, pl = path_legend, plt = path_legend_title, ps = path_size))
+}
+
+
+#' hist stats plot function
+#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
+#' @noRd
+.gg_hist <- function(l.hist, all.hist, path_legend, path_legend_title, path_size){
+  
+  ## stats plot function
+  gg.fun <- function(x, y, pl, plt, ps){
+    
+    ## generate base plot
+    p <- ggplot(x, aes(x = value, y = count)) + geom_path(aes(group = name), size = ps, show.legend = F, colour = x$colour) +
+      coord_cartesian(xlim = c(0, max(y$value, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
+      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    
+    ## add legend
+    if(isTRUE(pl)){
+      l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = levels(y$name),
+                               colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
+      l.df$name <- factor(l.df$name, level = l.df$name)
+      l.df <- rbind(l.df, l.df)
+      p <- p + geom_path(data = l.df, aes(x = value, y = count, colour = name, linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
+    }  
+    return(p)
+  }
+  
+  .lapply(l.hist, function(x) gg.fun(x = x, y = all.hist, pl = path_legend, plt = path_legend_title, ps = path_size))
 }
 
 

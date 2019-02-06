@@ -1,7 +1,7 @@
 #' Align movement data
 #'
 #' This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
-#' This prepares the provided movement data to be interpretable by \code{\link{create_frames}}, which necessitates a uniform time scale and
+#' This prepares the provided movement data to be interpretable by \code{\link{frames_spatial}}, which necessitates a uniform time scale and
 #' a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times.
 #'
 #' @param m \code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned
@@ -20,13 +20,13 @@
 #' @param unit character, either \code{"secs"}, \code{"mins"}, \code{"hours"}, \code{"days"}, indicating the temporal unit, to which \code{res} and \code{digit} are referring.
 #' @param spaceMethod character, either \code{"euclidean"}, \code{"greatcircle"} or \code{"rhumbline"}, indicating the interpolation function to be used to interpolate locations of \code{m} to the aligned time scale. Interpolation is performed using \code{move::interpolateTime}.
 #'
-#' @return Aligned \code{move} or \code{moveStack}, ready to be used with \code{\link{create_frames}}-
+#' @return Aligned \code{move} or \code{moveStack}, ready to be used with \code{\link{frames_spatial}}-
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom move timestamps timeLag interpolateTime moveStack move split
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
-#' @seealso \link{create_frames}
+#' @seealso \link{frames_spatial}
 #' @export
 
 align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod = "greatcircle"){

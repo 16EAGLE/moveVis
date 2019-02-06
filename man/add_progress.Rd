@@ -7,7 +7,7 @@
 add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 
@@ -27,10 +27,10 @@ add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 List of frames.
 }
 \description{
-This function adds a progress bar to animation frames created with \code{\link{create_frames}}.
+This function adds a progress bar to animation frames created with \code{\link{frames_spatial}}.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

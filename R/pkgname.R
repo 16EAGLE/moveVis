@@ -7,18 +7,18 @@
 #' 
 #' \itemize{
 #'    \item \code{\link{align_move}} aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it.
-#'    \item \code{\link{get_maptypes}} returns a character vector of available map types that can be used with \code{\link{create_frames}}. \code{moveVis} supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to \code{\link{create_frames}}.
-#'    \item \code{\link{create_frames}} creates a list of \code{ggplot2} animation frames from movement and optional additional imager data. These frames can be further manipulated before they are rendered into a video or GIF file.
-#'    \item \code{\link{add_gg}} adds \code{ggplot2} functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with \code{\link{create_frames}}. Instead of creating your own \code{ggplot2} functions, you can use one of the other moveVis \code{add_} functions:
-#'    \item \code{\link{add_labels}} adds character labels such as title or axis labels to animation frames created with \code{\link{create_frames}}.
-#'    \item \code{\link{add_scalebar}} adds a scalebar to the animation frames created with \code{\link{create_frames}}.
-#'    \item \code{\link{add_northarrow}} adds a north arrow to the animation frames created with \code{\link{create_frames}}.
-#'    \item \code{\link{add_progress}} adds a progress bar to animation frames created with \code{\link{create_frames}}.
-#'    \item \code{\link{add_timestamps}} adds timestamps to animation frames created with \code{\link{create_frames}}.
-#'    \item \code{\link{add_text}} adds static or dynamically changing text to the animation frames created with \code{\link{create_frames}}.
-#'    \item \code{\link{add_colourscale}} adjusts the colour scales of the animation frames created with \code{\link{create_frames}} and custom map imagery.
+#'    \item \code{\link{get_maptypes}} returns a character vector of available map types that can be used with \code{\link{frames_spatial}}. \code{moveVis} supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to \code{\link{frames_spatial}}.
+#'    \item \code{\link{frames_spatial}} creates a list of \code{ggplot2} animation frames from movement and optional additional imager data. These frames can be further manipulated before they are rendered into a video or GIF file.
+#'    \item \code{\link{add_gg}} adds \code{ggplot2} functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with \code{\link{frames_spatial}}. Instead of creating your own \code{ggplot2} functions, you can use one of the other moveVis \code{add_} functions:
+#'    \item \code{\link{add_labels}} adds character labels such as title or axis labels to animation frames created with \code{\link{frames_spatial}}.
+#'    \item \code{\link{add_scalebar}} adds a scalebar to the animation frames created with \code{\link{frames_spatial}}.
+#'    \item \code{\link{add_northarrow}} adds a north arrow to the animation frames created with \code{\link{frames_spatial}}.
+#'    \item \code{\link{add_progress}} adds a progress bar to animation frames created with \code{\link{frames_spatial}}.
+#'    \item \code{\link{add_timestamps}} adds timestamps to animation frames created with \code{\link{frames_spatial}}.
+#'    \item \code{\link{add_text}} adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.
+#'    \item \code{\link{add_colourscale}} adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
 #'    \item \code{\link{suggest_formats}} returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
-#'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{create_frames}}.
+#'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{frames_spatial}}.
 #' }
 #' 
 #' @author Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann moveVis@schwalb-willmann.de

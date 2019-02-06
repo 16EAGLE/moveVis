@@ -1,6 +1,6 @@
 #' Add \code{ggplot2} function to frames
 #'
-#' This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{create_frames}}.
+#' This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param gg \code{ggplot2} expressions (see details), either as
@@ -36,7 +36,7 @@
 #' @author Jakob Schwalb-Willmann
 #' 
 #'
-#' @seealso \link{create_frames}
+#' @seealso \link{frames_spatial}
 #' @export
 
 add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
@@ -49,7 +49,7 @@ add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
   }
   
   ## gg is not a list, make it one
-  if(is.list(gg)){
+  if(inherits(gg, "list")){
     if(length(gg) != length(frames)) out("Argument 'gg' is a list und thus must be of same length as 'frames'.", type = 3)
   } else{
     if(length(gg) != length(frames)) gg <- rep(list(gg), length(frames))

@@ -1,11 +1,11 @@
 #' Get all supported map types
 #'
-#' This function returns every supported map type that can be used as input to the \code{map_type} argument of \code{\link{create_frames}}.
+#' This function returns every supported map type that can be used as input to the \code{map_type} argument of \code{\link{frames_spatial}}.
 #'
 #' @param map_service character, optional, either \code{"mapbox"} or \code{"osm"}. Otherwise, a list of map types for both services is returned.
 #' @return A character vector of supported map types
 #' 
-#' @seealso \code{\link{create_frames}}
+#' @seealso \code{\link{frames_spatial}}
 #' 
 #' @export
 

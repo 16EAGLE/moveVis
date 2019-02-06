@@ -13,8 +13,8 @@ get_maptypes(map_service = NULL)
 A character vector of supported map types
 }
 \description{
-This function returns every supported map type that can be used as input to the \code{map_type} argument of \code{\link{create_frames}}.
+This function returns every supported map type that can be used as input to the \code{map_type} argument of \code{\link{frames_spatial}}.
 }
 \seealso{
-\code{\link{create_frames}}
+\code{\link{frames_spatial}}
 }

@@ -29,15 +29,15 @@ align_move(m, res = "min", digit = "min", unit = "secs",
 \item{spaceMethod}{character, either \code{"euclidean"}, \code{"greatcircle"} or \code{"rhumbline"}, indicating the interpolation function to be used to interpolate locations of \code{m} to the aligned time scale. Interpolation is performed using \code{move::interpolateTime}.}
 }
 \value{
-Aligned \code{move} or \code{moveStack}, ready to be used with \code{\link{create_frames}}-
+Aligned \code{move} or \code{moveStack}, ready to be used with \code{\link{frames_spatial}}-
 }
 \description{
 This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
-This prepares the provided movement data to be interpretable by \code{\link{create_frames}}, which necessitates a uniform time scale and
+This prepares the provided movement data to be interpretable by \code{\link{frames_spatial}}, which necessitates a uniform time scale and
 a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

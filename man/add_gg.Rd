@@ -7,7 +7,7 @@
 add_gg(frames, gg, data = NULL, ..., verbose = T)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{gg}{\code{ggplot2} expressions (see details), either as
 \itemize{
@@ -29,7 +29,7 @@ add_gg(frames, gg, data = NULL, ..., verbose = T)
 List of frames.
 }
 \description{
-This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{create_frames}}.
+This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}}.
 }
 \details{
 Agrument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link{expr}}) to avoid their evaluation
@@ -49,7 +49,7 @@ If you supply \code{gg} as a list of expressions for each frame and \code{data} 
 each frame will be manipulated with the corresponding \code{ggplot2} function and the corresponding data.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

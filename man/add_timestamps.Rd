@@ -7,9 +7,9 @@
 add_timestamps(frames, m, x = NULL, y = NULL, ..., verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
-\item{m}{\code{move} or \code{moveStack} used to create \code{frames} with \code{\link{create_frames}} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}}.}
+\item{m}{\code{move} or \code{moveStack} used to create \code{frames} with \code{\link{frames_spatial}} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}}.}
 
 \item{x}{numeric, optioanl, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.}
 
@@ -23,10 +23,10 @@ add_timestamps(frames, m, x = NULL, y = NULL, ..., verbose = TRUE)
 List of frames.
 }
 \description{
-This function adds timestamps to animation frames created with \code{\link{create_frames}}.
+This function adds timestamps to animation frames created with \code{\link{frames_spatial}}.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

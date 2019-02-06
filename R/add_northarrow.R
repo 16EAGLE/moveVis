@@ -1,6 +1,6 @@
 #' Add north arrow to frames
 #'
-#' This function adds a north arrow to the animation frames created with \code{\link{create_frames}}.
+#' This function adds a north arrow to the animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param height numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.5.
@@ -19,7 +19,7 @@
 #' @importFrom ggplot2 geom_line geom_text aes
 #' @importFrom geosphere distGeo
 #'
-#' @seealso \link{create_frames}
+#' @seealso \link{frames_spatial}
 #' @export
 
 add_northarrow <- function(frames, height = 0.05, position = "bottomright", x = NULL, y = NULL, colour = "black", size = 1,
@@ -27,7 +27,7 @@ add_northarrow <- function(frames, height = 0.05, position = "bottomright", x = 
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See create_frames()).", type = 3)
+  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
   if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
   if(!is.character(position)) out("Argument 'position' needs to be of type 'character'.", type = 3)
   

@@ -8,9 +8,9 @@ add_colourscale(frames, type, colours, labels = waiver(),
   legend_title = NULL, verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{create_frames}}.}
+\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
-\item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{create_frames}}).}
+\item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).}
 
 \item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}}
 
@@ -24,10 +24,10 @@ add_colourscale(frames, type, colours, labels = waiver(),
 List of frames.
 }
 \description{
-This function adjusts the colour scales of the animation frames created with \code{\link{create_frames}} and custom map imagery.
+This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
 }
 \seealso{
-\link{create_frames}
+\link{frames_spatial}
 }
 \author{
 Jakob Schwalb-Willmann

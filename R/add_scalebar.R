@@ -1,6 +1,6 @@
 #' Add scalebar to frames
 #'
-#' This function adds a scalebar to the animation frames created with \code{\link{create_frames}}.
+#' This function adds a scalebar to the animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param distance numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.
@@ -17,14 +17,14 @@
 #' @importFrom ggplot2 geom_polygon geom_text aes
 #' @importFrom geosphere distGeo
 #'
-#' @seealso \link{create_frames}
+#' @seealso \link{frames_spatial}
 #' @export
 
 add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See create_frames()).", type = 3)
+  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
   if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
   if(!is.character(position)) out("Argument 'position' needs to be of type 'character'.", type = 3)
   
