@@ -6,7 +6,7 @@
 \usage{
 add_scalebar(frames, distance = NULL, height = 0.018,
   position = "bottomleft", x = NULL, y = NULL, colour = "black",
-  label_margin = 1, verbose = TRUE)
+  label_margin = 1.2, verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

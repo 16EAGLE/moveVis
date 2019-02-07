@@ -19,6 +19,9 @@ get_formats(...)
 
 get_libraries(...)
 }
+\arguments{
+\item{...}{deprecated arguments.}
+}
 \description{
 Several functions are deprecated due to a rewrite of moveVis with version 0.10.
 }

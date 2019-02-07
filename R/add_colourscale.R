@@ -11,7 +11,7 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 scale_fill_gradientn scale_colour_manual expr
+#' @importFrom ggplot2 scale_fill_gradientn scale_fill_manual expr
 #'
 #' @seealso \link{frames_spatial}
 #' @export

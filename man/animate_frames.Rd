@@ -19,7 +19,11 @@ animate_frames(frames, out_file, fps = 25, width = 900, height = 900,
 
 \item{height}{numeric, height of the output animation in pixels.}
 
+\item{res}{numeric, resolution of the output animation in ppi.}
+
 \item{display}{logical, whether the animation should be displayed after rendering or not.}
+
+\item{overwrite}{logical, wether to overwrite an existing file, if \code{out_file} is already present.}
 
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 

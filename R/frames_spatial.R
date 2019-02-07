@@ -1,6 +1,6 @@
 #' Create frames of spatial movement maps for animation
 #'
-#' \code{frames_spatial} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+#' \code{frames_spatial} creates a list of \code{ggplot2} maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 #'
 #' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
 #' @param r_list list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
@@ -39,18 +39,19 @@
 #' @seealso \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' 
 #' @importFrom raster compareCRS nlayers
+#' @importFrom sf st_crs
+#' @importFrom sp proj4string
+#' @importFrom raster crs
 #' @importFrom move n.indiv
 #' 
 #' @export
 
-frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
+frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
                           margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, 
-                          path_legend = TRUE, path_legend_title = "Names", verbose = TRUE, ...){
+                          path_legend = TRUE, path_legend_title = "Names", verbose = TRUE){
   
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!isTRUE(dir.exists(map_dir))) dir.create(map_dir, recursive = T)
-  if(!inherits(map_token, "character")) out("Argument 'map_token' must be of class 'character'.", type = 3)
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   
   ## check m time conformities
@@ -68,7 +69,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     if(!isTRUE(map_type %in% get_maptypes(map_service))) out("The defined map type is not supported for the selected service. Use get_maptypes() to get all available map types.", type = 3)
     if(!is.numeric(map_res)) out("Argument 'map_res' must be 'numeric'.", type = 3)
     if(any(map_res < 0, map_res > 1)) out("Argument 'map_res' must be a value between 0 and 1.", type = 3)
-    if(!is.character(map_token)) out("Argument 'map_token' must be defined to access a basemap, if 'r_list' is not defined.", type = 3)
+    if(all(!inherits(map_token, "character"), map_service == "mapbox")) out("Argument 'map_token' must be defined to access a basemap, if 'r_list' is not defined and 'map_service' is 'mapbox'.", type = 3)
     if(map_service == "mapbox") if(!is.character(map_dir)) out("Argument 'map_dir' must be of type 'character'.", type = 3)
     if(!dir.exists(map_dir)) out("The directory defined with 'map_dir' does not exists.", type = 3)
   }
@@ -85,13 +86,13 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   ## preprocess movement data
   out("Processing movement data...")
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
-  gg.ext <- .ext(m.df, ext, margin_factor) # calcualte square extent
+  gg.ext <- .ext(m.df, st_crs(proj4string(m)), ext, margin_factor) # calcualte square extent
   m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size) # split m by size of tail
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
-    r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res)
+    r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, crs(m))
     r_type <- "RGB"
   }
   out("Assigning raster maps to frames...")

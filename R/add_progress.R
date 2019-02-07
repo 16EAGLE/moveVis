@@ -3,18 +3,14 @@
 #' This function adds a progress bar to animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
-#' @param title character, frame title.
-#' @param subtitle character, frame subtitle.
-#' @param caption character, frame caption.
-#' @param tag character, frame tag.
-#' @param x character, label of the x axis.
-#' @param y character, label of the y axis.
+#' @param colour character, progress bar colour.
+#' @param size numeric, progress bar line size..
 #'
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 geom_line aes ggplot_build expr
-#' @importFrom dplyr bind_rows
+#' @importFrom ggplot2 geom_line aes_string ggplot_build expr
+#' @importFrom rlang expr
 #'
 #' @seealso \link{frames_spatial}
 #' @export
@@ -34,10 +30,10 @@ add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){
   #                                                                              y = x$y, ymin = x$ymin, ymax = x$ymax))
   # gg.xy <- bind_rows(gg.xy[!sapply(gg.xy, is.null)])
   
-  progress <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(x, x.min = min(gg.xy$xmin), y = max(gg.xy$ymax)){
+  data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(x, x.min = min(gg.xy$xmin), y = max(gg.xy$ymax)){
     cbind.data.frame(x = c(x.min, x), y = c(y, y))
   })
   
-  add_gg(frames, gg = expr(geom_line(aes(x = x, y = y), data = data, colour = colour, size = size)),
-         data = progress, colour = colour, size = size)
+  add_gg(frames, gg = expr(geom_line(aes_string(x = "x", y = "y"), data = data, colour = colour, size = size)),
+         data = data, colour = colour, size = size)
 }

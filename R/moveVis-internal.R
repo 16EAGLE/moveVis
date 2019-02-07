@@ -36,6 +36,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom plyr mapvalues
 #' @importFrom sp coordinates
 #' @importFrom move n.indiv timestamps trackId 
+#' 
+#' @importFrom methods as
+#' @importFrom grDevices colours
 #' @noRd 
 .m2df <- function(m, path_colours = NA){
   
@@ -90,7 +93,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   #m.df$colour <- factor(as.character(m.df$colour), level = unique(as.character(m.df$colour)))
   m.df <- m.df[order(m.df$frame),]
-  m.df$name <- factor(as.character(m.df$name), level = unique(as.character(m.df$name)))
+  m.df$name <- factor(as.character(m.df$name), levels = unique(as.character(m.df$name)))
   return(m.df)
 }
 
@@ -120,21 +123,22 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' generate extent
-#' @importFrom sf st_bbox st_crs st_intersects st_as_sfc
-#' @importFrom sp proj4string
+#' @importFrom sf st_bbox st_intersects st_as_sfc
 #' @noRd 
-.ext <- function(m.df, ext = NULL, margin_factor = 1.1){
+.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1){
   
   ## calcualte square or user extent
-  m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = st_crs(proj4string(m)))
+  m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = m.crs)
   if(!is.null(ext)){
-    gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = st_crs(proj4string(m)))
+    gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = m.crs)
     if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
   }else gg.ext <- .squared(m.ext, margin_factor = margin_factor)
   return(gg.ext)
 }
 
 #' split movement by tail length
+#' 
+#' @importFrom grDevices colorRampPalette
 #' @noRd 
 .split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1){
   
@@ -181,7 +185,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
+#' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend
 #' @noRd 
 .gg_spatial <- function(m.split, gg.bmap, m.df, path_size = 3, path_end = "round", path_join = "round", squared = T, 
                         path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names"){
@@ -190,7 +194,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   gg.fun <- function(x, y){
     
     ## base plot
-    p <- y + geom_path(aes(x = x, y = y, group = id), data = x, size = x$tail_size, lineend = path_end, linejoin = path_join,
+    p <- y + geom_path(data = x, aes_string(x = "x", y = "y", group = "id"), size = x$tail_size, lineend = path_end, linejoin = path_join,
                        linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) +  theme_bw() +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
     
@@ -198,10 +202,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(isTRUE(path_legend)){
       l.df <- cbind.data.frame(x = x[1,]$x, y = x[1,]$y, name = levels(m.df$name),
                                   colour = as.character(m.df$colour[sapply(as.character(unique(m.df$name)), function(x) match(x, m.df$name)[1] )]), stringsAsFactors = F)
-      l.df$name <- factor(l.df$name, level = l.df$name)
+      l.df$name <- factor(l.df$name, levels = l.df$name)
       l.df <- rbind(l.df, l.df)
       
-      p <- p + geom_path(data = l.df, aes(x = x, y = y, colour = name, linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) + guides(color = guide_legend(order = 1))
+      p <- p + geom_path(data = l.df, aes_string(x = "x", y = "y", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) + guides(color = guide_legend(order = 1))
     }    
     
     if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
@@ -213,59 +217,65 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 
 #' flow stats plot function
-#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
+#' 
 #' @noRd
-.gg_flow <- function(m.split, gg.df, path_legend, path_legend_title, path_size){
-  
+.gg_flow <- function(m.split, gg.df, path_legend, path_legend_title, path_size, val_seq){
+
   ## stats plot function
-  gg.fun <- function(x, y, pl, plt, ps){
+  gg.fun <- function(x, y, pl, plt, ps, vs){
     
     ## generate base plot
-    p <- ggplot(x, aes(x = frame, y = value)) + geom_path(aes(group = id), size = ps, show.legend = F, colour = x$colour) + 
-      coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(y$value, na.rm = T), max(y$value, na.rm = T))) +
-      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    p <- ggplot(x, aes_string(x = "frame", y = "value")) + geom_path(aes_string(group = "id"), size = ps, show.legend = F, colour = x$colour) + 
+      coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(vs, na.rm = T), max(vs, na.rm = T))) +
+      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0), breaks = vs) + scale_x_continuous(expand = c(0,0))
     
     ## add legend
     if(isTRUE(pl)){
       l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name),
                                colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
-      l.df$name <- factor(l.df$name, level = l.df$name)
+      l.df$name <- factor(l.df$name, levels = l.df$name)
       l.df <- rbind(l.df, l.df)
-      p <- p + geom_path(data = l.df, aes(x = frame, y = value, colour = name, linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
+      p <- p + geom_path(data = l.df, aes_string(x = "frame", y = "value", colour = "name", linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
     }  
     return(p)
   }
   
-  .lapply(1:length(m.split), function(i) gg.fun(x = do.call(rbind, m.split[1:i])[,c("frame", "value", "time_chr", "id", "colour", "name")],
-                                                 y = gg.df, pl = path_legend, plt = path_legend_title, ps = path_size))
+  .lapply(1:length(m.split), function(i, x = m.split, y = gg.df, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq){
+    gg.fun(do.call(rbind, x[1:i])[,c("frame", "value", "time_chr", "id", "colour", "name")], y, pl, plt, ps, vs)
+  })
 }
 
 
 #' hist stats plot function
-#' @importFrom ggplot2 geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw  coord_cartesian geom_bar
 #' @noRd
-.gg_hist <- function(l.hist, all.hist, path_legend, path_legend_title, path_size){
+.gg_hist <- function(l.hist, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type){
   
   ## stats plot function
-  gg.fun <- function(x, y, pl, plt, ps){
+  gg.fun <- function(x, y, pl, plt, ps, vs, rt){
     
     ## generate base plot
-    p <- ggplot(x, aes(x = value, y = count)) + geom_path(aes(group = name), size = ps, show.legend = F, colour = x$colour) +
-      coord_cartesian(xlim = c(0, max(y$value, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
-      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+    if(rt == "gradient") p <- ggplot(x, aes_string(x = "value", y = "count")) + geom_path(aes_string(group = "name"), size = ps, show.legend = F, colour = x$colour)
+    if(rt == "discrete") p <- ggplot(x, aes_string(x = "value", y = "count", fill = "colour")) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
+    
+    p <- p + coord_cartesian(xlim = c(min(vs, na.rm = T), max(vs, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
+      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0), breaks = vs)
     
     ## add legend
     if(isTRUE(pl)){
       l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = levels(y$name),
                                colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
-      l.df$name <- factor(l.df$name, level = l.df$name)
+      l.df$name <- factor(l.df$name, levels = l.df$name)
       l.df <- rbind(l.df, l.df)
-      p <- p + geom_path(data = l.df, aes(x = value, y = count, colour = name, linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
-    }  
+      p <- p + geom_path(data = l.df, aes_string(x = "frame", y = "value", colour = "name", linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
+    }
     return(p)
   }
   
-  .lapply(l.hist, function(x) gg.fun(x = x, y = all.hist, pl = path_legend, plt = path_legend_title, ps = path_size))
+  .lapply(l.hist, function(x, y = all.hist, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq, rt = r_type){
+    gg.fun(x = x, y = y, pl = pl, plt = plt, ps = ps, vs = vs, rt = rt)
+  })
 }
 
 
@@ -326,10 +336,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' get map
 #' @importFrom slippymath bb_to_tg tg_composite
 #' @importFrom curl curl_download
-#' @importFrom raster projectRaster crs extent
-#' @importFrom magick image_read image_write
+#' @importFrom raster projectRaster extent
+#' @importFrom magick image_read image_write image_convert
 #' @noRd 
-.getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res){
+.getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs){
   
   ## calculate needed slippy tiles using slippymath
   tg <- bb_to_tg(gg.ext, max_tiles = ceiling(map_res*20))
@@ -349,7 +359,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   ## composite imagery
   r <- tg_composite(tg, images)
-  list(crop(projectRaster(r, crs = crs(m)), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
+  list(crop(projectRaster(r, crs = m.crs), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
 }
 
 #' interpolate over NAs
@@ -358,8 +368,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .approxNA <- function(x) na.approx(x, rule = 2)
 
 #' assign raster to frames
-#' @importFrom raster nlayers unstack crop extent setValues stack approxNA
+#' @importFrom raster nlayers unstack crop extent setValues stack approxNA calc
 #' @importFrom RStoolbox ggRGB ggR
+#' 
+#' @importFrom utils head
 #' @noRd
 .rFrames <- function(r_list, r_times, m.split, gg.ext, fade_raster = T, ...){
   

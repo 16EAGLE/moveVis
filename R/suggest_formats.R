@@ -4,11 +4,13 @@
 #'
 #' @param suggested character, a vector of suggested file formats which are checked to be known by the available renderers on the running system. By default, these are \code{c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")}.
 #' 
-#' @importFrom av av_muxers
 #'
 #' @return A subset of \code{suggested}, containing only those file formats which are known by the renderers on the running system.
 #' 
 #' @seealso \code{\link{animate_frames}}
+#' 
+#' @importFrom av av_muxers
+#' @importFrom stats na.omit
 #' 
 #' @export
 

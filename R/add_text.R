@@ -13,7 +13,8 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 annotate expr
+#' @importFrom ggplot2 annotate 
+#' @importFrom rlang expr
 #' @importFrom dplyr bind_cols
 #'
 #' @seealso \link{frames_spatial}
@@ -34,13 +35,13 @@ add_text <- function(frames, labels, x, y, colour = "black", size = 3, type = "t
   
   ## check lengths
   check <- list("labels" = labels, "x" = x, "y" = y, "colour" = colour, "size" = size)
-  at <- sapply(1:length(check), function(i){
+  data <- sapply(1:length(check), function(i){
     if(length(check[[i]]) == 1) v <- rep(check[[i]], length(frames)) else v <- check[[i]]
     if(length(v) != length(frames)) out(paste0("Length of argument ", names(check)[[i]], " must either be 1 or equal to the length of agrument 'frames'."), type = 3)
     return(v)
   }, simplify = F)
-  at <- as.data.frame(bind_cols(at), stringsAsFactors = F)
-  at <- split(at, seq(nrow(at)))
+  data <- as.data.frame(bind_cols(data), stringsAsFactors = F)
+  data <- split(data, seq(nrow(data)))
   
-  add_gg(frames, gg = expr(annotate(type, x = data[[2]], y = data[[3]], label = data[[1]], colour = data[[4]], size = data[[5]])), data = at, type = type)
+  add_gg(frames, gg = expr(annotate(type, x = data[[2]], y = data[[3]], label = data[[1]], colour = data[[4]], size = data[[5]])), data = data, type = type)
 }

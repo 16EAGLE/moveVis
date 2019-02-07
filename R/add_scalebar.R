@@ -14,13 +14,14 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 geom_polygon geom_text aes
+#' @importFrom ggplot2 geom_polygon geom_text aes_string
 #' @importFrom geosphere distGeo
+#' @importFrom rlang expr
 #'
 #' @seealso \link{frames_spatial}
 #' @export
 
-add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1, verbose = TRUE){
+add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -66,8 +67,8 @@ add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bo
                                 label = paste0(c(0, scale.dist/2, scale.dist), " km"),
                                 col = colour, stringsAsFactors = F)
   
-  add_gg(frames, gg = expr(list(geom_polygon(aes(x = x, y = y), data = scale.outer, fill = "white", colour = "black"), 
-                                geom_polygon(aes(x = x, y = y), data = scale.inner, fill = "black", colour = "black"),
-                                geom_text(aes(x = x, y = y, label = label, color = col), data = text.data, size = 3, colour = text.data$col))),
+  add_gg(frames, gg = expr(list(geom_polygon(aes_string(x = "x", y = "y"), data = scale.outer, fill = "white", colour = "black"), 
+                                geom_polygon(aes_string(x = "x", y = "y"), data = scale.inner, fill = "black", colour = "black"),
+                                geom_text(aes_string(x = "x", y = "y", label = "label", color = "col"), data = text.data, size = 3, colour = text.data$col))),
          scale.outer = scale.outer, scale.inner = scale.inner, text.data = text.data)
 }

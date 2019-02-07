@@ -9,19 +9,11 @@ add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
+\item{colour}{character, progress bar colour.}
+
+\item{size}{numeric, progress bar line size..}
+
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
-
-\item{title}{character, frame title.}
-
-\item{subtitle}{character, frame subtitle.}
-
-\item{caption}{character, frame caption.}
-
-\item{tag}{character, frame tag.}
-
-\item{x}{character, label of the x axis.}
-
-\item{y}{character, label of the y axis.}
 }
 \value{
 List of frames.

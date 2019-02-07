@@ -2,12 +2,12 @@
 % Please edit documentation in R/frames_graph.R
 \name{frames_graph}
 \alias{frames_graph}
-\title{Create frames of movement-environemnt interaction graphs for animation}
+\title{Create frames of movement-environment interaction graphs for animation}
 \usage{
-frames_graph(m, r_list, r_times, fade_raster = TRUE,
-  return_data = FALSE, graph_type = "flow", path_size = 1.5,
-  path_legend = TRUE, path_legend_title = "Names", hist_min = NULL,
-  hist_max = NULL, hist_by = 0.1, verbose = T)
+frames_graph(m, r_list, r_times, r_type = "gradient",
+  fade_raster = FALSE, return_data = FALSE, graph_type = "flow",
+  path_size = 1, path_legend = TRUE, path_legend_title = "Names",
+  val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -15,6 +15,8 @@ frames_graph(m, r_list, r_times, fade_raster = TRUE,
 \item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
 
 \item{r_times}{list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
+
+\item{r_type}{character, either \code{"gardient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
 
 \item{fade_raster}{logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.}
 
@@ -32,16 +34,22 @@ frames_graph(m, r_list, r_times, fade_raster = TRUE,
 
 \item{path_legend_title}{character, path legend title. Default is \code{"Names"}.}
 
+\item{val_min}{numeric, minimum value of the value axis. If undefined, the minimum is collected automatically.}
+
+\item{val_max}{numeric, maximum value of the value axis. If undefined, the maximum is collected automatically.}
+
+\item{val_by}{numeric, increment of the value axis sequence. Default is 0.1. If \code{graph_type = "discrete"}, this value should be an integer of 1 or greater.}
+
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
 \value{
 List of ggplot2 objects, each representing a single frame. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 }
 \description{
-\code{frames_graph} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+\code{frames_graph} creates a list of \code{ggplot2} graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 }
 \details{
-To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with statistical frames created with \code{\link{create_stats}} for animation,
+To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
 }
 \seealso{

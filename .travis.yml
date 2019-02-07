@@ -23,7 +23,7 @@ before_install:
   - sudo apt-get install ffmpeg
   - sudo apt-get install imagemagick
   - sudo apt-get install cargo
-  - sudo apt-get install libavfilter-dev
+  - sudo apt-get install libavfilter-dev libavformat53 libavformat-dev libavcodec53
 
 r_github_packages:
   - r-lib/covr

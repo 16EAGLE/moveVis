@@ -2,7 +2,10 @@ Package: moveVis
 Type: Package
 Title: Movement Data Visualization
 Version: 0.10.0
-Depends: R (>= 2.10)
+Depends:
+  R (>= 2.10),
+  methods,
+  grDevices
 Date: 2018-11-23
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
@@ -17,11 +20,15 @@ Imports:
   move,
   RStoolbox,
   geosphere,
+  slippymath,
+  lubridate,
+  rlang,
   ggplot2,
   cowplot,
   gifski,
   magick,
   av,
+  pbapply,
   curl,
   plyr,
   dplyr,

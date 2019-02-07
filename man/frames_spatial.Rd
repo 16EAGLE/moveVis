@@ -5,13 +5,13 @@
 \title{Create frames of spatial movement maps for animation}
 \usage{
 frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
-  fade_raster = TRUE, map_service = "osm", map_type = "streets",
+  fade_raster = FALSE, map_service = "osm", map_type = "streets",
   map_res = 1, map_token = NULL, map_dir = paste0(tempdir(),
   "/moveVis/basemap"), margin_factor = 1.1, ext = NULL,
   tail_length = 19, tail_size = 1, path_size = 3,
   path_end = "round", path_join = "round", path_mitre = 10,
   path_arrow = NULL, path_colours = NA, path_legend = TRUE,
-  path_legend_title = "Names", verbose = TRUE, ...)
+  path_legend_title = "Names", verbose = TRUE)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -66,7 +66,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 List of ggplot2 objects, each representing a single frame.
 }
 \description{
-\code{frames_spatial} creates a list of \code{ggplot2} objects of which each represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+\code{frames_spatial} creates a list of \code{ggplot2} maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 }
 \details{
 If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.

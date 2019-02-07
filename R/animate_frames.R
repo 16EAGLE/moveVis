@@ -7,7 +7,9 @@
 #' @param fps numeric, the number of frames to be displayed per second. Default is 2.
 #' @param width numeric, width of the output animation in pixels.
 #' @param height numeric, height of the output animation in pixels.
+#' @param res numeric, resolution of the output animation in ppi.
 #' @param display logical, whether the animation should be displayed after rendering or not.
+#' @param overwrite logical, wether to overwrite an existing file, if \code{out_file} is already present.
 #' @param ... additional arguments to be passed to the render function.
 #'
 #' @details An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
@@ -17,6 +19,8 @@
 #' @importFrom av av_capture_graphics
 #' @importFrom gifski save_gif
 #' @importFrom ggplot2 quo
+#' 
+#' @importFrom utils tail
 #' 
 #' @author Jakob Schwalb-Willmann
 #' @seealso \code{\link{frames_spatial}}

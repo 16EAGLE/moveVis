@@ -1,1 +1,1 @@
-unlink(vars.global$out_dir, recursive = T)
+#unlink(vars.global$test_dir, recursive = T)
