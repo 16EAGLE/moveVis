@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Deprecated functions — deprecated • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Deprecated functions — deprecated" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="Several functions are deprecated due to a rewrite of moveVis with version 0.10." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,42 +135,54 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Deprecated functions</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>deprecated.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>Several functions are deprecated due to a rewrite of moveVis with version 0.10.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre class="usage"><span class='fu'>animate_move</span>(<span class='no'>...</span>)
 
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+<span class='fu'>animate_raster</span>(<span class='no'>...</span>)
+
+<span class='fu'>animate_stats</span>(<span class='no'>...</span>)
+
+<span class='fu'>get_formats</span>(<span class='no'>...</span>)
+
+<span class='fu'>get_libraries</span>(<span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>...</th>
+      <td><p>deprecated arguments.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>The new version of moveVis makes it much easier to animate movement data and multi-temporal imagery (see <code><a href='moveVis-package.html'>?moveVis</a></code>). You gain more control about the preprocessing of your movement data as well as the visual customization of each animation frame through a more consequent link of <code>moveVis</code> to <code>gpplot2</code>.</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>To install the old version of moveVis (0.9.9), see <a href='https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9'>https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9</a>.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
-
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#note">Note</a></li>
           </ul>
 
   </div>

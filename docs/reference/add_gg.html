@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Add <code>ggplot2</code> function to frames — add_gg • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Add <code>ggplot2</code> function to frames — add_gg" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="This function adds ggplot2 functions (e.g. to add layers, change scales etc.) to the animation frames created with frames_spatial." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,44 +135,90 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Add <code>ggplot2</code> function to frames</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>add_gg.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>This function adds <code>ggplot2</code> functions (e.g. to add layers, change scales etc.) to the animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <pre class="usage"><span class='fu'>add_gg</span>(<span class='no'>frames</span>, <span class='no'>gg</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>frames</th>
+      <td><p>list of <code>ggplot2</code> objects, crated with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>gg</th>
+      <td><p><code>ggplot2</code> expressions (see details), either as</p><ul>
+<li><p>an expression of one or a list of <code>ggplot2</code> functions to be added to every frame,</p></li>
+<li><p>a list of such of the same length as <code>frames</code> to add different <code>ggplot2</code> expressions per frame</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>optional data used by <code>gg</code> (see details), either</p><ul>
+<li><p>an object of any class, e.g. a <code>data.frame</code>, used by <code>gg</code> that will be added to all frames,</p></li>
+<li><p>a list, e.g. of multiple <code>data.frames</code>, with length of <code>frames</code> to add different data to each frame.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional (non-iterated) objects that should be visible to <code>gg</code>.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if <code>TRUE</code>, messages on the function's progress are displayed (default).</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <p>List of frames.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>Agrument <code>gg</code> expects <code>ggplot2</code> functions handed over as expressions (see <code>expr</code>) to avoid their evaluation
+before thex are called for the correct frame. Simply wrap your <code>ggplot2</code> function into <code>expr()</code> and supply it to 
+<code>gg</code>. To add multiple <code>ggplot2</code> functions to be applied on every frame, supply an expression containing a list of 
+<code>ggplot2</code> functions (e.g. <code>expr(list(geom_label(...), geom_text(...)))</code>). This expression would be added to all frames. 
+To add specific <code>ggplot2</code> functions per frame, supply a list of expressions of the same length as frames. Each expression may
+contain a list of <code>ggplot2</code> functions, if you want to add multiple functions per frame.</p>
+<p>If <code>data</code> is used, the <code>ggplot2</code> expressions supplied with <code>gg</code> can use the object by the name <code>data</code> for plotting. 
+If <code>data</code> is a list, it must be of the same length as <code>frames</code>. The list will be iterated, so that functions in <code>gg</code>
+will have access to the individual objects within the list by the name <code>data</code> per each frame. If the data you want to display
+is does not change with frames and may only be a character vector or similiar, you may not need <code>data</code>, as you can supply
+the needed values within the expression supplied through <code>gg</code>.</p>
+<p>If you supply <code>gg</code> as a list of expressions for each frame and <code>data</code> as a list of objects (e.g. data.frames) for each frame,
+each frame will be manipulated with the corresponding <code>ggplot2</code> function and the corresponding data.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='frames_spatial.html'>frames_spatial</a></p></div>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
+      <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Jakob Schwalb-Willmann</p>
   </div>
 </div>
 

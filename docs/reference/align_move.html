@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Align movement data — align_move • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Align movement data — align_move" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
+This prepares the provided movement data to be interpretable by frames_spatial, which necessitates a uniform time scale and
+a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,44 +137,77 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Align movement data</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>align_move.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
+This prepares the provided movement data to be interpretable by <code><a href='frames_spatial.html'>frames_spatial</a></code>, which necessitates a uniform time scale and
+a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <pre class="usage"><span class='fu'>align_move</span>(<span class='no'>m</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"min"</span>, <span class='kw'>digit</span> <span class='kw'>=</span> <span class='st'>"min"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"secs"</span>,
+  <span class='kw'>spaceMethod</span> <span class='kw'>=</span> <span class='st'>"greatcircle"</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>m</th>
+      <td><p><code>move</code> or <code>moveStack</code>, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned</p></td>
+    </tr>
+    <tr>
+      <th>res</th>
+      <td><p>either numeric, representing the temporal resolution, to which <code>m</code> should be aligned to (see argument <code>unit</code>), or character:</p><ul>
+<li><p><code>"min"</code> to use the smalles temporal resolution of <code>m</code> (default)</p></li>
+<li><p><code>"max"</code> to use the largest temporal resolution of <code>m</code></p></li>
+<li><p><code>"mean"</code> to use the rounded average temporal resolution of <code>m</code></p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>digit</th>
+      <td><p>either numeric, indicating to which digits of a specifc unit (see argument <code>unit</code>) the time scale of <code>m</code> should be aligned (e.g. 0 to align the time scale to second ":00", if <code>unit</code> is set to <code>secs</code>), or character:</p><ul>
+<li><p><code>"min"</code> to use the smallest digit of the defined <code>unit</code> (default)</p></li>
+<li><p><code>"max"</code> to use the largest digit of the defined <code>unit</code></p></li>
+<li><p><code>"mean"</code> to use the rounded average digit of the defined <code>unit</code></p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>unit</th>
+      <td><p>character, either <code>"secs"</code>, <code>"mins"</code>, <code>"hours"</code>, <code>"days"</code>, indicating the temporal unit, to which <code>res</code> and <code>digit</code> are referring.</p></td>
+    </tr>
+    <tr>
+      <th>spaceMethod</th>
+      <td><p>character, either <code>"euclidean"</code>, <code>"greatcircle"</code> or <code>"rhumbline"</code>, indicating the interpolation function to be used to interpolate locations of <code>m</code> to the aligned time scale. Interpolation is performed using <code><a href='https://www.rdocumentation.org/packages/move/topics/interpolateTime'>move::interpolateTime</a></code>.</p></td>
+    </tr>
+    </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>Aligned <code>move</code> or <code>moveStack</code>, ready to be used with <code><a href='frames_spatial.html'>frames_spatial</a></code>-</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='frames_spatial.html'>frames_spatial</a></p></div>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
 
-      <li><a href="#source">Source</a></li>
-
-      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Jakob Schwalb-Willmann</p>
   </div>
 </div>
 

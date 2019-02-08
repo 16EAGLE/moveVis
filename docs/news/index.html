@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
   </a>
 </li>
 <li>
-  <a href="../index.html#getting-started">Get Started</a>
+  <a href="../index.html#get-started">Get Started</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -136,30 +136,31 @@
       
     </div>
 
-    <div id="movevis-1-0-0" class="section level2">
+    <div id="movevis-0-10-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#movevis-1-0-0" class="anchor"></a>moveVis 1.0.0</h2>
-<p>Future implementations (not yet implemented!)</p>
-<p><br><strong>Next version:</strong></p>
+<a href="#movevis-0-10-0" class="anchor"></a>moveVis 0.10.0</h2>
+<p>moveVis rewrite introducing a new logic and new functions</p>
+<p><br><strong>New features:</strong></p>
 <ul>
-<li>“keep tracks” setting to force paths to not disappear</li>
-<li>segmentation coulouring</li>
-<li>optional user-defined font sizes of all fonts (axis, annotations etc.), colours based on ggplot2 syntax</li>
-<li>optional user-defined map elements position vectors</li>
+<li>movement data preparation, frames creation, layout/appearance editing and animation are now seperated, allowing you to customize each of these steps individually.</li>
+<li>any <code>ggplot2</code> syntax can now be added to every single frame, allowing you to customize almost everything that can be customized using <code>ggplot2</code>
+</li>
+<li>to make customization easier, a variety of <code>add_</code> functions wrapping pre-defined <code>ggplot2</code> functions are included. For example, <code>add_gg</code> offers dynamic overplotting, e.g. for polygons or points that change over time</li>
+<li>track colours can now be provided as a <code>colour</code> column in your movement data, allowing segmentation coulouring or colouring based on a logic, you defined beforhand</li>
+<li>map elements can be positioned freely or individual map-elements can be created as <code>ggplot2</code> functions</li>
+<li>Your animation does not have to be a fixed-size squared standard extent: With the <code>ext</code> argument of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> you can define user-defined area of interest (AOI), which scales the frame extent to a specific area</li>
+<li>A new base map feature based on Miles McBains slippymath package. <code>moveVis</code> supports Mapbox (free, registration needed) and OpenStreetMap (free) as base map services. See the manual of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for details.</li>
 </ul>
-<p><br><strong>Maybe next version:</strong></p>
+<p><br><strong>New functions:</strong></p>
 <ul>
-<li>user-defined area of interest (AOI), which scales map extent to specific area without excluding tracks “out of sight”, enables move-in and move-out of individuals to AOI</li>
-<li>follow population mode</li>
-<li>follow individual mode</li>
-<li>day-/night-time visualization</li>
-<li>dynamic overplotting, e. g. polygons or points that change over time</li>
+<li>
+<code><a href="../reference/align_move.html">align_move()</a></code>, <code><a href="../reference/get_maptypes.html">get_maptypes()</a></code>, <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>, <code><a href="../reference/frames_graph.html">frames_graph()</a></code>, <code><a href="../reference/add_gg.html">add_gg()</a></code>, <code><a href="../reference/add_labels.html">add_labels()</a></code>, <code><a href="../reference/add_scalebar.html">add_scalebar()</a></code>, <code><a href="../reference/add_northarrow.html">add_northarrow()</a></code>, <code><a href="../reference/add_progress.html">add_progress()</a></code>, <code><a href="../reference/add_timestamps.html">add_timestamps()</a></code>, <code><a href="../reference/add_text.html">add_text()</a></code>, <code><a href="../reference/add_colourscale.html">add_colourscale()</a></code>, <code><a href="../reference/join_frames.html">join_frames()</a></code>, <code><a href="../reference/suggest_formats.html">suggest_formats()</a></code>, <code><a href="../reference/animate_frames.html">animate_frames()</a></code>: see the README and the description of the individual functions for further details.</li>
 </ul>
-<p><br><strong>Some day:</strong></p>
+<p><br><strong>Deprecated functions:</strong></p>
 <ul>
-<li>3D animations, e.g. for including altitude data</li>
+<li>
+<code><a href="../reference/deprecated.html">animate_move()</a></code>, <code><a href="../reference/deprecated.html">animate_raster()</a></code>, <code><a href="../reference/deprecated.html">animate_stats()</a></code>, <code><a href="../reference/deprecated.html">get_formats()</a></code>, <code><a href="../reference/deprecated.html">get_libraries()</a></code>: These functions have been replaced by a new logic and new functions.</li>
 </ul>
-<p><br></p>
 <hr>
 </div>
     <div id="movevis-0-9-9" class="section level2">
@@ -219,9 +220,9 @@
 <p><br><strong>New functions:</strong></p>
 <ul>
 <li>
-<code><a href="../reference/get_libraries.html">get_libraries()</a></code> – handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be called for code compatibility reasons</li>
+<code><a href="../reference/deprecated.html">get_libraries()</a></code> – handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be called for code compatibility reasons</li>
 <li>
-<code><a href="../reference/get_formats.html">get_formats()</a></code> – outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.</li>
+<code><a href="../reference/deprecated.html">get_formats()</a></code> – outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.</li>
 </ul>
 <p><br><strong>New features:</strong></p>
 <ul>
@@ -286,7 +287,7 @@
 <p><br><strong>New features:</strong></p>
 <ul>
 <li>
-<code><a href="../reference/animate_stats.html">animate_stats()</a></code> – Enables creation of statistic plot animations visualizing possible relationships between movement paths and basemap. Define individual plot designs based on ggplot2 syntax.</li>
+<code><a href="../reference/deprecated.html">animate_stats()</a></code> – Enables creation of statistic plot animations visualizing possible relationships between movement paths and basemap. Define individual plot designs based on ggplot2 syntax.</li>
 <li>stats arguments for animate_move(): Enables statistic plot animations side-by-side with the spatial plot animation of animate_move. Use the animate_stats() arguments with animate_move().</li>
 <li>extent_factor argument for animate_move(): Increase the distance between the spatial extents of the movement paths and the basemap.</li>
 </ul>
@@ -331,7 +332,7 @@
 <ul>
 <li>Added moveStack support: animate_move() now takes also moveStack objects in addition to list objects</li>
 <li>
-<code><a href="../reference/animate_raster.html">animate_raster()</a></code> – for animating just basemaps/for doing the same as with animate_move(), but without movement data</li>
+<code><a href="../reference/deprecated.html">animate_raster()</a></code> – for animating just basemaps/for doing the same as with animate_move(), but without movement data</li>
 </ul>
 <p><br><strong>Improvements:</strong></p>
 <ul>
@@ -352,8 +353,8 @@
 <p>initial release</p>
 <p><br><strong>Initial features:</strong></p>
 <ul>
-<li><code><a href="../reference/animate_move.html">animate_move()</a></code></li>
-<li><code><a href="../reference/get_libraries.html">get_imconvert()</a></code></li>
+<li><code><a href="../reference/deprecated.html">animate_move()</a></code></li>
+<li><code>get_imconvert()</code></li>
 </ul>
 <p><br><strong>Initial example data sets:</strong></p>
 <ul>
@@ -369,7 +370,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#movevis-1-0-0">1.0.0</a></li>
+        <li><a href="#movevis-0-10-0">0.10.0</a></li>
         <li><a href="#movevis-0-9-9">0.9.9</a></li>
         <li><a href="#movevis-0-9-8">0.9.8</a></li>
         <li><a href="#movevis-0-9-7">0.9.7</a></li>

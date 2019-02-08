@@ -106,7 +106,8 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       }))
       
       ## Calculating time-cumulative value histogram per individual and timestep
-      l.hist <- lapply(1:max(gg.df$frame), function(i, d = dummy){
+      out("Calculating histogram...")
+      l.hist <- .lapply(1:max(gg.df$frame), function(i, d = dummy){
         x <- gg.df[unlist(lapply(1:i, function(x) which(gg.df$frame == x))),]
         
         do.call(rbind, lapply(unique(x$id), function(id){

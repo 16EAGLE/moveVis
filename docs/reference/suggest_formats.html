@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Suggest known file formats — suggest_formats • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Suggest known file formats — suggest_formats" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="This function returns a selection of suggested file formats that can be used with out_file of animate_frames on your system." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,42 +135,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Suggest known file formats</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>suggest_formats.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>This function returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href='animate_frames.html'>animate_frames</a></code> on your system.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <pre class="usage"><span class='fu'>suggest_formats</span>(<span class='kw'>suggested</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"gif"</span>, <span class='st'>"mov"</span>, <span class='st'>"mp4"</span>, <span class='st'>"flv"</span>, <span class='st'>"avi"</span>, <span class='st'>"mpeg"</span>,
+  <span class='st'>"3gp"</span>, <span class='st'>"ogg"</span>))</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>suggested</th>
+      <td><p>character, a vector of suggested file formats which are checked to be known by the available renderers on the running system. By default, these are <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")</a></code>.</p></td>
+    </tr>
+    </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>A subset of <code>suggested</code>, containing only those file formats which are known by the renderers on the running system.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='animate_frames.html'>animate_frames</a></code></p></div>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
 
-      <li><a href="#source">Source</a></li>
-
-      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

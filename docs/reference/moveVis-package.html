@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Overview of moveVis tools — moveVis-package • moveVis</title>
+<title>Tools to visualize movement data in R — moveVis-package • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,11 +30,10 @@
 
 
 
-<meta property="og:title" content="Overview of moveVis tools — moveVis-package" />
+<meta property="og:title" content="Tools to visualize movement data in R — moveVis-package" />
 
-<meta property="og:description" content="moveVis provides tools to visualize movement data of any kind, e. g by creating path animations from GPS point data.
-The package is under ongoing development, new functionalities are added constantly.
-The moveVis package is closely connected to the move package and mainly builds up on ggplot2." />
+<meta property="og:description" content="moveVis provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
+The moveVis package is closely connected to the move package and builds up on ggplot2 grammar of graphics." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -65,7 +64,7 @@ The moveVis package is closely connected to the move package and mainly builds u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
       </span>
     </div>
 
@@ -78,7 +77,7 @@ The moveVis package is closely connected to the move package and mainly builds u
   </a>
 </li>
 <li>
-  <a href="../index.html#getting-started">Get Started</a>
+  <a href="../index.html#get-started">Get Started</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -137,40 +136,46 @@ The moveVis package is closely connected to the move package and mainly builds u
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Overview of moveVis tools</h1>
+    <h1>Tools to visualize movement data in R</h1>
     
     <div class="hidden name"><code>moveVis-package.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p><code>moveVis</code> provides tools to visualize movement data of any kind, e. g by creating path animations from GPS point data.
-The package is under ongoing development, new functionalities are added constantly.
-The <code>moveVis</code> package is closely connected to the <code>move</code> package and mainly builds up on <code>ggplot2</code>.</p>
+    <p><code>moveVis</code> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
+The <code>moveVis</code> package is closely connected to the <code>move</code> package and builds up on <code>ggplot2</code> grammar of graphics.</p>
     
     </div>
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>At the moment, the package includes the following functions:</p>
-<p><code><a href='animate_move.html'>animate_move</a></code>, which can create spatial movement data animations as GIF file. Among other funtionalities, the function is able to</p><ul>
-<li><p>visualize move class point data as (multiple) movement paths,</p></li>
-<li><p>display static basemap layers downloaded from Google Maps,</p></li>
-<li><p>display static basemap layers provided by the user,</p></li>
-<li><p>display dynamic, time-referenced raster data, e. g. to visualize land cover changes etc.,</p></li>
-<li><p>compute temporal interpolations from time-referneced raster data,</p></li>
-<li><p>create statistic plots, displaying the interaction of the individual movement paths with environmental data.
-  ...</p></li>
+    <p>The package includes the following functions, sorted by the order they would be applied to create an animation from movement data:</p>
+<ul>
+<li><p><code><a href='align_move.html'>align_move</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</p></li>
+<li><p><code><a href='get_maptypes.html'>get_maptypes</a></code> returns a character vector of available map types that can be used with <code><a href='frames_spatial.html'>frames_spatial</a></code>. <code>moveVis</code> supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p></li>
+<li><p><code><a href='frames_spatial.html'>frames_spatial</a></code> creates a list of <code>ggplot2</code> maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href='animate_frames.html'>animate_frames</a></code>.</p></li>
+<li><p><code><a href='frames_graph.html'>frames_graph</a></code> creates a list of <code>ggplot2</code> graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href='animate_frames.html'>animate_frames</a></code>.</p></li>
+<li><p><code><a href='add_gg.html'>add_gg</a></code> adds <code>ggplot2</code> functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other moveVis <code>add_</code> functions:</p></li>
+<li><p><code><a href='add_labels.html'>add_labels</a></code> adds character labels such as title or axis labels to animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='add_scalebar.html'>add_scalebar</a></code> adds a scalebar to the animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='add_northarrow.html'>add_northarrow</a></code> adds a north arrow to the animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='add_progress.html'>add_progress</a></code> adds a progress bar to animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='add_timestamps.html'>add_timestamps</a></code> adds timestamps to animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='add_text.html'>add_text</a></code> adds static or dynamically changing text to the animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='add_colourscale.html'>add_colourscale</a></code> adjusts the colour scales of the animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code> and custom map imagery.</p></li>
+<li><p><code><a href='join_frames.html'>join_frames</a></code> side-by-side joins the <code>ggplot2</code> objects of two or more frames lists of equal lengths into a single list of <code>ggplot2</code> objects per frame using <code>plot_grid</code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href='frames_spatial.html'>frames_spatial</a></code> with graph frames returned by <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
+<li><p><code><a href='suggest_formats.html'>suggest_formats</a></code> returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href='animate_frames.html'>animate_frames</a></code> on your system.</p></li>
+<li><p><code><a href='animate_frames.html'>animate_frames</a></code> creates an animation from a list of frames computed with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
 </ul>
-    <p><code><a href='animate_stats.html'>animate_stats</a></code>, which can create animated statistic plots from movement and basemap data as GIF file.</p>
-<p><code><a href='animate_raster.html'>animate_raster</a></code>, which can create animated spatial plots of basemap data as GIF file.</p>
-<p><code><a href='get_libraries.html'>get_libraries</a></code>, a helper function to locate/download/install the extern libraries ImageMagick, FFmpeg and libav and their tools, which are needed for different output file format support.</p>
-<p><code><a href='get_formats.html'>get_formats</a></code>, a helper function which returns all available output file formats (system-dependent).</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='animate_move.html'>animate_move</a></code></p></div>
+    <div class='dont-index'><p>Useful links:</p><ul>
+<li><p><a href='http://movevis.org'>http://movevis.org</a></p></li>
+<li><p>Report bugs at <a href='http://www.github.com/16eagle/moveVis/issues'>http://www.github.com/16eagle/moveVis/issues</a></p></li>
+</ul></div>
     
 
   </div>
@@ -184,7 +189,7 @@ The <code>moveVis</code> package is closely connected to the <code>move</code> p
           </ul>
 
     <h2>Author</h2>
-    <p>Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann jakob@schwalb-willmann.de</p>
+    <p>Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann, moveVis@schwalb-willmann.de</p>
   </div>
 </div>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Animate frames — animate_frames • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Animate frames — animate_frames" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="animate_frames creates an animation from a list of frames computed with frames_spatial." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,44 +135,94 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Animate frames</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>animate_frames.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p><code>animate_frames</code> creates an animation from a list of frames computed with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <pre class="usage"><span class='fu'>animate_frames</span>(<span class='no'>frames</span>, <span class='no'>out_file</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>25</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>900</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>900</span>,
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>130</span>, <span class='kw'>display</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>frames</th>
+      <td><p>list of <code>ggplot2</code> objects, crated with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>out_file</th>
+      <td><p>character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use <code><a href='suggest_formats.html'>suggest_formats</a></code> to get a vector of suggested known file formats.</p></td>
+    </tr>
+    <tr>
+      <th>fps</th>
+      <td><p>numeric, the number of frames to be displayed per second. Default is 2.</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>numeric, width of the output animation in pixels.</p></td>
+    </tr>
+    <tr>
+      <th>height</th>
+      <td><p>numeric, height of the output animation in pixels.</p></td>
+    </tr>
+    <tr>
+      <th>res</th>
+      <td><p>numeric, resolution of the output animation in ppi.</p></td>
+    </tr>
+    <tr>
+      <th>display</th>
+      <td><p>logical, whether the animation should be displayed after rendering or not.</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>logical, wether to overwrite an existing file, if <code>out_file</code> is already present.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if <code>TRUE</code>, messages on the function's progress are displayed (default).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments to be passed to the render function.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <p>None or an R graphics window displaying the animation</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>An appropriate render function is selected depending on the file extension in <code>out_file</code>: For <code>.gif</code> files, <code><a href='https://www.rdocumentation.org/packages/gifski/topics/gifski'>gifski::save_gif</a></code> is used, for any other (video) format, <code><a href='https://www.rdocumentation.org/packages/av/topics/capturing'>av::av_capture_graphics</a></code> is used.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code></p></div>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
+      <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Jakob Schwalb-Willmann</p>
   </div>
 </div>
 

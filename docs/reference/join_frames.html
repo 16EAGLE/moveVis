@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Join multiple frames lists into a single frames list — join_frames • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Join multiple frames lists into a single frames list — join_frames" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="This function side-by-side joins the ggplot2 objects of two or more frames lists of equal lengths into a single plot per frame using plot_grid. This is useful if you want to side-by-side combine spatial frames returned by frames_spatial with graph frames returned by frames_graph." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,42 +135,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Join multiple frames lists into a single frames list</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>join_frames.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>This function side-by-side joins the <code>ggplot2</code> objects of two or more frames lists of equal lengths into a single plot per frame using <code>plot_grid</code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href='frames_spatial.html'>frames_spatial</a></code> with graph frames returned by <code><a href='frames_graph.html'>frames_graph</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <pre class="usage"><span class='fu'>join_frames</span>(<span class='no'>frames_lists</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>frames_lists</th>
+      <td><p>list, a list of two or more frames lists that you want to combine. All frames lists contained in <code>frames_lists</code> must be of equal lengths. The contained <code>ggplot2</code> objects are passed frame-wise to the <code>plotlist</code> argument of <code>plot_grid</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments, specifying the appearance of the joined <code>ggplot2</code> objects, passed to <code>plot_grid</code>. See <code>plot_grid</code> for further options.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if <code>TRUE</code>, messages on the function's progress are displayed (default).</p></td>
+    </tr>
+    </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>List of ggplot2 objects, each representing a single frame.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
-
-      <li><a href="#details">Details</a></li>
+      <li><a href="#value">Value</a></li>
           </ul>
 
   </div>

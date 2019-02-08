@@ -7,36 +7,91 @@
 
 ## Introduction
 
-`moveVis` is an R package providing tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. The package is closely connected to the `move` package and builds up on `ggplot2`. To be informed about updates, new features and the current version, visit [movevis.org](http://movevis.org).
+`moveVis` provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. The `moveVis` package is closely connected to the `move` package and builds up on `ggplot2` grammar of graphics.
 
 ## Examples
 
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
-<p align="center"><sub>Figure 1: Output of animate_move(), showing White Storks movement nearby Lake Constance, using a static land cover/land use map in the background</sub></p>
+<br>
+<p align="center"><img width="93%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
+<p align="center"><sub>Figure 1: White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background</sub></p>
 <br>
 
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
-<p align="center"><sub>Figure 2: Output of animate_move(), showing White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background</sub></p>
 <br>
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
+<p align="center"><sub>Figure 2: White Storks movement nearby Lake Constance, using a static land cover/land use map in the background</sub></p>
+<br>
+
 
 ## Installation
 
-To install the stable version from CRAN, please run:
+With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its function and their syntax have changed. 
 
-```r
-install.packages('moveVis')
-```
-
-To install the development version from this GitHub repository, please run:
+This repository contains version 0.10.0, the newest development version of `moveVis`. Code written for `moveVis` version <=0.9.9 will not work with this repository's version, but it is quite simple and thus highly recommended to switch to the new version due to a variety of advantages. To install `moveVis` version 0.10.0, run:
 
 ```r
 devtools::install_github("16EAGLE/moveVis")
 ```
 
+To install `moveVis` version 0.9.9 from `CRAN` and remain with the old syntax, run:
+
+```r
+install_packages("moveVis")
+```
+
+## Function overview
+
+`moveVis` includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
+
+#### Prepare movement data
+
+* `align_move()` aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.
+
+#### Create animation frames
+
+* `get_maptypes()` returns a character vector of available map types that can be used with `frames_spatial()`. `moveVis` supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to `frames_spatial()`.
+* `frames_spatial()` creates a list of `ggplot2` maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using `animate_frames()`.
+* `frames_graph()` creates a list of `ggplot2` graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using `animate_frames()`.
+
+#### Adjust frames layout and appearacne
+
+* `add_gg()` adds `ggplot2` functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with `frames_spatial()` or `frames_graph()`. Instead of creating your own `ggplot2` functions, you can use one of the other `moveVis` `add_``functions:
+* `add_labels()` adds character labels such as title or axis labels to animation frames created with `frames_spatial()` or `frames_graph()`.
+* `add_scalebar()` adds a scalebar to the animation frames created with `frames_spatial()` or `frames_graph()`.
+* `add_northarrow()` adds a north arrow to the animation frames created with `frames_spatial()` or `frames_graph()`.
+* `add_progress()` adds a progress bar to animation frames created with `frames_spatial()` or `frames_graph()`.
+* `add_timestamps()` adds timestamps to animation frames created with `frames_spatial()` or `frames_graph()`.
+* `add_text()` adds static or dynamically changing text to the animation frames created with `frames_spatial()` or `frames_graph()`.
+* `add_colourscale()` adjusts the colour scales of the animation frames created with `frames_spatial()` and custom map imagery using the `r_list` argument.
+* `join_frames()` side-by-side joins the `ggplot2` objects of two or more frames lists of equal lengths into a single list of `ggplot2` objects per frame using `cowplot::plot_grid`. This is useful if you want to side-by-side combine spatial frames returned by `frames_spatial()` with graph frames returned by `frames_graph()`.
+
+#### Animate frames as GIF or video
+
+* `suggest_formats()` returns a selection of suggested file formats that can be used with `out_file` of `animate_frames()` on your system.
+* `animate_frames()` creates an animation from a list of frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
+
+
+## Get started
+
+Example code to be added here and in the help files.
+
+
+## To do
+
+Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
+
+**Next version:**
+* "keep tracks" setting to force paths to not disappear
+* follow population mode
+* follow individual mode
+* day-/night-time visualization
+
+**Some day:**
+* 3D animations, e.g. for including altitude data
+
 
 ## Contact & bug reports
 
-moveVis is being developed and maintained by Jakob Schwalb-Willmann. For bug reports, please use <https://github.com/16eagle/movevis/issues> to contact me. Feature requests and other contributions are also welcome.
+For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature requests and other contributions are welcome!
 
 
 ## What else are we doing?

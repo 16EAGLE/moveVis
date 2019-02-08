@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
   </a>
 </li>
 <li>
-  <a href="../index.html#getting-started">Get Started</a>
+  <a href="../index.html#get-started">Get Started</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -146,48 +146,124 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-animation" class="hasAnchor"><a href="#section-animation" class="anchor"></a>Animation</h2>
-          <p class="section-desc"><p>Animate movement and/or multi-temporal environmental data</p></p>
+          <h2 id="section-data-preparation" class="hasAnchor"><a href="#section-data-preparation" class="anchor"></a>Data preparation</h2>
+          <p class="section-desc"><p>Prepare your movement data for animation.</p></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="animate_move.html">animate_move()</a></code> </p>
+          <p><code><a href="align_move.html">align_move()</a></code> </p>
         </td>
-        <td><p>Animate movement data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate_stats.html">animate_stats()</a></code> </p>
-        </td>
-        <td><p>Animate movement data statistics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate_raster.html">animate_raster()</a></code> </p>
-        </td>
-        <td><p>Animate raster data</p></td>
+        <td><p>Align movement data</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-session-settings" class="hasAnchor"><a href="#section-session-settings" class="anchor"></a>Session Settings</h2>
-          <p class="section-desc"><p>Define settings for the running session</p></p>
+          <h2 id="section-frames-creation" class="hasAnchor"><a href="#section-frames-creation" class="anchor"></a>Frames creation</h2>
+          <p class="section-desc"><p>Create spatial frames or graph frames from movement data.</p></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="get_libraries.html">get_libraries()</a></code> <code><a href="get_libraries.html">get_imconvert()</a></code> </p>
+          <p><code><a href="get_maptypes.html">get_maptypes()</a></code> </p>
         </td>
-        <td><p>Detect extern system libraries needed by moveVis</p></td>
+        <td><p>Get all supported map types</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="get_formats.html">get_formats()</a></code> </p>
+          <p><code><a href="frames_spatial.html">frames_spatial()</a></code> </p>
         </td>
-        <td><p>Get all available output file formats</p></td>
+        <td><p>Create frames of spatial movement maps for animation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="frames_graph.html">frames_graph()</a></code> </p>
+        </td>
+        <td><p>Create frames of movement-environment interaction graphs for animation</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-layout-and-appearance" class="hasAnchor"><a href="#section-layout-and-appearance" class="anchor"></a>Layout and appearance</h2>
+          <p class="section-desc"><p>Adjust frame layout and appearance</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="add_gg.html">add_gg()</a></code> </p>
+        </td>
+        <td><p>Add <code>ggplot2</code> function to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_labels.html">add_labels()</a></code> </p>
+        </td>
+        <td><p>Add labels to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_scalebar.html">add_scalebar()</a></code> </p>
+        </td>
+        <td><p>Add scalebar to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_northarrow.html">add_northarrow()</a></code> </p>
+        </td>
+        <td><p>Add north arrow to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_progress.html">add_progress()</a></code> </p>
+        </td>
+        <td><p>Add progress bar to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_timestamps.html">add_timestamps()</a></code> </p>
+        </td>
+        <td><p>Add timestamps to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_text.html">add_text()</a></code> </p>
+        </td>
+        <td><p>Add static or dynamic text to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_colourscale.html">add_colourscale()</a></code> </p>
+        </td>
+        <td><p>Add scale to frames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="join_frames.html">join_frames()</a></code> </p>
+        </td>
+        <td><p>Join multiple frames lists into a single frames list</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-frames-animation" class="hasAnchor"><a href="#section-frames-animation" class="anchor"></a>Frames animation</h2>
+          <p class="section-desc"><p>Animate frames as GIF or video</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="suggest_formats.html">suggest_formats()</a></code> </p>
+        </td>
+        <td><p>Suggest known file formats</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="animate_frames.html">animate_frames()</a></code> </p>
+        </td>
+        <td><p>Animate frames</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -213,7 +289,7 @@
         <td>
           <p><code><a href="moveVis-package.html">moveVis-package</a></code> </p>
         </td>
-        <td><p>Overview of moveVis tools</p></td>
+        <td><p>Tools to visualize movement data in R</p></td>
       </tr>
     </tbody>
     </table>
@@ -222,8 +298,10 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-animation">Animation</a></li>
-      <li><a href="#section-session-settings">Session Settings</a></li>
+      <li><a href="#section-data-preparation">Data preparation</a></li>
+      <li><a href="#section-frames-creation">Frames creation</a></li>
+      <li><a href="#section-layout-and-appearance">Layout and appearance</a></li>
+      <li><a href="#section-frames-animation">Frames animation</a></li>
       <li><a href="#section-general">General</a></li>
     </ul>
   </div>

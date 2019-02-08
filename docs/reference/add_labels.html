@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Add labels to frames — add_labels • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Add labels to frames — add_labels" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="This function adds character labels such as title or axis labels to animation frames created with frames_spatial." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,44 +135,80 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Add labels to frames</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>add_labels.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>This function adds character labels such as title or axis labels to animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <pre class="usage"><span class='fu'>add_labels</span>(<span class='no'>frames</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(), <span class='kw'>subtitle</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(),
+  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(), <span class='kw'>tag</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(), <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(), <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(),
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>frames</th>
+      <td><p>list of <code>ggplot2</code> objects, crated with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>title</th>
+      <td><p>character, frame title. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+    </tr>
+    <tr>
+      <th>subtitle</th>
+      <td><p>character, frame subtitle. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+    </tr>
+    <tr>
+      <th>caption</th>
+      <td><p>character, frame caption. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+    </tr>
+    <tr>
+      <th>tag</th>
+      <td><p>character, frame tag. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>character, label of the x axis. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>character, label of the y axis. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if <code>TRUE</code>, messages on the function's progress are displayed (default).</p></td>
+    </tr>
+    </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>List of frames.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='frames_spatial.html'>frames_spatial</a></p></div>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
 
-      <li><a href="#source">Source</a></li>
-
-      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Jakob Schwalb-Willmann</p>
   </div>
 </div>
 
