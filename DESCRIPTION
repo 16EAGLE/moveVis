@@ -1,8 +1,11 @@
 Package: moveVis
 Type: Package
 Title: Movement Data Visualization
-Version: 0.9.9
-Depends: R (>= 2.10)
+Version: 0.10.0
+Depends:
+  R (>= 2.10),
+  methods,
+  grDevices
 Date: 2018-11-23
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
@@ -11,30 +14,29 @@ License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 6.1.1
 Imports:
-  maptools,
-  ggplot2,
-  grid,
-  rasterVis,
   raster,
   sp,
-  geosphere,
-  rosm,
-  utils,
-  grDevices,
-  methods,
-  stats,
+  sf,
   move,
-  gridExtra,
-  graphics,
-  simecol,
-  plyr,
-  zoo,
+  RStoolbox,
+  geosphere,
+  slippymath,
   lubridate,
-  parallel,
+  rlang,
+  ggplot2,
+  cowplot,
+  gifski,
+  magick,
+  av,
   pbapply,
-  RStoolbox
+  curl,
+  plyr,
+  dplyr,
+  zoo
+Remotes:
+  MilesMcBain/slippymath
 BugReports: http://www.github.com/16eagle/moveVis/issues
-SystemRequirements: convert from ImageMagick, ffmpeg from FFmpeg
+SystemRequirements: ImageMagick, FFmpeg, libav
 URL: http://movevis.org
 Suggests: 
     testthat

@@ -1,27 +1,23 @@
-## moveVis 1.0.0
-Future implementations (not yet implemented!)
+## moveVis 0.10.0
+moveVis rewrite introducing a new logic and new functions
 
 <br>
-**Next version:**
-* "keep tracks" setting to force paths to not disappear
-* segmentation coulouring
-* optional user-defined font sizes of all fonts (axis, annotations etc.), colours based on ggplot2 syntax
-* optional user-defined map elements position vectors
+**New features:**
+* movement data preparation, frames creation, layout/appearance editing and animation are now seperated, allowing you to customize each of these steps individually.
+* any `ggplot2` syntax can now be added to every single frame, allowing you to customize almost everything that can be customized using `ggplot2`
+* to make customization easier, a variety of `add_` functions wrapping pre-defined `ggplot2` functions are included. For example, `add_gg` offers dynamic overplotting, e.g. for polygons or points that change over time
+* track colours can now be provided as a `colour` column in your movement data, allowing segmentation coulouring or colouring based on a logic, you defined beforhand
+* map elements can be positioned freely or individual map-elements can be created as `ggplot2` functions
+* Your animation does not have to be a fixed-size squared standard extent: With the `ext` argument of `frames_spatial()` you can define user-defined area of interest (AOI), which scales the frame extent to a specific area
+* A new base map feature based on Miles McBains slippymath package. `moveVis` supports Mapbox (free, registration needed) and OpenStreetMap (free) as base map services. See the manual of `frames_spatial()` for details.
 
 <br>
-**Maybe next version:**
-* user-defined area of interest (AOI), which scales map extent to specific area without excluding tracks "out of sight", enables move-in and move-out of individuals to AOI
-* follow population mode
-* follow individual mode
-* day-/night-time visualization
-* dynamic overplotting, e. g. polygons or points that change over time
+**New functions:**
+* `align_move()`, `get_maptypes()`, `frames_spatial()`, `frames_graph()`, `add_gg()`, `add_labels()`, `add_scalebar()`, `add_northarrow()`, `add_progress()`, `add_timestamps()`, `add_text()`, `add_colourscale()`, `join_frames()`, `suggest_formats()`, `animate_frames()`: see the README and the description of the individual functions for further details.
 
 <br>
-**Some day:**
-* 3D animations, e.g. for including altitude data
-
-<br>
-
+**Deprecated functions:**
+* `animate_move()`, `animate_raster()`, `animate_stats()`, `get_formats()`, `get_libraries()`: These functions have been replaced by a new logic and new functions.
 
 ***
 

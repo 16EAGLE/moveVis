@@ -14,7 +14,7 @@ navbar:
     - icon: fa-home fa-lg
       href: index.html
     - text: "Get Started"
-      href: index.html#getting-started
+      href: index.html#get-started
     - text: "Functions"
       href: reference/index.html
     - text: "Changelog"
@@ -43,17 +43,33 @@ navbar:
 #      index_name: INDEX_NAME
 
 reference:
-- title: Animation
-  desc:  Animate movement and/or multi-temporal environmental data
+- title: Data preparation
+  desc:  Prepare your movement data for animation.
   contents:
-  - animate_move
-  - animate_stats
-  - animate_raster
-- title: Session Settings
-  desc:  Define settings for the running session
+  - align_move
+- title: Frames creation
+  desc:  Create spatial frames or graph frames from movement data.
+  contents: 
+  - get_maptypes
+  - frames_spatial
+  - frames_graph
+- title: Layout and appearance
+  desc: Adjust frame layout and appearance
   contents:
-  - get_libraries
-  - get_formats
+  - add_gg
+  - add_labels
+  - add_scalebar
+  - add_northarrow
+  - add_progress
+  - add_timestamps
+  - add_text
+  - add_colourscale
+  - join_frames
+- title: Frames animation
+  desc: Animate frames as GIF or video
+  contents:
+  - suggest_formats
+  - animate_frames
 - title: General
   contents:
   - move_data

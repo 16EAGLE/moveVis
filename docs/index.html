@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
       </span>
     </div>
 
@@ -43,7 +43,7 @@
   </a>
 </li>
 <li>
-  <a href="index.html#getting-started">Get Started</a>
+  <a href="index.html#get-started">Get Started</a>
 </li>
 <li>
   <a href="reference/index.html">Functions</a>
@@ -108,117 +108,120 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This is an R package providing tools to visualize movement data by creating path animations from geo-location point data. The moveVis package is working hand in hand with the move package by using the move and moveStack class and the raster package. It is based on a ggplot2 plotting architecture and relys on the libraries ImageMagick, ffmpeg and libav. To be informed about updates, new features and the current version, visit <a href="http://news.movevis.org">news.movevis.org</a>.</p>
+<p><code>moveVis</code> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. The <code>moveVis</code> package is closely connected to the <code>move</code> package and builds up on <code>ggplot2</code> grammar of graphics.</p>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
-<p align="center"><sub>Figure 1: Output of animate_move(), showing White Storks movement nearby Lake Constance, using a static land cover/land use map in the background</sub></p>
 <p><br></p>
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
-<p align="center"><sub>Figure 2: Output of animate_move(), showing White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background</sub></p>
-<p><br></p>
+<p align="center"><img width="93%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p> <p align="center"><sub>Figure 1: White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background</sub></p> <br><p><br></p>
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p> <p align="center"><sub>Figure 2: White Storks movement nearby Lake Constance, using a static land cover/land use map in the background</sub></p> <br>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>This is the official moveVis R package repository, including beta code versions before submitted to CRAN. For operational use of moveVis, please use the current stable CRAN version of moveVis.</p>
-<p>To install stable version from CRAN, please execute:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler">install.packages(<span class="ch">'m</span>oveVis<span class="ch">')</span></code></pre></div>
-<p>To install the development version from this GitHub repository, please execute:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="kw">devtools::</span>install_github(<span class="st">"16EAGLE/moveVis"</span>)</code></pre></div>
+<p>With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its function and their syntax have changed.</p>
+<p>This repository contains version 0.10.0, the newest development version of <code>moveVis</code>. Code written for <code>moveVis</code> version &lt;=0.9.9 will not work with this repository’s version, but it is quite simple and thus highly recommended to switch to the new version due to a variety of advantages. To install <code>moveVis</code> version 0.10.0, run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</code></pre></div>
+<p>To install <code>moveVis</code> version 0.9.9 from <code>CRAN</code> and remain with the old syntax, run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install_packages</span>(<span class="st">"moveVis"</span>)</code></pre></div>
 </div>
-<div id="getting-started" class="section level2">
+<div id="function-overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting started</h2>
-<p>You can use moveVis with any move or moveStack object. This guide shortly explains how to prepare your own geo-location point data for the animate_move() function by creating a move class object from a data.frame class object. As an example, the provided example data (data.frame) are used. Instead, you could use any similar prepared data of yours.</p>
-<div id="external-libraries" class="section level3">
-<h3 class="hasAnchor">
-<a href="#external-libraries" class="anchor"></a>External libraries</h3>
-<p>moveVis requires at least one of the three external libraries ‘ffmpeg’, ‘libav’ and/or ‘ImageMagick’. They support different types of output formats (gif, mov, mp4 etc.). If you have ‘ImageMagick’ and either ‘ffmepg’ or ‘libav’ installed, you can use all output formats supported by moveVis.</p>
-<p>Run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to find out, which libraries are installed on your system:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><a href="reference/get_libraries.html">get_libraries()</a></code></pre></div>
-<div id="linux" class="section level4">
+<a href="#function-overview" class="anchor"></a>Function overview</h2>
+<p><code>moveVis</code> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:</p>
+<div id="prepare-movement-data" class="section level4">
 <h4 class="hasAnchor">
-<a href="#linux" class="anchor"></a>Linux</h4>
-<p>On many Linux distributions, ImageMagick and FFmpeg are preinstalled or can be installed via the package manager. On Ubuntu, use <code>sudo apt-get install imagemagick</code> to install ImageMagick containing the <code>convert</code> tool and <code>sudo apt-get install ffmpeg</code> to install FFmpeg containing the equally called <code>ffmpeg</code> tool.</p>
+<a href="#prepare-movement-data" class="anchor"></a>Prepare movement data</h4>
+<ul>
+<li>
+<code><a href="reference/align_move.html">align_move()</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</li>
+</ul>
 </div>
-<div id="windows" class="section level4">
+<div id="create-animation-frames" class="section level4">
 <h4 class="hasAnchor">
-<a href="#windows" class="anchor"></a>Windows</h4>
-<p>You can download and install both ImageMagick and FFmpeg from <a href="https://www.imagemagick.org/script/download.php" class="uri">https://www.imagemagick.org/script/download.php</a> as binary for Windows. Make sure that you select “Install FFmpeg” and “Install legacy utilities (e.g. convert)” during the installation process. <code>get_libraries</code> will recognize both libraries only, if their commands can be called from the command line. Make sure that you select the related option during the installation process.</p>
+<a href="#create-animation-frames" class="anchor"></a>Create animation frames</h4>
+<ul>
+<li>
+<code><a href="reference/get_maptypes.html">get_maptypes()</a></code> returns a character vector of available map types that can be used with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>. <code>moveVis</code> supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>.</li>
+<li>
+<code><a href="reference/frames_spatial.html">frames_spatial()</a></code> creates a list of <code>ggplot2</code> maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href="reference/animate_frames.html">animate_frames()</a></code>.</li>
+<li>
+<code><a href="reference/frames_graph.html">frames_graph()</a></code> creates a list of <code>ggplot2</code> graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href="reference/animate_frames.html">animate_frames()</a></code>.</li>
+</ul>
 </div>
-<div id="maxosos-x" class="section level4">
+<div id="adjust-frames-layout-and-appearacne" class="section level4">
 <h4 class="hasAnchor">
-<a href="#maxosos-x" class="anchor"></a>maxOS/OS X</h4>
-<p>Visit <a href="https://www.macports.org/install.php" class="uri">https://www.macports.org/install.php</a> and follow the instructions there to download and install MacPorts. Execute <code>sudo port install ImageMagick</code> to install the latest binary release of ImageMagick for Mac. Visit <a href="https://www.ffmpeg.org/download.html" class="uri">https://www.ffmpeg.org/download.html</a> to download and install the latest binary release of FFmpeg for Mac.</p>
+<a href="#adjust-frames-layout-and-appearacne" class="anchor"></a>Adjust frames layout and appearacne</h4>
+<ul>
+<li>
+<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> `add_``functions:</li>
+<li>
+<code><a href="reference/add_labels.html">add_labels()</a></code> adds character labels such as title or axis labels to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<li>
+<code><a href="reference/add_scalebar.html">add_scalebar()</a></code> adds a scalebar to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<li>
+<code><a href="reference/add_northarrow.html">add_northarrow()</a></code> adds a north arrow to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<li>
+<code><a href="reference/add_progress.html">add_progress()</a></code> adds a progress bar to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<li>
+<code><a href="reference/add_timestamps.html">add_timestamps()</a></code> adds timestamps to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<li>
+<code><a href="reference/add_text.html">add_text()</a></code> adds static or dynamically changing text to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<li>
+<code><a href="reference/add_colourscale.html">add_colourscale()</a></code> adjusts the colour scales of the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> and custom map imagery using the <code>r_list</code> argument.</li>
+<li>
+<code><a href="reference/join_frames.html">join_frames()</a></code> side-by-side joins the <code>ggplot2</code> objects of two or more frames lists of equal lengths into a single list of <code>ggplot2</code> objects per frame using <code><a href="https://www.rdocumentation.org/packages/cowplot/topics/plot_grid">cowplot::plot_grid</a></code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> with graph frames returned by <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+</ul>
+</div>
+<div id="animate-frames-as-gif-or-video" class="section level4">
+<h4 class="hasAnchor">
+<a href="#animate-frames-as-gif-or-video" class="anchor"></a>Animate frames as GIF or video</h4>
+<ul>
+<li>
+<code><a href="reference/suggest_formats.html">suggest_formats()</a></code> returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href="reference/animate_frames.html">animate_frames()</a></code> on your system.</li>
+<li>
+<code><a href="reference/animate_frames.html">animate_frames()</a></code> creates an animation from a list of frames computed with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>, <code><a href="reference/frames_graph.html">frames_graph()</a></code> or <code><a href="reference/join_frames.html">join_frames()</a></code>.</li>
+</ul>
 </div>
 </div>
-<div id="load-movevis" class="section level3">
-<h3 class="hasAnchor">
-<a href="#load-movevis" class="anchor"></a>Load moveVis</h3>
-<p>After the required libraries are once installed, <b>restart your R session</b>. Then, load moveVis and the move package:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Load packages</span>
-library(moveVis)
-library(move)</code></pre></div>
-<p>and run <code><a href="reference/get_libraries.html">get_libraries()</a></code> to check, if the installed tools are recognized by moveVis. If so, everything is set for starting to create your first moveVis animation. If the installed tools are not recognized automatically, you can provide the paths to the tools manually (see argument <code>conv_dir</code> in the manual of <code><a href="reference/animate_move.html">animate_move()</a></code>)</p>
+<div id="get-started" class="section level2">
+<h2 class="hasAnchor">
+<a href="#get-started" class="anchor"></a>Get started</h2>
+<p>Example code to be added here and in the help files.</p>
 </div>
-<div id="data-preperation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#data-preperation" class="anchor"></a>Data preperation</h3>
-<p>You will need to load the example data for this tutorial:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Load data (data.frame) (or use your own as data.frame)</span>
-data(<span class="st">"move_data"</span>)</code></pre></div>
-<p>As the provided example data, your data.frame needs to have at least three columns: two columns for your coordinates (here “lat”, “lon”) and one for the date/time stamp (here “dt”). The date/time stamps need to be converted to POSIXct as follows:</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler">move_data$dt &lt;- as.POSIXct(strptime(move_data$dt, <span class="st">"%Y-%m-%d %H:%M:%S"</span>, tz = <span class="st">"UTC"</span>))</code></pre></div>
-<p>Your movement data need to be provided as move class objects to the animate_move() function. For each individual movement path you want to display simultaniously within a single animation, you will need one move class object. The move class objects per path are provided as a list. If your data.frame contains several individuals (e. g. differentiable by a “individuals” column, as the example data.frame does), then subset the data per individual and store the namings. If you just want to display a single path, you do not have to do this.</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Create new move class object list by individual</span>
-data_ani &lt;- split(move(move_data$lon, move_data$lat, proj=CRS(<span class="st">"+proj=longlat +ellps=WGS84"</span>),
-                       time = move_data$dt, animal=move_data$individual, data=move_data))</code></pre></div>
-</div>
-<div id="additional-arguments" class="section level3">
-<h3 class="hasAnchor">
-<a href="#additional-arguments" class="anchor"></a>Additional arguments</h3>
-<p>get_libraries() returns the library commands that are needed by the animate functions. Just save them to a variable that you can later pass to the animate function. You can also call get_formats() to see all output formats, you can choose from.</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Get libraries </span>
-conv_dir &lt;- get_libraries()
-
-<span class="co">#Find out, which output file formats can be used</span>
-get_formats()</code></pre></div>
-<p>Last, you need to specify the output directory path and you can specify some optional variables such as the animation title (for details on all the arguments of animate_move() , read the animate_move() help).</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Specify output directory</span>
-out_dir &lt;- paste0(getwd(),<span class="st">"/test"</span>)
-
-<span class="co">#Specify some optional appearance variables</span>
-img_title &lt;- <span class="st">"Movement of the white stork population at Lake Constance, Germany"</span>
-img_sub &lt;- paste0(<span class="st">"including individuals "</span>,indi_names)
-img_caption &lt;- <span class="st">"Projection: Geographical, WGS84; Sources: Movebank 2013; Google Maps"</span></code></pre></div>
-</div>
-<div id="animate-function-call" class="section level3">
-<h3 class="hasAnchor">
-<a href="#animate-function-call" class="anchor"></a>Animate function call</h3>
-<p>Finally, you are now prepared to call animate_move(), which will have to work for a while depending on your input. Here, for demonstrational purposes, we use <code>frames_nmax</code> set to 50 to force the function to only produce 50 frames and then finish the animation, regardless how many input points you provided. Set <code>log_level</code> to 1 to be informed of anything the function is doing. Set <code>out_format</code> to “mov” to get a .mov video output file.</p>
-<div class="sourceCode"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span class="co">#Call animate_move()</span>
-animate_move(data_ani, out_dir, conv_dir = conv_dir, tail_elements = <span class="dv">10</span>,
-             paths_mode = <span class="st">"true_data"</span>, frames_nmax = <span class="dv">50</span>,
-             img_caption = img_caption, img_title = img_title,
-             img_sub = img_sub, log_level = <span class="dv">1</span>, out_format = <span class="st">"mov"</span>)</code></pre></div>
-<p>After the function is finished, check the output directory. Retry everything with different settings and modes, described in the function manuals. Further examples and explanations are provided within the function manuals.</p>
-</div>
+<div id="to-do" class="section level2">
+<h2 class="hasAnchor">
+<a href="#to-do" class="anchor"></a>To do</h2>
+<p>Things and features that should be added in future versions of <code>moveVis</code> (feel free to contribute to this list using a pull request):</p>
+<p><strong>Next version:</strong></p>
+<ul>
+<li>“keep tracks” setting to force paths to not disappear</li>
+<li>follow population mode</li>
+<li>follow individual mode</li>
+<li>day-/night-time visualization</li>
+</ul>
+<p><strong>Some day:</strong></p>
+<ul>
+<li>3D animations, e.g. for including altitude data</li>
+</ul>
 </div>
 <div id="contact-bug-reports" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contact-bug-reports" class="anchor"></a>Contact &amp; bug reports</h2>
-<p>moveVis is being developed and maintained by Jakob Schwalb-Willmann. For bug reports, please use <a href="https://github.com/16eagle/movevis/issues" class="uri">https://github.com/16eagle/movevis/issues</a> to contact me. Feature requests and other contributions are also welcome.</p>
+<p>For bug reports, please use <a href="https://github.com/16eagle/movevis/issues" class="uri">https://github.com/16eagle/movevis/issues</a>. Feature requests and other contributions are welcome!</p>
 </div>
 <div id="what-else-are-we-doing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#what-else-are-we-doing" class="anchor"></a>What else are we doing?</h2>
 <p>The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:</p>
 <ul>
-<li><a target="_blank" href="http://bleutner.github.io/RStoolbox/">RStoolbox</a></li>
-<li><a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a></li>
+<li>
+<a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,</li>
+<li>
+<a target="_blank" href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,</li>
+<li>
+<a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.</li>
 </ul>
 <p>For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a target="_blank" href="http://remote-sensing.eu/">here</a>.</p>
 </div>

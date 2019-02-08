@@ -1,0 +1,11 @@
+context("get_maptypes")
+
+test_that("get_maptypes", {
+  x <- expect_is(get_maptypes(), "list")
+  expect_is(names(x), "character")
+  expect_equal(names(x), c("mapbox", "osm"))
+  expect_gte(length(x$mapbox), 1)
+  expect_gte(length(x$osm), 1)
+  expect_equal(grep("satellite", x$mapbox, value = T), "satellite")
+  expect_equal(grep("streets", x$osm, value = T), "streets")
+})
