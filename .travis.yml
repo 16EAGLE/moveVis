@@ -13,12 +13,10 @@ before_install:
   - sudo aptitude install -y gdal-bin
   - sudo aptitude install -y libgdal1-dev
   - sudo aptitude install -y libproj-dev
-# - sudo apt-get install gdal-bin
-# - sudo apt-get install libgdal-dev
-# - sudo apt-get install libproj-dev
+# - sudo apt-get install gdal-bin libgdal-dev libproj-dev
   - sudo apt-get install libudunits2-dev libssh2-1-dev
-  - sudo apt-get install imagemagick cargo libavfilter-dev libavformat-dev libavcodec-dev
-# - sudo apt-get install ffmpeg
+  - sudo apt-get install imagemagick cargo libavformat-dev libavcodec-dev
+# - sudo apt-get install ffmpeg libavfilter-dev 
   - R -e 'install.packages("devtools")'
   - R -e 'install.packages("covr")'
 
