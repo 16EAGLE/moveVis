@@ -3,7 +3,7 @@ Type: Package
 Title: Movement Data Visualization
 Version: 0.10.0
 Depends:
-  R (>= 2.10),
+  R (>= 3.5.0),
   methods,
   grDevices
 Date: 2018-11-23

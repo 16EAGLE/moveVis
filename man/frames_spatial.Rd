@@ -6,12 +6,12 @@
 \usage{
 frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   fade_raster = FALSE, map_service = "osm", map_type = "streets",
-  map_res = 1, map_token = NULL, map_dir = paste0(tempdir(),
-  "/moveVis/basemap"), margin_factor = 1.1, ext = NULL,
-  tail_length = 19, tail_size = 1, path_size = 3,
-  path_end = "round", path_join = "round", path_mitre = 10,
-  path_arrow = NULL, path_colours = NA, path_legend = TRUE,
-  path_legend_title = "Names", verbose = TRUE)
+  map_res = 1, map_token = NULL, map_dir = NULL,
+  margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1,
+  path_size = 3, path_end = "round", path_join = "round",
+  path_mitre = 10, path_arrow = NULL, path_colours = NA,
+  path_legend = TRUE, path_legend_title = "Names", ...,
+  verbose = TRUE)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -59,6 +59,15 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 \item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
 
 \item{path_legend_title}{character, path legend title. Default is \code{"Names"}.}
+
+\item{...}{Additional arguments customizing the frame background, passed to \code{RStoolbox::ggR} or \code{RStoolbox::ggRGB}:
+\itemize{
+    \item \code{alpha}, numeric, background transparency (0-1).
+    \item \code{hue}, numeric, hue value for color calculation (0-1). Change if you need anything else than greyscale. Only effective if sat > 0.
+    \item \code{sat}, numeric, saturation value for color calculation (0,1). Change if you need anything else than greyscale.
+    \item \code{stretch}, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
+    \item \code{quantiles}, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2% stretch, i.e. \code{c(0.02,0.98)}.
+}}
 
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }

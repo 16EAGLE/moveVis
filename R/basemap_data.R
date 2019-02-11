@@ -1,10 +1,16 @@
-#' MODIS NDVI 2013 example data of Lake Constance area, Germany
-#'
-#' Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.
-#'
-#' @details The example data have been pre-processed and have euqal extents and projections. 
+#' Exemplary manipulated NDVI data
 #' 
-#' @format List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.
-#' @source MODIS 2013 freely available data, acsessed using \code{MODIS} R package
+#' This datasetd contains two lists of equal lenghts:
+#' \itemize{
+#'    \item a list of ten single-layer \code{raster} objects, representing NDVI images covering the Lake of Constance area.
+#'    \item a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...
+#' }
+#' 
+#' @details This object is used by some \code{moveVis} examples and unit tests.
+#' @note All data contained should only be used for testing \code{moveVis} and are not suitable to be used for analysis or interpretation.
+#'
+#' 
+#' @format List containing two lists of equal lengths: a list of \code{raster} objects and a list of \code{POSIXct} times.
+#' @source MODIS (MOD13Q1 NDVI)
 #' 
 "basemap_data"

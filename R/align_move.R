@@ -24,6 +24,7 @@
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom move timestamps timeLag interpolateTime moveStack move split
+#' @importFrom sp coordinates
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
 #' @seealso \link{frames_spatial}
@@ -54,9 +55,13 @@ align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod
   ts.target <- seq.POSIXt(ts.shoulder[[1]], ts.shoulder[[2]], by = res)
   
   m.indi <- if(inherits(m, "MoveStack")) split(m) else list(m)
-  moveStack(lapply(m.indi, function(x){
+  m <- moveStack(lapply(m.indi, function(x){
     ts.m <- timestamps(x)
     ts.t <- ts.target[ts.target >= min(ts.m) & ts.target <= max(ts.m)]
-    interpolateTime(x, ts.t, spaceMethod)
+    tryCatch(interpolateTime(x, ts.t, spaceMethod), error = function(e) out("The selected interpolation method defined with argument 'spaceMethod' cannot be used with this projection. Please try a different interpolation method. See ?align_move for help.", type = 3))
   }))
+  
+  m[,c("x", "y")] <- coordinates(m)
+  m[,"time"] <- timestamps(m)
+  return(m)
 }

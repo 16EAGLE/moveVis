@@ -4,8 +4,8 @@
 \alias{animate_frames}
 \title{Animate frames}
 \usage{
-animate_frames(frames, out_file, fps = 25, width = 900, height = 900,
-  res = 130, display = TRUE, overwrite = FALSE, verbose = TRUE,
+animate_frames(frames, out_file, fps = 25, width = 700, height = 700,
+  res = 100, display = TRUE, overwrite = FALSE, verbose = TRUE,
   ...)
 }
 \arguments{

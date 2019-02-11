@@ -26,6 +26,14 @@
 #' @param map_dir character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
 #' If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
 #' so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.
+#' @param ... Additional arguments customizing the frame background, passed to \code{RStoolbox::ggR} or \code{RStoolbox::ggRGB}:
+#'    \itemize{
+#'        \item \code{alpha}, numeric, background transparency (0-1).
+#'        \item \code{hue}, numeric, hue value for color calculation (0-1). Change if you need anything else than greyscale. Only effective if sat > 0.
+#'        \item \code{sat}, numeric, saturation value for color calculation (0,1). Change if you need anything else than greyscale.
+#'        \item \code{stretch}, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
+#'        \item \code{quantiles}, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2% stretch, i.e. \code{c(0.02,0.98)}.
+#'    }
 #' @param verbose logical, if \code{TRUE}, messages on the function's progress are displayed (default).
 #' 
 #' @details If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
@@ -46,9 +54,9 @@
 #' 
 #' @export
 
-frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = paste0(tempdir(), "/moveVis/basemap"),
+frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
                           margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, 
-                          path_legend = TRUE, path_legend_title = "Names", verbose = TRUE){
+                          path_legend = TRUE, path_legend_title = "Names", ..., verbose = TRUE){
   
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -72,7 +80,12 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     if(any(map_res < 0, map_res > 1)) out("Argument 'map_res' must be a value between 0 and 1.", type = 3)
     if(all(!inherits(map_token, "character"), map_service == "mapbox")) out("Argument 'map_token' must be defined to access a basemap, if 'r_list' is not defined and 'map_service' is 'mapbox'.", type = 3)
     if(map_service == "mapbox") if(!is.character(map_dir)) out("Argument 'map_dir' must be of type 'character'.", type = 3)
-    if(!dir.exists(map_dir)) out("The directory defined with 'map_dir' does not exists.", type = 3)
+    if(is.null(map_dir)){
+      map_dir <- paste0(tempdir(), "/moveVis/basemap/")
+      if(!dir.exists(map_dir)) dir.create(map_dir, recursive = T)
+    } else{
+      if(!dir.exists(map_dir)) out("The directory defined with 'map_dir' does not exists.", type = 3)
+    }
   }
   num.args <- c(margin_factor = margin_factor, tail_length = tail_length, tail_size = tail_size, path_size = path_size, path_mitre = path_mitre)
   catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
@@ -101,9 +114,9 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   ## plot basemap
   if(length(r_list) == 1){
-    if(r_type == "gradient") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T)
-    if(r_type == "discrete") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T)
-  } else{ gg.bmap <- .lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T))}
+    if(r_type == "gradient") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, ...)
+    if(r_type == "discrete") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T, ...)
+  } else{ gg.bmap <- .lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, ...))}
   
   ## return frames
   out("Creating frames...")

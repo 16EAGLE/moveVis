@@ -119,10 +119,18 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     x.devi <- (ax.diff[1]/ax.dist[1])*((ax.dist[2]-ax.dist[1])*margin_factor)/2
     y.devi <- ((ax.diff[2]/ax.dist[2])*(ax.dist[2]*margin_factor))-ax.diff[2]
   } else{
-    x.devi <- ((ax.diff[1]/ax.dist[1])*(ax.dist[1]*margin_factor))-ax.diff[1]
-    y.devi <- (ax.diff[2]/ax.dist[2])*((ax.dist[1]-ax.dist[2])*margin_factor)/2
+    x.devi <- ((ax.diff[1]/ax.dist[1])*ax.dist[1])-ax.diff[1]
+    y.devi <- ((ax.diff[2]/ax.dist[2])*(ax.dist[1]-ax.dist[2])/2) 
   }
   ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs("+init=epsg:4326"))
+  
+  ## add margin
+  if(margin_factor > 1){
+    ax.diff <- c(ext.ll.sq[3]-ext.ll.sq[1], ext.ll.sq[4]-ext.ll.sq[2])
+    x.devi <- ((ax.diff[1]*margin_factor)-ax.diff[1])
+    y.devi <- ((ax.diff[2]*margin_factor)-ax.diff[2])
+    ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs("+init=epsg:4326"))
+  }
   return(st_bbox(st_transform(st_as_sfc(ext.ll.sq), st_crs(ext))))
 }
 
@@ -364,7 +372,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   ## composite imagery
   r <- tg_composite(tg, images)
-  list(crop(projectRaster(r, crs = m.crs), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4])))
+  list(crop(projectRaster(r, crs = m.crs), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
 }
 
 #' interpolate over NAs
