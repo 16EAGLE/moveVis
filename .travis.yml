@@ -6,6 +6,7 @@ r:
 sudo: required
 
 before_install:
+### GDAL
 # - sudo apt-get install gdal-bin # version to old, get updated ppa
 # - sudo add-apt-repository -y ppa:ubuntugis/ppa # ppa contains gdal > 2.0.0 needed for sf # gdal-bin not found
   - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
@@ -14,11 +15,15 @@ before_install:
   - sudo aptitude install -y libgdal1-dev
   - sudo aptitude install -y libproj-dev
 # - sudo apt-get install gdal-bin libgdal-dev libproj-dev
+### ImageMagick & FFMPEG
   - sudo apt-get install libudunits2-dev libssh2-1-dev
   - sudo apt-get install imagemagick cargo libavformat-dev libavcodec-dev
   - sudo add-apt-repository -y ppa:jonathonf/ffmpeg-3
   - sudo apt-get update
   - sudo apt-get install -y libavfilter-dev
+  - sudo add-apt-repository -y ppa:opencpu/imagemagick
+  - sudo apt-get update
+  - sudo apt-get install -y libmagick++-dev
 # - sudo apt-get install ffmpeg libavfilter-dev 
   - R -e 'install.packages("devtools")'
   - R -e 'install.packages("covr")'
