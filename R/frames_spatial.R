@@ -42,7 +42,7 @@
 #' @importFrom sf st_crs
 #' @importFrom sp proj4string
 #' @importFrom raster crs
-#' @importFrom move n.indiv
+#' @importFrom move n.indiv moveStack
 #' 
 #' @export
 
@@ -53,6 +53,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
+  if(inherits(m, "Move")) m <- moveStack(m)
   
   ## check m time conformities
   .time_conform(m)

@@ -99,27 +99,31 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' square it
 #' @importFrom geosphere distGeo
-#' @importFrom sf st_bbox
+#' @importFrom sf st_bbox st_transform st_as_sfc st_crs
 #' @noRd 
 .squared <- function(ext, margin_factor = 1){
   
+  # lat lon extent
+  ext.ll <- st_bbox(st_transform(st_as_sfc(ext), st_crs("+init=epsg:4326")))
+  
   # calculate corner coordinates
-  corn <- rbind(c(ext[1], ext[2]), c(ext[1], ext[4]), c(ext[3], ext[2]), c(ext[3], ext[4]))
+  corn <- rbind(c(ext.ll[1], ext.ll[2]), c(ext.ll[1], ext.ll[4]), c(ext.ll[3], ext.ll[2]), c(ext.ll[3], ext.ll[4]))
   colnames(corn) <- c("x", "y")
   
   # calculate difference and distance
   ax.dist <- c(distGeo(corn[1,], corn[3,]), distGeo(corn[1,], corn[2,]))
-  ax.diff <- c(ext[3]-ext[1],ext[4]-ext[2])
+  ax.diff <- c(ext.ll[3]-ext.ll[1], ext.ll[4]-ext.ll[2])
   
   # add difference to match equal distances
   if(ax.dist[1] < ax.dist[2]){
     x.devi <- (ax.diff[1]/ax.dist[1])*((ax.dist[2]-ax.dist[1])*margin_factor)/2
     y.devi <- ((ax.diff[2]/ax.dist[2])*(ax.dist[2]*margin_factor))-ax.diff[2]
   } else{
-    x.devi <- ((ax.diff[1]/ax.dist[1])*(ax.dist[1]*margin_factor))-ax.diff[2]
+    x.devi <- ((ax.diff[1]/ax.dist[1])*(ax.dist[1]*margin_factor))-ax.diff[1]
     y.devi <- (ax.diff[2]/ax.dist[2])*((ax.dist[1]-ax.dist[2])*margin_factor)/2
   }
-  return(st_bbox(c(ext[1]-x.devi, ext[3]+x.devi, ext[2]-y.devi, ext[4]+y.devi)))
+  ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs("+init=epsg:4326"))
+  return(st_bbox(st_transform(st_as_sfc(ext.ll.sq), st_crs(ext))))
 }
 
 #' generate extent
@@ -342,7 +346,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs){
   
   ## calculate needed slippy tiles using slippymath
-  tg <- bb_to_tg(gg.ext, max_tiles = ceiling(map_res*20))
+  gg.ext.ll <- st_bbox(st_transform(st_as_sfc(gg.ext), crs = st_crs("+init=epsg:4326")))
+  tg <- bb_to_tg(gg.ext.ll, max_tiles = ceiling(map_res*20))
   images <- apply(tg$tiles, MARGIN = 1, function(x){
     file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
     if(!isTRUE(file.exists(file))){
