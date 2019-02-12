@@ -7,7 +7,7 @@
 
 ## Introduction
 
-`<a href="http://movevis.org">moveVis</a>` provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. The `<a href="http://movevis.org">moveVis</a>` package is closely connected to the `move` package and builds up on `ggplot2` grammar of graphics.
+<a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. The <a href="http://movevis.org">`moveVis`</a> package is closely connected to the `move` package and builds up on the `ggplot2` grammar of graphics.
 
 <br>
 <p align="center"><img width="93%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
@@ -24,13 +24,13 @@
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
-To install `<a href="http://movevis.org">moveVis</a>` version 0.10.0, the newest stable development version, run:
+To install <a href="http://movevis.org">`moveVis`</a> version 0.10.0, the newest stable development version, run:
 
 ```r
 devtools::install_github("16EAGLE/moveVis")
 ```
 
-Code written for `<a href="http://movevis.org">moveVis</a>` version <=0.9.9 will not work with the newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. `<a href="http://movevis.org">moveVis</a>` version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
+Code written for <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 will not work with the newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
 
 ```r
 setwd("your/download/directory")
@@ -39,7 +39,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 ## Function overview
 
-`moveVis` includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
+<a href="http://movevis.org">`moveVis`</a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
 
 #### Prepare movement data
 
@@ -81,6 +81,8 @@ First, load the required packages for this example and the `moveVis` example dat
 library(moveVis)
 library(move)
 library(raster)
+library(ggplo2)
+
 data("move_data", "basemap_data")
 ```
 
@@ -95,28 +97,28 @@ We can conclude that each track has a sampling rate of roughly 4 minutes, howeve
 * make all tracks share unique timestamps that can be assigned to frames
 * make all tracks share unique, steady sampling rates without gaps
 
-You can perform this type of correction yourself to be fully aware about the changes you apply to your data or you can use the `moveVis` function `align_move()` that will do the above using interpolation. Here, we will use `align_move()` to correct `move_data` to a sampling rate of 4 minutes (240 seconds) at the seconds digit ":00":
+You can perform this type of correction yourself to be fully aware about the changes you apply to your data or you can use the `moveVis` function <a href="http://movevis.org/reference/align_move.html">`align_move()`</a> that will do the above using interpolation. Here, we will use <a href="http://movevis.org/reference/align_move.html">`align_move()`</a>  to correct `move_data` to a sampling rate of 4 minutes (240 seconds) at the seconds digit ":00":
 
 ```R
 move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
 ```
 
-Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. With `moveVis`, you can use custom imagery and spatial data for creating your own static or temporally dynamic base maps. Otherwise, you can use default base maps. `moveVis` currently supports two map services: `OpenStreetMaps` (free) and `mapbox` (free up to 50.000 map requests after registration). To get a list of all available `map_types`, use `get_maptypes()`:
+Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. With `moveVis`, you can use custom imagery and spatial data for creating your own static or temporally dynamic base maps. Otherwise, you can use default base maps. `moveVis` currently supports two map services: `OpenStreetMaps` (free) and `mapbox` (free up to 50.000 map requests per month after registration). To get a list of all available map types, use `get_maptypes()`:
 
 ```R
 get_maptypes()
 ```
 
-Using OpenStreetMap, you can get open-source road map imagery and maps derived thereof. Using `mapbox`, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For `mapbox`, you need to register (for free) at https://www.mapbox.com/ to get a token that grants you access and that can be used with the `map_token` argument of `frames_spatial()` (see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details). 
+Using OpenStreetMap, you can get open-source road map imagery and maps derived thereof. Using `mapbox`, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For `mapbox`, you need to register (for free) at https://www.mapbox.com/ to get a token that grants you access and that can be used with the `map_token` argument of `frames_spatial()` (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details). 
 
 In this example, we want to use the OpenStreetMap 'watercolour' imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from `move_data` using a map, we can use `frames_spatial()`:
 
 ```R
 frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
-                         map_type = "watercolor", alpha = 0.5)
+                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
 ```
 
-Instead of using `path_colours`, you can add a `colour` column to your `move` or `moveStack` object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioral segment, time, age, speed or somethin different (see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details).
+Instead of using `path_colours`, you can add a `colour` column to your `move` or `moveStack` object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioral segment, time, age, speed or something different (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details).
 
 Have a look at the newly created `frames` list object and display a randomly selected frame to get a first impression, how your animation will look like:
 
