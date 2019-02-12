@@ -148,12 +148,12 @@
 
     <pre class="usage"><span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
   <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"streets"</span>,
-  <span class='kw'>map_res</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>(),
-  <span class='st'>"/moveVis/basemap"</span>), <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>map_res</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
+  <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='no'>...</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -247,6 +247,16 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     <tr>
       <th>path_legend_title</th>
       <td><p>character, path legend title. Default is <code>"Names"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments customizing the frame background, passed to <code><a href='https://www.rdocumentation.org/packages/RStoolbox/topics/ggR'>RStoolbox::ggR</a></code> or <code><a href='https://www.rdocumentation.org/packages/RStoolbox/topics/ggRGB'>RStoolbox::ggRGB</a></code>:</p><ul>
+<li><p><code>alpha</code>, numeric, background transparency (0-1).</p></li>
+<li><p><code>hue</code>, numeric, hue value for color calculation (0-1). Change if you need anything else than greyscale. Only effective if sat &gt; 0.</p></li>
+<li><p><code>sat</code>, numeric, saturation value for color calculation (0,1). Change if you need anything else than greyscale.</p></li>
+<li><p><code>stretch</code>, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.</p></li>
+<li><p><code>quantiles</code>, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2<!-- % stretch, i.e. \code{c(0.02,0.98)}. --></p></li>
+</ul></td>
     </tr>
     <tr>
       <th>verbose</th>

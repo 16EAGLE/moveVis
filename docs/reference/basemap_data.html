@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data • moveVis</title>
+<title>Exemplary manipulated NDVI data — basemap_data • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,12 @@
 
 
 
-<meta property="og:title" content="MODIS NDVI 2013 example data of Lake Constance area, Germany — basemap_data" />
+<meta property="og:title" content="Exemplary manipulated NDVI data — basemap_data" />
 
-<meta property="og:description" content="Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area." />
+<meta property="og:description" content="This datasetd contains two lists of equal lenghts:
+a list of ten single-layer raster objects, representing NDVI images covering the Lake of Constance area.
+a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,14 +138,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>MODIS NDVI 2013 example data of Lake Constance area, Germany</h1>
+    <h1>Exemplary manipulated NDVI data</h1>
     
     <div class="hidden name"><code>basemap_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Dataset containing ten MODIS NDVI scenes of 2013 covering the Lake Constance area.</p>
+    <p>This datasetd contains two lists of equal lenghts:</p><ul>
+<li><p>a list of ten single-layer <code>raster</code> objects, representing NDVI images covering the Lake of Constance area.</p></li>
+<li><p>a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...</p></li>
+</ul>
     
     </div>
 
@@ -150,15 +156,19 @@
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>List containing two lists of equal lengths: a list of rasters containing 10 MODIS NDVI raster class objects and a list of corresponding POSIXct class timestamp objects.</p>
+    <p>List containing two lists of equal lengths: a list of <code>raster</code> objects and a list of <code>POSIXct</code> times.</p>
     
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>MODIS 2013 freely available data, acsessed using <code>MODIS</code> R package</p>
+    <p>MODIS (MOD13Q1 NDVI)</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The example data have been pre-processed and have euqal extents and projections.</p>
+    <p>This object is used by some <code>moveVis</code> examples and unit tests.</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>All data contained should only be used for testing <code>moveVis</code> and are not suitable to be used for analysis or interpretation.</p>
     
 
   </div>
@@ -171,6 +181,8 @@
       <li><a href="#source">Source</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#note">Note</a></li>
           </ul>
 
   </div>

@@ -4,7 +4,7 @@
 #'
 #' @inheritParams add_labels
 #' @param distance numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.
-#' @param height numeric, height of the scalebar in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.02.
+#' @param height numeric, height of the scalebar in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.015.
 #' @param position character, position of the scalebar on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.
 #' @param x numeric, position of the bottom left corner of the scalebar on the x axis. If not set, \code{position} is used to calculate the position of the scalebar.
 #' @param y numeric, position of the bottom left corner of the scalebar on the y axis. If not set, \code{position} is used to calculate the position of the scalebar.
@@ -21,7 +21,7 @@
 #' @seealso \link{frames_spatial}
 #' @export
 
-add_scalebar <- function(frames, distance = NULL, height = 0.018, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, verbose = TRUE){
+add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)

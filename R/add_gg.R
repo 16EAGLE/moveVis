@@ -42,7 +42,7 @@
 add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
   
   ## check data and replicate if necessary
-  if(is.list(data)){
+  if(inherits(data, "list")){
     if(length(data) != length(frames)) out("Argument 'data' is a list und thus must be of same length as 'frames'.", type = 3)
   } else{
     data <- rep(list(data), length(frames))
