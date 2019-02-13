@@ -3,12 +3,12 @@ map_token = Sys.getenv("moveVis.map_token")
 if(map_token != "") run_mapbox <- TRUE else run_mapbox <- FALSE
 
 ## which tests to run
-which_tests = Sys.getenv("moveVis.which_tests")
-if(which_tests != ""){
-  which_tests <- strsplit(which_tests, ";")[[1]]
-} else{
-  which_test <- c("add_", "align_move", "deprecated", "frames_graph", "frames_spatial", "get_maptypes", "suggest_formats")
-}
+# which_tests = Sys.getenv("moveVis.which_tests")
+# if(which_tests != ""){
+#   which_tests <- strsplit(which_tests, ";")[[1]]
+# } else{
+#   which_test <- c("add_", "align_move", "deprecated", "frames_graph", "frames_spatial", "get_maptypes", "suggest_formats")
+# }
 
 ## directories
 test_dir = Sys.getenv("moveVis.test_dir")
