@@ -79,7 +79,6 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     if(!is.numeric(map_res)) out("Argument 'map_res' must be 'numeric'.", type = 3)
     if(any(map_res < 0, map_res > 1)) out("Argument 'map_res' must be a value between 0 and 1.", type = 3)
     if(all(!inherits(map_token, "character"), map_service == "mapbox")) out("Argument 'map_token' must be defined to access a basemap, if 'r_list' is not defined and 'map_service' is 'mapbox'.", type = 3)
-    if(map_service == "mapbox") if(!is.character(map_dir)) out("Argument 'map_dir' must be of type 'character'.", type = 3)
     if(is.null(map_dir)){
       map_dir <- paste0(tempdir(), "/moveVis/basemap/")
       if(!dir.exists(map_dir)) dir.create(map_dir, recursive = T)
@@ -109,6 +108,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, crs(m))
     r_type <- "RGB"
   }
+  
   out("Assigning raster maps to frames...")
   r_list <- .rFrames(r_list, r_times, m.split, gg.ext, fade_raster)
   

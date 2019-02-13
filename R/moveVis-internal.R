@@ -140,7 +140,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1){
   
   ## calcualte square or user extent
-  m.ext <- st_bbox(c(xmin = min(m.df$x), xmax = max(m.df$x), ymin = min(m.df$y), ymax = max(m.df$y)), crs = m.crs)
+  m.ext <- st_bbox(c(xmin = min(m.df$x, na.rm = T), xmax = max(m.df$x, na.rm = T), ymin = min(m.df$y, na.rm = T), ymax = max(m.df$y, na.rm = T)), crs = m.crs)
   if(!is.null(ext)){
     gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = m.crs)
     if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
@@ -163,7 +163,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # })
   # names(dummy) <- m.names
   
-  .lapply(1:(max(m.df$frame)), function(i){ # , mn = m.names, d = dummy){
+  .lapply(1:(max(m.df$frame, na.rm = T)), function(i){ # , mn = m.names, d = dummy){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
@@ -323,11 +323,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(!isTRUE(uni.lag)) out("The temporal resolution of 'm' is diverging. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
   
   ## check temporal consistence per individual (consider to remove, if NA timestamps should be allowed)
-  uni.intra <- mapply(x = tl, y = ts, function(x, y) length(c(min(y), min(y) + cumsum(x))) == length(y))
+  uni.intra <- mapply(x = tl, y = ts, function(x, y) length(c(min(y, na.rm = T), min(y, na.rm = T) + cumsum(x))) == length(y))
   if(!all(uni.intra)) out("For at least one movement track, variating time lags have been detected. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
   
   ## check overall consistence of timestamps
-  ts.art <- seq.POSIXt(min(do.call(c, ts)), max(do.call(c, ts)), by = unique(unlist(tl)))
+  ts.art <- seq.POSIXt(min(do.call(c, ts), na.rm = T), max(do.call(c, ts), na.rm = T), by = unique(unlist(tl)))
   uni.all <- all(sapply(unique(timestamps(m)), function(x, ta = ts.art) x %in% ta))
   if(!isTRUE(uni.all)) out("For at least one movement track, timestamps diverging from those of the other tracks have been detected. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
   
@@ -348,7 +348,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' get map
 #' @importFrom slippymath bb_to_tg tg_composite
 #' @importFrom curl curl_download
-#' @importFrom raster projectRaster extent
+#' @importFrom raster projectRaster extent res res<- projectExtent
 #' @importFrom magick image_read image_write image_convert
 #' @noRd 
 .getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs){
@@ -373,6 +373,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   ## composite imagery
   r <- tg_composite(tg, images)
   list(crop(projectRaster(r, crs = m.crs), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
+  
+  #projectRaster produces hidden warnings:
+  # no non-missing arguments to max; returning -Inf
+  # no non-missing arguments to min; returning -Inf
+  # seems to be a bug
 }
 
 #' interpolate over NAs
@@ -381,7 +386,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .approxNA <- function(x) na.approx(x, rule = 2)
 
 #' assign raster to frames
-#' @importFrom raster nlayers unstack crop extent setValues stack approxNA calc
+#' @importFrom raster nlayers unstack crop extent stack approxNA calc raster setValues
 #' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @importFrom utils head
@@ -402,11 +407,13 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(n > 1){
     
     ## calcualte time differences
-    pos_diff <- lapply(r_times, function(x) sapply(lapply(m.split, function(x) max(unique(x$time))), difftime, time2 = x))
+    pos_diff <- lapply(r_times, function(x) sapply(lapply(m.split, function(x) max(unique(x$time), na.rm = T)), difftime, time2 = x))
     pos_r <- sapply(pos_diff, which.min)
     
     ## create frame list, top list is bands, second list is times
-    r.dummy <- setValues(r.crop[[1]][[1]], NA)
+    r.dummy <- setValues(r.crop[[1]][[1]], NA) #produces warning during tests: no non-missing arguments to max; returning -Inf
+    # r.dummy <- raster(r.crop[[1]][[1]]) # and then:
+    #`values<-`(r.dummy, NA) # produces same warning. There seems no solution to this to avoid warnings
     r_list <- rep(list(rep(list(r.dummy), length(m.split))), r.nlay)
     
     if(!isTRUE(fade_raster)){

@@ -35,6 +35,9 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   
+  ## check m time conformities
+  .time_conform(m)
+  
   if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
   if(is.character(r_type)){
     if(!any(r_type == c("gradient", "discrete"))) out("Argument 'r_type' must be either 'gradient' or 'discrete'.", type = 3)
@@ -65,7 +68,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   ## warnings
   if(r_type == "discrete" & fade_raster == T) out("Argument 'fade_raster' is TRUE, while argument 'r_type' is set to 'discrete'. Interpolating discrete values will destroy discrete classes!", type = 2)
   if(r_type == "discrete" & !val_by%%1==0) out("Argument 'val_by' is fractional, while argument 'r_type' is set to 'discrete'. You may want to set 'val_by' to 1 or another integer for discrete classes.", type = 2)
-   
+  
   ## create data.frame from m with frame time and colour
   out("Processing movement data...")
   m.df <- .m2df(m) 
@@ -83,8 +86,8 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   gg.df <- do.call(rbind, m.split)
   
   ## create value sequence
-  if(is.null(val_min)) val_min <- floor(min(sapply(r_list[[1]], minValue)))
-  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list[[1]], maxValue)))
+  if(is.null(val_min)) val_min <- floor(min(sapply(r_list[[1]], minValue), na.rm = T))
+  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list[[1]], maxValue), na.rm = T))
   val_digits <- nchar(strsplit(as.character(val_by), "[.]")[[1]][2])
   if(is.na(val_digits)) val_digits <- 0
   val_seq <- seq(val_min, val_max, by = val_by)
