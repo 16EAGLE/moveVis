@@ -10,14 +10,13 @@
 <a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. The <a href="http://movevis.org">`moveVis`</a> package is closely connected to the `move` package and builds up on the `ggplot2` grammar of graphics.
 
 <br>
-<p align="center"><img width="93%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
 <p align="center"><sub>Figure 1: Exemplary movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 <br>
 
 <br>
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
-<p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a discrete base layer</sub></p> background</sub></p>
-<br>
+<p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a discrete base layer</sub></p>
 
 
 ## Installation
