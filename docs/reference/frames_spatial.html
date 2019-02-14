@@ -333,18 +333,18 @@ Colours could also be arranged to change through time or by behavioral segments,
 <span class='fu'><a href='get_maptypes.html'>get_maptypes</a></span>()
 
 <span class='co'># use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)</span>
-<span class='co'># }</span># NOT RUN {
-frames <- frames_spatial(m, map_service = "mapbox",
-                         map_token = "your_token_from_your_mapbox_account",
-                         map_type = "satellite")
-# if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory
-# to save all base maps offline so that you do not have to query the servers each time
-#' frames <- frames_spatial(m, map_service = "mapbox",
-                            map_token = "your_token_from_your_mapbox_account",
-                            map_type = "satellite",
-                            map_dir = "your/map_directory/")                         
-# }
-<span class='co'># NOT RUN {</span>
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"mapbox"</span>,
+                         <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='st'>"your_token_from_your_mapbox_account"</span>,
+                         <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"satellite"</span>)
+
+<span class='co'># if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory</span>
+<span class='co'># to save all base maps offline so that you do not have to query the servers each time</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"mapbox"</span>,
+                         <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='st'>"your_token_from_your_mapbox_account"</span>,
+                         <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"satellite"</span>,
+                         <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='st'>"your/map_directory/"</span>)
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># use your own custom base maps</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"basemap_data"</span>)
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
