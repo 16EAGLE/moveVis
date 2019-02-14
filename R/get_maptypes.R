@@ -5,8 +5,21 @@
 #' @param map_service character, optional, either \code{"mapbox"} or \code{"osm"}. Otherwise, a list of map types for both services is returned.
 #' @return A character vector of supported map types
 #' 
-#' @seealso \code{\link{frames_spatial}}
+#' @examples 
+#' # for all services
+#' get_maptypes()
 #' 
+#' # for osm only
+#' get_maptypes("osm")
+#' # or
+#' get_maptypes()$osm
+#' 
+#' # for mapbox only
+#' get_maptypes("mapbox")
+#' # or
+#' get_maptypes()$mapbox
+#' 
+#' @seealso \code{\link{frames_spatial}}
 #' @export
 
 get_maptypes <- function(map_service = NULL){

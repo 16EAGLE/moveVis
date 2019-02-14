@@ -38,8 +38,43 @@ None or an R graphics window displaying the animation
 \details{
 An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
 }
+\examples{
+library(moveVis)
+library(move)
+
+data("move_data", "basemap_data")
+# align movement
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# create spatial frames with frames_spatial:
+r_list <- basemap_data[[1]]
+r_times <- basemap_data[[2]]
+
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                         fade_raster = TRUE)
+
+# customize
+frames <- add_colourscale(frames, type = "gradient",
+                          colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
+frames <- add_northarrow(frames, position = "bottomleft")
+frames <- add_scalebar(frames, colour = "white", position = "bottomright")
+
+frames <- add_progress(frames)
+frames <- add_timestamps(frames, m, type = "label")
+
+\dontrun{
+# check available formats
+suggest_formats()
+
+# animate frames as GIF
+animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+
+# animate frames as mov
+animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+}
+}
 \seealso{
-\code{\link{frames_spatial}}
+\link{frames_spatial} \link{frames_graph} \link{animate_frames}
 }
 \author{
 Jakob Schwalb-Willmann

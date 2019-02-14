@@ -28,6 +28,34 @@
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
 #' @seealso \link{frames_spatial}
+#' 
+#' @examples
+#' library(moveVis)
+#' library(move)
+#' data("move_data")
+#' 
+#' # the tracks in move_data have irregular timestamps and sampling rates.
+#' # print unique timestamps and timeLag
+#' unique(timestamps(move_data))
+#' unique(unlist(timeLag(move_data, units = "secs")))
+#' 
+#' # use align_move to correct move_data to a uniform time scale and lag using interpolation.
+#' # resolution of 4 minutes (240 seconds) at digit 0 (:00 seconds) per timestamp:
+#' m <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+#' unique(unlist(timeLag(m, units = "secs")))
+#' 
+#' # resolution of 1 hour (3600 seconds) at digit 0 (:00 seconds) per timestamp:
+#' m <- align_move(move_data, res = 3600, digit = 0, unit = "secs")
+#' unique(unlist(timeLag(m, units = "secs")))
+#' 
+#' # resolution of 1 hour (15 seconds) at digit 0 (:00 seconds) per timestamp:
+#' m <- align_move(move_data, res = 15, digit = 0, unit = "secs")
+#' unique(unlist(timeLag(m, units = "secs")))
+#' 
+#' # resolution of 1 hour:
+#' m <- align_move(move_data, res = 60, unit = "mins")
+#' unique(unlist(timeLag(m, units = "secs")))
+#' 
 #' @export
 
 align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod = "greatcircle"){

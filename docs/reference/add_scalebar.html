@@ -197,9 +197,36 @@
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='frames_spatial.html'>frames_spatial</a></p></div>
+    <div class='dont-index'><p><a href='frames_spatial.html'>frames_spatial</a> <a href='frames_graph.html'>frames_graph</a> <a href='animate_frames.html'>animate_frames</a></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>moveVis</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>move</span>)
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"move_data"</span>, <span class='st'>"basemap_data"</span>)
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
+
+<span class='co'># create spatial frames using a custom NDVI base layer</span>
+<span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
+<span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
+                         <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># add a scale bar to frames:</span>
+<span class='no'>frames.a</span> <span class='kw'>&lt;-</span> <span class='fu'>add_scalebar</span>(<span class='no'>frames</span>)
+<span class='no'>frames.a</span><span class='kw'>[[</span><span class='fl'>100</span>]]
+
+<span class='co'># or in white at another position</span>
+<span class='no'>frames.b</span> <span class='kw'>&lt;-</span> <span class='fu'>add_scalebar</span>(<span class='no'>frames</span>, <span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"bottomright"</span>)
+<span class='no'>frames.b</span><span class='kw'>[[</span><span class='fl'>100</span>]]
+
+<span class='co'># or with another height</span>
+<span class='no'>frames.c</span> <span class='kw'>&lt;-</span> <span class='fu'>add_scalebar</span>(<span class='no'>frames</span>, <span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"bottomright"</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>0.025</span>)
+<span class='no'>frames.c</span><span class='kw'>[[</span><span class='fl'>100</span>]]
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -209,7 +236,9 @@
       <li><a href="#value">Value</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Jakob Schwalb-Willmann</p>

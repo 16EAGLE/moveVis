@@ -276,9 +276,105 @@ Colours could also be arranged to change through time or by behavioral segments,
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
+    <div class='dont-index'><p><code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p>
+<p><code>frames_spatial</code> <a href='join_frames.html'>join_frames</a> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>moveVis</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>move</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>ggplot2</span>)
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"move_data"</span>)
+<span class='co'># align movement</span>
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
+
+<span class='co'># with osm watercolor base map</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>)
+<span class='co'># take a look at one of the frames, e.g. the 100th</span>
+<span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]]
+
+<span class='co'># make base map a bit transparent</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+<span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]] <span class='co'># take a look</span>
+
+<span class='co'># use a larger margin around extent</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+                         <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.8</span>)
+
+<span class='co'># use a extent object as your AOI</span>
+<span class='no'>ext</span> <span class='kw'>&lt;-</span> <span class='fu'>extent</span>(<span class='no'>m</span>)
+<span class='no'>ext</span>@<span class='kw'>xmin</span> <span class='kw'>&lt;-</span> <span class='no'>ext</span>@<span class='kw'>xmin</span> - (<span class='no'>ext</span>@<span class='kw'>xmin</span>*<span class='fl'>0.003</span>)
+<span class='no'>ext</span>@<span class='kw'>xmax</span> <span class='kw'>&lt;-</span> <span class='no'>ext</span>@<span class='kw'>xmax</span> + (<span class='no'>ext</span>@<span class='kw'>xmax</span>*<span class='fl'>0.003</span>)
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+                         <span class='kw'>ext</span> <span class='kw'>=</span> <span class='no'>ext</span>)
+
+<span class='co'># alter path appearance (make it longer and bigger)</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+                         <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>29</span>)
+
+<span class='co'># adjust path colours manually</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+                         <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"black"</span>, <span class='st'>"blue"</span>, <span class='st'>"purple"</span>))
+
+<span class='co'># or do it directly within your moveStack, e.g. like:</span>
+<span class='no'>m.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/move/topics/split'>split</a></span>(<span class='no'>m</span>) <span class='co'># split m into list by individual</span>
+<span class='no'>m.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/mapply'>mapply</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>m.list</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"orange"</span>, <span class='st'>"purple"</span>, <span class='st'>"darkgreen"</span>), <span class='kw'>function</span>(<span class='no'>x</span>, <span class='no'>y</span>){
+  <span class='no'>x</span>$<span class='no'>colour</span> <span class='kw'>&lt;-</span> <span class='no'>y</span>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/function'>return</a></span>(<span class='no'>x</span>)
+}) <span class='co'># add colour per individual</span>
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/move/topics/moveStack'>moveStack</a></span>(<span class='no'>m.list</span>) <span class='co'># putting it back together into a moveStack</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+<span class='co'># this way, you do not have to assign colours per individual track</span>
+<span class='co'># instead, you could assign colours by segment, age, speed or other variables</span>
+
+<span class='co'># get available map types</span>
+<span class='fu'><a href='get_maptypes.html'>get_maptypes</a></span>()
+
+<span class='co'># use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)</span>
+<span class='co'># }</span># NOT RUN {
+frames <- frames_spatial(m, map_service = "mapbox",
+                         map_token = "your_token_from_your_mapbox_account",
+                         map_type = "satellite")
+# if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory
+# to save all base maps offline so that you do not have to query the servers each time
+#' frames <- frames_spatial(m, map_service = "mapbox",
+                            map_token = "your_token_from_your_mapbox_account",
+                            map_type = "satellite",
+                            map_dir = "your/map_directory/")                         
+# }
+<span class='co'># NOT RUN {</span>
+<span class='co'># use your own custom base maps</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"basemap_data"</span>)
+<span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
+<span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
+
+<span class='co'># using gradient data (e.g. NDVI)</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
+                         <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># using discrete data (e.g. classifications)</span>
+<span class='co'># let's make up some classification data with 10 classes</span>
+<span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>lapply</a></span>(<span class='no'>r_list</span>, <span class='kw'>function</span>(<span class='no'>x</span>){
+  <span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>raster</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/raster/topics/setValues'>setValues</a></span>(<span class='no'>x</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>round</a></span>(<span class='kw pkg'>raster</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/raster/topics/getValues'>getValues</a></span>(<span class='no'>x</span>)*<span class='fl'>10</span>))
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/function'>return</a></span>(<span class='no'>y</span>)
+})
+<span class='co'># turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"discrete"</span>,
+                         <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='co'># animate the frames created with frames_spatial;</span>
+<span class='fu'><a href='animate_frames.html'>animate_frames</a></span>(<span class='no'>frames</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gif"</span>))
+<span class='co'># }</span># NOT RUN {
+# see ?add_colourscale to learn how to change colours of custom base maps
+# see all add_ functions on how to customize your frames created with frames_spatial
+# or frames_graph
+# see ?animate_frames on how to animate your list of frames
+
+# }
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -290,7 +386,9 @@ Colours could also be arranged to change through time or by behavioral segments,
       <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Jakob Schwalb-Willmann</p>

@@ -22,7 +22,28 @@
 #' @importFrom grid arrow unit
 #' @importFrom rlang expr
 #'
-#' @seealso \link{frames_spatial}
+#' @examples 
+#' library(moveVis)
+#' library(move)
+#' 
+#' data("move_data", "basemap_data")
+#' m <- align_move(move_data, res = 4, unit = "mins")
+#' 
+#' # create spatial frames using a custom NDVI base layer
+#' r_list <- basemap_data[[1]]
+#' r_times <- basemap_data[[2]]
+#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+#'                          fade_raster = TRUE)
+#' 
+#' # add a north arrow to frames:
+#' frames.a <- add_northarrow(frames)
+#' frames.a[[100]]
+#' 
+#' # or in white at another position
+#' frames.b <- add_northarrow(frames, colour = "white", position = "bottomleft")
+#' frames.b[[100]]
+#' 
+#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
 #' @export
 
 add_northarrow <- function(frames, height = 0.05, position = "bottomright", x = NULL, y = NULL, colour = "black", size = 1,

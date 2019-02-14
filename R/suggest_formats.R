@@ -12,6 +12,14 @@
 #' @importFrom av av_muxers
 #' @importFrom stats na.omit
 #' 
+#' @examples
+#' # find out which formats are available
+#' suggest_formats()
+#' 
+#' # check for a particular format not listed in "suggested" that you want to use, e.g. m4v
+#' suggest_formats("m4v")
+#' # if "m4v" is returned, you can use this format with animate_frames
+#' 
 #' @export
 
 suggest_formats <- function(suggested = c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")){

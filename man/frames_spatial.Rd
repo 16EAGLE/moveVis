@@ -83,8 +83,105 @@ Colours could also be arranged to change through time or by behavioral segments,
 
 Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 }
+\examples{
+library(moveVis)
+library(move)
+library(ggplot2)
+
+data("move_data")
+# align movement
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# with osm watercolor base map
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
+# take a look at one of the frames, e.g. the 100th
+frames[[100]]
+
+# make base map a bit transparent
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5)
+frames[[100]] # take a look
+
+# use a larger margin around extent
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
+                         margin_factor = 1.8)
+
+# use a extent object as your AOI
+ext <- extent(m)
+ext@xmin <- ext@xmin - (ext@xmin*0.003)
+ext@xmax <- ext@xmax + (ext@xmax*0.003)
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
+                         ext = ext)
+
+# alter path appearance (make it longer and bigger)
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
+                         path_size = 4, tail_length = 29)
+                         
+# adjust path colours manually
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
+                         path_colours = c("black", "blue", "purple"))
+
+# or do it directly within your moveStack, e.g. like:
+m.list <- split(m) # split m into list by individual
+m.list <- mapply(x = m.list, y = c("orange", "purple", "darkgreen"), function(x, y){
+  x$colour <- y
+  return(x)
+}) # add colour per individual
+m <- moveStack(m.list) # putting it back together into a moveStack
+frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5)
+# this way, you do not have to assign colours per individual track
+# instead, you could assign colours by segment, age, speed or other variables
+
+# get available map types
+get_maptypes()
+
+# use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)
+\dontrun{
+frames <- frames_spatial(m, map_service = "mapbox",
+                         map_token = "your_token_from_your_mapbox_account",
+                         map_type = "satellite")
+
+# if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory
+# to save all base maps offline so that you do not have to query the servers each time
+frames <- frames_spatial(m, map_service = "mapbox",
+                         map_token = "your_token_from_your_mapbox_account",
+                         map_type = "satellite",
+                         map_dir = "your/map_directory/")                         
+}
+
+# use your own custom base maps
+data("basemap_data")
+r_list <- basemap_data[[1]]
+r_times <- basemap_data[[2]]
+
+# using gradient data (e.g. NDVI)
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                         fade_raster = TRUE)
+
+# using discrete data (e.g. classifications)
+# let's make up some classification data with 10 classes
+r_list <- lapply(r_list, function(x){
+  y <- raster::setValues(x, round(raster::getValues(x)*10))
+  return(y)
+})
+# turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discrete",
+                         fade_raster = FALSE)
+
+\dontrun{
+# animate the frames created with frames_spatial;
+animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+}
+
+# see ?add_colourscale to learn how to change colours of custom base maps
+# see all add_ functions on how to customize your frames created with frames_spatial
+# or frames_graph
+# see ?animate_frames on how to animate your list of frames
+
+}
 \seealso{
 \code{\link{frames_graph}} \code{\link{animate_frames}}
+
+\code{\link{frames_spatial}} \link{join_frames} \code{\link{animate_frames}}
 }
 \author{
 Jakob Schwalb-Willmann

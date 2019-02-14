@@ -30,8 +30,32 @@ List of frames.
 \description{
 This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.
 }
+\examples{
+library(moveVis)
+library(move)
+
+data("move_data", "basemap_data")
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# create spatial frames using a custom NDVI base layer
+r_list <- basemap_data[[1]]
+r_times <- basemap_data[[2]]
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                         fade_raster = TRUE)
+
+# add text somewhere to all frames:
+frames.a <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
+                     colour = "white", size = 3)
+frames.a[[100]]
+
+# or use the ggplot2 "label" type:
+frames.b <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
+                     colour = "black", size = 3, type = "label")
+frames.b[[100]]
+
+}
 \seealso{
-\link{frames_spatial}
+\link{frames_spatial} \link{frames_graph} \link{animate_frames}
 }
 \author{
 Jakob Schwalb-Willmann

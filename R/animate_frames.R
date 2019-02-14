@@ -23,7 +23,42 @@
 #' @importFrom utils tail
 #' 
 #' @author Jakob Schwalb-Willmann
-#' @seealso \code{\link{frames_spatial}}
+#' 
+#' @examples
+#' library(moveVis)
+#' library(move)
+#' 
+#' data("move_data", "basemap_data")
+#' # align movement
+#' m <- align_move(move_data, res = 4, unit = "mins")
+#' 
+#' # create spatial frames with frames_spatial:
+#' r_list <- basemap_data[[1]]
+#' r_times <- basemap_data[[2]]
+#' 
+#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+#'                          fade_raster = TRUE)
+#' 
+#' # customize
+#' frames <- add_colourscale(frames, type = "gradient",
+#'                           colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
+#' frames <- add_northarrow(frames, position = "bottomleft")
+#' frames <- add_scalebar(frames, colour = "white", position = "bottomright")
+#' 
+#' frames <- add_progress(frames)
+#' frames <- add_timestamps(frames, m, type = "label")
+#' 
+#' \dontrun{
+#' # check available formats
+#' suggest_formats()
+#' 
+#' # animate frames as GIF
+#' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+#' 
+#' # animate frames as mov
+#' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+#' }
+#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
 #' 
 #' @export
 
@@ -44,7 +79,7 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   if(out_ext == "gif"){
     if(length(frames) > 800) out("The number of frames exceeds 800 and the GIF format is used. This format may not be suitable for animations with a high number of frames, since it causes large file sizes. Consider using a video file format instead.", type = 2)
-    save_gif(.lapply(frames, function(x) quiet(print(x))), gif_file = out_file, width = width, height = height, delay = (1/fps), progress = T, res = res, ...)
+    save_gif(.lapply(frames, function(x) quiet(print(x))), gif_file = out_file, width = width, height = height, delay = (1/fps), progress = verbose, res = res, ...)
   }else{
     av_capture_graphics(.lapply(frames, function(x) quiet(print(x))), output = out_file, width = width, height = height, res = res, framerate = fps, verbose = verbose, ...) #, vfilter =' framerate=fps=10') 
   }

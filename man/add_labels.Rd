@@ -31,8 +31,30 @@ List of frames.
 \description{
 This function adds character labels such as title or axis labels to animation frames created with \code{\link{frames_spatial}}.
 }
+\examples{
+library(moveVis)
+library(move)
+
+data("move_data", "basemap_data")
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# create spatial frames using a custom NDVI base layer
+r_list <- basemap_data[[1]]
+r_times <- basemap_data[[2]]
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                         fade_raster = TRUE)
+
+# add labels to frames:
+frames <- add_labels(frames, title = "Example animation using moveVis::add_labels()", 
+                     subtitle = "Adding a subtitle to frames created using frames_spatial()",
+                     caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
+                     x = "Longitude", y = "Latitude")
+# have a look at one frame
+frames[[100]]
+
+}
 \seealso{
-\link{frames_spatial}
+\link{frames_spatial} \link{frames_graph} \link{animate_frames}
 }
 \author{
 Jakob Schwalb-Willmann

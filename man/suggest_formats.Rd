@@ -16,6 +16,15 @@ A subset of \code{suggested}, containing only those file formats which are known
 \description{
 This function returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
 }
+\examples{
+# find out which formats are available
+suggest_formats()
+
+# check for a particular format not listed in "suggested" that you want to use, e.g. m4v
+suggest_formats("m4v")
+# if "m4v" is returned, you can use this format with animate_frames
+
+}
 \seealso{
 \code{\link{animate_frames}}
 }

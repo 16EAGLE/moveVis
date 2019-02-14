@@ -65,17 +65,16 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   ## handle colours, either provided as a field in m or argument or computed randomly
   m.info <- as(m, "data.frame")
-  if(all(!is.character(path_colours), !is.null(m.info$colour))){
+  if(all(!is.character(path_colours), !all(is.na(m.info$colour)))){
     
     ## get colours from column
     m.df$colour <- as.character(m.info$colour)
   } else{
     if(!is.character(path_colours)){
       
-      ## get random colours
       path_colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
       path_colours <- c(path_colours, sample(colours()[-sapply(path_colours, match, table = colours())]))
-      path_colours <- sample(rep(path_colours, ceiling(n.indiv(m) / length(path_colours))))
+      #path_colours <- sample(rep(path_colours, ceiling(n.indiv(m) / length(path_colours))))
     }
     m.df$colour <- mapvalues(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
   }
@@ -280,7 +279,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
                                colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
       l.df$name <- factor(l.df$name, levels = l.df$name)
       l.df <- rbind(l.df, l.df)
-      p <- p + geom_path(data = l.df, aes_string(x = "frame", y = "value", colour = "name", linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
+      p <- p + geom_path(data = l.df, aes_string(x = "value", y = "count", colour = "name", linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
     }
     return(p)
   }

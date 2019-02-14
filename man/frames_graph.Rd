@@ -52,8 +52,60 @@ List of ggplot2 objects, each representing a single frame. If \code{return_data}
 To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
 }
+\examples{
+library(moveVis)
+library(move)
+library(ggplot2)
+
+data("move_data", "basemap_data")
+# align movement
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# create spatial frames with frames_spatial:
+r_list <- basemap_data[[1]]
+r_times <- basemap_data[[2]]
+
+frames.sp <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                            fade_raster = TRUE)
+
+# use the same inputs to create a non-spatial graph, e.g. a flow graph:
+frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                          fade_raster = TRUE, graph_type = "flow")
+# take a look
+frames.gr[[100]]
+
+# make a histogram graph:
+frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                          fade_raster = TRUE, graph_type = "hist")
+# change the value interval:
+frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                          fade_raster = TRUE, graph_type = "hist", val_by = 0.01)
+frames.gr[[100]]
+# manipulate the labels, since now they are very dense:
+# just replace the current scale
+frames.gr <- add_gg(frames.gr, expr(scale_x_continuous(breaks=seq(0,1,0.1),
+                                    labels=seq(0,1,0.1), expand = c(0,0))))
+frames.gr[[100]]
+
+# the same can be done for discrete data, histogram will then be shown as bin plots
+
+# to make your own graphs, use frames_graph to return data instead of frames
+data.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                        fade_raster = TRUE, return_data = TRUE)
+
+\dontrun{
+# animate the frames created with frames_graph;
+animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+}
+
+# see all add_ functions on how to customize your frames created with frames_spatial
+# or frames_graph
+
+# see ?animate_frames on how to animate your list of frames
+
+}
 \seealso{
-\code{\link{frames_spatial}} \code{\link{animate_frames}}
+\code{\link{frames_spatial}} \link{join_frames} \code{\link{animate_frames}}
 }
 \author{
 Jakob Schwalb-Willmann

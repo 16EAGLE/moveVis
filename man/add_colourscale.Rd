@@ -26,8 +26,46 @@ List of frames.
 \description{
 This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
 }
+\examples{
+library(moveVis)
+library(move)
+
+data("move_data", "basemap_data")
+# align movement
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# create spatial frames with frames_spatial:
+r_list <- basemap_data[[1]]
+r_times <- basemap_data[[2]]
+
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+                         fade_raster = TRUE)
+frames[[100]] # take a look at one of the frames
+
+# default blue is boring, let's change the colour scale of all frames
+frames <- add_colourscale(frames, type = "gradient", colours = c("orange", "white", "darkgreen"),
+                          legend_title = "NDVI")
+frames[[100]]
+
+# let's make up some classification data with 10 classes
+r_list <- lapply(r_list, function(x){
+  y <- raster::setValues(x, round(raster::getValues(x)*10))
+  return(y)
+})
+# turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discrete",
+                         fade_raster = FALSE)
+frames[[100]]
+
+# now, let's assign a colour per class value to frames
+colFUN <- colorRampPalette(c("orange", "lightgreen", "darkgreen"))
+cols <- colFUN(10)
+frames <- add_colourscale(frames, type = "discrete", colours = cols, legend_title = "Classes")
+frames[[100]]
+
+}
 \seealso{
-\link{frames_spatial}
+\link{frames_spatial} \link{frames_graph} \link{animate_frames}
 }
 \author{
 Jakob Schwalb-Willmann

@@ -18,7 +18,32 @@
 #' @importFrom geosphere distGeo
 #' @importFrom rlang expr
 #'
-#' @seealso \link{frames_spatial}
+#' @examples 
+#' library(moveVis)
+#' library(move)
+#' 
+#' data("move_data", "basemap_data")
+#' m <- align_move(move_data, res = 4, unit = "mins")
+#' 
+#' # create spatial frames using a custom NDVI base layer
+#' r_list <- basemap_data[[1]]
+#' r_times <- basemap_data[[2]]
+#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+#'                          fade_raster = TRUE)
+#' 
+#' # add a scale bar to frames:
+#' frames.a <- add_scalebar(frames)
+#' frames.a[[100]]
+#' 
+#' # or in white at another position
+#' frames.b <- add_scalebar(frames, colour = "white", position = "bottomright")
+#' frames.b[[100]]
+#' 
+#' # or with another height
+#' frames.c <- add_scalebar(frames, colour = "white", position = "bottomright", height = 0.025)
+#' frames.c[[100]]
+#' 
+#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
 #' @export
 
 add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, verbose = TRUE){
