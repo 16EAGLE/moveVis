@@ -188,15 +188,34 @@
 <div id="example-1-creating-a-simple-animation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#example-1-creating-a-simple-animation" class="anchor"></a>Example 1: Creating a simple animation</h4>
-<p>In this example, the workflow for creating a movement animation using <code>moveVis</code> is quickly demonstrated. Other examples can be found in the help of each function or at <a href="http://movevis.org">moveVis.org</a>.</p>
-<p>First, load the required packages for this example and the <code>moveVis</code> example data:</p>
+<p>Create a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of <code>ggplot2</code> frames and turning these frames into an animated <code>GIF</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
+
+<span class="co"># align move_data to a uniform time scale</span>
+move_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)
+
+<span class="co"># create spatial frames with a OpenStreetMap watercolour map</span>
+frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
+                         <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)
+frames[[<span class="dv">100</span>]] <span class="co"># preview one of the frames</span>
+
+<span class="co"># animate frames</span>
+<span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/output/folder/moveVis_example.gif"</span>)</code></pre></div>
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
+</div>
+<div id="example-2-expample-1-explained-in-detail" class="section level4">
+<h4 class="hasAnchor">
+<a href="#example-2-expample-1-explained-in-detail" class="anchor"></a>Example 2: Expample 1 explained in detail</h4>
+<p>First, load the required packages for this example and the <code>moveVis</code> example movement data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(raster)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplo2)
 
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>, <span class="st">"basemap_data"</span>)</code></pre></div>
-<p><code>move_data</code> is a <code>moveStack</code>, containing three individual tracks. Let’s have a look at both timestamps and sampling rates of <code>move_data</code>:</p>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)</code></pre></div>
+<p><code>move_data</code> is a <code>moveStack</code>, containing three individual tracks. Let’s have a look at both timestamps and sampling rates:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/raster/topics/unique">unique</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/timestamps">timestamps</a></span>(move_data))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/timeLag">timeLag</a></span>(move_data, <span class="dt">unit =</span> <span class="st">"mins"</span>)</code></pre></div>
 <p>We can conclude that each track has a sampling rate of roughly 4 minutes, however sampling rates differ over time. Due to this, tracks do not share unique timestamps. For animation, unique frame times are needed, regardless if we want to animate a single track or multiple at once. Thus, we need to align <code>move_data</code> in order to</p>
@@ -204,11 +223,11 @@
 <li>make all tracks share unique timestamps that can be assigned to frames</li>
 <li>make all tracks share unique, steady sampling rates without gaps</li>
 </ul>
-<p>You can perform this type of correction yourself to be fully aware about the changes you apply to your data or you can use the <code>moveVis</code> function <a href="http://movevis.org/reference/align_move.html"><code><a href="reference/align_move.html">align_move()</a></code></a> that will do the above using interpolation. Here, we will use <a href="http://movevis.org/reference/align_move.html"><code><a href="reference/align_move.html">align_move()</a></code></a> to correct <code>move_data</code> to a sampling rate of 4 minutes (240 seconds) at the seconds digit “:00”:</p>
+<p>You can use <a href="http://movevis.org/reference/align_move.html"><code><a href="reference/align_move.html">align_move()</a></code></a> to align <code>move_data</code> to a sampling rate of 4 minutes (240 seconds) at the seconds digit “:00”:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">move_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)</code></pre></div>
-<p>Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. With <code>moveVis</code>, you can use custom imagery and spatial data for creating your own static or temporally dynamic base maps. Otherwise, you can use default base maps. <code>moveVis</code> currently supports two map services: <code>OpenStreetMaps</code> (free) and <code>mapbox</code> (free up to 50.000 map requests per month after registration). To get a list of all available map types, use <code><a href="reference/get_maptypes.html">get_maptypes()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_maptypes.html">get_maptypes</a></span>()</code></pre></div>
-<p>Using OpenStreetMap, you can get open-source road map imagery and maps derived thereof. Using <code>mapbox</code>, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For <code>mapbox</code>, you need to register (for free) at <a href="https://www.mapbox.com/" class="uri">https://www.mapbox.com/</a> to get a token that grants you access and that can be used with the <code>map_token</code> argument of <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> (see <a href="http://movevis.org/reference/frames_spatial.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details).</p>
+<p>Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.</p>
+<p>Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. To get a list of all available default map types, use <code><a href="reference/get_maptypes.html">get_maptypes()</a></code>. <code>moveVis</code> supports both <code>OpenStreetMap</code> and <code>mapbox</code> as default map services.</p>
+<p>Using <code>OpenStreetMap</code>, you can get open-source streets map imagery and maps derived thereof. Using <code>mapbox</code>, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For <code>mapbox</code>, you need to register (for free) at <a href="https://www.mapbox.com/" class="uri">https://www.mapbox.com/</a> to get a token that grants you free access (50 000 map downloads/month) and that can be used with the <code>map_token</code> argument of <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> (see <a href="http://movevis.org/reference/frames_spatial.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details).</p>
 <p>In this example, we want to use the OpenStreetMap ‘watercolour’ imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from <code>move_data</code> using a map, we can use <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
                          <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
@@ -221,9 +240,9 @@ frames[[<span class="dv">100</span>]] <span class="co"># display one of the fram
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/output/folder/moveVis_example.gif"</span>)</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 </div>
-<div id="example-2-customizing-frame-appearance" class="section level4">
+<div id="example-2-customizing-frames" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-2-customizing-frame-appearance" class="anchor"></a>Example 2: Customizing frame appearance</h4>
+<a href="#example-2-customizing-frames" class="anchor"></a>Example 2: Customizing frames</h4>
 <p><code>moveVis</code> is entierly based on the <code>ggplot2</code> grammar of graphics. Each list element in <code>frames</code> is a <code>ggplot2</code> object that represents a single animation frame. Thus, it is possible to customize each frame individually using <code>ggplot2</code> functions. Instead, <code>moveVis</code> provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize <code>frames</code> that we created in the prior section:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="co"># add labels, e.g. axis labels</span>
 frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_progress.html">add_progress</a></span>(frames) <span class="co"># add a progress bar</span>

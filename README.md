@@ -73,9 +73,31 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 #### Example 1: Creating a simple animation
 
-In this example, the workflow for creating a movement animation using `moveVis` is quickly demonstrated. Other examples can be found in the help of each function or at <a href="http://movevis.org">moveVis.org</a>.
+Create a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of `ggplot2` frames and turning these frames into an animated `GIF`:
 
-First, load the required packages for this example and the `moveVis` example data:
+```R
+library(moveVis)
+library(move)
+data("move_data")
+
+# align move_data to a uniform time scale
+move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+
+# create spatial frames with a OpenStreetMap watercolour map
+frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
+                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
+frames[[100]] # preview one of the frames
+
+# animate frames
+animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.gif")
+```
+
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
+
+
+#### Example 2: Expample 1 explained in detail
+
+First, load the required packages for this example and the `moveVis` example movement data:
 
 ```R
 library(moveVis)
@@ -83,10 +105,10 @@ library(move)
 library(raster)
 library(ggplo2)
 
-data("move_data", "basemap_data")
+data("move_data")
 ```
 
-`move_data` is a `moveStack`, containing three individual tracks. Let's have a look at both timestamps and sampling rates of `move_data`:
+`move_data` is a `moveStack`, containing three individual tracks. Let's have a look at both timestamps and sampling rates:
 
 ```R
 unique(timestamps(move_data))
@@ -97,19 +119,17 @@ We can conclude that each track has a sampling rate of roughly 4 minutes, howeve
 * make all tracks share unique timestamps that can be assigned to frames
 * make all tracks share unique, steady sampling rates without gaps
 
-You can perform this type of correction yourself to be fully aware about the changes you apply to your data or you can use the `moveVis` function <a href="http://movevis.org/reference/align_move.html">`align_move()`</a> that will do the above using interpolation. Here, we will use <a href="http://movevis.org/reference/align_move.html">`align_move()`</a>  to correct `move_data` to a sampling rate of 4 minutes (240 seconds) at the seconds digit ":00":
+You can use  <a href="http://movevis.org/reference/align_move.html">`align_move()`</a> to align `move_data` to a sampling rate of 4 minutes (240 seconds) at the seconds digit ":00":
 
 ```R
 move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
 ```
 
-Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. With `moveVis`, you can use custom imagery and spatial data for creating your own static or temporally dynamic base maps. Otherwise, you can use default base maps. `moveVis` currently supports two map services: `OpenStreetMaps` (free) and `mapbox` (free up to 50.000 map requests per month after registration). To get a list of all available map types, use `get_maptypes()`:
+Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.
 
-```R
-get_maptypes()
-```
+Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. To get a list of all available default map types, use `get_maptypes()`. `moveVis` supports both `OpenStreetMap` and `mapbox` as default map services.
 
-Using OpenStreetMap, you can get open-source road map imagery and maps derived thereof. Using `mapbox`, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For `mapbox`, you need to register (for free) at https://www.mapbox.com/ to get a token that grants you access and that can be used with the `map_token` argument of `frames_spatial()` (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details). 
+Using `OpenStreetMap`, you can get open-source streets map imagery and maps derived thereof. Using `mapbox`, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For `mapbox`, you need to register (for free) at https://www.mapbox.com/ to get a token that grants you free access (50 000 map downloads/month) and that can be used with the `map_token` argument of `frames_spatial()` (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details). 
 
 In this example, we want to use the OpenStreetMap 'watercolour' imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from `move_data` using a map, we can use `frames_spatial()`:
 
@@ -137,7 +157,7 @@ animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.g
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 
-#### Example 2: Customizing frame appearance
+#### Example 2: Customizing frames
 
 `moveVis` is entierly based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
 
