@@ -11,12 +11,12 @@
 
 <br>
 <p align="center"><img width="93%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
-<p align="center"><sub>Figure 1: White Storks movement nearby Lake Constance, using a dynamic MODIS NDVI layer in the background</sub></p>
+<p align="center"><sub>Figure 1: Exemplary movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 <br>
 
 <br>
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
-<p align="center"><sub>Figure 2: White Storks movement nearby Lake Constance, using a static land cover/land use map in the background</sub></p>
+<p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a discrete base layer</sub></p> background</sub></p>
 <br>
 
 
