@@ -1,3 +1,4 @@
+skip_on_cran()
 context("frames_graph")
 
 #if("frames_graph" %in% which_tests){

@@ -1,3 +1,4 @@
+skip_on_cran()
 context("suggest_formats")
 
 #if("suggest_formats" %in% which_tests){

@@ -1,3 +1,4 @@
+skip_on_cran()
 context("join_frames")
 
 test_that("join_frames", {

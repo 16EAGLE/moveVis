@@ -1,3 +1,4 @@
+skip_on_cran()
 context("deprecated")
 
 #if("deprecated" %in% which_tests){

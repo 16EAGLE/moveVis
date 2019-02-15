@@ -1,3 +1,4 @@
+skip_on_cran()
 context("frames_spatial")
 
 #if("frames_spatial" %in% which_tests){

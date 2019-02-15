@@ -1,3 +1,4 @@
+skip_on_cran()
 context("align_move")
 
 #if("align_move" %in% which_tests){

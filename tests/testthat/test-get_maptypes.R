@@ -1,3 +1,4 @@
+skip_on_cran()
 context("get_maptypes")
 
 #if("get_maptypes" %in% which_tests){

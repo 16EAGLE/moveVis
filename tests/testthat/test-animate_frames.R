@@ -1,3 +1,4 @@
+skip_on_cran()
 context("animate_frames")
 
 test_that("animate_frames", {

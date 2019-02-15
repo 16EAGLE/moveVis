@@ -1,3 +1,4 @@
+skip_on_cran()
 context("add_ functions")
 
 #if("add_" %in% which_tests){
