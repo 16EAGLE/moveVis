@@ -240,9 +240,9 @@ frames[[<span class="dv">100</span>]] <span class="co"># display one of the fram
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/output/folder/moveVis_example.gif"</span>)</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 </div>
-<div id="example-2-customizing-frames" class="section level4">
+<div id="example-3-customizing-frames" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-2-customizing-frames" class="anchor"></a>Example 2: Customizing frames</h4>
+<a href="#example-3-customizing-frames" class="anchor"></a>Example 3: Customizing frames</h4>
 <p><code>moveVis</code> is entierly based on the <code>ggplot2</code> grammar of graphics. Each list element in <code>frames</code> is a <code>ggplot2</code> object that represents a single animation frame. Thus, it is possible to customize each frame individually using <code>ggplot2</code> functions. Instead, <code>moveVis</code> provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize <code>frames</code> that we created in the prior section:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="co"># add labels, e.g. axis labels</span>
 frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_progress.html">add_progress</a></span>(frames) <span class="co"># add a progress bar</span>
@@ -302,24 +302,24 @@ frames[[<span class="dv">100</span>]]</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="st">"/full/path/to/output/folder/moveVis_example_2.mov"</span>)</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_opt.gif"></p>
 </div>
-<div id="example-3-base-maps-using-mapbox-with-movevis" class="section level4">
+<div id="example-4-base-maps-using-mapbox-with-movevis" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-3-base-maps-using-mapbox-with-movevis" class="anchor"></a>Example 3: Base maps: using mapbox with moveVis</h4>
+<a href="#example-4-base-maps-using-mapbox-with-movevis" class="anchor"></a>Example 4: Base maps: using mapbox with moveVis</h4>
 <p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details.</p>
 </div>
-<div id="example-4-custom-maps-gradient-discrete-and-rgb-raster-data" class="section level4">
+<div id="example-5-custom-maps-gradient-discrete-and-rgb-raster-data" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-4-custom-maps-gradient-discrete-and-rgb-raster-data" class="anchor"></a>Example 4: Custom maps: gradient, discrete and RGB raster data</h4>
+<a href="#example-5-custom-maps-gradient-discrete-and-rgb-raster-data" class="anchor"></a>Example 5: Custom maps: gradient, discrete and RGB raster data</h4>
 <p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details.</p>
 </div>
-<div id="example-5-interaction-graphs" class="section level4">
+<div id="example-6-interaction-graphs" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-5-interaction-graphs" class="anchor"></a>Example 5: Interaction graphs</h4>
+<a href="#example-6-interaction-graphs" class="anchor"></a>Example 6: Interaction graphs</h4>
 <p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/frames_graph.html">?frames_graph</a></code></a> for details.</p>
 </div>
-<div id="example-6-joining-frames-side-by-side" class="section level4">
+<div id="example-7-joining-frames-side-by-side" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-6-joining-frames-side-by-side" class="anchor"></a>Example 6: Joining frames side by side</h4>
+<a href="#example-7-joining-frames-side-by-side" class="anchor"></a>Example 7: Joining frames side by side</h4>
 <p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/join_frames.html">?join_frames</a></code></a> for details.</p>
 </div>
 </div>

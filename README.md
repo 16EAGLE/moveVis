@@ -156,7 +156,7 @@ animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.g
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 
-#### Example 2: Customizing frames
+#### Example 3: Customizing frames
 
 `moveVis` is entierly based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
 
@@ -247,19 +247,19 @@ animate_frames(frames, "/full/path/to/output/folder/moveVis_example_2.mov")
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_opt.gif"></p>
 
 
-#### Example 3: Base maps: using mapbox with moveVis
+#### Example 4: Base maps: using mapbox with moveVis
 
 example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details.
 
-#### Example 4: Custom maps: gradient, discrete and RGB raster data
+#### Example 5: Custom maps: gradient, discrete and RGB raster data
 
 example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details.
 
-#### Example 5: Interaction graphs
+#### Example 6: Interaction graphs
 
 example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_graph`</a> for details.
 
-#### Example 6: Joining frames side by side
+#### Example 7: Joining frames side by side
 
 example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?join_frames`</a> for details.
 
