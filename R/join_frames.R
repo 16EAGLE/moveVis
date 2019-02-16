@@ -26,6 +26,7 @@
 #'                             fade_raster = TRUE)
 #' frames.sp <- add_colourscale(frames.sp, type = "gradient",
 #'                              colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
+#' \dontrun{
 #' frames.flow <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "flow")
 #' frames.hist <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "hist")
 #' 
@@ -46,7 +47,6 @@
 #' # it will come out well aligend.
 #' 
 #' # Do so for example with animate_move() with width = 900, dheight = 500 and res = 90
-#' \dontrun{
 #' animate_frames(frames.join, out_file = tempfile(fileext = ".gif"), fps = 25, 
 #'                width = 900, height = 500, res = 90, display = TRUE, overwrite = TRUE)
 #' }

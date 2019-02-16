@@ -55,9 +55,11 @@ frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradie
 frames.a <- add_northarrow(frames)
 frames.a[[100]]
 
+\dontrun{
 # or in white at another position
 frames.b <- add_northarrow(frames, colour = "white", position = "bottomleft")
 frames.b[[100]]
+}
 
 }
 \seealso{

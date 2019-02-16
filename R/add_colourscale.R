@@ -34,6 +34,7 @@
 #'                           legend_title = "NDVI")
 #' frames[[100]]
 #' 
+#' \dontrun{
 #' # let's make up some classification data with 10 classes
 #' r_list <- lapply(r_list, function(x){
 #'   y <- raster::setValues(x, round(raster::getValues(x)*10))
@@ -49,6 +50,7 @@
 #' cols <- colFUN(10)
 #' frames <- add_colourscale(frames, type = "discrete", colours = cols, legend_title = "Classes")
 #' frames[[100]]
+#' }
 #' 
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export

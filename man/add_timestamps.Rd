@@ -42,9 +42,11 @@ frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradie
 frames.a <- add_timestamps(frames, m, type = "text")
 frames.a[[100]]
 
+\dontrun{
 # or use the ggplot2 "label" type:
 frames.b <- add_timestamps(frames, m, type = "label")
 frames.b[[100]]
+}
 
 }
 \seealso{

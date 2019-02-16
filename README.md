@@ -18,7 +18,6 @@
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
 <p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a discrete base layer</sub></p>
 
-
 ## Installation
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 

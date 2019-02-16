@@ -25,6 +25,7 @@
 #' @author Jakob Schwalb-Willmann
 #' 
 #' @examples
+#' \dontrun{
 #' library(moveVis)
 #' library(move)
 #' 
@@ -48,7 +49,6 @@
 #' frames <- add_progress(frames)
 #' frames <- add_timestamps(frames, m, type = "label")
 #' 
-#' \dontrun{
 #' # check available formats
 #' suggest_formats()
 #' 

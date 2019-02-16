@@ -97,6 +97,7 @@ frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
 # take a look at one of the frames, e.g. the 100th
 frames[[100]]
 
+\dontrun{
 # make base map a bit transparent
 frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5)
 frames[[100]] # take a look
@@ -135,7 +136,6 @@ frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha 
 get_maptypes()
 
 # use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)
-\dontrun{
 frames <- frames_spatial(m, map_service = "mapbox",
                          map_token = "your_token_from_your_mapbox_account",
                          map_type = "satellite")
@@ -146,7 +146,6 @@ frames <- frames_spatial(m, map_service = "mapbox",
                          map_token = "your_token_from_your_mapbox_account",
                          map_type = "satellite",
                          map_dir = "your/map_directory/")                         
-}
 
 # use your own custom base maps
 data("basemap_data")
@@ -167,7 +166,6 @@ r_list <- lapply(r_list, function(x){
 frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discrete",
                          fade_raster = FALSE)
 
-\dontrun{
 # animate the frames created with frames_spatial;
 animate_frames(frames, out_file = tempfile(fileext = ".gif"))
 }

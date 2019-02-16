@@ -39,9 +39,11 @@
 #' frames.a <- add_northarrow(frames)
 #' frames.a[[100]]
 #' 
+#' \dontrun{
 #' # or in white at another position
 #' frames.b <- add_northarrow(frames, colour = "white", position = "bottomleft")
 #' frames.b[[100]]
+#' }
 #' 
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export

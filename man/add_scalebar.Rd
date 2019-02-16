@@ -50,6 +50,7 @@ frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradie
 frames.a <- add_scalebar(frames)
 frames.a[[100]]
 
+\dontrun{
 # or in white at another position
 frames.b <- add_scalebar(frames, colour = "white", position = "bottomright")
 frames.b[[100]]
@@ -57,7 +58,7 @@ frames.b[[100]]
 # or with another height
 frames.c <- add_scalebar(frames, colour = "white", position = "bottomright", height = 0.025)
 frames.c[[100]]
-
+}
 }
 \seealso{
 \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}

@@ -53,6 +53,8 @@
 #' # change the value interval:
 #' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                           fade_raster = TRUE, graph_type = "hist", val_by = 0.01)
+#'                           
+#' \dontrun{
 #' frames.gr[[100]]
 #' # manipulate the labels, since now they are very dense:
 #' # just replace the current scale
@@ -66,7 +68,6 @@
 #' data.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                         fade_raster = TRUE, return_data = TRUE)
 #' 
-#' \dontrun{
 #' # animate the frames created with frames_graph;
 #' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
 #' }

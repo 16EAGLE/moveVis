@@ -39,6 +39,7 @@ None or an R graphics window displaying the animation
 An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
 }
 \examples{
+\dontrun{
 library(moveVis)
 library(move)
 
@@ -62,7 +63,6 @@ frames <- add_scalebar(frames, colour = "white", position = "bottomright")
 frames <- add_progress(frames)
 frames <- add_timestamps(frames, m, type = "label")
 
-\dontrun{
 # check available formats
 suggest_formats()
 

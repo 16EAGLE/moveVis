@@ -32,9 +32,11 @@
 #' frames.a <- add_timestamps(frames, m, type = "text")
 #' frames.a[[100]]
 #' 
+#' \dontrun{
 #' # or use the ggplot2 "label" type:
 #' frames.b <- add_timestamps(frames, m, type = "label")
 #' frames.b[[100]]
+#' }
 #' 
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export

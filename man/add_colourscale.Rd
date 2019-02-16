@@ -47,6 +47,7 @@ frames <- add_colourscale(frames, type = "gradient", colours = c("orange", "whit
                           legend_title = "NDVI")
 frames[[100]]
 
+\dontrun{
 # let's make up some classification data with 10 classes
 r_list <- lapply(r_list, function(x){
   y <- raster::setValues(x, round(raster::getValues(x)*10))
@@ -62,6 +63,7 @@ colFUN <- colorRampPalette(c("orange", "lightgreen", "darkgreen"))
 cols <- colFUN(10)
 frames <- add_colourscale(frames, type = "discrete", colours = cols, legend_title = "Classes")
 frames[[100]]
+}
 
 }
 \seealso{

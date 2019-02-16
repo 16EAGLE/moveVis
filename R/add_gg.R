@@ -53,7 +53,7 @@
 #'                    
 #' frames = add_gg(frames, gg = expr(geom_path(aes(x = x, y = y), data = data,
 #'                                             colour = "red", linetype = "dashed")), data = data)
-#'                                             
+#' \dontrun{                                           
 #' # add some text
 #' frames <- add_text(frames, "Static feature", x = 8.9205, y = 47.7633,
 #'                     colour = "black", size = 3)
@@ -84,9 +84,7 @@
 #' frames[[100]]
 #' 
 #' # animate frames to see how the polygons "flip"
-#' \dontrun{
 #' animate_frames(frames, out_file = tempfile(fileext = ".mov"))
-#' }
 #' 
 #' # you can use add_gg on any list of ggplot2 objects,
 #' # also on frames made using frames_gr
@@ -101,6 +99,7 @@
 #' frames.gr <- add_gg(frames.gr, expr(scale_x_continuous(breaks=seq(0,1,0.1),
 #'                                     labels=seq(0,1,0.1), expand = c(0,0))))
 #' frames.gr[[100]]
+#' }
 #' 
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export

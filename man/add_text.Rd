@@ -48,10 +48,12 @@ frames.a <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
                      colour = "white", size = 3)
 frames.a[[100]]
 
+\dontrun{
 # or use the ggplot2 "label" type:
 frames.b <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
                      colour = "black", size = 3, type = "label")
 frames.b[[100]]
+}
 
 }
 \seealso{
