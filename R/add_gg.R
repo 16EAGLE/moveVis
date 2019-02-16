@@ -102,7 +102,7 @@
 #'                                     labels=seq(0,1,0.1), expand = c(0,0))))
 #' frames.gr[[100]]
 #' 
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_gg <- function(frames, gg, data = NULL, ..., verbose = T){

@@ -27,7 +27,7 @@
 #' @importFrom sp coordinates
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
-#' @seealso \link{frames_spatial}
+#' @seealso \code{\link{frames_spatial}}
 #' 
 #' @examples
 #' library(moveVis)
@@ -86,7 +86,8 @@ align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod
   m <- moveStack(lapply(m.indi, function(x){
     ts.m <- timestamps(x)
     ts.t <- ts.target[ts.target >= min(ts.m) & ts.target <= max(ts.m)]
-    tryCatch(interpolateTime(x, ts.t, spaceMethod), error = function(e) out("The selected interpolation method defined with argument 'spaceMethod' cannot be used with this projection. Please try a different interpolation method. See ?align_move for help.", type = 3))
+    #tryCatch(interpolateTime(x, ts.t, spaceMethod), error = function(e) out("The selected interpolation method defined with argument 'spaceMethod' cannot be used with this projection. Please try a different interpolation method. See ?align_move for help.", type = 3))
+    interpolateTime(x, ts.t, spaceMethod)
   }))
   
   m[,c("x", "y")] <- coordinates(m)

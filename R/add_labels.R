@@ -38,7 +38,7 @@
 #' # have a look at one frame
 #' frames[[100]]
 #' 
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_labels <- function(frames, title = waiver(), subtitle = waiver(), caption = waiver(), tag = waiver(),

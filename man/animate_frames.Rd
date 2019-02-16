@@ -74,7 +74,7 @@ animate_frames(frames, out_file = tempfile(fileext = ".gif"))
 }
 }
 \seealso{
-\link{frames_spatial} \link{frames_graph} \link{animate_frames}
+\code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{join_frames}}
 }
 \author{
 Jakob Schwalb-Willmann

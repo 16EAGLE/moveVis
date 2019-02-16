@@ -23,7 +23,7 @@
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
-To install <a href="http://movevis.org">`moveVis`</a> version 0.10.0, the newest stable development version, run:
+<a href="http://movevis.org">`moveVis`</a> 0.10.0 is not on CRAN yet (but will be soon). Until then, to install <a href="http://movevis.org">`moveVis`</a> version 0.10.0, run:
 
 ```r
 devtools::install_github("16EAGLE/moveVis")
@@ -36,13 +36,16 @@ setwd("your/download/directory")
 install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 ```
 
+
 ## Function overview
 
 <a href="http://movevis.org">`moveVis`</a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
 
 #### Prepare movement data
 
+* `df2move()` converts a `data.frame` into a `move` or `moveStack` object. This is useful if you do not usually work with the `move` classes and your tracks are present as `data.frames`.
 * `align_move()` aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.
+* `subset_move()` subsets a `move` or `moveStack` by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.
 
 #### Create animation frames
 

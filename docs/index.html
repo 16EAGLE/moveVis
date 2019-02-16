@@ -117,7 +117,7 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed.</p>
-<p>To install <a href="http://movevis.org"><code>moveVis</code></a> version 0.10.0, the newest stable development version, run:</p>
+<p><a href="http://movevis.org"><code>moveVis</code></a> 0.10.0 is not on CRAN yet (but will be soon). Until then, to install <a href="http://movevis.org"><code>moveVis</code></a> version 0.10.0, run:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</code></pre></div>
 <p>Code written for <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 will not work with the newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/getwd">setwd</a></span>(<span class="st">"your/download/directory"</span>)
@@ -132,7 +132,11 @@
 <a href="#prepare-movement-data" class="anchor"></a>Prepare movement data</h4>
 <ul>
 <li>
+<code><a href="reference/df2move.html">df2move()</a></code> converts a <code>data.frame</code> into a <code>move</code> or <code>moveStack</code> object. This is useful if you do not usually work with the <code>move</code> classes and your tracks are present as <code>data.frames</code>.</li>
+<li>
 <code><a href="reference/align_move.html">align_move()</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</li>
+<li>
+<code><a href="reference/subset_move.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.</li>
 </ul>
 </div>
 <div id="create-animation-frames" class="section level4">

@@ -61,5 +61,5 @@ animate_frames(frames.join, out_file = tempfile(fileext = ".gif"), fps = 25,
 }
 }
 \seealso{
-\link{frames_spatial} \link{frames_graph} \link{animate_frames}
+\code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 }

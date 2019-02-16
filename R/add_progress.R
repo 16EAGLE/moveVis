@@ -33,7 +33,7 @@
 #' frames.b <- add_progress(frames, colour = "red", size = 2.5)
 #' frames.b[[100]]
 #' 
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){

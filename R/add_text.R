@@ -40,7 +40,7 @@
 #'                      colour = "black", size = 3, type = "label")
 #' frames.b[[100]]
 #' 
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_text <- function(frames, labels, x, y, colour = "black", size = 3, type = "text", verbose = TRUE){

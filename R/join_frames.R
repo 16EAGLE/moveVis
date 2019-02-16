@@ -50,7 +50,7 @@
 #' animate_frames(frames.join, out_file = tempfile(fileext = ".gif"), fps = 25, 
 #'                width = 900, height = 500, res = 90, display = TRUE, overwrite = TRUE)
 #' }
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' 
 #' @export
 

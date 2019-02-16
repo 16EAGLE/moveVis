@@ -31,3 +31,6 @@ The new version of moveVis makes it much easier to animate movement data and mul
 \note{
 To install the old version of moveVis (0.9.9), see \url{https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9}.
 }
+\seealso{
+\code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
+}

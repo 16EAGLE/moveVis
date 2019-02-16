@@ -65,7 +65,7 @@ unique(unlist(timeLag(m, units = "secs")))
 
 }
 \seealso{
-\link{frames_spatial}
+\code{\link{frames_spatial}}
 }
 \author{
 Jakob Schwalb-Willmann

@@ -76,7 +76,7 @@
 #' 
 #' # see ?animate_frames on how to animate your list of frames
 #' 
-#' @seealso \code{\link{frames_spatial}} \link{join_frames} \code{\link{animate_frames}}
+#' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
 frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, return_data = FALSE, graph_type = "flow", path_size = 1, path_legend = TRUE, path_legend_title = "Names", 

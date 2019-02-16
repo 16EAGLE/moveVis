@@ -9,6 +9,7 @@
 #' @note To install the old version of moveVis (0.9.9), see \url{https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9}.
 #' 
 #' @name deprecated
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
 animate_move <- function(...) out("animate_move() has been deprecated due to a rewrite of moveVis with version 0.10. moveVis is now easier to use and customize. See ?moveVis and http://movevis.org for details on how to create animations with moveVis 0.10. See https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9 for the old version of moveVis.", type = 2)

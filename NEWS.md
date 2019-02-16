@@ -15,6 +15,9 @@ moveVis rewrite introducing a new logic and new functions
 **New functions:**
 * `align_move()`, `get_maptypes()`, `frames_spatial()`, `frames_graph()`, `add_gg()`, `add_labels()`, `add_scalebar()`, `add_northarrow()`, `add_progress()`, `add_timestamps()`, `add_text()`, `add_colourscale()`, `join_frames()`, `suggest_formats()`, `animate_frames()`: see the README and the description of the individual functions for further details.
 
+* `subset_move()`: subset movement data for a particular time span
+* `df2move()`: simple wrapper that converts data.frames into move or moveStack objects
+
 <br>
 **Deprecated functions:**
 * `animate_move()`, `animate_raster()`, `animate_stats()`, `get_formats()`, `get_libraries()`: These functions have been replaced by a new logic and new functions.

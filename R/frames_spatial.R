@@ -146,7 +146,7 @@
 #' # or frames_graph
 #' # see ?animate_frames on how to animate your list of frames
 #' 
-#' @seealso \code{\link{frames_spatial}} \link{join_frames} \code{\link{animate_frames}}
+#' @seealso \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
 frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,

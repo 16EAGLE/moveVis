@@ -50,7 +50,7 @@
 #' frames <- add_colourscale(frames, type = "discrete", colours = cols, legend_title = "Classes")
 #' frames[[100]]
 #' 
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_colourscale <- function(frames, type, colours, labels = waiver(), legend_title = NULL, verbose = TRUE){

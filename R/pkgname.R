@@ -6,7 +6,9 @@
 #' @details The package includes the following functions, sorted by the order they would be applied to create an animation from movement data:
 #' 
 #' \itemize{
+#'    \item \code{\link{df2move}} converts a \code{data.frame} into a \code{move} or \code{moveStack} object. This is useful if you do not usually work with the \code{move} classes and your tracks are present as \code{data.frames}.
 #'    \item \code{\link{align_move}} aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.
+#'    \item \code{\link{subset_move}} subsets a \code{move} or \code{moveStack} by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.
 #'    \item \code{\link{get_maptypes}} returns a character vector of available map types that can be used with \code{\link{frames_spatial}}. \code{moveVis} supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to \code{\link{frames_spatial}}.
 #'    \item \code{\link{frames_spatial}} creates a list of \code{ggplot2} maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 #'    \item \code{\link{frames_graph}} creates a list of \code{ggplot2} graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.

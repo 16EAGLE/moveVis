@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deprecated functions — deprecated • moveVis</title>
+<title>Convert a data.frame into a move or moveStack object — df2move • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Deprecated functions — deprecated" />
+<meta property="og:title" content="Convert a data.frame into a move or moveStack object — df2move" />
 
-<meta property="og:description" content="Several functions are deprecated due to a rewrite of moveVis with version 0.10." />
+<meta property="og:description" content="This function is a simple wrapper that converts a data.frame into a move or moveStack object. Both can be used as inputs to frames_spatial or frames_graph." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,61 +135,86 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deprecated functions</h1>
+    <h1>Convert a data.frame into a move or moveStack object</h1>
     
-    <div class="hidden name"><code>deprecated.Rd</code></div>
+    <div class="hidden name"><code>df2move.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Several functions are deprecated due to a rewrite of moveVis with version 0.10.</p>
+    <p>This function is a simple wrapper that converts a <code>data.frame</code> into a <code>move</code> or <code>moveStack</code> object. Both can be used as inputs to <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>animate_move</span>(<span class='no'>...</span>)
-
-<span class='fu'>animate_raster</span>(<span class='no'>...</span>)
-
-<span class='fu'>animate_stats</span>(<span class='no'>...</span>)
-
-<span class='fu'>get_formats</span>(<span class='no'>...</span>)
-
-<span class='fu'>get_libraries</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>df2move</span>(<span class='no'>df</span>, <span class='no'>proj</span>, <span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>time</span>, <span class='kw'>track_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>df</th>
+      <td><p>data.frame, a data.frame with rows representing observations and columns representing x and y coordinates, time and optionally track IDs, if multiple tracks are contained.</p></td>
+    </tr>
+    <tr>
+      <th>proj</th>
+      <td><p>projection, a character (proj4string) or a CRS object, indicating the projection that the coordinates of <code>df</code> represent.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>character, name of the column in <code>df</code> that represents x coordinates.</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>character, name of the column in <code>df</code> that represents y coordinates.</p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>character, name of the column in <code>df</code> that represents timestamps.</p></td>
+    </tr>
+    <tr>
+      <th>track_id</th>
+      <td><p>character, optional, name of the column in <code>df</code> that represents track names or IDs. If set, a <code>moveStack</code> is returned, otherwise, a <code>move</code> object is returned.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td><p>deprecated arguments.</p></td>
+      <td><p>additional arguments passed to <code>move</code>, e.g. <code>data</code> to add additional data such as path colours (see <code>move</code>).</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The new version of moveVis makes it much easier to animate movement data and multi-temporal imagery (see <code><a href='moveVis-package.html'>?moveVis</a></code>). You gain more control about the preprocessing of your movement data as well as the visual customization of each animation frame through a more consequent link of <code>moveVis</code> to <code>gpplot2</code>.</p>
-    
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>To install the old version of moveVis (0.9.9), see <a href='https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9'>https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9</a>.</p>
+    <p>A <code>move</code> or <code>moveStack</code> object.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='join_frames.html'>join_frames</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
+    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='subset_move.html'>subset_move</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>moveVis</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>move</span>)
+
+<span class='co'># load the example data and convert them into a data.frame</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"move_data"</span>)
+<span class='no'>move_df</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>methods</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/methods/topics/as'>as</a></span>(<span class='no'>move_data</span>, <span class='st'>"data.frame"</span>)
+
+<span class='co'># use df2move to convert the data.frame into a moveStack</span>
+<span class='fu'>df2move</span>(<span class='no'>move_df</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"</span>,
+        <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"coords.x1"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"coords.x2"</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"timestamps"</span>, <span class='kw'>track_id</span> <span class='kw'>=</span> <span class='st'>"trackId"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#note">Note</a></li>
+      <li><a href="#value">Value</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

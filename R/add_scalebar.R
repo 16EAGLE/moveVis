@@ -43,7 +43,7 @@
 #' frames.c <- add_scalebar(frames, colour = "white", position = "bottomright", height = 0.025)
 #' frames.c[[100]]
 #' 
-#' @seealso \link{frames_spatial} \link{frames_graph} \link{animate_frames}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, verbose = TRUE){
