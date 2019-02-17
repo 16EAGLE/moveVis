@@ -191,6 +191,7 @@
                             <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>frames.sp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_colourscale.html'>add_colourscale</a></span>(<span class='no'>frames.sp</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                              <span class='kw'>colours</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"orange"</span>, <span class='st'>"white"</span>, <span class='st'>"darkgreen"</span>), <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='st'>"NDVI"</span>)
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='no'>frames.flow</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_graph.html'>frames_graph</a></span>(<span class='no'>m</span>, <span class='no'>r_list</span>, <span class='no'>r_times</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"flow"</span>)
 <span class='no'>frames.hist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_graph.html'>frames_graph</a></span>(<span class='no'>m</span>, <span class='no'>r_list</span>, <span class='no'>r_times</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"hist"</span>)
 
@@ -211,7 +212,6 @@
 <span class='co'># it will come out well aligend.</span>
 
 <span class='co'># Do so for example with animate_move() with width = 900, dheight = 500 and res = 90</span>
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='fu'><a href='animate_frames.html'>animate_frames</a></span>(<span class='no'>frames.join</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gif"</span>), <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>25</span>,
                <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>900</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>90</span>, <span class='kw'>display</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='co'># }</span></pre>

@@ -46,7 +46,9 @@ reference:
 - title: Data preparation
   desc:  Prepare your movement data for animation.
   contents:
+  - df2move
   - align_move
+  - subset_move
 - title: Frames creation
   desc:  Create spatial frames or graph frames from movement data.
   contents: 

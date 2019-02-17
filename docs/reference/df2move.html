@@ -157,7 +157,7 @@
     </tr>
     <tr>
       <th>proj</th>
-      <td><p>projection, a character (proj4string) or a CRS object, indicating the projection that the coordinates of <code>df</code> represent.</p></td>
+      <td><p>projection, character (proj4string) or CRS object, indicating the projection that the coordinates of <code>df</code> represent.</p></td>
     </tr>
     <tr>
       <th>x</th>
@@ -176,8 +176,12 @@
       <td><p>character, optional, name of the column in <code>df</code> that represents track names or IDs. If set, a <code>moveStack</code> is returned, otherwise, a <code>move</code> object is returned.</p></td>
     </tr>
     <tr>
+      <th>data</th>
+      <td><p>data.frame, optional, to add additional data such as path colours (see <code>move</code>). Number of rows must equal number of rows of <code>df</code>.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td><p>additional arguments passed to <code>move</code>, e.g. <code>data</code> to add additional data such as path colours (see <code>move</code>).</p></td>
+      <td><p>additional arguments passed to <code>move</code>.</p></td>
     </tr>
     </table>
     
@@ -200,7 +204,8 @@
 <span class='no'>move_df</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>methods</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/methods/topics/as'>as</a></span>(<span class='no'>move_data</span>, <span class='st'>"data.frame"</span>)
 
 <span class='co'># use df2move to convert the data.frame into a moveStack</span>
-<span class='fu'>df2move</span>(<span class='no'>move_df</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"</span>,
+<span class='fu'>df2move</span>(<span class='no'>move_df</span>,
+        <span class='kw'>proj</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"</span>,
         <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"coords.x1"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"coords.x2"</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"timestamps"</span>, <span class='kw'>track_id</span> <span class='kw'>=</span> <span class='st'>"trackId"</span>)
 <span class='co'># }</span></pre>
   </div>

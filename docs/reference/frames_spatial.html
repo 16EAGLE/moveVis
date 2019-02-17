@@ -295,6 +295,7 @@ Colours could also be arranged to change through time or by behavioral segments,
 <span class='co'># take a look at one of the frames, e.g. the 100th</span>
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># make base map a bit transparent</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]] <span class='co'># take a look</span>
@@ -333,7 +334,6 @@ Colours could also be arranged to change through time or by behavioral segments,
 <span class='fu'><a href='get_maptypes.html'>get_maptypes</a></span>()
 
 <span class='co'># use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)</span>
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"mapbox"</span>,
                          <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='st'>"your_token_from_your_mapbox_account"</span>,
                          <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"satellite"</span>)
@@ -344,7 +344,7 @@ Colours could also be arranged to change through time or by behavioral segments,
                          <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='st'>"your_token_from_your_mapbox_account"</span>,
                          <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"satellite"</span>,
                          <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='st'>"your/map_directory/"</span>)
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
+
 <span class='co'># use your own custom base maps</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"basemap_data"</span>)
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
@@ -364,7 +364,6 @@ Colours could also be arranged to change through time or by behavioral segments,
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"discrete"</span>,
                          <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># animate the frames created with frames_spatial;</span>
 <span class='fu'><a href='animate_frames.html'>animate_frames</a></span>(<span class='no'>frames</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gif"</span>))
 <span class='co'># }</span># NOT RUN {

@@ -258,6 +258,8 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='co'># change the value interval:</span>
 <span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_graph</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                           <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"hist"</span>, <span class='kw'>val_by</span> <span class='kw'>=</span> <span class='fl'>0.01</span>)
+
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='no'>frames.gr</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 <span class='co'># manipulate the labels, since now they are very dense:</span>
 <span class='co'># just replace the current scale</span>
@@ -271,7 +273,6 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='no'>data.gr</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_graph</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                         <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>return_data</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># animate the frames created with frames_graph;</span>
 <span class='fu'><a href='animate_frames.html'>animate_frames</a></span>(<span class='no'>frames</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gif"</span>))
 <span class='co'># }</span># NOT RUN {
