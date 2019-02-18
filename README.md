@@ -104,7 +104,7 @@ First, load the required packages for this example and the `moveVis` example mov
 library(moveVis)
 library(move)
 library(raster)
-library(ggplo2)
+library(ggplot2)
 
 data("move_data")
 ```

@@ -216,7 +216,7 @@ frames[[<span class="dv">100</span>]] <span class="co"># preview one of the fram
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(raster)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplo2)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
 
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)</code></pre></div>
 <p><code>move_data</code> is a <code>moveStack</code>, containing three individual tracks. Let’s have a look at both timestamps and sampling rates:</p>
@@ -262,14 +262,14 @@ frames[[<span class="dv">100</span>]]</code></pre></div>
                    <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">47.7678</span>, <span class="fl">47.7675</span>, <span class="fl">47.764</span>, <span class="fl">47.7646</span>, <span class="fl">47.7678</span>))
 
 <span class="co"># just customize a single frame and have a look at it</span>
-frame_test &lt;-<span class="st"> </span>frames[[<span class="dv">100</span>]] <span class="op">+</span><span class="st"> </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
+frame_test &lt;-<span class="st"> </span>frames[[<span class="dv">100</span>]] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
                                         <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)
 frame_test</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_02.png"></p>
 <p>If you just want to change one or a small selection of frames, you could just manipulate those frames like shown above and assign the cusomized <code>ggplot2</code> frames to the equivalent elements in your <code>frames</code> list.</p>
-<p>If you want to edit all frames, you can use the <code><a href="reference/add_gg.html">add_gg()</a></code> function. Here, we want to mark a field on the map on all frames. For this, we use the <code>geom_path()</code> function of <code>ggplot2</code> with <code><a href="reference/add_gg.html">add_gg()</a></code>:</p>
+<p>If you want to edit all frames, you can use the <code><a href="reference/add_gg.html">add_gg()</a></code> function. Here, we want to mark a field on the map on all frames. For this, we use the <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path()</a></code> function of <code>ggplot2</code> with <code><a href="reference/add_gg.html">add_gg()</a></code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># or customize all frames at once using add_gg:</span>
-frames =<span class="st"> </span><span class="kw"><a href="reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw">expr</span>(<span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
+frames =<span class="st"> </span><span class="kw"><a href="reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
                                   <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)), <span class="dt">data =</span> data)</code></pre></div>
 <p>The field marking is now added to all frames. Let’s add some text to describe the field marking:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_text.html">add_text</a></span>(frames, <span class="st">"Static feature"</span>, <span class="dt">x =</span> <span class="fl">8.9205</span>, <span class="dt">y =</span> <span class="fl">47.7633</span>,
@@ -292,7 +292,7 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocume
 })
 
 ## draw each individual polygon to each frame
-frames =<span class="st"> </span><span class="kw"><a href="reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw">expr</span>(<span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
+frames =<span class="st"> </span><span class="kw"><a href="reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
                                   <span class="dt">colour =</span> <span class="st">"black"</span>)), <span class="dt">data =</span> data)
 
 ## add a text label
