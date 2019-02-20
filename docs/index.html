@@ -42,8 +42,38 @@
      
   </a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Get Started
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
 <li>
-  <a href="index.html#get-started">Get Started</a>
+      <a href="index.html#get-started">Example 1: Creating a simple animation</a>
+    </li>
+    <li>
+      <a href="index.html#example-2-example-1-explained-in-detail">Example 2: Expample 1 explained in detail</a>
+    </li>
+    <li>
+      <a href="index.html#example-3-customizing-frames">Example 3: Customizing frames</a>
+    </li>
+    <li>
+      <a href="index.html#example-4-base-maps-using-mapbox-with-movevis">Example 4: Base maps: using mapbox with moveVis</a>
+    </li>
+    <li>
+      <a href="index.html#example-5-custom-maps-gradient-discrete-and-rgb-raster-data">Example 5: Custom maps: gradient, discrete and RGB raster data</a>
+    </li>
+    <li>
+      <a href="index.html#example-6-interaction-graphs">Example 6: Interaction graphs</a>
+    </li>
+    <li>
+      <a href="index.html#example-7-joining-frames-side-by-side">Example 7: Joining frames side by side</a>
+    </li>
+    <li>
+      <a href="index.html#example-8-view-movement-tracks">Example 8: View movement tracks</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="reference/index.html">Functions</a>
@@ -185,6 +215,14 @@
 <code><a href="reference/animate_frames.html">animate_frames()</a></code> creates an animation from a list of frames computed with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>, <code><a href="reference/frames_graph.html">frames_graph()</a></code> or <code><a href="reference/join_frames.html">join_frames()</a></code>.</li>
 </ul>
 </div>
+<div id="view-movement-tracks" class="section level4">
+<h4 class="hasAnchor">
+<a href="#view-movement-tracks" class="anchor"></a>View movement tracks</h4>
+<ul>
+<li>
+<code><a href="reference/view_spatial.html">view_spatial()</a></code> displays movement tracks on an interactive <code>mapview</code> or <code>leaflet</code> map.</li>
+</ul>
+</div>
 </div>
 <div id="get-started" class="section level2">
 <h2 class="hasAnchor">
@@ -209,9 +247,9 @@ frames[[<span class="dv">100</span>]] <span class="co"># preview one of the fram
 <span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/output/folder/moveVis_example.gif"</span>)</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 </div>
-<div id="example-2-expample-1-explained-in-detail" class="section level4">
+<div id="example-2-example-1-explained-in-detail" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example-2-expample-1-explained-in-detail" class="anchor"></a>Example 2: Expample 1 explained in detail</h4>
+<a href="#example-2-example-1-explained-in-detail" class="anchor"></a>Example 2: Example 1 explained in detail</h4>
 <p>First, load the required packages for this example and the <code>moveVis</code> example movement data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
@@ -325,6 +363,25 @@ frames[[<span class="dv">100</span>]]</code></pre></div>
 <h4 class="hasAnchor">
 <a href="#example-7-joining-frames-side-by-side" class="anchor"></a>Example 7: Joining frames side by side</h4>
 <p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/join_frames.html">?join_frames</a></code></a> for details.</p>
+</div>
+<div id="example-8-view-movement-tracks" class="section level4">
+<h4 class="hasAnchor">
+<a href="#example-8-view-movement-tracks" class="anchor"></a>Example 8: View movement tracks</h4>
+<p>With <code><a href="reference/view_spatial.html">view_spatial()</a></code>, movement tracks can be displayed on an interactive map using <code>mapview</code> or <code>leaflet</code>. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by <code><a href="reference/align_move.html">align_move()</a></code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># in case, mapview or leaflet is not installed:</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"leaflet"</span>, <span class="st">"mapview"</span>))
+
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
+ 
+<span class="co"># return a mapview map</span>
+<span class="kw"><a href="reference/view_spatial.html">view_spatial</a></span>(move_data)</code></pre></div>
+<p>An interactive map is returned. If you use RStudio, it will be displayed on the RStudio viewer pane:</p>
+<p><br></p>
+<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8.png"></p> <br><p>When hovering a point with the cursor, the timestamps of that point is displayed. Thanks to <code>mapview</code>, you may click on a point to open a pop-up box containing the point’s attributes:</p>
+<p><br></p>
+<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8_02.png"></p> <br>
 </div>
 </div>
 <div id="features-to-be-added" class="section level2">

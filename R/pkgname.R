@@ -23,7 +23,8 @@
 #'    \item \code{\link{join_frames}} side-by-side joins the \code{ggplot2} objects of two or more frames lists of equal lengths into a single list of \code{ggplot2} objects per frame using \code{\link{plot_grid}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
 #'    \item \code{\link{suggest_formats}} returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
 #'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#' }
+#'    \item \code{\link{view_spatial}} displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
+#' } 
 #' 
 #' @author Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann, moveVis@schwalb-willmann.de
 "_PACKAGE"

@@ -72,8 +72,38 @@
      
   </a>
 </li>
-<li>
-  <a href="../index.html#get-started">Get Started</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Get Started
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html#get-started">Example 1: Creating a simple animation</a>
+    </li>
+    <li>
+      <a href="../index.html#example-2-example-1-explained-in-detail">Example 2: Expample 1 explained in detail</a>
+    </li>
+    <li>
+      <a href="../index.html#example-3-customizing-frames">Example 3: Customizing frames</a>
+    </li>
+    <li>
+      <a href="../index.html#example-4-base-maps-using-mapbox-with-movevis">Example 4: Base maps: using mapbox with moveVis</a>
+    </li>
+    <li>
+      <a href="../index.html#example-5-custom-maps-gradient-discrete-and-rgb-raster-data">Example 5: Custom maps: gradient, discrete and RGB raster data</a>
+    </li>
+    <li>
+      <a href="../index.html#example-6-interaction-graphs">Example 6: Interaction graphs</a>
+    </li>
+    <li>
+      <a href="../index.html#example-7-joining-frames-side-by-side">Example 7: Joining frames side by side</a>
+    </li>
+    <li>
+      <a href="../index.html#example-8-view-movement-tracks">Example 8: View movement tracks</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -156,7 +186,9 @@
 <li><p><code><a href="../reference/align_move.html">align_move()</a></code>, <code><a href="../reference/get_maptypes.html">get_maptypes()</a></code>, <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>, <code><a href="../reference/frames_graph.html">frames_graph()</a></code>, <code><a href="../reference/add_gg.html">add_gg()</a></code>, <code><a href="../reference/add_labels.html">add_labels()</a></code>, <code><a href="../reference/add_scalebar.html">add_scalebar()</a></code>, <code><a href="../reference/add_northarrow.html">add_northarrow()</a></code>, <code><a href="../reference/add_progress.html">add_progress()</a></code>, <code><a href="../reference/add_timestamps.html">add_timestamps()</a></code>, <code><a href="../reference/add_text.html">add_text()</a></code>, <code><a href="../reference/add_colourscale.html">add_colourscale()</a></code>, <code><a href="../reference/join_frames.html">join_frames()</a></code>, <code><a href="../reference/suggest_formats.html">suggest_formats()</a></code>, <code><a href="../reference/animate_frames.html">animate_frames()</a></code>: see the README and the description of the individual functions for further details.</p></li>
 <li>
 <code><a href="../reference/subset_move.html">subset_move()</a></code>: subset movement data for a particular time span</li>
-<li><p><code><a href="../reference/df2move.html">df2move()</a></code>: simple wrapper that converts data.frames into move or moveStack objects</p></li>
+<li>
+<code><a href="../reference/df2move.html">df2move()</a></code>: simple wrapper that converts data.frames into move or moveStack objects</li>
+<li><p><code><a href="../reference/view_spatial.html">view_spatial()</a></code>: view movement data on an interactive map using <code>mapview</code> or <code>leaflet</code></p></li>
 </ul>
 <p><br><strong>Deprecated functions:</strong></p>
 <ul>

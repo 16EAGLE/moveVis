@@ -177,8 +177,6 @@ animate_frames(frames, out_file = tempfile(fileext = ".gif"))
 
 }
 \seealso{
-\code{\link{frames_graph}} \code{\link{animate_frames}}
-
 \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 }
 \author{

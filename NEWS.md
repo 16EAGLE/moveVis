@@ -17,6 +17,7 @@ moveVis rewrite introducing a new logic and new functions
 
 * `subset_move()`: subset movement data for a particular time span
 * `df2move()`: simple wrapper that converts data.frames into move or moveStack objects
+* `view_spatial()`: view movement data on an interactive map using `mapview` or `leaflet`
 
 <br>
 **Deprecated functions:**

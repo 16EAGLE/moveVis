@@ -44,7 +44,6 @@
 #' @return List of ggplot2 objects, each representing a single frame.
 #' 
 #' @author Jakob Schwalb-Willmann
-#' @seealso \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' 
 #' @importFrom raster compareCRS nlayers
 #' @importFrom sf st_crs

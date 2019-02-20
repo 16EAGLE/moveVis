@@ -69,6 +69,8 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 * `suggest_formats()` returns a selection of suggested file formats that can be used with `out_file` of `animate_frames()` on your system.
 * `animate_frames()` creates an animation from a list of frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
 
+#### View movement tracks
+* `view_spatial()` displays movement tracks on an interactive `mapview` or `leaflet` map.
 
 ## Get started
 
@@ -96,7 +98,7 @@ animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.g
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 
 
-#### Example 2: Expample 1 explained in detail
+#### Example 2: Example 1 explained in detail
 
 First, load the required packages for this example and the `moveVis` example movement data:
 
@@ -265,6 +267,33 @@ example code to be added soon, see <a href = "http://movevis.org/reference/join_
 
 example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?join_frames`</a> for details.
 
+#### Example 8: View movement tracks
+
+With `view_spatial()`, movement tracks can be displayed on an interactive map using `mapview` or `leaflet`. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by `align_move()`.
+
+```R
+# in case, mapview or leaflet is not installed:
+install.packages(c("leaflet", "mapview"))
+
+library(moveVis)
+library(move)
+data("move_data")
+ 
+# return a mapview map
+view_spatial(move_data)
+```
+
+An interactive map is returned. If you use RStudio, it will be displayed on the RStudio viewer pane:
+
+<br>
+<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8.png"></p>
+<br>
+
+When hovering a point with the cursor, the timestamps of that point is displayed. Thanks to `mapview`, you may click on a point to open a pop-up box containing the point's attributes:
+
+<br>
+<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8_02.png"></p>
+<br>
 
 ## Features to be added
 

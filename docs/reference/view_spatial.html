@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add progress bar to frames — add_progress • moveVis</title>
+<title>View movements on an interactive map — view_spatial • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Add progress bar to frames — add_progress" />
+<meta property="og:title" content="View movements on an interactive map — view_spatial" />
 
-<meta property="og:description" content="This function adds a progress bar to animation frames created with frames_spatial." />
+<meta property="og:description" content="view_spatial is a simple wrapper that displays movement tracks on an interactive mapview or leaflet map." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -165,33 +165,51 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add progress bar to frames</h1>
+    <h1>View movements on an interactive map</h1>
     
-    <div class="hidden name"><code>add_progress.Rd</code></div>
+    <div class="hidden name"><code>view_spatial.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function adds a progress bar to animation frames created with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p>
+    <p><code>view_spatial</code> is a simple wrapper that displays movement tracks on an interactive <code>mapview</code> or <code>leaflet</code> map.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>add_progress</span>(<span class='no'>frames</span>, <span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"grey"</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>1.8</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>view_spatial</span>(<span class='no'>m</span>, <span class='kw'>render_as</span> <span class='kw'>=</span> <span class='st'>"mapview"</span>, <span class='kw'>time_labels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>stroke</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>frames</th>
-      <td><p>list of <code>ggplot2</code> objects, crated with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p></td>
+      <th>m</th>
+      <td><p><code>move</code> or <code>moveStack</code>. May contain a column named <code>colour</code> to control path colours (see <code>details</code>).</p></td>
     </tr>
     <tr>
-      <th>colour</th>
-      <td><p>character, progress bar colour.</p></td>
+      <th>render_as</th>
+      <td><p>character, either <code>'mapview'</code> to return a <code>mapview</code> map or <code>'leaflet'</code> to return a <code>leaflet</code> map.</p></td>
     </tr>
     <tr>
-      <th>size</th>
-      <td><p>numeric, progress bar line size..</p></td>
+      <th>time_labels</th>
+      <td><p>logical, wether to display timestamps for each track fix when hovering it with the mouse cursor.</p></td>
+    </tr>
+    <tr>
+      <th>stroke</th>
+      <td><p>logical, whether to draw stroke around circles.</p></td>
+    </tr>
+    <tr>
+      <th>path_colours</th>
+      <td><p>character, a vector of colours. Must be of same length as number of individual tracks in <code>m</code> and refers to the order of tracks in <code>m</code>. If undefined (<code>NA</code>) and <code>m</code> contains a column named <code>colour</code>, colours provided within <code>m</code> are used (see details). Othwersie, colours are selected randomly per individual track.</p></td>
+    </tr>
+    <tr>
+      <th>path_legend</th>
+      <td><p>logical, wether to add a path legend from <code>m</code> or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in <code>m</code>.</p></td>
+    </tr>
+    <tr>
+      <th>path_legend_title</th>
+      <td><p>character, path legend title. Default is <code>"Names"</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -201,11 +219,16 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List of frames.</p>
+    <p>An interatcive <code>mapview</code> or <code>leaflet</code> map.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If argument <code>path_colours</code> is not defined (set to <code>NA</code>), path colours can be defined by adding a character column named <code>colour</code> to <code>m</code>, containing a colour code or name per row (e.g. <code>"red"</code>. This way, for example, column <code>colour</code> for all rows belonging to individual A can be set to <code>"green"</code>, while column <code>colour</code> for all rows belonging to individual B can be set to <code>"red"</code>.
+Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name <code>colour</code> in <code>m</code> is missing, colours will be selected automatically. Call <code><a href='https://www.rdocumentation.org/packages/grDevices/topics/colors'>colours()</a></code> to see all available colours in R.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
+    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -213,26 +236,18 @@
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>moveVis</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>move</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"move_data"</span>, <span class='st'>"basemap_data"</span>)
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"move_data"</span>)
 
-<span class='co'># create spatial frames using a custom NDVI base layer</span>
-<span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
-<span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
-<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
-                         <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='co'># return a mapview map (mapview must be installed)</span>
+<span class='fu'>view_spatial</span>(<span class='no'>move_data</span>)
 
-<span class='co'># add a progress bar:</span>
-<span class='no'>frames.a</span> <span class='kw'>&lt;-</span> <span class='fu'>add_progress</span>(<span class='no'>frames</span>)
-<span class='no'>frames.a</span><span class='kw'>[[</span><span class='fl'>100</span>]]
+<span class='co'># return a leaflet map (leaflet must be installed)</span>
+<span class='fu'>view_spatial</span>(<span class='no'>move_data</span>, <span class='kw'>render_as</span> <span class='kw'>=</span> <span class='st'>"leaflet"</span>)
 
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
-<span class='co'># or in red and larger</span>
-<span class='no'>frames.b</span> <span class='kw'>&lt;-</span> <span class='fu'>add_progress</span>(<span class='no'>frames</span>, <span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>2.5</span>)
-<span class='no'>frames.b</span><span class='kw'>[[</span><span class='fl'>100</span>]]
-<span class='co'># }</span># NOT RUN {
-# }
-</pre>
+<span class='co'># turn off time labels and legend</span>
+<span class='fu'>view_spatial</span>(<span class='no'>move_data</span>, <span class='kw'>time_labels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -240,6 +255,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
       
