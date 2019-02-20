@@ -269,7 +269,7 @@ example code to be added soon, see <a href = "http://movevis.org/reference/join_
 
 #### Example 8: View movement tracks
 
-With `view_spatial()`, movement tracks can be displayed on an interactive map using `mapview` or `leaflet`. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by `align_move()`.
+With the simple `view_spatial()` wrapper, movement tracks can be displayed on an interactive map using the very handy `mapview` or `leaflet` packages. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by `align_move()`.
 
 ```R
 # in case, mapview or leaflet is not installed:
