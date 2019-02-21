@@ -3,9 +3,7 @@ Type: Package
 Title: Movement Data Visualization
 Version: 0.10.0
 Depends:
-  R (>= 3.5.0),
-  methods,
-  grDevices
+  R (>= 3.5.0)
 Date: 2018-11-23
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
@@ -32,7 +30,9 @@ Imports:
   curl,
   plyr,
   dplyr,
-  zoo
+  zoo,
+  methods,
+  grDevices
 Remotes: github::MilesMcBain/slippymath
 BugReports: http://www.github.com/16eagle/moveVis/issues
 SystemRequirements: ImageMagick, FFmpeg, libav
