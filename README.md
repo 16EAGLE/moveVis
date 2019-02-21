@@ -81,7 +81,8 @@ Create a simple animation using a default base map by first aligning your moveme
 ```R
 library(moveVis)
 library(move)
-data("move_data")
+data("move_data") # move class object
+# if your tracks are present as data.frames, see df2move() for conversion
 
 # align move_data to a uniform time scale
 move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
@@ -111,7 +112,7 @@ library(ggplot2)
 data("move_data")
 ```
 
-`move_data` is a `moveStack`, containing three individual tracks. Let's have a look at both timestamps and sampling rates:
+`move_data` is a `moveStack`, containing three individual tracks. `moveVis` works with `move` class objects. If your movement tracks are present as `data.frames`, see <a href="http://movevis.org/reference/df2move.html">`df2move()`</a> and the example code there for conversion. Let's have a look at both timestamps and sampling rates of `move_data`:
 
 ```R
 unique(timestamps(move_data))

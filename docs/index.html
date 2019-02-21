@@ -233,7 +233,8 @@
 <p>Create a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of <code>ggplot2</code> frames and turning these frames into an animated <code>GIF</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>) <span class="co"># move class object</span>
+<span class="co"># if your tracks are present as data.frames, see df2move() for conversion</span>
 
 <span class="co"># align move_data to a uniform time scale</span>
 move_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)
@@ -257,7 +258,7 @@ frames[[<span class="dv">100</span>]] <span class="co"># preview one of the fram
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
 
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)</code></pre></div>
-<p><code>move_data</code> is a <code>moveStack</code>, containing three individual tracks. Let’s have a look at both timestamps and sampling rates:</p>
+<p><code>move_data</code> is a <code>moveStack</code>, containing three individual tracks. <code>moveVis</code> works with <code>move</code> class objects. If your movement tracks are present as <code>data.frames</code>, see <a href="http://movevis.org/reference/df2move.html"><code><a href="reference/df2move.html">df2move()</a></code></a> and the example code there for conversion. Let’s have a look at both timestamps and sampling rates of <code>move_data</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/raster/topics/unique">unique</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/timestamps">timestamps</a></span>(move_data))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/timeLag">timeLag</a></span>(move_data, <span class="dt">unit =</span> <span class="st">"mins"</span>)</code></pre></div>
 <p>We can conclude that each track has a sampling rate of roughly 4 minutes, however sampling rates differ over time. Due to this, tracks do not share unique timestamps. For animation, unique frame times are needed, regardless if we want to animate a single track or multiple at once. Thus, we need to align <code>move_data</code> in order to</p>
