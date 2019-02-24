@@ -345,7 +345,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' get map
-#' @importFrom slippymath bb_to_tg tg_composite
+#' @importFrom slippymath bbox_to_tile_grid compose_tile_grid
 #' @importFrom curl curl_download
 #' @importFrom raster projectRaster extent res res<- projectExtent
 #' @importFrom magick image_read image_write image_convert
@@ -354,7 +354,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   ## calculate needed slippy tiles using slippymath
   gg.ext.ll <- st_bbox(st_transform(st_as_sfc(gg.ext), crs = st_crs("+init=epsg:4326")))
-  tg <- bb_to_tg(gg.ext.ll, max_tiles = ceiling(map_res*20))
+  tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
   images <- apply(tg$tiles, MARGIN = 1, function(x){
     file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
     if(!isTRUE(file.exists(file))){
@@ -370,7 +370,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   })
   
   ## composite imagery
-  r <- tg_composite(tg, images)
+  r <- compose_tile_grid(tg, images)
   list(crop(projectRaster(r, crs = m.crs), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
   
   #projectRaster produces hidden warnings:
