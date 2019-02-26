@@ -9,7 +9,7 @@
 #' @param x numeric, position of the bottom left corner of the scalebar on the x axis. If not set, \code{position} is used to calculate the position of the scalebar.
 #' @param y numeric, position of the bottom left corner of the scalebar on the y axis. If not set, \code{position} is used to calculate the position of the scalebar.
 #' @param colour character, colour of the distance labels. Default is \code{"black"}.
-#' @param label_margin numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height). Default is 1.
+#' @param label_margin numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height).
 #'
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann

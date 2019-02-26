@@ -10,13 +10,12 @@
 <a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a>, <a href="https://github.com/edzer/sp">`sp`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="http://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wraping the <a href="https://crates.io/crates/gifski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.
 
 <br>
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp2.gif"></p>
-<p align="center"><sub>Figure 1: Exemplary movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
+<p align="center"><sub>Figure 1: Exemplary movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
 <br>
-
 <br>
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/examp1.gif"></p>
-<p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a discrete base layer</sub></p>
+<p align="center"><img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p>
+<p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 
 ## Installation
 
@@ -93,7 +92,7 @@ frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
 frames[[100]] # preview one of the frames
 
 # animate frames
-animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.gif")
+animate_frames(frames, out_file = "/full/path/to/example_1.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
@@ -156,7 +155,7 @@ frames[[100]] # display one of the frames
 You can pass any list of frames like the one we just created to `animate_frames()`. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we du not want to add any customizations to `frames` and just create a `GIF` from it. If you are not sure, which output formats can be used, run `suggest_formats()` that returns you a vector of file suffixes that can be created on your system. For making a `GIF` from `frames`, just run:
 
 ```R
-animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.gif")
+animate_frames(frames, out_file = "/full/path/to/example_2.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
@@ -166,11 +165,38 @@ animate_frames(frames, out_file = "/full/path/to/output/folder/moveVis_example.g
 `moveVis` is entierly based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
 
 ```R
+library(moveVis)
+library(move)
+library(raster)
+library(ggplot2)
+library(magrittr)
+
+data("move_data")
+
+# align movement tracks
+move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+
+# create frames
+frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
+                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
+
+# edit frames
 frames <- add_labels(frames, x = "Longitude", y = "Latitude") # add labels, e.g. axis labels
 frames <- add_progress(frames) # add a progress bar
 frames <- add_scalebar(frames, height = 0.015) # add a scale bar
 frames <- add_northarrow(frames) # add a north arrow
 frames <- add_timestamps(frames, move_data, type = "label") # add timestamps
+```
+
+Alternatively, use the pipe, which (in my opinion) makes this more elegant:
+
+```R
+# edit frames
+frames <- add_labels(frames, x = "Longitude", y = "Latitude") %>% 
+  add_progress() %>% 
+  add_scalebar(height = 0.015) %>% 
+  add_northarrow() %>% 
+  add_timestamps(move_data, type = "label")
 
 ## Have a look at one of the frames:
 frames[[100]]
@@ -246,17 +272,69 @@ frames[[100]]
 Animate the the customized frames as we did in the prior section using `animate_frames()`. This time, let's make a `.mov` video:
 
 ```R
-animate_frames(frames, "/full/path/to/output/folder/moveVis_example_2.mov")
+animate_frames(frames, "/full/path/to/example_3.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_opt.gif"></p>
 
 
-#### Example 4: Base maps: using mapbox with moveVis
+#### Example 4: Using a mapbox satellite base map
 
-example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details.
+Thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`</a> package used by `frames_spatial`, you can also use `mapbox` base maps (e.g. satellite):
 
-#### Example 5: Custom maps: gradient, discrete and RGB raster data
+```R
+library(moveVis)
+library(move)
+library(magrittr)
+data("move_data")
+
+# align movement to unique times and regular resolution
+m <- align_move(move_data, res = 4, unit = "mins")
+
+## assign some path colours by individual
+m.list <- split(m) # split m into list by individual
+m.list <- mapply(x = m.list, y = c("red", "green", "blue"), function(x, y){
+  x$colour <- y
+  return(x)
+}) # add colour per individual
+m <- moveStack(m.list) # putting it back together into a moveStack
+
+# create frames with mapbox satellite basemap
+frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
+                         map_token = "YOUR_MAPBOX_TOKEN")
+# register at http://www.mapbox.com to get a free mapbox token
+# that allows you to do 50.000 map requests per month free of charge
+
+# animate the first 100 frames as example
+animate_frames(frames[1:100], out_file = "/full/path/to/example_4a.gif")
+```
+
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
+
+We can do the same thing with a custom, non-squared extent (and use the pipe to customize frames):
+
+```R
+ext <- extent(8.820289, 9.076893, 47.68715, 47.80863)
+
+# set the ext argument
+frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
+                         map_token = "YOUR_MAPBOX_TOKEN", ext = ext) %>% 
+  add_labels(x = "Longitude", y = "Latitude") %>% 
+  add_northarrow(colour = "white", height = 0.08, position = "bottomleft") %>% 
+  add_scalebar(colour = "white", height = 0.022, position = "bottomright", label_margin = 1.4) %>% 
+  add_timestamps(m, type = "label")
+
+# animate the first 100 frames as example
+animate_frames(frames[1:100], out_file = "/full/path/to/example_4b.gif",
+               height = 500, width = 800, res = 82)
+```
+
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4_02.gif"></p>
+
+For further details, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a>.
+
+
+#### Example 5: Custom base maps from raster data
 
 example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details.
 

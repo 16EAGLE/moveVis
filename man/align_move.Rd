@@ -8,7 +8,7 @@ align_move(m, res = "min", digit = "min", unit = "secs",
   spaceMethod = "greatcircle")
 }
 \arguments{
-\item{m}{\code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned}
+\item{m}{\code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).}
 
 \item{res}{either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:
 \itemize{
@@ -65,7 +65,7 @@ unique(unlist(timeLag(m, units = "secs")))
 
 }
 \seealso{
-\code{\link{frames_spatial}}
+\code{\link{df2move}} \code{\link{frames_spatial}} \code{\link{frames_graph}}
 }
 \author{
 Jakob Schwalb-Willmann

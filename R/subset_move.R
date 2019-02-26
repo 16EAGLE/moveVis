@@ -2,7 +2,7 @@
 #'
 #' This function is a simple wrapper that subsets a \code{move} or \code{moveStack} by a given time span. A \code{move} or \code{moveStack} containing data only for the subset time span is returned.
 #'
-#' @param m a \code{move} or \code{moveStack} object.
+#' @param m a \code{move} or \code{moveStack} object (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).
 #' @param from character or \code{POSIXct}, representing the start time. If character, the format \code{"\%m-\%d-\%y \%H:\%M:\%S"} must be used (see \code{\link{strptime}}).
 #' @param to character or \code{POSIXct}, representing the stop time. If character, the format  \code{"\%m-\%d-\%y \%H:\%M:\%S"} must be used  (see \code{\link{strptime}}).
 #' @param tz character, time zone that should be used if \code{from} and/or \code{to} are of type \code{character}.

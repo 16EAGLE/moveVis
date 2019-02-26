@@ -4,7 +4,7 @@
 #' This prepares the provided movement data to be interpretable by \code{\link{frames_spatial}}, which necessitates a uniform time scale and
 #' a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times.
 #'
-#' @param m \code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned
+#' @param m \code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).
 #' @param res either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:
 #' \itemize{
 #'   \item \code{"min"} to use the smalles temporal resolution of \code{m} (default)
@@ -27,7 +27,7 @@
 #' @importFrom sp coordinates
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
-#' @seealso \code{\link{frames_spatial}}
+#' @seealso \code{\link{df2move}} \code{\link{frames_spatial}} \code{\link{frames_graph}}
 #' 
 #' @examples
 #' library(moveVis)

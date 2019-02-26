@@ -7,7 +7,7 @@
 subset_move(m, from, to, tz = "UTC")
 }
 \arguments{
-\item{m}{a \code{move} or \code{moveStack} object.}
+\item{m}{a \code{move} or \code{moveStack} object (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).}
 
 \item{from}{character or \code{POSIXct}, representing the start time. If character, the format \code{"\%m-\%d-\%y \%H:\%M:\%S"} must be used (see \code{\link{strptime}}).}
 

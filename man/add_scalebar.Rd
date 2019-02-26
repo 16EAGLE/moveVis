@@ -23,7 +23,7 @@ add_scalebar(frames, distance = NULL, height = 0.015,
 
 \item{colour}{character, colour of the distance labels. Default is \code{"black"}.}
 
-\item{label_margin}{numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height). Default is 1.}
+\item{label_margin}{numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height).}
 
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }
