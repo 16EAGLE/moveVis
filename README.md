@@ -37,7 +37,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 ## Function overview
 
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/workflow.png"></p>
+<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/workflow_nmargin.png"></p>
 
 <a href="http://movevis.org">`moveVis`</a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
 
