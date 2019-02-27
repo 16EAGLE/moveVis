@@ -42,36 +42,36 @@
      
   </a>
 </li>
+<li>
+  <a href="index.html#get-started">Get Started</a>
+</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Get Started
+    Examples
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="index.html#get-started">Example 1: Creating a simple animation</a>
+      <a href="articles/example-1.html">Example 1: Creating a simple movement animation</a>
     </li>
     <li>
-      <a href="index.html#example-2-example-1-explained-in-detail">Example 2: Example 1 explained in detail</a>
+      <a href="articles/example-2.html">Example 2: Customizing frames</a>
     </li>
     <li>
-      <a href="index.html#example-3-customizing-frames">Example 3: Customizing frames</a>
+      <a href="articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
     </li>
     <li>
-      <a href="index.html#example-4-using-a-mapbox-satellite-base-map">Example 4: Using a mapbox satellite base map</a>
+      <a href="articles/example-4.html">Example 4: Custom base maps from raster data</a>
     </li>
     <li>
-      <a href="index.html#example-5-custom-base-maps-from-raster-data">Example 5: Custom base maps from raster data</a>
+      <a href="articles/example-5.html">Example 5: Interaction graphs</a>
     </li>
     <li>
-      <a href="index.html#example-6-interaction-graphs">Example 6: Interaction graphs</a>
+      <a href="articles/example-6.html">Example 6: Joining frames side by side</a>
     </li>
     <li>
-      <a href="index.html#example-7-joining-frames-side-by-side">Example 7: Joining frames side by side</a>
-    </li>
-    <li>
-      <a href="index.html#example-8-view-movement-tracks">Example 8: View movement tracks</a>
+      <a href="articles/example-7.html">Example 7: View movement tracks</a>
     </li>
   </ul>
 </li>
@@ -226,10 +226,7 @@
 <div id="get-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#get-started" class="anchor"></a>Get started</h2>
-<div id="example-1-creating-a-simple-animation" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-1-creating-a-simple-animation" class="anchor"></a>Example 1: Creating a simple animation</h4>
-<p>Create a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of <code>ggplot2</code> frames and turning these frames into an animated <code>GIF</code>:</p>
+<p>The following example shows how to make a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of <code>ggplot2</code> frames and turning these frames into an animated <code>GIF</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>) <span class="co"># move class object</span>
@@ -247,206 +244,17 @@ frames[[<span class="dv">100</span>]] <span class="co"># preview one of the fram
 <span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_1.gif"</span>)</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 </div>
-<div id="example-2-example-1-explained-in-detail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-2-example-1-explained-in-detail" class="anchor"></a>Example 2: Example 1 explained in detail</h4>
-<p>First, load the required packages for this example and the <code>moveVis</code> example movement data:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(raster)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)</code></pre></div>
-<p><code>move_data</code> is a <code>moveStack</code>, containing three individual tracks. <code>moveVis</code> works with <code>move</code> class objects. If your movement tracks are present as <code>data.frames</code>, see <a href="http://movevis.org/reference/df2move.html"><code><a href="reference/df2move.html">df2move()</a></code></a> and the example code there for conversion. Let’s have a look at both timestamps and sampling rates of <code>move_data</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/raster/topics/unique">unique</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/timestamps">timestamps</a></span>(move_data))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/timeLag">timeLag</a></span>(move_data, <span class="dt">unit =</span> <span class="st">"mins"</span>)</code></pre></div>
-<p>We can conclude that each track has a sampling rate of roughly 4 minutes, however sampling rates differ over time. Due to this, tracks do not share unique timestamps. For animation, unique frame times are needed, regardless if we want to animate a single track or multiple at once. Thus, we need to align <code>move_data</code> in order to</p>
-<ul>
-<li>make all tracks share unique timestamps that can be assigned to frames</li>
-<li>make all tracks share unique, steady sampling rates without gaps</li>
-</ul>
-<p>You can use <a href="http://movevis.org/reference/align_move.html"><code><a href="reference/align_move.html">align_move()</a></code></a> to align <code>move_data</code> to a sampling rate of 4 minutes (240 seconds) at the seconds digit “:00”:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">move_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)</code></pre></div>
-<p>Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.</p>
-<p>Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. To get a list of all available default map types, use <code><a href="reference/get_maptypes.html">get_maptypes()</a></code>. <code>moveVis</code> supports both <code>OpenStreetMap</code> and <code>mapbox</code> as default map services.</p>
-<p>Using <code>OpenStreetMap</code>, you can get open-source streets map imagery and maps derived thereof. Using <code>mapbox</code>, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For <code>mapbox</code>, you need to register (for free) at <a href="https://www.mapbox.com/" class="uri">https://www.mapbox.com/</a> to get a token that grants you free access (50 000 map downloads/month) and that can be used with the <code>map_token</code> argument of <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> (see <a href="http://movevis.org/reference/frames_spatial.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details).</p>
-<p>In this example, we want to use the OpenStreetMap ‘watercolour’ imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from <code>move_data</code> using a map, we can use <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
-                         <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
-<p>Instead of using <code>path_colours</code>, you can add a <code>colour</code> column to your <code>move</code> or <code>moveStack</code> object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioral segment, time, age, speed or something different (see <a href="http://movevis.org/reference/frames_spatial.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details).</p>
-<p>Have a look at the newly created <code>frames</code> list object and display a randomly selected frame to get a first impression, how your animation will look like:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(frames) <span class="co"># number of frames</span>
-frames[[<span class="dv">100</span>]] <span class="co"># display one of the frames</span></code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_01.png"></p>
-<p>You can pass any list of frames like the one we just created to <code><a href="reference/animate_frames.html">animate_frames()</a></code>. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we du not want to add any customizations to <code>frames</code> and just create a <code>GIF</code> from it. If you are not sure, which output formats can be used, run <code><a href="reference/suggest_formats.html">suggest_formats()</a></code> that returns you a vector of file suffixes that can be created on your system. For making a <code>GIF</code> from <code>frames</code>, just run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_2.gif"</span>)</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
-</div>
-<div id="example-3-customizing-frames" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-3-customizing-frames" class="anchor"></a>Example 3: Customizing frames</h4>
-<p><code>moveVis</code> is entierly based on the <code>ggplot2</code> grammar of graphics. Each list element in <code>frames</code> is a <code>ggplot2</code> object that represents a single animation frame. Thus, it is possible to customize each frame individually using <code>ggplot2</code> functions. Instead, <code>moveVis</code> provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize <code>frames</code> that we created in the prior section:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(raster)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(magrittr)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
-
-<span class="co"># align movement tracks</span>
-move_data &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)
-
-<span class="co"># create frames</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
-                         <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)
-
-<span class="co"># edit frames</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="co"># add labels, e.g. axis labels</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_progress.html">add_progress</a></span>(frames) <span class="co"># add a progress bar</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_scalebar.html">add_scalebar</a></span>(frames, <span class="dt">height =</span> <span class="fl">0.015</span>) <span class="co"># add a scale bar</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_northarrow.html">add_northarrow</a></span>(frames) <span class="co"># add a north arrow</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_timestamps.html">add_timestamps</a></span>(frames, move_data, <span class="dt">type =</span> <span class="st">"label"</span>) <span class="co"># add timestamps</span></code></pre></div>
-<p>Alternatively, use the pipe, which (in my opinion) makes this more elegant:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># edit frames</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_progress.html">add_progress</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">height =</span> <span class="fl">0.015</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_northarrow.html">add_northarrow</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_timestamps.html">add_timestamps</a></span>(move_data, <span class="dt">type =</span> <span class="st">"label"</span>)
-
-## Have a look at one of the frames:
-frames[[<span class="dv">100</span>]]</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_01.png"></p>
-<p>For further details on these functions, please see their help files. If you want to apply your own <code>ggplot2</code> syntax to <code>frames</code>, e.g. for drawing polygons, lines or points that are static or even change with time, you can do this frame-wise. In the following example, we customize one individual frame just as if you would work with a single <code>ggplot2</code> object:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">8.917</span>, <span class="fl">8.924</span>, <span class="fl">8.924</span>, <span class="fl">8.916</span>, <span class="fl">8.917</span>),
-                   <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">47.7678</span>, <span class="fl">47.7675</span>, <span class="fl">47.764</span>, <span class="fl">47.7646</span>, <span class="fl">47.7678</span>))
-
-<span class="co"># just customize a single frame and have a look at it</span>
-frame_test &lt;-<span class="st"> </span>frames[[<span class="dv">100</span>]] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
-                                        <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)
-frame_test</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_02.png"></p>
-<p>If you just want to change one or a small selection of frames, you could just manipulate those frames like shown above and assign the cusomized <code>ggplot2</code> frames to the equivalent elements in your <code>frames</code> list.</p>
-<p>If you want to edit all frames, you can use the <code><a href="reference/add_gg.html">add_gg()</a></code> function. Here, we want to mark a field on the map on all frames. For this, we use the <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path()</a></code> function of <code>ggplot2</code> with <code><a href="reference/add_gg.html">add_gg()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># or customize all frames at once using add_gg:</span>
-frames =<span class="st"> </span><span class="kw"><a href="reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
-                                  <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)), <span class="dt">data =</span> data)</code></pre></div>
-<p>The field marking is now added to all frames. Let’s add some text to describe the field marking:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_text.html">add_text</a></span>(frames, <span class="st">"Static feature"</span>, <span class="dt">x =</span> <span class="fl">8.9205</span>, <span class="dt">y =</span> <span class="fl">47.7633</span>,
-                   <span class="dt">colour =</span> <span class="st">"black"</span>, <span class="dt">size =</span> <span class="dv">3</span>)
-
-## Have a look at one of the frames:
-frames[[<span class="dv">100</span>]]</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_03.png"></p>
-<p><code><a href="reference/add_gg.html">add_gg()</a></code> can also be used to customize each frame consecutively, e.g. to add dynamic marks that move or change with time. Both arguments <code>gg</code> and <code>data</code> can take lists of the same length as <code>frames</code>. If one of these arguments or both are lists, each list element is applied to the according element in <code>frames</code>. Let’s add a another field mark that is slightly changing with each frame:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## create data.frame containing corner coordinates
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">8.96</span>, <span class="fl">8.955</span>, <span class="fl">8.959</span>, <span class="fl">8.963</span>, <span class="fl">8.968</span>, <span class="fl">8.963</span>, <span class="fl">8.96</span>),
-                   <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">47.725</span>, <span class="fl">47.728</span>, <span class="fl">47.729</span>, <span class="fl">47.728</span>, <span class="fl">47.725</span>, <span class="fl">47.723</span>, <span class="fl">47.725</span>))
-## make a list from it by replicating it by the length of frames
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(data), <span class="dt">length.out =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(frames))
-
-## now alter the coordinates to make them shift
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(data, <span class="cf">function</span>(x){
-  y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/raster/topics/ncell">nrow</a></span>(x)<span class="op">-</span><span class="dv">1</span>, <span class="dt">mean =</span> <span class="fl">0.00001</span>, <span class="dt">sd =</span> <span class="fl">0.0001</span>) 
-  x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(y, y[<span class="dv">1</span>])
-})
-
-## draw each individual polygon to each frame
-frames =<span class="st"> </span><span class="kw"><a href="reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
-                                  <span class="dt">colour =</span> <span class="st">"black"</span>)), <span class="dt">data =</span> data)
-
-## add a text label
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_text.html">add_text</a></span>(frames, <span class="st">"Dynamic feature"</span>, <span class="dt">x =</span> <span class="fl">8.959</span>, <span class="dt">y =</span> <span class="fl">47.7305</span>,
-                   <span class="dt">colour =</span> <span class="st">"black"</span>, <span class="dt">size =</span> <span class="dv">3</span>)
-
-## Have a look at one of the frames:
-frames[[<span class="dv">100</span>]]</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_04.png"></p>
-<p>Animate the the customized frames as we did in the prior section using <code><a href="reference/animate_frames.html">animate_frames()</a></code>. This time, let’s make a <code>.mov</code> video:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="st">"/full/path/to/example_3.gif"</span>)</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_opt.gif"></p>
-</div>
-<div id="example-4-using-a-mapbox-satellite-base-map" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-4-using-a-mapbox-satellite-base-map" class="anchor"></a>Example 4: Using a mapbox satellite base map</h4>
-<p>Thanks to the <a href="http://github.com/MilesMcBain/slippymath"><code>slippymath</code></a> package used by <code>frames_spatial</code>, you can also use <code>mapbox</code> base maps (e.g. satellite):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(magrittr)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
-
-<span class="co"># align movement to unique times and regular resolution</span>
-m &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">4</span>, <span class="dt">unit =</span> <span class="st">"mins"</span>)
-
-## assign some path colours by individual
-m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/split">split</a></span>(m) <span class="co"># split m into list by individual</span>
-m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mapply">mapply</a></span>(<span class="dt">x =</span> m.list, <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>), <span class="cf">function</span>(x, y){
-  x<span class="op">$</span>colour &lt;-<span class="st"> </span>y
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(x)
-}) <span class="co"># add colour per individual</span>
-m &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/moveStack">moveStack</a></span>(m.list) <span class="co"># putting it back together into a moveStack</span>
-
-<span class="co"># create frames with mapbox satellite basemap</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
-                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>)
-<span class="co"># register at http://www.mapbox.com to get a free mapbox token</span>
-<span class="co"># that allows you to do 50.000 map requests per month free of charge</span>
-
-<span class="co"># animate the first 100 frames as example</span>
-<span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_4a.gif"</span>)</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
-<p>We can do the same thing with a custom, non-squared extent (and use the pipe to customize frames):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ext &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/raster/topics/extent">extent</a></span>(<span class="fl">8.820289</span>, <span class="fl">9.076893</span>, <span class="fl">47.68715</span>, <span class="fl">47.80863</span>)
-
-<span class="co"># set the ext argument</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
-                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">ext =</span> ext) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(<span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_northarrow.html">add_northarrow</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.08</span>, <span class="dt">position =</span> <span class="st">"bottomleft"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.022</span>, <span class="dt">position =</span> <span class="st">"bottomright"</span>, <span class="dt">label_margin =</span> <span class="fl">1.4</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_timestamps.html">add_timestamps</a></span>(m, <span class="dt">type =</span> <span class="st">"label"</span>)
-
-<span class="co"># animate the first 100 frames as example</span>
-<span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_4b.gif"</span>,
-               <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">width =</span> <span class="dv">800</span>, <span class="dt">res =</span> <span class="dv">82</span>)</code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4_02.gif"></p>
-<p>For further details, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a>.</p>
-</div>
-<div id="example-5-custom-base-maps-from-raster-data" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-5-custom-base-maps-from-raster-data" class="anchor"></a>Example 5: Custom base maps from raster data</h4>
-<p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/frames_spatial.html">?frames_spatial</a></code></a> for details.</p>
-</div>
-<div id="example-6-interaction-graphs" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-6-interaction-graphs" class="anchor"></a>Example 6: Interaction graphs</h4>
-<p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/frames_graph.html">?frames_graph</a></code></a> for details.</p>
-</div>
-<div id="example-7-joining-frames-side-by-side" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-7-joining-frames-side-by-side" class="anchor"></a>Example 7: Joining frames side by side</h4>
-<p>example code to be added soon, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="reference/join_frames.html">?join_frames</a></code></a> for details.</p>
-</div>
-<div id="example-8-view-movement-tracks" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-8-view-movement-tracks" class="anchor"></a>Example 8: View movement tracks</h4>
-<p>With the simple <code><a href="reference/view_spatial.html">view_spatial()</a></code> wrapper, movement tracks can be displayed on an interactive map using the very handy <code>mapview</code> or <code>leaflet</code> packages. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by <code><a href="reference/align_move.html">align_move()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># in case, mapview or leaflet is not installed:</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"leaflet"</span>, <span class="st">"mapview"</span>))
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
- 
-<span class="co"># return a mapview map</span>
-<span class="kw"><a href="reference/view_spatial.html">view_spatial</a></span>(move_data)</code></pre></div>
-<p>An interactive map is returned. If you use RStudio, it will be displayed on the RStudio viewer pane:</p>
-<p><br></p>
-<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8.png"></p> <br><p>When hovering a point with the cursor, the timestamps of that point is displayed. Thanks to <code>mapview</code>, you may click on a point to open a pop-up box containing the point’s attributes:</p>
-<p><br></p>
-<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8_02.png"></p> <br>
-</div>
+<div id="examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples" class="anchor"></a>Examples</h2>
+<p>You can find detailed code examples on how to use <code>moveVis</code> here:</p>
+<p><a href="http://movevis.org/articles/example-1.html">Example 1: Creating a simple movement animation</a></p>
+<p><a href="http://movevis.org/articles/example-2.html">Example 2: Customizing frames</a></p>
+<p><a href="http://movevis.org/articles/example-3.html">Example 3: Using a mapbox satellite base map</a></p>
+<p><a href="http://movevis.org/articles/example-4.html">Example 4: Custom base maps from raster data</a> (to be added soon)</p>
+<p><a href="http://movevis.org/articles/example-5.html">Example 5: Interaction graphs</a> (to be added soon)</p>
+<p><a href="http://movevis.org/articles/example-6.html">Example 6: Joining frames side by side</a> (to be added soon)</p>
+<p><a href="http://movevis.org/articles/example-7.html">Example 7: View movement tracks</a></p>
 </div>
 <div id="features-to-be-added" class="section level2">
 <h2 class="hasAnchor">
@@ -464,14 +272,9 @@ frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_
 <li>3D animations, e.g. for including altitude data</li>
 </ul>
 </div>
-<div id="contact-bug-reports" class="section level2">
+<div id="related-packages" class="section level2">
 <h2 class="hasAnchor">
-<a href="#contact-bug-reports" class="anchor"></a>Contact &amp; bug reports</h2>
-<p>For bug reports, please use <a href="https://github.com/16eagle/movevis/issues" class="uri">https://github.com/16eagle/movevis/issues</a>. Feature requests and other contributions are welcome!</p>
-</div>
-<div id="what-else-are-we-doing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#what-else-are-we-doing" class="anchor"></a>What else are we doing?</h2>
+<a href="#related-packages" class="anchor"></a>Related packages</h2>
 <p>The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:</p>
 <ul>
 <li>

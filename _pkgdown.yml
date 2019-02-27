@@ -14,23 +14,23 @@ navbar:
     - icon: fa-home fa-lg
       href: index.html
     - text: "Get Started"
+      href: index.html#get-started
+    - text: "Examples"
       menu:
-      - text: "Example 1: Creating a simple animation"
-        href: index.html#get-started
-      - text: "Example 2: Example 1 explained in detail"
-        href: index.html#example-2-example-1-explained-in-detail
-      - text: "Example 3: Customizing frames"
-        href: index.html#example-3-customizing-frames
-      - text: "Example 4: Using a mapbox satellite base map"
-        href: index.html#example-4-using-a-mapbox-satellite-base-map
-      - text: "Example 5: Custom base maps from raster data"
-        href: index.html#example-5-custom-base-maps-from-raster-data
-      - text: "Example 6: Interaction graphs"
-        href: index.html#example-6-interaction-graphs
-      - text: "Example 7: Joining frames side by side"
-        href: index.html#example-7-joining-frames-side-by-side
-      - text: "Example 8: View movement tracks"
-        href: index.html#example-8-view-movement-tracks
+      - text: "Example 1: Creating a simple movement animation"
+        href: articles/example-1.html
+      - text: "Example 2: Customizing frames"
+        href: articles/example-2.html
+      - text: "Example 3: Using a mapbox satellite base map"
+        href: articles/example-3.html
+      - text: "Example 4: Custom base maps from raster data"
+        href: articles/example-4.html
+      - text: "Example 5: Interaction graphs"
+        href: articles/example-5.html
+      - text: "Example 6: Joining frames side by side"
+        href: articles/example-6.html
+      - text: "Example 7: View movement tracks"
+        href: articles/example-7.html
     - text: "Functions"
       href: reference/index.html
     - text: "Changelog"
@@ -97,3 +97,20 @@ reference:
   - move_data
   - basemap_data
   - moveVis-package
+
+articles:
+- title: Examples
+  desc:  These examples explain the main features and the use of moveVis and its functions.
+  contents:
+  - example-1
+  - example-2
+  - example-3
+  - example-4
+  - example-5
+  - example-6
+  - example-7
+
+#articles:
+#- title: Examples
+#  contents:
+#  - rmarkdown_websites

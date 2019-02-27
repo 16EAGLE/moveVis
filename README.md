@@ -73,9 +73,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 ## Get started
 
-#### Example 1: Creating a simple animation
-
-Create a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of `ggplot2` frames and turning these frames into an animated `GIF`:
+The following example shows how to make a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of `ggplot2` frames and turning these frames into an animated `GIF`:
 
 ```R
 library(moveVis)
@@ -97,282 +95,23 @@ animate_frames(frames, out_file = "/full/path/to/example_1.gif")
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 
+## Examples
 
-#### Example 2: Example 1 explained in detail
+You can find detailed code examples on how to use `moveVis` here:
 
-First, load the required packages for this example and the `moveVis` example movement data:
+<a href = "http://movevis.org/articles/example-1.html">Example 1: Creating a simple movement animation</a>
 
-```R
-library(moveVis)
-library(move)
-library(raster)
-library(ggplot2)
+<a href = "http://movevis.org/articles/example-2.html">Example 2: Customizing frames</a>
 
-data("move_data")
-```
+<a href = "http://movevis.org/articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
 
-`move_data` is a `moveStack`, containing three individual tracks. `moveVis` works with `move` class objects. If your movement tracks are present as `data.frames`, see <a href="http://movevis.org/reference/df2move.html">`df2move()`</a> and the example code there for conversion. Let's have a look at both timestamps and sampling rates of `move_data`:
+<a href = "http://movevis.org/articles/example-4.html">Example 4: Custom base maps from raster data</a> (to be added soon)
 
-```R
-unique(timestamps(move_data))
-timeLag(move_data, unit = "mins")
-```
+<a href = "http://movevis.org/articles/example-5.html">Example 5: Interaction graphs</a> (to be added soon)
 
-We can conclude that each track has a sampling rate of roughly 4 minutes, however sampling rates differ over time. Due to this, tracks do not share unique timestamps. For animation, unique frame times are needed, regardless if we want to animate a single track or multiple at once. Thus, we need to align `move_data` in order to
-* make all tracks share unique timestamps that can be assigned to frames
-* make all tracks share unique, steady sampling rates without gaps
+<a href = "http://movevis.org/articles/example-6.html">Example 6: Joining frames side by side</a> (to be added soon)
 
-You can use  <a href="http://movevis.org/reference/align_move.html">`align_move()`</a> to align `move_data` to a sampling rate of 4 minutes (240 seconds) at the seconds digit ":00":
-
-```R
-move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
-```
-
-Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.
-
-Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. To get a list of all available default map types, use `get_maptypes()`. `moveVis` supports both `OpenStreetMap` and `mapbox` as default map services.
-
-Using `OpenStreetMap`, you can get open-source streets map imagery and maps derived thereof. Using `mapbox`, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For `mapbox`, you need to register (for free) at https://www.mapbox.com/ to get a token that grants you free access (50 000 map downloads/month) and that can be used with the `map_token` argument of `frames_spatial()` (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details). 
-
-In this example, we want to use the OpenStreetMap 'watercolour' imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from `move_data` using a map, we can use `frames_spatial()`:
-
-```R
-frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
-                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
-```
-
-Instead of using `path_colours`, you can add a `colour` column to your `move` or `moveStack` object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioral segment, time, age, speed or something different (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details).
-
-Have a look at the newly created `frames` list object and display a randomly selected frame to get a first impression, how your animation will look like:
-
-```R
-length(frames) # number of frames
-frames[[100]] # display one of the frames
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_01.png"></p>
-
-You can pass any list of frames like the one we just created to `animate_frames()`. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we du not want to add any customizations to `frames` and just create a `GIF` from it. If you are not sure, which output formats can be used, run `suggest_formats()` that returns you a vector of file suffixes that can be created on your system. For making a `GIF` from `frames`, just run:
-
-```R
-animate_frames(frames, out_file = "/full/path/to/example_2.gif")
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
-
-#### Example 3: Customizing frames
-
-`moveVis` is entierly based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
-
-```R
-library(moveVis)
-library(move)
-library(raster)
-library(ggplot2)
-library(magrittr)
-
-data("move_data")
-
-# align movement tracks
-move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
-
-# create frames
-frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
-                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
-
-# edit frames
-frames <- add_labels(frames, x = "Longitude", y = "Latitude") # add labels, e.g. axis labels
-frames <- add_progress(frames) # add a progress bar
-frames <- add_scalebar(frames, height = 0.015) # add a scale bar
-frames <- add_northarrow(frames) # add a north arrow
-frames <- add_timestamps(frames, move_data, type = "label") # add timestamps
-```
-
-Alternatively, use the pipe, which (in my opinion) makes this more elegant:
-
-```R
-# edit frames
-frames <- add_labels(frames, x = "Longitude", y = "Latitude") %>% 
-  add_progress() %>% 
-  add_scalebar(height = 0.015) %>% 
-  add_northarrow() %>% 
-  add_timestamps(move_data, type = "label")
-
-## Have a look at one of the frames:
-frames[[100]]
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_01.png"></p>
-
-For further details on these functions, please see their help files. If you want to apply your own `ggplot2` syntax to `frames`, e.g. for drawing polygons, lines or points that are static or even change with time, you can do this frame-wise. In the following example, we customize one individual frame just as if you would work with a single `ggplot2` object:
-
-```R
-data <- data.frame(x = c(8.917, 8.924, 8.924, 8.916, 8.917),
-                   y = c(47.7678, 47.7675, 47.764, 47.7646, 47.7678))
-
-# just customize a single frame and have a look at it
-frame_test <- frames[[100]] + geom_path(aes(x = x, y = y), data = data,
-                                        colour = "red", linetype = "dashed")
-frame_test
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_02.png"></p>
-
-
-If you just want to change one or a small selection of frames, you could just manipulate those frames like shown above and assign the cusomized `ggplot2` frames to the equivalent elements in your `frames` list.
-
-If you want to edit all frames, you can use the `add_gg()` function. Here, we want to mark a field on the map on all frames. For this, we use the `geom_path()` function of `ggplot2` with `add_gg()`:
-
-```R
-# or customize all frames at once using add_gg:
-frames = add_gg(frames, gg = expr(geom_path(aes(x = x, y = y), data = data,
-                                  colour = "red", linetype = "dashed")), data = data)
-```
-
-The field marking is now added to all frames. Let's add some text to describe the field marking:
-
-```R
-frames <- add_text(frames, "Static feature", x = 8.9205, y = 47.7633,
-                   colour = "black", size = 3)
-
-## Have a look at one of the frames:
-frames[[100]]
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_03.png"></p>
-
-`add_gg()` can also be used to customize each frame consecutively, e.g. to add dynamic marks that move or change with time. Both arguments `gg` and `data` can take lists of the same length as `frames`. If one of these arguments or both are lists, each list element is applied to the according element in `frames`. Let's add a another field mark that is slightly changing with each frame:
-
-```R
-## create data.frame containing corner coordinates
-data <- data.frame(x = c(8.96, 8.955, 8.959, 8.963, 8.968, 8.963, 8.96),
-                   y = c(47.725, 47.728, 47.729, 47.728, 47.725, 47.723, 47.725))
-## make a list from it by replicating it by the length of frames
-data <- rep(list(data), length.out = length(frames))
-
-## now alter the coordinates to make them shift
-data <- lapply(data, function(x){
-  y <- rnorm(nrow(x)-1, mean = 0.00001, sd = 0.0001) 
-  x + c(y, y[1])
-})
-
-## draw each individual polygon to each frame
-frames = add_gg(frames, gg = expr(geom_path(aes(x = x, y = y), data = data,
-                                  colour = "black")), data = data)
-
-## add a text label
-frames <- add_text(frames, "Dynamic feature", x = 8.959, y = 47.7305,
-                   colour = "black", size = 3)
-
-## Have a look at one of the frames:
-frames[[100]]
-```
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_04.png"></p>
-
-Animate the the customized frames as we did in the prior section using `animate_frames()`. This time, let's make a `.mov` video:
-
-```R
-animate_frames(frames, "/full/path/to/example_3.gif")
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_opt.gif"></p>
-
-
-#### Example 4: Using a mapbox satellite base map
-
-Thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`</a> package used by `frames_spatial`, you can also use `mapbox` base maps (e.g. satellite):
-
-```R
-library(moveVis)
-library(move)
-library(magrittr)
-data("move_data")
-
-# align movement to unique times and regular resolution
-m <- align_move(move_data, res = 4, unit = "mins")
-
-## assign some path colours by individual
-m.list <- split(m) # split m into list by individual
-m.list <- mapply(x = m.list, y = c("red", "green", "blue"), function(x, y){
-  x$colour <- y
-  return(x)
-}) # add colour per individual
-m <- moveStack(m.list) # putting it back together into a moveStack
-
-# create frames with mapbox satellite basemap
-frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
-                         map_token = "YOUR_MAPBOX_TOKEN")
-# register at http://www.mapbox.com to get a free mapbox token
-# that allows you to do 50.000 map requests per month free of charge
-
-# animate the first 100 frames as example
-animate_frames(frames[1:100], out_file = "/full/path/to/example_4a.gif")
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
-
-We can do the same thing with a custom, non-squared extent (and use the pipe to customize frames):
-
-```R
-ext <- extent(8.820289, 9.076893, 47.68715, 47.80863)
-
-# set the ext argument
-frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
-                         map_token = "YOUR_MAPBOX_TOKEN", ext = ext) %>% 
-  add_labels(x = "Longitude", y = "Latitude") %>% 
-  add_northarrow(colour = "white", height = 0.08, position = "bottomleft") %>% 
-  add_scalebar(colour = "white", height = 0.022, position = "bottomright", label_margin = 1.4) %>% 
-  add_timestamps(m, type = "label")
-
-# animate the first 100 frames as example
-animate_frames(frames[1:100], out_file = "/full/path/to/example_4b.gif",
-               height = 500, width = 800, res = 82)
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4_02.gif"></p>
-
-For further details, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a>.
-
-
-#### Example 5: Custom base maps from raster data
-
-example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_spatial`</a> for details.
-
-#### Example 6: Interaction graphs
-
-example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?frames_graph`</a> for details.
-
-#### Example 7: Joining frames side by side
-
-example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?join_frames`</a> for details.
-
-#### Example 8: View movement tracks
-
-With the simple `view_spatial()` wrapper, movement tracks can be displayed on an interactive map using the very handy `mapview` or `leaflet` packages. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by `align_move()`.
-
-```R
-# in case, mapview or leaflet is not installed:
-install.packages(c("leaflet", "mapview"))
-
-library(moveVis)
-library(move)
-data("move_data")
- 
-# return a mapview map
-view_spatial(move_data)
-```
-
-An interactive map is returned. If you use RStudio, it will be displayed on the RStudio viewer pane:
-
-<br>
-<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8.png"></p>
-<br>
-
-When hovering a point with the cursor, the timestamps of that point is displayed. Thanks to `mapview`, you may click on a point to open a pop-up box containing the point's attributes:
-
-<br>
-<p align="center"><img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8_02.png"></p>
-<br>
+<a href = "http://movevis.org/articles/example-7.html">Example 7: View movement tracks</a>
 
 ## Features to be added
 
@@ -387,13 +126,7 @@ Things and features that should be added in future versions of `moveVis` (feel f
 **Some day:**
 * 3D animations, e.g. for including altitude data
 
-
-## Contact & bug reports
-
-For bug reports, please use <https://github.com/16eagle/movevis/issues>. Feature requests and other contributions are welcome!
-
-
-## What else are we doing?
+## Related packages
 
 The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
  * <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,
