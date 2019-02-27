@@ -58,7 +58,7 @@ frames[[100]] # display one of the frames
 You can pass any list of frames like the one we just created to `animate_frames()`. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we du not want to add any customizations to `frames` and just create a `GIF` from it. If you are not sure, which output formats can be used, run `suggest_formats()` that returns you a vector of file suffixes that can be created on your system. For making a `GIF` from `frames`, just run:
 
 ```R
-animate_frames(frames, out_file = "/full/path/to/example_2.gif")
+animate_frames(frames, out_file = "/full/path/to/example_1.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>

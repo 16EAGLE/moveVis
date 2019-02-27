@@ -29,7 +29,7 @@ frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
 # that allows you to do 50.000 map requests per month free of charge
 
 # animate the first 100 frames as example
-animate_frames(frames[1:100], out_file = "/full/path/to/example_4a.gif")
+animate_frames(frames[1:100], out_file = "/full/path/to/example_3a.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
@@ -48,7 +48,7 @@ frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
   add_timestamps(m, type = "label")
 
 # animate the first 100 frames as example
-animate_frames(frames[1:100], out_file = "/full/path/to/example_4b.gif",
+animate_frames(frames[1:100], out_file = "/full/path/to/example_3b.gif",
                height = 500, width = 800, res = 82)
 ```
 
