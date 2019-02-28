@@ -7,11 +7,11 @@
 frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   fade_raster = FALSE, map_service = "osm", map_type = "streets",
   map_res = 1, map_token = NULL, map_dir = NULL,
-  margin_factor = 1.1, ext = NULL, tail_length = 19, tail_size = 1,
-  path_size = 3, path_end = "round", path_join = "round",
-  path_mitre = 10, path_arrow = NULL, path_colours = NA,
-  path_legend = TRUE, path_legend_title = "Names", ...,
-  verbose = TRUE)
+  margin_factor = 1.1, equidistant = NULL, ext = NULL,
+  tail_length = 19, tail_size = 1, path_size = 3,
+  path_end = "round", path_join = "round", path_mitre = 10,
+  path_arrow = NULL, path_colours = NA, path_legend = TRUE,
+  path_legend_title = "Names", ..., verbose = TRUE)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -24,7 +24,7 @@ frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
 
 \item{fade_raster}{logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.}
 
-\item{map_service}{character, either \code{"mapbox"} or \code{"osm"}. Default is \code{"osm"}.}
+\item{map_service}{character, either \code{"osm"}, \code{"carto"} or \code{"mapbox"}. Default is \code{"osm"}.}
 
 \item{map_type}{character, a map type, e.g. \code{"streets"}. For a full list of available map types, see \code{\link{get_maptypes}}.}
 
@@ -37,6 +37,8 @@ If you use moveVis often for the same area it is recommended to set this argumen
 so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.}
 
 \item{margin_factor}{numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.}
+
+\item{equidistant}{logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.}
 
 \item{ext}{\code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).}
 
@@ -82,6 +84,8 @@ If argument \code{path_colours} is not defined (set to \code{NA}), path colours 
 Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
 
 Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
+
+The projection of \code{m} is treated as target projection. Default base maps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection of the base maps): \code{spTransform(m, crs("+init=epsg:3857"))}. The \code{ggplot2} coordinate system will be computed based on the projection of \code{m} using \code{coord_sf}. If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
 }
 \examples{
 library(moveVis)

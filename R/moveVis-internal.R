@@ -100,7 +100,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom geosphere distGeo
 #' @importFrom sf st_bbox st_transform st_as_sfc st_crs
 #' @noRd 
-.squared <- function(ext, margin_factor = 1){
+.equidistant <- function(ext, margin_factor = 1){
   
   # lat lon extent
   ext.ll <- st_bbox(st_transform(st_as_sfc(ext), st_crs("+init=epsg:4326")))
@@ -136,14 +136,27 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' generate extent
 #' @importFrom sf st_bbox st_intersects st_as_sfc
 #' @noRd 
-.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1){
+.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE){
   
-  ## calcualte square or user extent
+  ## calcualte ext
   m.ext <- st_bbox(c(xmin = min(m.df$x, na.rm = T), xmax = max(m.df$x, na.rm = T), ymin = min(m.df$y, na.rm = T), ymax = max(m.df$y, na.rm = T)), crs = m.crs)
   if(!is.null(ext)){
+    
+    # user extent
     gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = m.crs)
     if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
-  }else gg.ext <- .squared(m.ext, margin_factor = margin_factor)
+    margin_factor <- 1 # no margin since user extent set
+  } else{
+    gg.ext <- m.ext
+  }
+  
+  # squared equidistant extent or not
+  if(isTRUE(equidistant)){
+    gg.ext <- .equidistant(gg.ext, margin_factor = margin_factor)
+  }else{
+    xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
+    gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = m.crs)
+  }
   return(gg.ext)
 }
 
@@ -196,9 +209,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend
+#' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf
 #' @noRd 
-.gg_spatial <- function(m.split, gg.bmap, m.df, path_size = 3, path_end = "round", path_join = "round", squared = T, 
+.gg_spatial <- function(m.split, gg.bmap, m.df, m.crs, path_size = 3, path_end = "round", path_join = "round", equidistant = T, 
                         path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names"){
   
   # frame plotting function
@@ -207,7 +220,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     ## base plot
     p <- y + geom_path(data = x, aes_string(x = "x", y = "y", group = "id"), size = x$tail_size, lineend = path_end, linejoin = path_join,
                        linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour) +  theme_bw() +
-      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0))
+      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + coord_sf(crs = m.crs, datum = m.crs)
     
     ## add legend?
     if(isTRUE(path_legend)){
@@ -219,7 +232,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       p <- p + geom_path(data = l.df, aes_string(x = "x", y = "y", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) + guides(color = guide_legend(order = 1))
     }    
     
-    if(isTRUE(squared)) p <- p + theme(aspect.ratio = 1)
+    if(isTRUE(equidistant)) p <- p + theme(aspect.ratio = 1)
     if(isTRUE(print_plot)) print(p) else return(p)
   }
   
@@ -360,8 +373,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(!isTRUE(file.exists(file))){
       
       ## download tiles
-      if(map_service == "mapbox") curl_download(url = paste0(getOption("moveVis.map_api")$mapbox, getOption("moveVis.mapbox_types")[[map_type]], "/", tg$zoom, "/", x[1], "/", x[2], ".png", "?access_token=", map_token), destfile = file)
-      if(map_service == "osm") curl_download(url = paste0(getOption("moveVis.map_api")$osm[[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png"), destfile = file)
+      if(map_service == "mapbox"){
+        curl_download(url = paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", "?access_token=", map_token), destfile = file)
+      } else{
+        curl_download(url = paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png"), destfile = file)
+      }
       
       ## covnert imagery
       image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
@@ -449,22 +465,63 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .onLoad <- function(libname, pkgname){
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
-  if(is.null(getOption("moveVis.mapbox_types"))){
-    options(moveVis.mapbox_types = list(satellite = "mapbox.satellite", streets = "mapbox.streets", streets_basic = "mapbox.streets-basic",
-                                        hybrid = "mapbox.streets-satellite", light = "mapbox.light", dark = "mapbox.dark",
-                                        high_contrast = "mapbox.high-contrast", outdoors = "mapbox.outdoors", hike = "mapbox.run-bike-hike",
-                                        wheatpaste = "mapbox.wheatpaste", pencil = "mapbox.pencil", comic = "mapbox.comic",
-                                        pirates = "mapbox.pirates", emerald = "mapbox.emerald" ))
-  }
-  if(is.null(getOption("moveVis.map_api"))){
-    options(moveVis.map_api = list(mapbox = "https://api.mapbox.com/v4/",
-                                   osm = list(streets = "https://tile.openstreetmap.org/",
-                                              humanitarian = "http://a.tile.openstreetmap.fr/hot/",
-                                              hike = "http://toolserver.org/tiles/hikebike/",
-                                              #hillshade = "http://c.tiles.wmflabs.org/hillshading/",
-                                              grayscale = "https://tiles.wmflabs.org/bw-mapnik/",
-                                              no_labels = "https://tiles.wmflabs.org/osm-no-labels/",
-                                              toner = "http://a.tile.stamen.com/toner/",
-                                              watercolor = "http://c.tile.stamen.com/watercolor/")))
-  }
+  
+  options(moveVis.map_api = list(osm = list(streets = "https://tile.openstreetmap.org/",
+                                            streets_de = "http://a.tile.openstreetmap.de/tiles/osmde/",
+                                            streets_fr = "https://a.tile.openstreetmap.fr/osmfr/",
+                                            humanitarian = "http://a.tile.openstreetmap.fr/hot/",
+                                            topographic = "https://a.tile.opentopomap.org/",
+                                            #cycle = "https://a.tile.thunderforest.com/cycle/",
+                                            #transport = "https://a.tile.thunderforest.com/transport/",
+                                            #transport_dark = "https://a.tile.thunderforest.com/transport-dark/",
+                                            #landscape = "https://a.tile.thunderforest.com/landscape/",
+                                            #outdoors = "https://a.tile.thunderforest.com/outdoors/",
+                                            roads = "https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/",
+                                            hydda = "https://a.tile.openstreetmap.se/hydda/full/",
+                                            hydda_base = "https://a.tile.openstreetmap.se/hydda/base/",
+                                            hike = "http://toolserver.org/tiles/hikebike/",
+                                            #hillshade = "http://c.tiles.wmflabs.org/hillshading/",
+                                            grayscale = "https://tiles.wmflabs.org/bw-mapnik/",
+                                            no_labels = "https://tiles.wmflabs.org/osm-no-labels/",
+                                            watercolor = "http://c.tile.stamen.com/watercolor/",
+                                            toner = "https://stamen-tiles-a.a.ssl.fastly.net/toner/",
+                                            toner_bg = "https://stamen-tiles-a.a.ssl.fastly.net/toner-background/",
+                                            toner_lite = "https://stamen-tiles-a.a.ssl.fastly.net/toner-lite/",
+                                            terrain = "http://a.tile.stamen.com/terrain/",
+                                            terrain_bg = "https://stamen-tiles-a.a.ssl.fastly.net/terrain-background/",
+                                            mtb = "http://tile.mtbmap.cz/mtbmap_tiles/"),
+                                 carto = list(light = "https://a.basemaps.cartocdn.com/light_all/",
+                                              light_no_labels = "https://a.basemaps.cartocdn.com/light_nolabels/",
+                                              light_only_labels = "https://a.basemaps.cartocdn.com/light_only_labels/",
+                                              dark = "https://a.basemaps.cartocdn.com/dark_all/",
+                                              dark_no_labels = "https://a.basemaps.cartocdn.com/dark_nolabels/",
+                                              dark_only_labels = "https://a.basemaps.cartocdn.com/dark_only_labels/",
+                                              voyager = "https://a.basemaps.cartocdn.com/rastertiles/voyager/",
+                                              voyager_no_labels = "https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/",
+                                              voyager_only_labels = "https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/",
+                                              voyager_labels_under = "https://a.basemaps.cartocdn.com/rastertiles/voyager_labels_under/"),
+                                 mapbox = lapply(c(satellite = "mapbox.satellite",
+                                                   streets = "mapbox.streets",
+                                                   streets_basic = "mapbox.streets-basic",
+                                                   hybrid = "mapbox.streets-satellite",
+                                                   light = "mapbox.light",
+                                                   dark = "mapbox.dark",
+                                                   high_contrast = "mapbox.high-contrast",
+                                                   outdoors = "mapbox.outdoors",
+                                                   hike = "mapbox.run-bike-hike",
+                                                   wheatpaste = "mapbox.wheatpaste",
+                                                   pencil = "mapbox.pencil",
+                                                   comic = "mapbox.comic",
+                                                   pirates = "mapbox.pirates",
+                                                   emerald = "mapbox.emerald"), function(x) paste0("https://api.mapbox.com/v4/", x, "/"))))
+                                 # esri = list(streets = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/",
+                                 #             #delorme = "https://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/",
+                                 #             topo = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/",
+                                 #             satellite = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/",
+                                 #             terrain = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/",
+                                 #             relief = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/",
+                                 #             #physical = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/",
+                                 #             ocean = "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/",
+                                 #             natgeo = "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/",
+                                 #             grey = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/")))
 }

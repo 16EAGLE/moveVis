@@ -179,7 +179,11 @@
 <li>track colours can now be provided as a <code>colour</code> column in your movement data, allowing segmentation coulouring or colouring based on a logic, you defined beforhand</li>
 <li>map elements can be positioned freely or individual map-elements can be created as <code>ggplot2</code> functions</li>
 <li>Your animation does not have to be a fixed-size squared standard extent: With the <code>ext</code> argument of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> you can define user-defined area of interest (AOI), which scales the frame extent to a specific area</li>
-<li>A new base map feature based on Miles McBains slippymath package. <code>moveVis</code> supports Mapbox (free, registration needed) and OpenStreetMap (free) as base map services. See the manual of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for details.</li>
+<li>A new base map feature based on Miles McBains slippymath package. <code>moveVis</code> supports Mapbox (free, registration needed). OpenStreetMap and Carto (both free) as base map services. See the manual of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for details.</li>
+<li>
+<code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> now takes the argument <code>equidistant</code> to define whether the map should be stretched to an equidistant (squared) extent (x and y axis representing same distance) or not (projection-native ratio).</li>
+<li>
+<code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> now uses <code>coord_sf</code> to display projections (see details section of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>).</li>
 </ul>
 <p><br><strong>New functions:</strong></p>
 <ul>

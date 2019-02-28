@@ -9,7 +9,9 @@ moveVis rewrite introducing a new logic and new functions
 * track colours can now be provided as a `colour` column in your movement data, allowing segmentation coulouring or colouring based on a logic, you defined beforhand
 * map elements can be positioned freely or individual map-elements can be created as `ggplot2` functions
 * Your animation does not have to be a fixed-size squared standard extent: With the `ext` argument of `frames_spatial()` you can define user-defined area of interest (AOI), which scales the frame extent to a specific area
-* A new base map feature based on Miles McBains slippymath package. `moveVis` supports Mapbox (free, registration needed) and OpenStreetMap (free) as base map services. See the manual of `frames_spatial()` for details.
+* A new base map feature based on Miles McBains slippymath package. `moveVis` supports Mapbox (free, registration needed). OpenStreetMap and Carto (both free) as base map services. See the manual of `frames_spatial()` for details.
+* `frames_spatial()` now takes the argument `equidistant` to define whether the map should be stretched to an equidistant (squared) extent (x and y axis representing same distance) or not (projection-native ratio).
+* `frames_spatial()` now uses `coord_sf` to display projections (see details section of `frames_spatial()`).
 
 <br>
 **New functions:**

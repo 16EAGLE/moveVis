@@ -33,11 +33,37 @@ move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
 
 Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.
 
-Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. To get a list of all available default map types, use `get_maptypes()`. `moveVis` supports both `OpenStreetMap` and `mapbox` as default map services.
+Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. Here is a GIF of some example base maps you can use out of the box thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`</a> package:
 
-Using `OpenStreetMap`, you can get open-source streets map imagery and maps derived thereof. Using `mapbox`, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For `mapbox`, you need to register (for free) at https://www.mapbox.com/ to get a token that grants you free access (50 000 map downloads/month) and that can be used with the `map_token` argument of `frames_spatial()` (see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details). 
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/map_types.gif"></p>
 
-In this example, we want to use the OpenStreetMap 'watercolour' imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from `move_data` using a map, we can use `frames_spatial()`:
+You can display a list of all available maps:
+
+```R
+# get a list of all available map_services and map_types
+get_maptypes()`
+
+$osm
+ [1] "streets"      "streets_de"   "streets_fr"   "humanitarian" "topographic"  "roads"       
+ [7] "hydda"        "hydda_base"   "hike"         "grayscale"    "no_labels"    "watercolor"  
+[13] "toner"        "toner_bg"     "toner_lite"   "terrain"      "terrain_bg"   "mtb"         
+
+$carto
+ [1] "light"                "light_no_labels"      "light_only_labels"    "dark"                
+ [5] "dark_no_labels"       "dark_only_labels"     "voyager"              "voyager_no_labels"   
+ [9] "voyager_only_labels"  "voyager_labels_under"
+
+$mapbox
+ [1] "satellite"     "streets"       "streets_basic" "hybrid"        "light"        
+ [6] "dark"          "high_contrast" "outdoors"      "hike"          "wheatpaste"   
+[11] "pencil"        "comic"         "pirates"       "emerald"      
+
+
+```
+
+Currently, you can use more than 40 types of maps, provided by `OpenStreetMap`, `Carto` (both free without registration) and `Mapbox` (free, but registration required). Most maps display thematic or terrain data, while `Mapbox` also offers satellite imagery (see <a href="http://movevis.org/articles/example-3.html">Example 3: using a mapbox satellite base map</a> for details on how to register and use mapbox).
+
+In this example, we want to use the OpenStreetMap 'watercolour' imagery with a transparency of 50% to start with something nice looking and colourful. To create a list of spatial frames from `move_data` using a map, we can use `frames_spatial()`:
 
 ```R
 frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),

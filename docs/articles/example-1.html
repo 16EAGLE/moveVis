@@ -155,9 +155,30 @@
 <p>You can use <a href="http://movevis.org/reference/align_move.html"><code><a href="../reference/align_move.html">align_move()</a></code></a> to align <code>move_data</code> to a sampling rate of 4 minutes (240 seconds) at the seconds digit “:00”:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">move_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)</code></pre></div>
 <p>Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.</p>
-<p>Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. To get a list of all available default map types, use <code><a href="../reference/get_maptypes.html">get_maptypes()</a></code>. <code>moveVis</code> supports both <code>OpenStreetMap</code> and <code>mapbox</code> as default map services.</p>
-<p>Using <code>OpenStreetMap</code>, you can get open-source streets map imagery and maps derived thereof. Using <code>mapbox</code>, you can get a variety of map imagery, including satellite, hybrid, light, dark maps and more. For <code>mapbox</code>, you need to register (for free) at <a href="https://www.mapbox.com/" class="uri">https://www.mapbox.com/</a> to get a token that grants you free access (50 000 map downloads/month) and that can be used with the <code>map_token</code> argument of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> (see <a href="http://movevis.org/reference/frames_spatial.html"><code><a href="../reference/frames_spatial.html">?frames_spatial</a></code></a> for details).</p>
-<p>In this example, we want to use the OpenStreetMap ‘watercolour’ imagery with a transparency of 50% to start with something nice looking. To create a list of spatial frames from <code>move_data</code> using a map, we can use <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>:</p>
+<p>Now, as the movement tracks are aligned, we can pair them with a base map to create frames that can be turned into an animation later on. You can use your own custom base map imagery or choose from default map types. Here is a GIF of some example base maps you can use out of the box thanks to the <a href="http://github.com/MilesMcBain/slippymath"><code>slippymath</code></a> package:</p>
+<p align="center">
+<img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/map_types.gif"></p>
+<p>You can display a list of all available maps:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get a list of all available map_services and map_types</span>
+<span class="kw"><a href="../reference/get_maptypes.html">get_maptypes</a></span>()<span class="st">`</span>
+
+<span class="dt">$osm</span>
+<span class="dt"> [1] "streets"      "streets_de"   "streets_fr"   "humanitarian" "topographic"  "roads"       </span>
+<span class="dt"> [7] "hydda"        "hydda_base"   "hike"         "grayscale"    "no_labels"    "watercolor"  </span>
+<span class="dt">[13] "toner"        "toner_bg"     "toner_lite"   "terrain"      "terrain_bg"   "mtb"         </span>
+
+<span class="dt">$carto</span>
+<span class="dt"> [1] "light"                "light_no_labels"      "light_only_labels"    "dark"                </span>
+<span class="dt"> [5] "dark_no_labels"       "dark_only_labels"     "voyager"              "voyager_no_labels"   </span>
+<span class="dt"> [9] "voyager_only_labels"  "voyager_labels_under"</span>
+
+<span class="dt">$mapbox</span>
+<span class="dt"> [1] "satellite"     "streets"       "streets_basic" "hybrid"        "light"        </span>
+<span class="dt"> [6] "dark"          "high_contrast" "outdoors"      "hike"          "wheatpaste"   </span>
+<span class="dt">[11] "pencil"        "comic"         "pirates"       "emerald"      </span>
+</code></pre></div>
+<p>Currently, you can use more than 40 types of maps, provided by <code>OpenStreetMap</code>, <code>Carto</code> (both free without registration) and <code>Mapbox</code> (free, but registration required). Most maps display thematic or terrain data, while <code>Mapbox</code> also offers satellite imagery (see <a href="http://movevis.org/articles/example-3.html">Example 3: using a mapbox satellite base map</a> for details on how to register and use mapbox).</p>
+<p>In this example, we want to use the OpenStreetMap ‘watercolour’ imagery with a transparency of 50% to start with something nice looking and colourful. To create a list of spatial frames from <code>move_data</code> using a map, we can use <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
                          <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
 <p>Instead of using <code>path_colours</code>, you can add a <code>colour</code> column to your <code>move</code> or <code>moveStack</code> object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioral segment, time, age, speed or something different (see <a href="http://movevis.org/reference/frames_spatial.html"><code><a href="../reference/frames_spatial.html">?frames_spatial</a></code></a> for details).</p>

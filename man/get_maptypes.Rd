@@ -7,7 +7,7 @@
 get_maptypes(map_service = NULL)
 }
 \arguments{
-\item{map_service}{character, optional, either \code{"mapbox"} or \code{"osm"}. Otherwise, a list of map types for both services is returned.}
+\item{map_service}{character, optional, either \code{"osm"}, \code{"carto"} or \code{"mapbox"}. Otherwise, a list of map types for both services is returned.}
 }
 \value{
 A character vector of supported map types
@@ -28,6 +28,8 @@ get_maptypes()$osm
 get_maptypes("mapbox")
 # or
 get_maptypes()$mapbox
+
+# same for all other map services
 
 }
 \seealso{

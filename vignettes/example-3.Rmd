@@ -3,7 +3,7 @@ title: "Using a mapbox satellite base map"
 output: html_document
 ---
 
-Thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`</a> package used by `frames_spatial`, you can also use `mapbox` base maps (e.g. satellite):
+Thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`</a> package used by `frames_spatial`, you can use `mapbox` base maps (e.g. satellite):
 
 ```R
 library(moveVis)
@@ -34,14 +34,22 @@ animate_frames(frames[1:100], out_file = "/full/path/to/example_3a.gif")
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
 
-We can do the same thing with a custom, non-squared extent (and use the pipe to customize frames):
+In case, you do not want to force the calculation of an equidistant (squared) extent with x and y axis representing equal surface distances, you can turn it off by setting `equidistant = FALSE`.
+
+```R
+# to not calculate a squared (enlarged) extent:
+frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
+                         map_token = "YOUR_MAPBOX_TOKEN", equidistant = FALSE)
+```
+
+You can also use a custom extent (and use the pipe to customize frames):
 
 ```R
 ext <- extent(8.820289, 9.076893, 47.68715, 47.80863)
 
 # set the ext argument
 frames <- frames_spatial(m, map_service = "mapbox", map_type = "satellite",
-                         map_token = "YOUR_MAPBOX_TOKEN", ext = ext) %>% 
+                         map_token = "YOUR_MAPBOX_TOKEN", ext = ext, equidistant = FALSE) %>% 
   add_labels(x = "Longitude", y = "Latitude") %>% 
   add_northarrow(colour = "white", height = 0.08, position = "bottomleft") %>% 
   add_scalebar(colour = "white", height = 0.022, position = "bottomright", label_margin = 1.4) %>% 

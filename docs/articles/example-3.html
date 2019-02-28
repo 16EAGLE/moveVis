@@ -141,7 +141,7 @@
 
     
     
-<p>Thanks to the <a href="http://github.com/MilesMcBain/slippymath"><code>slippymath</code></a> package used by <code>frames_spatial</code>, you can also use <code>mapbox</code> base maps (e.g. satellite):</p>
+<p>Thanks to the <a href="http://github.com/MilesMcBain/slippymath"><code>slippymath</code></a> package used by <code>frames_spatial</code>, you can use <code>mapbox</code> base maps (e.g. satellite):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(magrittr)
@@ -168,12 +168,16 @@ frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fram
 <span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_3a.gif"</span>)</code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
-<p>We can do the same thing with a custom, non-squared extent (and use the pipe to customize frames):</p>
+<p>In case, you do not want to force the calculation of an equidistant (squared) extent with x and y axis representing equal surface distances, you can turn it off by setting <code>equidistant = FALSE</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to not calculate a squared (enlarged) extent:</span>
+frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
+                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">equidistant =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>You can also use a custom extent (and use the pipe to customize frames):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ext &lt;-<span class="st"> </span><span class="kw">extent</span>(<span class="fl">8.820289</span>, <span class="fl">9.076893</span>, <span class="fl">47.68715</span>, <span class="fl">47.80863</span>)
 
 <span class="co"># set the ext argument</span>
 frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
-                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">ext =</span> ext) <span class="op">%&gt;%</span><span class="st"> </span>
+                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">ext =</span> ext, <span class="dt">equidistant =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(<span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.08</span>, <span class="dt">position =</span> <span class="st">"bottomleft"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.022</span>, <span class="dt">position =</span> <span class="st">"bottomright"</span>, <span class="dt">label_margin =</span> <span class="fl">1.4</span>) <span class="op">%&gt;%</span><span class="st"> </span>

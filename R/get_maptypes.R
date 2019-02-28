@@ -2,7 +2,7 @@
 #'
 #' This function returns every supported map type that can be used as input to the \code{map_type} argument of \code{\link{frames_spatial}}.
 #'
-#' @param map_service character, optional, either \code{"mapbox"} or \code{"osm"}. Otherwise, a list of map types for both services is returned.
+#' @param map_service character, optional, either \code{"osm"}, \code{"carto"} or \code{"mapbox"}. Otherwise, a list of map types for both services is returned.
 #' @return A character vector of supported map types
 #' 
 #' @examples 
@@ -19,10 +19,12 @@
 #' # or
 #' get_maptypes()$mapbox
 #' 
+#' # same for all other map services
+#' 
 #' @seealso \code{\link{frames_spatial}}
 #' @export
 
 get_maptypes <- function(map_service = NULL){
-  map_types <- list(mapbox = names(getOption("moveVis.mapbox_types")), osm = names(getOption("moveVis.map_api")$osm))
+  map_types <- lapply(getOption("moveVis.map_api"), names)
   if(!is.null(map_service)) map_types[[map_service]] else map_types
 }

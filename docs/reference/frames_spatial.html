@@ -179,11 +179,11 @@
     <pre class="usage"><span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
   <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"streets"</span>,
   <span class='kw'>map_res</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
-  <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='no'>...</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>equidistant</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -210,7 +210,7 @@
     </tr>
     <tr>
       <th>map_service</th>
-      <td><p>character, either <code>"mapbox"</code> or <code>"osm"</code>. Default is <code>"osm"</code>.</p></td>
+      <td><p>character, either <code>"osm"</code>, <code>"carto"</code> or <code>"mapbox"</code>. Default is <code>"osm"</code>.</p></td>
     </tr>
     <tr>
       <th>map_type</th>
@@ -233,6 +233,10 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     <tr>
       <th>margin_factor</th>
       <td><p>numeric, factor relative to the extent of <code>m</code> by which the frame extent should be increased around the movement area. Ignored, if <code>ext</code> is set.</p></td>
+    </tr>
+    <tr>
+      <th>equidistant</th>
+      <td><p>logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set <code>equidistant</code> to <code>FALSE</code> to avoid strong stretches. By default (<code>equidistant = NULL</code>), equidistant is set automatically to <code>FALSE</code>, if <code>ext</code> is set, otherwise <code>TRUE</code>. Read more in the details.</p></td>
     </tr>
     <tr>
       <th>ext</th>
@@ -303,6 +307,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     <p>If argument <code>path_colours</code> is not defined (set to <code>NA</code>), path colours can be defined by adding a character column named <code>colour</code> to <code>m</code>, containing a colour code or name per row (e.g. <code>"red"</code>. This way, for example, column <code>colour</code> for all rows belonging to individual A can be set to <code>"green"</code>, while column <code>colour</code> for all rows belonging to individual B can be set to <code>"red"</code>.
 Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name <code>colour</code> in <code>m</code> is missing, colours will be selected automatically. Call <code><a href='https://www.rdocumentation.org/packages/grDevices/topics/colors'>colours()</a></code> to see all available colours in R.</p>
 <p>Basemap colour scales can be changed/added using <code><a href='add_colourscale.html'>add_colourscale</a></code> or by using <code>ggplot2</code> commands (see <code>examples</code>). For continous scales, use <code>r_type = "gradient"</code>. For discrete scales, use <code>r_type = "discrete"</code>.</p>
+<p>The projection of <code>m</code> is treated as target projection. Default base maps accessed through a map service will be reprojected into the projection of <code>m</code>. Thus, depending on the projection of <code>m</code>, it may happen that map labels are distorted. To get undistorted map labels, reproject <code>m</code> to the web mercator projection (the default projection of the base maps): <code><a href='https://www.rdocumentation.org/packages/move/topics/spTransform'>spTransform(m, crs("+init=epsg:3857"))</a></code>. The <code>ggplot2</code> coordinate system will be computed based on the projection of <code>m</code> using <code>coord_sf</code>. If argument <code>equidistant</code> is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
