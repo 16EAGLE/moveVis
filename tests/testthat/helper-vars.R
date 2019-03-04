@@ -1,6 +1,7 @@
 ## env vars
 map_token = Sys.getenv("moveVis.map_token")
 if(map_token != "") run_mapbox <- TRUE else run_mapbox <- FALSE
+test_maps = as.logical(Sys.getenv("moveVis.test_maps"))
 
 ## which tests to run
 # which_tests = Sys.getenv("moveVis.which_tests")
