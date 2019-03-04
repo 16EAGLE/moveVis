@@ -370,18 +370,27 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
   images <- apply(tg$tiles, MARGIN = 1, function(x){
     file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
-    if(!isTRUE(file.exists(file))){
+    
+    retry <- list(do = TRUE, count = 0)
+    while(retry$do){
       
       ## download tiles
-      if(map_service == "mapbox"){
-        curl_download(url = paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", "?access_token=", map_token), destfile = file)
-      } else{
-        curl_download(url = paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png"), destfile = file)
-      }
+      url <- paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", if(map_service == "mapbox") paste0("?access_token=", map_token) else NULL)
+      if(!file.exists(file)) curl_download(url = url, destfile = file)
       
-      ## covnert imagery
-      image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
+      # test if file can be loaded
+      catch <- try(image_read(file), silent = T)
+      if(inherits(catch, "try-error")){
+        unlink(file)
+        retry$count <- retry$count+1
+        if(retry$count < 10) retry$do <- TRUE else out(paste0("Base map download failed: ", catch), type = 3)
+      } else{
+        retry$do <- FALSE
+      }
     }
+    
+    ## covnert imagery
+    image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
     return(file)
   })
   
