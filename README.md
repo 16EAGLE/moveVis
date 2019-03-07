@@ -115,6 +115,16 @@ You can find detailed code examples on how to use `moveVis` here:
 
 <a href = "http://movevis.org/articles/example-7.html">Example 7: View movement tracks</a>
 
+## Code snippets
+
+These commented `moveVis` code snippets addressing very specific issues or questions might also be helpful to you:
+
+<a href = "https://gist.github.com/16EAGLE/d69e3bed11fb6d08ee724868710ff876">How to adapt the path legend of frames created with frames_spatial()</a>
+
+<a href = "https://gist.github.com/16EAGLE/1afc1c08d0b2e8696aec5d9f39894266">How to create a data.frame containing each track coordinate per frame</a>
+
+<a href = "https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a>
+
 ## Features to be added
 
 Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
