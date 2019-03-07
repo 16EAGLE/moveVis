@@ -117,7 +117,7 @@ You can find detailed code examples on how to use `moveVis` here:
 
 ## Code snippets
 
-These commented `moveVis` code snippets addressing very specific issues or questions might also be helpful to you:
+These commented `moveVis` code snippets, addressing specific issues or questions, could also be helpful to you:
 
 <a href = "https://gist.github.com/16EAGLE/d69e3bed11fb6d08ee724868710ff876">How to adapt the path legend of frames created with frames_spatial()</a>
 
