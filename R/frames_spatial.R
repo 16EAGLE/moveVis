@@ -150,8 +150,8 @@
 #' @export
 
 frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
-                          margin_factor = 1.1, equidistant = NULL, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, 
-                          path_legend = TRUE, path_legend_title = "Names", ..., verbose = TRUE){
+                           margin_factor = 1.1, equidistant = NULL, ext = NULL, tail_length = 19, tail_size = 1, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, 
+                           path_legend = TRUE, path_legend_title = "Names", ..., verbose = TRUE){
   
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
