@@ -25,6 +25,7 @@
 #'
 #' @importFrom move timestamps timeLag interpolateTime moveStack move split
 #' @importFrom sp coordinates
+#' @importFrom raster crs
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
 #' @seealso \code{\link{df2move}} \code{\link{frames_spatial}} \code{\link{frames_graph}}
@@ -59,6 +60,9 @@
 #' @export
 
 align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod = "greatcircle"){
+  
+  ## check m and spaceMethod
+  if(!inherits(m, c("Move", "MoveStack"))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   
   ## check resolution and define resolution
   if(all(!c(inherits(res, "numeric"), inherits(res, "character")))) out("Argument 'res' must either be numeric or one of c('min', 'max', 'mean').", type = 3)
