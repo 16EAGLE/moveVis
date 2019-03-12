@@ -6,7 +6,7 @@
 #' @param proj projection, character (proj4string) or CRS object, indicating the projection that the coordinates of \code{df} represent.
 #' @param x character, name of the column in \code{df} that represents x coordinates.
 #' @param y character, name of the column in \code{df} that represents y coordinates.
-#' @param time character, name of the column in \code{df} that represents timestamps.
+#' @param time character, name of the column in \code{df} that represents timestamps. Timestamps need to be of class POSIXct.
 #' @param track_id character, optional, name of the column in \code{df} that represents track names or IDs. If set, a \code{moveStack} is returned, otherwise, a \code{move} object is returned.
 #' @param data data.frame, optional, to add additional data such as path colours (see \code{\link{move}}). Number of rows must equal number of rows of \code{df}.
 #' @param ... additional arguments passed to \code{move}.
@@ -44,6 +44,7 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
   
   catch <- sapply(c(x, y, time), function(x) if(!isTRUE(x %in% df.names)) out(paste0("Column named '", x, "' cannot be found in 'df'."), type = 3))
   if(!is.null(data)) if(nrow(data) != nrow(df)) out("Number of rows in 'data' must be equal to number of rows in 'df'.", type = 3)
+  if(!inherits(df[,time], "POSIXct")) out("Time column must be of type POSIXct.", type = 3)
   
   if(!is.null(track_id)){
     
@@ -61,7 +62,7 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
         move(x = dfx[,x], y = dfx[,y], time = dfx[,time], proj = proj, animal = dfx[, track_id], data = data[id,], ...)
       }
     })
-    moveStack(m.split)
+    if(length(m.split) == 1) m.split[[1]] else moveStack(m.split)
   } else{
     
     # make move for one individual

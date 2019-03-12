@@ -15,7 +15,7 @@ df2move(df, proj, x, y, time, track_id = NULL, data = NULL, ...)
 
 \item{y}{character, name of the column in \code{df} that represents y coordinates.}
 
-\item{time}{character, name of the column in \code{df} that represents timestamps.}
+\item{time}{character, name of the column in \code{df} that represents timestamps. Timestamps need to be of class POSIXct.}
 
 \item{track_id}{character, optional, name of the column in \code{df} that represents track names or IDs. If set, a \code{moveStack} is returned, otherwise, a \code{move} object is returned.}
 
