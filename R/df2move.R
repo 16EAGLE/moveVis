@@ -16,6 +16,7 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{subset_move}}
 #' 
 #' @importFrom move move moveStack
+#' @importFrom raster crs
 #' 
 #' @examples
 #' library(moveVis)
@@ -34,7 +35,13 @@
 df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
   
   # checks
+  if(!inherits(df, "data.frame")) out("Argument 'df' must be of type 'data.frame'.", type = 3)
+  df <- data.frame(df)
   df.names <- colnames(df)
+  
+  catch <- try(crs(proj), silent = T)
+  if(inherits(catch, "try-error")) out("Argument 'proj' seems not to represent a valid projection.", type = 3)
+  
   catch <- sapply(c(x, y, time), function(x) if(!isTRUE(x %in% df.names)) out(paste0("Column named '", x, "' cannot be found in 'df'."), type = 3))
   if(!is.null(data)) if(nrow(data) != nrow(df)) out("Number of rows in 'data' must be equal to number of rows in 'df'.", type = 3)
   
