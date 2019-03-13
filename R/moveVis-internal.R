@@ -431,7 +431,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(n > 1){
     
     ## calcualte time differences
-    pos_diff <- lapply(r_times, function(x) sapply(lapply(m.split, function(x) max(unique(x$time), na.rm = T)), difftime, time2 = x))
+    pos_diff <- lapply(r_times, function(x) abs(sapply(lapply(m.split, function(y) max(unique(y$time), na.rm = T)), difftime, time2 = x)))
     pos_r <- sapply(pos_diff, which.min)
     
     ## create frame list, top list is bands, second list is times
@@ -459,7 +459,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(isTRUE(fade_raster)){
       
       for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
-      r_list <- lapply(r_list, function(x) unstack(calc(x, .approxNA))) # 14 sec for >5000 single-layer frames interpolation
+      r_list <- lapply(r_list, function(x) unstack(calc(x, fun = .approxNA))) # 14 sec for >5000 single-layer frames interpolation
       
       #for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
       #r_list <- lapply(r_list, function(x) unstack(approxNA(x, rule = 2))) # unstack is super slow! This line slows down everything.
