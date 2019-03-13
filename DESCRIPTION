@@ -16,6 +16,7 @@ Imports:
   sp,
   sf,
   move,
+  slippymath,
   RStoolbox,
   geosphere,
   slippymath,
@@ -33,7 +34,6 @@ Imports:
   zoo,
   methods,
   grDevices
-Remotes: github::MilesMcBain/slippymath
 BugReports: http://www.github.com/16eagle/moveVis/issues
 SystemRequirements: ImageMagick, FFmpeg, libav
 URL: http://movevis.org
