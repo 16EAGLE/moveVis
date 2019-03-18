@@ -16,7 +16,6 @@ Imports:
   sp,
   sf,
   move,
-  slippymath,
   RStoolbox,
   geosphere,
   slippymath,
