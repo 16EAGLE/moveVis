@@ -8,3 +8,4 @@
 docs
 dev
 vignettes
+^cran-comments\.md$
