@@ -11,11 +11,11 @@
 
 <br>
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
-<p align="center"><sub>Figure 1: Exemplary movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
+<p align="center"><sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
 <br>
 <br>
 <p align="center"><img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p>
-<p align="center"><sub>Figure 2: Exemplary movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
+<p align="center"><sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 
 ## Installation
 
