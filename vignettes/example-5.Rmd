@@ -1,6 +1,0 @@
----
-title: "Interaction graphs"
-output: html_document
----
-  
-example code to be added soon, see <a href = "http://movevis.org/reference/frames_graph.html">`?frames_graph`</a> for details.
