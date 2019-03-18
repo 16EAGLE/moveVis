@@ -34,12 +34,8 @@
 #' # align movement
 #' m <- align_move(move_data, res = 4, unit = "mins")
 #' 
-#' # create spatial frames with frames_spatial:
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
-#' 
-#' frames.sp <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                             fade_raster = TRUE)
 #' 
 #' # use the same inputs to create a non-spatial graph, e.g. a flow graph:
 #' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
@@ -47,6 +43,7 @@
 #' # take a look
 #' frames.gr[[100]]
 #' 
+#' \dontrun{
 #' # make a histogram graph:
 #' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                           fade_raster = TRUE, graph_type = "hist")
@@ -54,7 +51,6 @@
 #' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                           fade_raster = TRUE, graph_type = "hist", val_by = 0.01)
 #'                           
-#' \dontrun{
 #' frames.gr[[100]]
 #' # manipulate the labels, since now they are very dense:
 #' # just replace the current scale
