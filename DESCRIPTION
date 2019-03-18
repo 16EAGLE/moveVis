@@ -4,7 +4,7 @@ Title: Movement Data Visualization
 Version: 0.10.0
 Depends:
   R (>= 3.5.0)
-Date: 2018-11-23
+Date: 2019-03-18
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
   role = c("aut", "cre"))
 Description: Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.
