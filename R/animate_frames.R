@@ -25,7 +25,6 @@
 #' @author Jakob Schwalb-Willmann
 #' 
 #' @examples
-#' \dontrun{
 #' library(moveVis)
 #' library(move)
 #' 
@@ -37,6 +36,7 @@
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
 #' 
+#' \donttest{
 #' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                          fade_raster = TRUE)
 #' 

@@ -10,7 +10,8 @@
 #' 
 #' @importFrom cowplot plot_grid
 #' 
-#' @examples 
+#' @examples
+#' \dontrun{
 #' library(moveVis)
 #' library(move)
 #' 
@@ -26,7 +27,6 @@
 #'                             fade_raster = TRUE)
 #' frames.sp <- add_colourscale(frames.sp, type = "gradient",
 #'                              colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
-#' \dontrun{
 #' frames.flow <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "flow")
 #' frames.hist <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "hist")
 #' 

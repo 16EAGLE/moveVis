@@ -25,6 +25,7 @@
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
 #' 
+#' \donttest{
 #' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                          fade_raster = TRUE)
 #' frames[[100]] # take a look at one of the frames
@@ -34,7 +35,7 @@
 #'                           legend_title = "NDVI")
 #' frames[[100]]
 #' 
-#' \dontrun{
+#' 
 #' # let's make up some classification data with 10 classes
 #' r_list <- lapply(r_list, function(x){
 #'   y <- raster::setValues(x, round(raster::getValues(x)*10))

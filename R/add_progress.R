@@ -22,6 +22,8 @@
 #' # create spatial frames using a custom NDVI base layer
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
+#' 
+#' \donttest{
 #' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                          fade_raster = TRUE)
 #' 
@@ -29,7 +31,6 @@
 #' frames.a <- add_progress(frames)
 #' frames.a[[100]]
 #' 
-#' \dontrun{
 #' # or in red and larger
 #' frames.b <- add_progress(frames, colour = "red", size = 2.5)
 #' frames.b[[100]]

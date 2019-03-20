@@ -37,13 +37,13 @@
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
 #' 
+#' \donttest{
 #' # use the same inputs to create a non-spatial graph, e.g. a flow graph:
 #' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                           fade_raster = TRUE, graph_type = "flow")
 #' # take a look
 #' frames.gr[[100]]
 #' 
-#' \dontrun{
 #' # make a histogram graph:
 #' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                           fade_raster = TRUE, graph_type = "hist")
@@ -66,13 +66,13 @@
 #' 
 #' # animate the frames created with frames_graph;
 #' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
-#' }
+#' 
 #' 
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph
 #' 
 #' # see ?animate_frames on how to animate your list of frames
-#' 
+#' }
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 

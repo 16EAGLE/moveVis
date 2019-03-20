@@ -32,6 +32,8 @@
 #' # create spatial frames using a custom NDVI base layer
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
+#' 
+#' \donttest{
 #' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                          fade_raster = TRUE)
 #' 
@@ -39,7 +41,6 @@
 #' frames.a <- add_northarrow(frames)
 #' frames.a[[100]]
 #' 
-#' \dontrun{
 #' # or in white at another position
 #' frames.b <- add_northarrow(frames, colour = "white", position = "bottomleft")
 #' frames.b[[100]]

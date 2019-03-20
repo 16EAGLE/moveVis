@@ -25,6 +25,8 @@
 #' # create spatial frames using a custom NDVI base layer
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
+#' 
+#' \donttest{
 #' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                          fade_raster = TRUE)
 #' 
@@ -32,7 +34,6 @@
 #' frames.a <- add_timestamps(frames, m, type = "text")
 #' frames.a[[100]]
 #' 
-#' \dontrun{
 #' # or use the ggplot2 "label" type:
 #' frames.b <- add_timestamps(frames, m, type = "label")
 #' frames.b[[100]]
