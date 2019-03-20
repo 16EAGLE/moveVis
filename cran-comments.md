@@ -10,7 +10,7 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
 * This is a resubmission after the CRAN auto-check service rejected the former submission due to a NOTE on examples running longer than 10 seconds.
 * Thus, time-consuming examples have been excluded from being checked using `\donttest`.

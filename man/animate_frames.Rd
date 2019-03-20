@@ -39,7 +39,6 @@ None or an R graphics window displaying the animation
 An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
 }
 \examples{
-\dontrun{
 library(moveVis)
 library(move)
 
@@ -51,6 +50,7 @@ m <- align_move(move_data, res = 4, unit = "mins")
 r_list <- basemap_data[[1]]
 r_times <- basemap_data[[2]]
 
+\donttest{
 frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
                          fade_raster = TRUE)
 

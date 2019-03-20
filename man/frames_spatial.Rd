@@ -96,12 +96,12 @@ data("move_data")
 # align movement
 m <- align_move(move_data, res = 4, unit = "mins")
 
+\donttest{
 # with osm watercolor base map
 frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
 # take a look at one of the frames, e.g. the 100th
 frames[[100]]
 
-\dontrun{
 # make base map a bit transparent
 frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5)
 frames[[100]] # take a look
@@ -172,13 +172,12 @@ frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discre
 
 # animate the frames created with frames_spatial;
 animate_frames(frames, out_file = tempfile(fileext = ".gif"))
-}
 
 # see ?add_colourscale to learn how to change colours of custom base maps
 # see all add_ functions on how to customize your frames created with frames_spatial
 # or frames_graph
 # see ?animate_frames on how to animate your list of frames
-
+}
 }
 \seealso{
 \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}

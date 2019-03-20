@@ -43,6 +43,8 @@ m <- align_move(move_data, res = 4, unit = "mins")
 # create spatial frames using a custom NDVI base layer
 r_list <- basemap_data[[1]]
 r_times <- basemap_data[[2]]
+
+\donttest{
 frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
                          fade_raster = TRUE)
 
@@ -50,7 +52,6 @@ frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradie
 frames.a <- add_scalebar(frames)
 frames.a[[100]]
 
-\dontrun{
 # or in white at another position
 frames.b <- add_scalebar(frames, colour = "white", position = "bottomright")
 frames.b[[100]]

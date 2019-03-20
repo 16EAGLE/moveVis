@@ -20,6 +20,7 @@ List of ggplot2 objects, each representing a single frame.
 This function side-by-side joins the \code{ggplot2} objects of two or more frames lists of equal lengths into a single plot per frame using \code{\link{plot_grid}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
 }
 \examples{
+\dontrun{
 library(moveVis)
 library(move)
 
@@ -35,7 +36,6 @@ frames.sp <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gra
                             fade_raster = TRUE)
 frames.sp <- add_colourscale(frames.sp, type = "gradient",
                              colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
-\dontrun{
 frames.flow <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "flow")
 frames.hist <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "hist")
 

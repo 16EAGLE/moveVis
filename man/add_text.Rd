@@ -40,6 +40,8 @@ m <- align_move(move_data, res = 4, unit = "mins")
 # create spatial frames using a custom NDVI base layer
 r_list <- basemap_data[[1]]
 r_times <- basemap_data[[2]]
+
+\donttest{
 frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
                          fade_raster = TRUE)
 
@@ -48,7 +50,6 @@ frames.a <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
                      colour = "white", size = 3)
 frames.a[[100]]
 
-\dontrun{
 # or use the ggplot2 "label" type:
 frames.b <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
                      colour = "black", size = 3, type = "label")

@@ -57,6 +57,7 @@ data("move_data", "basemap_data")
 # align movement
 m <- align_move(move_data, res = 4, unit = "mins")
 
+\donttest{
 frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
 frames[[100]] # take a look at one of the frames
 
@@ -66,7 +67,7 @@ data <- data.frame(x = c(8.917, 8.924, 8.924, 8.916, 8.917),
                    
 frames = add_gg(frames, gg = expr(geom_path(aes(x = x, y = y), data = data,
                                             colour = "red", linetype = "dashed")), data = data)
-\dontrun{                                           
+                        
 # add some text
 frames <- add_text(frames, "Static feature", x = 8.9205, y = 47.7633,
                     colour = "black", size = 3)
