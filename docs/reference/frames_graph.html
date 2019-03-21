@@ -198,7 +198,7 @@
     </tr>
     <tr>
       <th>r_type</th>
-      <td><p>character, either <code>"gardient"</code> or <code>"discrete"</code>. Ignored, if <code>r_list</code> contains <code>rasterStacks</code> of three bands, which are treated as RGB.</p></td>
+      <td><p>character, either <code>"gradient"</code> or <code>"discrete"</code>. Ignored, if <code>r_list</code> contains <code>rasterStacks</code> of three bands, which are treated as RGB.</p></td>
     </tr>
     <tr>
       <th>fade_raster</th>
@@ -269,13 +269,10 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='co'># align movement</span>
 <span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
 
-<span class='co'># create spatial frames with frames_spatial:</span>
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
 <span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
 
-<span class='no'>frames.sp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
-                            <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># use the same inputs to create a non-spatial graph, e.g. a flow graph:</span>
 <span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_graph</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                           <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"flow"</span>)
@@ -289,11 +286,10 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_graph</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                           <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"hist"</span>, <span class='kw'>val_by</span> <span class='kw'>=</span> <span class='fl'>0.01</span>)
 
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='no'>frames.gr</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 <span class='co'># manipulate the labels, since now they are very dense:</span>
 <span class='co'># just replace the current scale</span>
-<span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_gg.html'>add_gg</a></span>(<span class='no'>frames.gr</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/tidyeval.html'>expr</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span>(<span class='kw'>breaks</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0.1</span>),
+<span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_gg.html'>add_gg</a></span>(<span class='no'>frames.gr</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/tidyeval'>expr</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous'>scale_x_continuous</a></span>(<span class='kw'>breaks</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0.1</span>),
                                     <span class='kw'>labels</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0.1</span>), <span class='kw'>expand</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>))))
 <span class='no'>frames.gr</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 
@@ -305,14 +301,13 @@ equal inputs must have been used for both function calls for each of the argumen
 
 <span class='co'># animate the frames created with frames_graph;</span>
 <span class='fu'><a href='animate_frames.html'>animate_frames</a></span>(<span class='no'>frames</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gif"</span>))
-<span class='co'># }</span># NOT RUN {
-# see all add_ functions on how to customize your frames created with frames_spatial
-# or frames_graph
 
-# see ?animate_frames on how to animate your list of frames
 
-# }
-</pre>
+<span class='co'># see all add_ functions on how to customize your frames created with frames_spatial</span>
+<span class='co'># or frames_graph</span>
+
+<span class='co'># see ?animate_frames on how to animate your list of frames</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

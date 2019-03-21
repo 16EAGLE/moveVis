@@ -189,27 +189,27 @@
     </tr>
     <tr>
       <th>title</th>
-      <td><p>character, frame title. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+      <td><p>character, frame title. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/waiver'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
     </tr>
     <tr>
       <th>subtitle</th>
-      <td><p>character, frame subtitle. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+      <td><p>character, frame subtitle. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/waiver'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
     </tr>
     <tr>
       <th>caption</th>
-      <td><p>character, frame caption. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+      <td><p>character, frame caption. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/waiver'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
     </tr>
     <tr>
       <th>tag</th>
-      <td><p>character, frame tag. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+      <td><p>character, frame tag. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/waiver'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>character, label of the x axis. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+      <td><p>character, label of the x axis. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/waiver'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>character, label of the y axis. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
+      <td><p>character, label of the y axis. If <code>NULL</code>, an existing title of <code>frames</code> is removed. If <code>waiver()</code> (default, see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/waiver'>ggplot2::waiver()</a></code>), an existing title of <code>frames</code> is kept.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -237,6 +237,8 @@
 <span class='co'># create spatial frames using a custom NDVI base layer</span>
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
 <span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
+
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                          <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
@@ -247,8 +249,9 @@
                      <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"Longitude"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"Latitude"</span>)
 <span class='co'># have a look at one frame</span>
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]]
-
-<span class='co'># }</span></pre>
+<span class='co'># }</span># NOT RUN {
+# }
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

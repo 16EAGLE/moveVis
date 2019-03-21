@@ -230,6 +230,7 @@
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
 <span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
 
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                          <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]] <span class='co'># take a look at one of the frames</span>
@@ -239,7 +240,7 @@
                           <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='st'>"NDVI"</span>)
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
+
 <span class='co'># let's make up some classification data with 10 classes</span>
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>lapply</a></span>(<span class='no'>r_list</span>, <span class='kw'>function</span>(<span class='no'>x</span>){
   <span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>raster</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/raster/topics/setValues'>setValues</a></span>(<span class='no'>x</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>round</a></span>(<span class='kw pkg'>raster</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/raster/topics/getValues'>getValues</a></span>(<span class='no'>x</span>)*<span class='fl'>10</span>))

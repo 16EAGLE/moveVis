@@ -202,7 +202,7 @@
     </tr>
     <tr>
       <th>r_type</th>
-      <td><p>character, either <code>"gardient"</code> or <code>"discrete"</code>. Ignored, if <code>r_list</code> contains <code>rasterStacks</code> of three bands, which are treated as RGB.</p></td>
+      <td><p>character, either <code>"gradient"</code> or <code>"discrete"</code>. Ignored, if <code>r_list</code> contains <code>rasterStacks</code> of three bands, which are treated as RGB.</p></td>
     </tr>
     <tr>
       <th>fade_raster</th>
@@ -324,12 +324,12 @@ Colours could also be arranged to change through time or by behavioral segments,
 <span class='co'># align movement</span>
 <span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
 
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># with osm watercolor base map</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>)
 <span class='co'># take a look at one of the frames, e.g. the 100th</span>
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
 <span class='co'># make base map a bit transparent</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
 <span class='no'>frames</span><span class='kw'>[[</span><span class='fl'>100</span>]] <span class='co'># take a look</span>
@@ -400,14 +400,12 @@ Colours could also be arranged to change through time or by behavioral segments,
 
 <span class='co'># animate the frames created with frames_spatial;</span>
 <span class='fu'><a href='animate_frames.html'>animate_frames</a></span>(<span class='no'>frames</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gif"</span>))
-<span class='co'># }</span># NOT RUN {
-# see ?add_colourscale to learn how to change colours of custom base maps
-# see all add_ functions on how to customize your frames created with frames_spatial
-# or frames_graph
-# see ?animate_frames on how to animate your list of frames
 
-# }
-</pre>
+<span class='co'># see ?add_colourscale to learn how to change colours of custom base maps</span>
+<span class='co'># see all add_ functions on how to customize your frames created with frames_spatial</span>
+<span class='co'># or frames_graph</span>
+<span class='co'># see ?animate_frames on how to animate your list of frames</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

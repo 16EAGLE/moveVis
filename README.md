@@ -21,13 +21,19 @@
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
-<a href="http://movevis.org">`moveVis`</a> 0.10.0 is not on CRAN yet (but will be soon). Until then, to install <a href="http://movevis.org">`moveVis`</a> version 0.10.0, run:
+<a href="http://movevis.org">`moveVis`</a> 0.10.0 (stable) can be installed from CRAN:
+
+```r
+install.packages("moveVis")
+```
+
+The development version can be installed from GitHub:
 
 ```r
 devtools::install_github("16EAGLE/moveVis")
 ```
 
-Code written for <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 will not work with the newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
+Code written for <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
 
 ```r
 setwd("your/download/directory")
