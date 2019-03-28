@@ -185,7 +185,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     y <- y[order(y$id),]
     
     # compute colour ramp from id count
-    y$tail_colour <- unlist(mapply(x = unique(y$colour), y = table(y$id), function(x, y){
+    y.colours <- sapply(unique(y$id), function(x) unique(y[y$id == x,]$colour))
+    y$tail_colour <- unlist(mapply(x = y.colours, y = table(y$id), function(x, y){
       f <- colorRampPalette(c(x, "white"))
       rev(f(y+4)[1:y])
     }, SIMPLIFY = F))
