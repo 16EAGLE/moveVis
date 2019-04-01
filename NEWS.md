@@ -1,7 +1,8 @@
 ## moveVis 0.10.1
-Bug fixes
+Bug fixes. Unreleased.
 
 **Bug fixes:**
+
 * Bug that prevented the use of equal colours for multiple individuals
 + Bug that prevented the use of multiple colours per individual, e.g. colouring by behavioral segments/change points
 <br>
@@ -9,10 +10,11 @@ Bug fixes
 ***
 
 ## moveVis 0.10.0
-moveVis rewrite introducing a new logic and new functions
+moveVis rewrite introducing a new logic and new functions. Released: 2019-03-20
 
 <br>
 **New features:**
+
 * movement data preparation, frames creation, layout/appearance editing and animation are now seperated, allowing you to customize each of these steps individually.
 * any `ggplot2` syntax can now be added to every single frame, allowing you to customize almost everything that can be customized using `ggplot2`
 * to make customization easier, a variety of `add_` functions wrapping pre-defined `ggplot2` functions are included. For example, `add_gg` offers dynamic overplotting, e.g. for polygons or points that change over time
@@ -25,6 +27,7 @@ moveVis rewrite introducing a new logic and new functions
 
 <br>
 **New functions:**
+
 * `align_move()`, `get_maptypes()`, `frames_spatial()`, `frames_graph()`, `add_gg()`, `add_labels()`, `add_scalebar()`, `add_northarrow()`, `add_progress()`, `add_timestamps()`, `add_text()`, `add_colourscale()`, `join_frames()`, `suggest_formats()`, `animate_frames()`: see the README and the description of the individual functions for further details.
 
 * `subset_move()`: subset movement data for a particular time span
@@ -33,15 +36,17 @@ moveVis rewrite introducing a new logic and new functions
 
 <br>
 **Deprecated functions:**
+
 * `animate_move()`, `animate_raster()`, `animate_stats()`, `get_formats()`, `get_libraries()`: These functions have been replaced by a new logic and new functions.
 
 ***
 
 ## moveVis 0.9.9
-Reorganizing standard basemap usage by moveVis
+Reorganizing standard basemap usage by moveVis. Released: 2018-11-23
 
 <br>
 **New features:**
+
 * Static basemaps defined through `map_type` are now retrieved from either OpenStreetMaps for thematic imagery or Microsoft Bing Maps for satellite/hybrid imagery. The usage of OpenStreetMaps is free. For intensive use of the Bing Maps basemap options, please provide your own Bing Maps API key through the `api_key` argument, after registering at Microsoft here: https://msdn.microsoft.com/en-us/library/ff428642.aspx. Google Maps services will be implemented in a future update for restricted usage using an API key.
 * New baemaps options via `map_type`: "satellite" (default), "hybrid", "roadmap", "roadmap_dark", "roadmap_bw", "roadmap_watercolor".
 * New argument `map_zoom` for `animate_move`: Increase or decrease the degree of detail of a static basemap.
@@ -49,16 +54,18 @@ Reorganizing standard basemap usage by moveVis
 
 <br>
 **Bug fixes:**
+
 * Major bug causing moveVis to break with each available static basemap option due to changes of the Google Maps API policies.
 <br>
 
 ***
 
 ## moveVis 0.9.8
-Updating unit tests for CRAN checks
+Updating unit tests for CRAN checks. Released: 2018-09-14
 
 <br>
 **Bug fixes:**
+
 * Bug causing unit tests to fail on machines with different external tools available
 * added SystemRequirements field in DESCRIPTION
 <br>
@@ -66,16 +73,18 @@ Updating unit tests for CRAN checks
 ***
 
 ## moveVis 0.9.7
-Windows library detection bugs fixed (dev. version)
+Windows library detection bugs fixed. Released: 2018-09-07
 
 <br>
 **New features:**
+
 * `time_pos_x` and `time_pos_x` allow to specify the location of the timestamp display
 * `time_size` allows to specify the font size of the timestamp display
 * added unit tests
 
 <br>
 **Bug fixes:**
+
 * Bug causing moveVis to not properly detect installed extern libraries that can be called from the command line
 * Bug causing moveVis to not use conv_dir if it contains a Windows path to a tool of an extern library
 
@@ -84,15 +93,17 @@ Windows library detection bugs fixed (dev. version)
 ***
 
 ## moveVis 0.9.6
-video support, automatic time harmonization, bug fixes (CRAN version)
+video support, automatic time harmonization, bug fixes. Released: 2017-11-01
 
 <br>
 **New functions:**
+
 * `get_libraries()` – handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be called for code compatibility reasons
 * `get_formats()` – outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.
 
 <br>
 **New features:**
+
 * moveVis supports now multiple video formats in addition to GIF, if it is linked to a video library (either FFmpeg of libav)
 * animate_move() now detects temporal resolution and uniformity of timestamps automatically to determine, if interpolation needs to be applied to calculate uniform frame times per frame tick
 * animate_move() now calculates and displays the final animation duration derived from the total number of output frames and the fps prior to generating each frame, so that the user can already approximate which size the output animation will have.
@@ -107,6 +118,7 @@ video support, automatic time harmonization, bug fixes (CRAN version)
 
 <br>
 **Improvements:**
+
 * it is now possible to use the 'layer' argument to specify one (static) raster object without specifying 'layer_dt', which is only needed, if several raster objects are handed over as a list.
 * in some situations, the movement data extent was bigger than the cropped layer extent: this works now
 * in some situations, stat animation lines were cut off, this should be resolved now
@@ -116,6 +128,7 @@ video support, automatic time harmonization, bug fixes (CRAN version)
 
 <br>
 **Contributors:**
+
 * AniMove 2017 participants
 
 <br>
@@ -123,10 +136,11 @@ video support, automatic time harmonization, bug fixes (CRAN version)
 ***
 
 ## moveVis 0.9.5
-adding frames_layout, static_data etc., improvements to workflow
+adding frames_layout, static_data etc., improvements to workflow. Released: 2017-08-20
 
 <br>
 **New features:**
+
 * RGB stats support added for animate_stats() and animate_move()
 * added animate_move() argument "time_scale" to enable a time scale
 * added animate_move() argument "frame_layout" for user friendly, complex layouting of the output GIF by specifiying the plot locations
@@ -135,6 +149,7 @@ adding frames_layout, static_data etc., improvements to workflow
 
 <br>
 **Improvements:**
+
 * several major bug fixes
 * major animate_raster() bug fixes, reenabling use of RGB rasterStack inputs
 * stats legend is now locatable using frame_layout
@@ -142,6 +157,7 @@ adding frames_layout, static_data etc., improvements to workflow
 
 <br>
 **Contributors:**
+
 * Bart Kranstauber
 
 <br>
@@ -149,16 +165,18 @@ adding frames_layout, static_data etc., improvements to workflow
 ***
 
 ## moveVis 0.9.4
-adding animate_stats() and stats arguments for animate_move()
+adding animate_stats() and stats arguments for animate_move(). Released: 2017-06-28
 
 <br>
 **New features:**
+
 * `animate_stats()` – Enables creation of statistic plot animations visualizing possible relationships between movement paths and basemap. Define individual plot designs based on ggplot2 syntax.
 * stats arguments for animate_move(): Enables statistic plot animations side-by-side with the spatial plot animation of animate_move. Use the animate_stats() arguments with animate_move().
 * extent_factor argument for animate_move(): Increase the distance between the spatial extents of the movement paths and the basemap.
 
 <br>
 **Improvements:**
+
 * Several minor bug fixes
 
 <br>
@@ -166,10 +184,11 @@ adding animate_stats() and stats arguments for animate_move()
 ***
 
 ## moveVis 0.9.3
-fixing major bug
+fixing major bug. Released: 2017-06-28
 
 <br>
 **Improvements:**
+
 * Fixed a major bug causing an unavoidable error when creating animations with animate_move() using user defined basemaps (Error message: 'Error in eval(expr, envir, enclos) : Object 'frame_l' not found')
 
 <br>
@@ -177,10 +196,11 @@ fixing major bug
 ***
 
 ## moveVis 0.9.2
-adding frame_width and frame_height arguments
+adding frame_width and frame_height arguments. Released: 2017-06-28
 
 <br>
 **New features:**
+
 * Added two new arguments to animate_move() function for changing output frame resolution
  
 <br>
@@ -192,20 +212,23 @@ adding frame_width and frame_height arguments
 ***
 
 ## moveVis 0.9.1
-fixing important bug; adding animate_raster()
+fixing important bug; adding animate_raster(). Released: 2017-05-23
 
 <br>
 **New features:**
+
 * Added moveStack support: animate_move() now takes also moveStack objects in addition to list objects
 * `animate_raster()` – for animating just basemaps/for doing the same as with animate_move(), but without movement data
 
 <br>
 **Improvements:**
+
 * Bug fix: Function now takes movebank.org data --> there had been a static code line preventing the read-out of movement coordinates, which is now solved.
 * Several major and minor bug fixes
 
 <br>
 **Bug report contributors:**
+
 * bart1 (at) github
 * Patrick Scherler
 
@@ -214,15 +237,17 @@ fixing important bug; adding animate_raster()
 ***
 
 ## moveVis 0.9.0
-initial release
+initial release. Released: 2017-04-28
 
 <br>
 **Initial features:**
+
 * `animate_move()`
 * `get_imconvert()`
 
 <br>
 **Initial example data sets:**
+
 * data(move_data)
 
 <br>
