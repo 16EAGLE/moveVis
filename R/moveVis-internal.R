@@ -185,10 +185,17 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     y <- y[order(y$id),]
     
     # compute colour ramp from id count
-    y.colours <- sapply(unique(y$id), function(x) unique(y[y$id == x,]$colour))
-    y$tail_colour <- unlist(mapply(x = y.colours, y = table(y$id), function(x, y){
-      f <- colorRampPalette(c(x, "white"))
-      rev(f(y+4)[1:y])
+    #y.colours <- sapply(unique(y$id), function(x) rev(unique(y[y$id == x,]$colour)), simplify = F)
+    y.colours <- sapply(unique(y$id), function(x) y[y$id == x,]$colour, simplify = F)
+    y$tail_colour <- unlist(mapply(y.cols = y.colours, y.size = table(y$id), function(y.cols, y.size){
+      y.ramps <- lapply(unique(y.cols), function(x){
+        f <- colorRampPalette(c(x, "white"))
+        rev(f(y.size+4)[1:y.size])
+      })
+      
+      mapply(i = 1:y.size, i.ramp = as.numeric(mapvalues(y.cols, unique(y.cols), 1:length(unique(y.cols)))), function(i, i.ramp){
+        y.ramps[[i.ramp]][i]
+      }, USE.NAMES = F)
     }, SIMPLIFY = F))
     
     # compute tail size from id count

@@ -131,6 +131,8 @@ These commented `moveVis` code snippets, addressing specific issues or questions
 
 <a href = "https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a>
 
+<a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual to indicate e.g. behavioral segments</a>
+
 ## Features to be added
 
 Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
