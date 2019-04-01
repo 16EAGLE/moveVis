@@ -1,3 +1,13 @@
+## moveVis 0.10.1
+Bug fixes
+
+**Bug fixes:**
+* Bug that prevented the use of equal colours for multiple individuals
++ Bug that prevented the use of multiple colours per individual, e.g. colouring by behavioral segments/change points
+<br>
+
+***
+
 ## moveVis 0.10.0
 moveVis rewrite introducing a new logic and new functions
 
