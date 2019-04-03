@@ -415,7 +415,16 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' interpolate over NAs
 #' @importFrom zoo na.approx
 #' @noRd
-.approxNA <- function(x) na.approx(x, rule = 2)
+.approxNA <- function(x) if(all(is.na(x))) rep(NA, length(x)) else na.approx(x, rule = 2)
+.approxNA <- function(x){
+  y <- na.approx(x, rule = 2)
+  
+  if(length(y) == length(x)) y else{
+    if(length(y) == 0) return(rep(NA, length(x)))
+    if(length(y) == 1) return(rep(y, length(x)))
+  }
+}
+
 
 #' assign raster to frames
 #' @importFrom raster nlayers unstack crop extent stack approxNA calc raster setValues
