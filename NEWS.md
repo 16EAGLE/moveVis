@@ -6,6 +6,7 @@ Bug fixes. Unreleased.
 * Bug that prevented the use of equal colours for multiple individuals
 * Bug that prevented the use of multiple colours per individual, e.g. colouring by behavioral segments/change points
 * Bug that caused an error when using `fade_raster = T` in `frames_spatial()` due to unequal vector lengths returned by the internal interpolation function (issue #45)
+* Bug that caused false time assignments or an error, if `fade_raster = F` and/or `r_times` contained time elements outside the time range covered by the timestamps of `m`.
 <br>
 
 ***

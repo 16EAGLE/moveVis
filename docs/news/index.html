@@ -174,7 +174,8 @@
 <ul>
 <li>Bug that prevented the use of equal colours for multiple individuals</li>
 <li>Bug that prevented the use of multiple colours per individual, e.g. colouring by behavioral segments/change points</li>
-<li>Bug that caused an error when using <code>fade_raster = T</code> in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> due to unequal vector lengths returned by the internal interpolation function (issue #45) <br>
+<li>Bug that caused an error when using <code>fade_raster = T</code> in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> due to unequal vector lengths returned by the internal interpolation function (issue #45)</li>
+<li>Bug that caused false time assignments or an error, if <code>fade_raster = F</code> and/or <code>r_times</code> contained time elements outside the time range covered by the timestamps of <code>m</code>. <br>
 </li>
 </ul>
 <hr>
