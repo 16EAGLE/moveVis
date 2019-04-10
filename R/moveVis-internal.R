@@ -415,7 +415,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' interpolate over NAs
 #' @importFrom zoo na.approx
 #' @noRd
-.approxNA <- function(x) if(all(is.na(x))) rep(NA, length(x)) else na.approx(x, rule = 2)
+#.approxNA <- function(x) if(all(is.na(x))) rep(NA, length(x)) else na.approx(x, rule = 2)
 .approxNA <- function(x){
   y <- na.approx(x, rule = 2)
   
@@ -430,7 +430,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom raster nlayers unstack crop extent stack approxNA calc raster setValues
 #' @importFrom RStoolbox ggRGB ggR
 #' 
-#' @importFrom utils head
 #' @noRd
 .rFrames <- function(r_list, r_times, m.split, gg.ext, fade_raster = T, ...){
   
@@ -447,39 +446,28 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   if(n > 1){
     
-    ## calcualte time differences
-    pos_diff <- lapply(r_times, function(x) abs(sapply(lapply(m.split, function(y) max(unique(y$time), na.rm = T)), difftime, time2 = x)))
-    pos_r <- sapply(pos_diff, which.min)
-    
     ## create frame list, top list is bands, second list is times
     r.dummy <- setValues(r.crop[[1]][[1]], NA) #produces warning during tests: no non-missing arguments to max; returning -Inf
     # r.dummy <- raster(r.crop[[1]][[1]]) # and then:
     #`values<-`(r.dummy, NA) # produces same warning. There seems no solution to this to avoid warnings
     r_list <- rep(list(rep(list(r.dummy), length(m.split))), r.nlay)
     
-    if(!isTRUE(fade_raster)){
-      
-      ## assign rasters to all frames, hard changes with distance of frame times to raster times
-      pos_frames <- c(head(pos_r, n=-1) + round(diff(pos_r)/2))
-      pos_frames <- cbind(c(pos_r[1], pos_frames), c(pos_frames-1, length(m.split)), 1:length(r_times))
-      if(pos_frames[1,1] != 1) pos_frames[1,1] <- 1
-      pos_frames <- cbind(1:length(m.split), unlist(apply(pos_frames, MARGIN = 1, function(x) rep(x[3], diff(x[1:2])+1))))
-    } else{
-      
-      ## assign rasters to frames only to frames with closest raster times
-      pos_frames <- cbind(pos_r, 1:length(pos_r))
-      if(pos_frames[1,1] != 1) pos_frames[1,1] <- 1
-    }
-    for(i in 1:r.nlay) r_list[[i]][pos_frames[,1]] <- r.crop[[i]][pos_frames[,2]]
+    ## calcualte time differences to r_times
+    x <- lapply(m.split, function(y) max(unique(y$time, na.rm = T)))
+    frame_times <- unlist(x)
+    attributes(frame_times) <- attributes(x[[1]])
+    diff.df <- as.data.frame(sapply(r_times, function(x) abs(difftime(frame_times, x, units = "secs"))))
+    
+    ## assign r_list positions per frame times
+    pos.df <- data.frame(frame = 1:nrow(diff.df), pos_r = apply(diff.df, MARGIN = 1, which.min))
+    if(isTRUE(fade_raster)) pos.df <- pos.df[!duplicated(pos.df$pos_r, fromLast = T),]
+    for(i in 1:r.nlay) r_list[[i]][pos.df[,1]] <- r.crop[[i]][pos.df[,2]]
     
     ## interpolate/extrapolate
     if(isTRUE(fade_raster)){
       
       for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
-      r_list <- lapply(r_list, function(x) unstack(calc(x, fun = .approxNA))) # 14 sec for >5000 single-layer frames interpolation
-      
-      #for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
-      #r_list <- lapply(r_list, function(x) unstack(approxNA(x, rule = 2))) # unstack is super slow! This line slows down everything.
+      r_list <- lapply(r_list, function(x) unstack(calc(x, fun = .approxNA)))
     }
   } else{r_list <- r.crop}
   return(r_list)
