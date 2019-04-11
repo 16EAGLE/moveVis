@@ -19,7 +19,7 @@
 
 ## Installation
 
-With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
+With version 0.10.1, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
 <a href="http://movevis.org">`moveVis`</a> 0.10.0 (stable) can be installed from CRAN:
 
@@ -136,12 +136,14 @@ These commented `moveVis` code snippets, addressing specific issues or questions
 Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
 
 **Next version:**
+
 * "keep tracks" setting to force paths to not disappear
 * follow population mode
 * follow individual mode
 * day-/night-time visualization
 
 **Some day:**
+
 * 3D animations, e.g. for including altitude data
 
 ## Related packages
