@@ -1,4 +1,4 @@
-# moveVis <a href="http://movevis.org"><img align="right" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_hex.png" /></a>
+# moveVis
 
 [![CRAN version](https://www.r-pkg.org/badges/version/moveVis)](https://CRAN.R-project.org/package=moveVis)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/moveVis?color=brightgreen)](https://CRAN.R-project.org/package=moveVis)
@@ -9,19 +9,12 @@
 
 <a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a>, <a href="https://github.com/edzer/sp">`sp`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="http://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wraping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.
 
-<br>
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
-<p align="center"><sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
-<br>
-<br>
-<p align="center"><img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p>
-<p align="center"><sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 
 ## Installation
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
-<a href="http://movevis.org">`moveVis`</a> 0.10.0 (stable) can be installed from CRAN:
+<a href="http://movevis.org">`moveVis`</a> 0.10.1 (stable) can be installed from CRAN:
 
 ```r
 install.packages("moveVis")
@@ -99,7 +92,6 @@ frames[[100]] # preview one of the frames
 animate_frames(frames, out_file = "/full/path/to/example_1.gif")
 ```
 
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 
 ## Examples
 
@@ -157,13 +149,4 @@ For other news on the work at at the Department of Remote Sensing of the Univers
 ## Acknowledgements
           
 This initiative is part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
-
-<p align="justify">
-<div>
-    <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="21.89781%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
-    <a href="http://www.dlr.de/eoc/en/"><img width="16.78832%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
-     <a href="http://www.bmub.bund.de/"><img width="32.11679%" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q"></a>
-    <a href="http://www.orn.mpg.de/en/"><img width="29.19708%" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
-</div>
-</p>
 
