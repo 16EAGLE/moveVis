@@ -103,7 +103,7 @@ animate_frames(frames, out_file = "/full/path/to/example_1.gif")
 
 ## Examples
 
-You can find detailed code examples on how to use `moveVis` here:
+You can find code examples on how to use `moveVis` here:
 
 <a href = "http://movevis.org/articles/example-1.html">Example 1: Creating a simple movement animation</a>
 
@@ -130,6 +130,12 @@ These commented `moveVis` code snippets, addressing specific issues or questions
 <a href = "https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a>
 
 <a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual to indicate e.g. behavioral segments</a>
+
+## Further resources
+
+Detailed code examples explaining how to use specific functions are provided at the <a href="http://movevis.org/reference/index.html">fucntion help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:
+
+<a target="_blank" href = "http://animove.org/wp-content/uploads/2019/04/Daniel_Palacios_animate_moveVis.html">Animating Animal Tracks From Multiple Years Over A Common Year With MoveVis: An Example With Blue Whale Argos Tracks On Movebank</a> by <a target="_blank" href="https://twitter.com/danielequs">Daniel M. Palacios</a>, <a target="_blank" href = "https://mmi.oregonstate.edu/">Marine Mammal Institute</a>, Oregon State University
 
 ## Features to be added
 
