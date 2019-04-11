@@ -460,7 +460,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     ## assign r_list positions per frame times
     pos.df <- data.frame(frame = 1:nrow(diff.df), pos_r = apply(diff.df, MARGIN = 1, which.min))
-    if(isTRUE(fade_raster)) pos.df <- pos.df[!duplicated(pos.df$pos_r, fromLast = T),]
+    if(isTRUE(fade_raster)) pos.df <- pos.df[apply(diff.df[,unique(pos.df[,2])], MARGIN = 2, which.min),] #pos.df[!duplicated(pos.df$pos_r, fromLast = T),]
     for(i in 1:r.nlay) r_list[[i]][pos.df[,1]] <- r.crop[[i]][pos.df[,2]]
     
     ## interpolate/extrapolate
