@@ -180,10 +180,11 @@
   <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"streets"</span>,
   <span class='kw'>map_res</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>equidistant</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
+  <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>,
+  <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -243,14 +244,6 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
       <td><p><code>sf bbox</code> or <code>sp extent</code> in same CRS as <code>m</code>, optional. If set, frames are cropped to this extent. If not set, a squared extent around <code>m</code>, optional with a margin set by <code>margin_factor</code>, is used (default).</p></td>
     </tr>
     <tr>
-      <th>tail_length</th>
-      <td><p>numeric, length of tail per movement path.</p></td>
-    </tr>
-    <tr>
-      <th>tail_size</th>
-      <td><p>numeric, size of the last tail element. Default is 1.</p></td>
-    </tr>
-    <tr>
       <th>path_size</th>
       <td><p>numeric, size of each path.</p></td>
     </tr>
@@ -275,12 +268,36 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
       <td><p>character, a vector of colours. Must be of same length as number of individual tracks in <code>m</code> and refers to the order of tracks in <code>m</code>. If undefined (<code>NA</code>) and <code>m</code> contains a column named <code>colour</code>, colours provided within <code>m</code> are used (see details). Othwersie, colours are selected randomly per individual track.</p></td>
     </tr>
     <tr>
+      <th>path_alpha</th>
+      <td><p>numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.</p></td>
+    </tr>
+    <tr>
       <th>path_legend</th>
       <td><p>logical, wether to add a path legend from <code>m</code> or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in <code>m</code>.</p></td>
     </tr>
     <tr>
       <th>path_legend_title</th>
       <td><p>character, path legend title. Default is <code>"Names"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>tail_length</th>
+      <td><p>numeric, length of tail per movement path.</p></td>
+    </tr>
+    <tr>
+      <th>tail_size</th>
+      <td><p>numeric, size of the last tail element. Default is 1.</p></td>
+    </tr>
+    <tr>
+      <th>tail_colour</th>
+      <td><p>character, colour of the last tail element, to which the path colour is faded. Default is "white".</p></td>
+    </tr>
+    <tr>
+      <th>trace_show</th>
+      <td><p>logical, whether to show the trace of the complete path or not.</p></td>
+    </tr>
+    <tr>
+      <th>trace_colour</th>
+      <td><p>character, colour of the trace. Default is "white". It is recommended to define the same colours for both <code>trace_colour</code> and  <code>tail_colour</code> to enforce an uninterrupted colour transition form the tail to the trace.</p></td>
     </tr>
     <tr>
       <th>...</th>

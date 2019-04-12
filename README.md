@@ -141,12 +141,12 @@ Detailed code examples explaining how to use specific functions are provided at 
 
 Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
 
-**Next version:**
+**Next version (0.10.2):**
 
-* "keep tracks" setting to force paths to not disappear
+* [DONE] option to show the trace of the complete track or not (see `trace_show` and `trace_colour` in `frames_spatial()`)
+* [DONE] day-/night-time visualization (check out the available map types using `get_maptypes()` for bright and dark map types)
 * follow population mode
 * follow individual mode
-* day-/night-time visualization
 
 **Some day:**
 
