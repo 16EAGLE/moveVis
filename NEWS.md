@@ -1,5 +1,5 @@
 ## moveVis 0.10.1
-Bug fixes. Unreleased.
+Bug fixes. Released: 2019-04-11.
 
 **Bug fixes:**
 
