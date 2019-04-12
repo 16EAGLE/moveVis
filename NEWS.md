@@ -1,3 +1,18 @@
+## moveVis 0.10.2
+Adding some small but practical features. Unreleased.
+
+**New features:**
+
+* Argument `path_alpha` of `frames_spatial()` for defining path transparency.
+* Argument `tail_colour` of `frames_spatial()` makes it now possible to define the colour of the last tail element, to which the path colour is faded. Default is "white".
+* Argument `trace_show` of `frames_spatial()` for displaying the trace of the complete path (instead that it vanishes after the tail).
+* Argument `trace_colour` of `frames_spatial()` for defining the colour of the trace.
+
+
+<br>
+
+***
+
 ## moveVis 0.10.1
 Bug fixes. Released: 2019-04-11.
 

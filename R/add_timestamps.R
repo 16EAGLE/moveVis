@@ -52,7 +52,7 @@ add_timestamps <- function(frames, m, x = NULL, y = NULL, ..., verbose = TRUE){
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   
   ts <- as.character(sort(unique(timestamps(m))))
-  if(length(ts) != length(frames)) out("Unique timestamps of 'm' must be of same length as 'frames'. Do only use the same move or moveStack object that you have used to create 'frames'.", type = 3)
+  if(length(ts) != length(frames)) out("Unique timestamps of 'm' must be of same length as 'frames'. Do only use the same move or moveStack object that you have used to create 'frames'. If you did so, do you have duplicated timestamps in 'm' that have not been spotted since their time zone designations differ? In rare cases, time zone designations may differ but represent the exact same time zone. Encode timestamps as 'UTC' to be sure, designations do not differ.", type = 3)
   
   if(is.null(x)){
     gg.xy <- lapply(ggplot_build(frames[[1]])$data, function(x) cbind.data.frame(x = x$x, y= x$y))
