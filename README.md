@@ -84,22 +84,29 @@ The following example shows how to make a simple animation using a default base 
 ```R
 library(moveVis)
 library(move)
-data("move_data") # move class object
+library(magrittr)
+data("move_data", package = "moveVis") # move class object
 # if your tracks are present as data.frames, see df2move() for conversion
 
 # align move_data to a uniform time scale
-move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+m <- align_move(move_data, res = 240, digit = 0, unit = "secs")
 
 # create spatial frames with a OpenStreetMap watercolour map
-frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
-                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
-frames[[100]] # preview one of the frames
+frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
+                         map_service = "osm", map_type = "watercolor", alpha = 0.5) %>% 
+  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white") %>% 
+  add_scalebar(colour = "white") %>% 
+  add_timestamps(m, type = "label") %>% 
+  add_progress()
+
+frames[[100]] # preview one of the frames, e.g. the 100th frame
 
 # animate frames
 animate_frames(frames, out_file = "/full/path/to/example_1.gif")
 ```
 
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 
 ## Examples
 
@@ -123,13 +130,16 @@ You can find code examples on how to use `moveVis` here:
 
 These commented `moveVis` code snippets, addressing specific issues or questions, could also be helpful to you:
 
+<a href = "https://gist.github.com/16EAGLE/16f08531f925f9de2286af277089e3d1">How to display the full traces of each path using trace_show and trace_colour with frames_spatial()</a> (requires `moveVis` >= 0.10.2)
+
+<a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual to indicate e.g. behavioral segments</a> (requires `moveVis` >= 0.10.1)
+
 <a href = "https://gist.github.com/16EAGLE/d69e3bed11fb6d08ee724868710ff876">How to adapt the path legend of frames created with frames_spatial()</a>
 
 <a href = "https://gist.github.com/16EAGLE/1afc1c08d0b2e8696aec5d9f39894266">How to create a data.frame containing each track coordinate per frame</a>
 
-<a href = "https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a>
+<a href = "https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a> (not yet a optimal solution)
 
-<a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual to indicate e.g. behavioral segments</a>
 
 ## Further resources
 
