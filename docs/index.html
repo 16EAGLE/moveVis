@@ -242,15 +242,15 @@ m &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.h
 frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
                          <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(<span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># add some customizations, such as axis labels</span>
-<span class="st">  </span><span class="kw"><a href="reference/add_northarrow.html">add_northarrow</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="reference/add_northarrow.html">add_northarrow</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="reference/add_scalebar.html">add_scalebar</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/add_timestamps.html">add_timestamps</a></span>(m, <span class="dt">type =</span> <span class="st">"label"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="reference/add_progress.html">add_progress</a></span>()
 
 frames[[<span class="dv">100</span>]] <span class="co"># preview one of the frames, e.g. the 100th frame</span>
 
 <span class="co"># animate frames</span>
-<span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_1.gif"</span>)</code></pre></div>
+<span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/moveVis.gif"</span>)</code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 </div>
 <div id="examples" class="section level2">

@@ -95,15 +95,15 @@ m <- align_move(move_data, res = 240, digit = 0, unit = "secs")
 frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
                          map_service = "osm", map_type = "watercolor", alpha = 0.5) %>% 
   add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
-  add_northarrow(colour = "white") %>% 
-  add_scalebar(colour = "white") %>% 
+  add_northarrow() %>% 
+  add_scalebar() %>% 
   add_timestamps(m, type = "label") %>% 
   add_progress()
 
 frames[[100]] # preview one of the frames, e.g. the 100th frame
 
 # animate frames
-animate_frames(frames, out_file = "/full/path/to/example_1.gif")
+animate_frames(frames, out_file = "/full/path/to/moveVis.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
