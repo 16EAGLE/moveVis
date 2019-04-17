@@ -14,9 +14,8 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 geom_polygon geom_text aes_string
+#' @importFrom ggplot2 geom_polygon geom_text aes_string expr
 #' @importFrom geosphere distGeo
-#' @importFrom rlang expr
 #'
 #' @examples 
 #' library(moveVis)

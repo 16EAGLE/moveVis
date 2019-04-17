@@ -32,6 +32,8 @@ The package includes the following functions, sorted by the order they would be 
    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
    \item \code{\link{view_spatial}} displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
 }
+
+The majority of this functions can be used with the forward pipe operater \code{\%>\%}, which is re-exported by \code{moveVis}.
 }
 \seealso{
 Useful links:

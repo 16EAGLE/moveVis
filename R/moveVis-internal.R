@@ -439,7 +439,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 
 #' assign raster to frames
-#' @importFrom raster nlayers unstack crop extent stack approxNA calc raster setValues
+#' @importFrom raster nlayers unstack crop extent stack calc raster setValues
 #' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @noRd

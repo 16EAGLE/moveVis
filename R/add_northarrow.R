@@ -20,7 +20,7 @@
 #' @importFrom geosphere distGeo
 #' 
 #' @importFrom grid arrow unit
-#' @importFrom rlang expr
+#' @importFrom ggplot2 expr
 #'
 #' @examples 
 #' library(moveVis)
