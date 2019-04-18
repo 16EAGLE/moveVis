@@ -1,5 +1,5 @@
 ## moveVis 0.10.2
-Adding some small but practical features. Unreleased.
+Adding some small but practical features. Unreleased, available via GitHub.
 
 **New features:**
 
@@ -7,6 +7,12 @@ Adding some small but practical features. Unreleased.
 * Argument `tail_colour` of `frames_spatial()` makes it now possible to define the colour of the last tail element, to which the path colour is faded. Default is "white".
 * Argument `trace_show` of `frames_spatial()` for displaying the trace of the complete path (instead that it vanishes after the tail).
 * Argument `trace_colour` of `frames_spatial()` for defining the colour of the trace.
+* Argument `na.colour` of `add_colourscale()` for defining the colouring of NA values.
+* Argument `na.show` of `add_colourscale()` to show or hide NA values in discrete background rasters.
+
+**Other improvements:**
+
+* `add_colourscale()` now calculates scale and legend with frame-wide fixed limits, when `colours` is defined as a named vector, e.g. `c("-1" = "red", "0" = "blue", "1" = "green")`.
 
 
 <br>
@@ -14,7 +20,7 @@ Adding some small but practical features. Unreleased.
 ***
 
 ## moveVis 0.10.1
-Bug fixes. Released: 2019-04-11.
+Bug fixes. Released on CRAN: 2019-04-11.
 
 **Bug fixes:**
 
@@ -27,7 +33,7 @@ Bug fixes. Released: 2019-04-11.
 ***
 
 ## moveVis 0.10.0
-moveVis rewrite introducing a new logic and new functions. Released: 2019-03-20
+moveVis rewrite introducing a new logic and new functions. Released on CRAN: 2019-03-20
 
 <br>
 **New features:**
@@ -59,7 +65,7 @@ moveVis rewrite introducing a new logic and new functions. Released: 2019-03-20
 ***
 
 ## moveVis 0.9.9
-Reorganizing standard basemap usage by moveVis. Released: 2018-11-23
+Reorganizing standard basemap usage by moveVis. Released on CRAN: 2018-11-23
 
 <br>
 **New features:**
@@ -78,7 +84,7 @@ Reorganizing standard basemap usage by moveVis. Released: 2018-11-23
 ***
 
 ## moveVis 0.9.8
-Updating unit tests for CRAN checks. Released: 2018-09-14
+Updating unit tests for CRAN checks. Released on CRAN: 2018-09-14
 
 <br>
 **Bug fixes:**
@@ -90,7 +96,7 @@ Updating unit tests for CRAN checks. Released: 2018-09-14
 ***
 
 ## moveVis 0.9.7
-Windows library detection bugs fixed. Released: 2018-09-07
+Windows library detection bugs fixed. Released on CRAN: 2018-09-07
 
 <br>
 **New features:**
@@ -110,7 +116,7 @@ Windows library detection bugs fixed. Released: 2018-09-07
 ***
 
 ## moveVis 0.9.6
-video support, automatic time harmonization, bug fixes. Released: 2017-11-01
+video support, automatic time harmonization, bug fixes. Released on CRAN: 2017-11-01
 
 <br>
 **New functions:**
@@ -153,7 +159,7 @@ video support, automatic time harmonization, bug fixes. Released: 2017-11-01
 ***
 
 ## moveVis 0.9.5
-adding frames_layout, static_data etc., improvements to workflow. Released: 2017-08-20
+adding frames_layout, static_data etc., improvements to workflow. Released on CRAN: 2017-08-20
 
 <br>
 **New features:**
@@ -182,7 +188,7 @@ adding frames_layout, static_data etc., improvements to workflow. Released: 2017
 ***
 
 ## moveVis 0.9.4
-adding animate_stats() and stats arguments for animate_move(). Released: 2017-06-28
+adding animate_stats() and stats arguments for animate_move(). Released on CRAN: 2017-06-28
 
 <br>
 **New features:**
@@ -201,7 +207,7 @@ adding animate_stats() and stats arguments for animate_move(). Released: 2017-06
 ***
 
 ## moveVis 0.9.3
-fixing major bug. Released: 2017-06-28
+fixing major bug. Released on CRAN: 2017-06-28
 
 <br>
 **Improvements:**
@@ -213,7 +219,7 @@ fixing major bug. Released: 2017-06-28
 ***
 
 ## moveVis 0.9.2
-adding frame_width and frame_height arguments. Released: 2017-06-28
+adding frame_width and frame_height arguments. Released on CRAN: 2017-06-28
 
 <br>
 **New features:**
@@ -229,7 +235,7 @@ adding frame_width and frame_height arguments. Released: 2017-06-28
 ***
 
 ## moveVis 0.9.1
-fixing important bug; adding animate_raster(). Released: 2017-05-23
+fixing important bug; adding animate_raster(). Released on CRAN: 2017-05-23
 
 <br>
 **New features:**
@@ -254,7 +260,7 @@ fixing important bug; adding animate_raster(). Released: 2017-05-23
 ***
 
 ## moveVis 0.9.0
-initial release. Released: 2017-04-28
+initial release. Released on CRAN: 2017-04-28
 
 <br>
 **Initial features:**
