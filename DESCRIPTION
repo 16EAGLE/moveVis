@@ -20,7 +20,6 @@ Imports:
   geosphere,
   slippymath,
   lubridate,
-  rlang,
   ggplot2,
   cowplot,
   gifski,
@@ -31,6 +30,7 @@ Imports:
   plyr,
   dplyr,
   zoo,
+  magrittr,
   methods,
   grDevices
 BugReports: http://www.github.com/16eagle/moveVis/issues

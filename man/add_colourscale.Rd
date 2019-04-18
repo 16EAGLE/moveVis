@@ -5,16 +5,21 @@
 \title{Add scale to frames}
 \usage{
 add_colourscale(frames, type, colours, labels = waiver(),
-  legend_title = NULL, verbose = TRUE)
+  na.colour = "grey50", na.show = TRUE, legend_title = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
 \item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).}
 
-\item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}}
+\item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Optioanlly, the vector can be named to associate map values with colours and define the scale limits, e.g. \code{c("-1" = "red", "0" = "blue", "1" = "green")}}
 
 \item{labels}{character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.}
+
+\item{na.colour}{character, colour to use for missing values.}
+
+\item{na.show}{logical, whether to display NA values in discrete scaling. Ignored, if \code{type = "gradient"}.}
 
 \item{legend_title}{character, a legend title.}
 

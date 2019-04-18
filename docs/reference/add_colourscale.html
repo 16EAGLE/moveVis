@@ -177,7 +177,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>add_colourscale</span>(<span class='no'>frames</span>, <span class='no'>type</span>, <span class='no'>colours</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(),
-  <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>na.colour</span> <span class='kw'>=</span> <span class='st'>"grey50"</span>, <span class='kw'>na.show</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,11 +193,19 @@
     </tr>
     <tr>
       <th>colours</th>
-      <td><p>character, a vector of colours. If <code>type = "discrete"</code>, number of colours must be equal to the number of classes contained in the raster imagery with which <code>frames</code> have been created. Provide a named vector to associate map values with colours, e.g. <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("1" = "red", "2" = "green", "3" = "black")</a></code></p></td>
+      <td><p>character, a vector of colours. If <code>type = "discrete"</code>, number of colours must be equal to the number of classes contained in the raster imagery with which <code>frames</code> have been created. Optioanlly, the vector can be named to associate map values with colours and define the scale limits, e.g. <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("-1" = "red", "0" = "blue", "1" = "green")</a></code></p></td>
     </tr>
     <tr>
       <th>labels</th>
       <td><p>character, a vector of labels with the same length as <code>colours</code>. Ignored, if <code>type = "gradient"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>na.colour</th>
+      <td><p>character, colour to use for missing values.</p></td>
+    </tr>
+    <tr>
+      <th>na.show</th>
+      <td><p>logical, whether to display NA values in discrete scaling. Ignored, if <code>type = "gradient"</code>.</p></td>
     </tr>
     <tr>
       <th>legend_title</th>

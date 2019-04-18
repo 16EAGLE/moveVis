@@ -12,7 +12,7 @@ add_northarrow(frames, height = 0.05, position = "bottomright",
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
-\item{height}{numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.5.}
+\item{height}{numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map.}
 
 \item{position}{character, position of the north arrow on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.}
 
@@ -20,15 +20,15 @@ add_northarrow(frames, height = 0.05, position = "bottomright",
 
 \item{y}{numeric, position of the bottom left corner of the north arrow on the y axis. If not set, \code{position} is used to calculate the position of the north arrow.}
 
-\item{colour}{character, colour. Default is \code{"black"}.}
+\item{colour}{character, colour.}
 
-\item{size}{numeric, arrow size. Default is 1.}
+\item{size}{numeric, arrow size.}
 
-\item{label_text}{character, text below the north arrow. Default is "North".}
+\item{label_text}{character, text below the north arrow.}
 
-\item{label_margin}{numeric, margin between label and north arrow as a proportion of the size of the north arrow. Default is 0.3.}
+\item{label_margin}{numeric, margin between label and north arrow as a proportion of the size of the north arrow.}
 
-\item{label_size}{numeric, label font size. Default is 4.}
+\item{label_size}{numeric, label font size.}
 
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }

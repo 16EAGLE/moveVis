@@ -13,8 +13,7 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 annotate 
-#' @importFrom rlang expr
+#' @importFrom ggplot2 annotate expr
 #' @importFrom dplyr bind_cols
 #'
 #' @examples 
