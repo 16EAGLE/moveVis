@@ -97,6 +97,7 @@ reference:
   - move_data
   - basemap_data
   - moveVis-package
+  - '%>%'
 
 articles:
 - title: Examples

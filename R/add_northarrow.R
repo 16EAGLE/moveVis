@@ -3,15 +3,15 @@
 #' This function adds a north arrow to the animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
-#' @param height numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.5.
+#' @param height numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map.
 #' @param position character, position of the north arrow on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.
 #' @param x numeric, position of the bottom left corner of the north arrow on the x axis. If not set, \code{position} is used to calculate the position of the north arrow.
 #' @param y numeric, position of the bottom left corner of the north arrow on the y axis. If not set, \code{position} is used to calculate the position of the north arrow.
-#' @param colour character, colour. Default is \code{"black"}.
-#' @param size numeric, arrow size. Default is 1.
-#' @param label_text character, text below the north arrow. Default is "North".
-#' @param label_margin numeric, margin between label and north arrow as a proportion of the size of the north arrow. Default is 0.3.
-#' @param label_size numeric, label font size. Default is 4.
+#' @param colour character, colour.
+#' @param size numeric, arrow size.
+#' @param label_text character, text below the north arrow.
+#' @param label_margin numeric, margin between label and north arrow as a proportion of the size of the north arrow.
+#' @param label_size numeric, label font size.
 #'
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann

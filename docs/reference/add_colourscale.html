@@ -176,7 +176,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>add_colourscale</span>(<span class='no'>frames</span>, <span class='no'>type</span>, <span class='no'>colours</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(),
+    <pre class="usage"><span class='fu'>add_colourscale</span>(<span class='no'>frames</span>, <span class='no'>type</span>, <span class='no'>colours</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>waiver</span>(), <span class='kw'>limits</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>legend_title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -197,6 +197,10 @@
     <tr>
       <th>labels</th>
       <td><p>character, a vector of labels with the same length as <code>colours</code>. Ignored, if <code>type = "gradient"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>limits</th>
+      <td><p>numeric, if <code>type = "gradient"</code>, character, if <code>type = "discrete"</code>. A vector providing limits of the scale.</p></td>
     </tr>
     <tr>
       <th>legend_title</th>

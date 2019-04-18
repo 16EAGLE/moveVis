@@ -4,7 +4,7 @@
 \alias{add_colourscale}
 \title{Add scale to frames}
 \usage{
-add_colourscale(frames, type, colours, labels = waiver(),
+add_colourscale(frames, type, colours, labels = waiver(), limits = NA,
   legend_title = NULL, verbose = TRUE)
 }
 \arguments{
@@ -15,6 +15,8 @@ add_colourscale(frames, type, colours, labels = waiver(),
 \item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}}
 
 \item{labels}{character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.}
+
+\item{limits}{numeric, if \code{type = "gradient"}, character, if \code{type = "discrete"}. A vector providing limits of the scale.}
 
 \item{legend_title}{character, a legend title.}
 

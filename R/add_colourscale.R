@@ -6,6 +6,7 @@
 #' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).
 #' @param colours character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Provide a named vector to associate map values with colours, e.g. \code{c("1" = "red", "2" = "green", "3" = "black")}
 #' @param labels character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.
+#' @param limits numeric, if \code{type = "gradient"}, character, if \code{type = "discrete"}. A vector providing limits of the scale.
 #' @param legend_title character, a legend title.
 #'
 #' @return List of frames.
@@ -56,7 +57,7 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
-add_colourscale <- function(frames, type, colours, labels = waiver(), legend_title = NULL, verbose = TRUE){
+add_colourscale <- function(frames, type, colours, labels = waiver(), limits = NA, legend_title = NULL, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -71,9 +72,16 @@ add_colourscale <- function(frames, type, colours, labels = waiver(), legend_tit
     if(!inherits(labels, "character")) out("Argument 'labels' must be of type 'character'.", type = 3)
     if(length(labels) != length(colours)) out("Arguments 'colours' and 'labels' must have equal lengths.", type = 3)
   }
+  if(all(type == "gradient", !is.na(limits))){
+    if(!inherits(limits, "numeric")) out("Agrument 'limits' must be of type 'numeric', if arument 'type' is set to 'gradient'.", type = 3)
+    if(length(limits) != 2) out("Argument 'limits' must be of length 2, if it is not NA and if arument 'type' is set to 'gradient'.", type = 3)
+  }
+  if(all(type == "discrete", !is.na(limits))){
+    if(!inherits(limits, "character")) out("Agrument 'limits' must be of type 'character', if arument 'type' is set to 'discrete'.", type = 3)
+  }
   
-  if(type == "gradient") gg.scale <- expr(scale_fill_gradientn(name = legend_title, colours = colours))
-  if(type == "discrete") gg.scale <- expr(scale_fill_manual(name = legend_title, values = colours, labels = labels))
+  if(type == "gradient") gg.scale <- expr(scale_fill_gradientn(name = legend_title, colours = colours, limits = limits))
+  if(type == "discrete") gg.scale <- expr(scale_fill_manual(name = legend_title, values = colours, labels = labels, limits = limits))
   
-  add_gg(frames, gg.scale, colours = colours, legend_title = legend_title)
+  add_gg(frames, gg.scale, colours = colours, legend_title = legend_title, limits = limits)
 }
