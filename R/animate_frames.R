@@ -8,6 +8,7 @@
 #' @param width numeric, width of the output animation in pixels.
 #' @param height numeric, height of the output animation in pixels.
 #' @param res numeric, resolution of the output animation in ppi.
+#' @param end_pause numeric, defining how many seconds the last frame of the animation should be hold to add a pause at the the end of the animation. Default is 0 seconds to not add a pause.
 #' @param display logical, whether the animation should be displayed after rendering or not.
 #' @param overwrite logical, wether to overwrite an existing file, if \code{out_file} is already present.
 #' @param ... additional arguments to be passed to the render function.
@@ -19,7 +20,7 @@
 #' @importFrom av av_capture_graphics
 #' @importFrom gifski save_gif
 #' @importFrom ggplot2 quo
-#' 
+#' @importFrom lubridate dseconds
 #' @importFrom utils tail
 #' 
 #' @author Jakob Schwalb-Willmann
@@ -62,7 +63,7 @@
 #' 
 #' @export
 
-animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700, res = 100, display = TRUE, overwrite = FALSE, verbose = TRUE, ...){
+animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700, res = 100, end_pause = 0, display = TRUE, overwrite = FALSE, verbose = TRUE, ...){
   
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
@@ -75,7 +76,13 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   out_ext <- tolower(tail(unlist(strsplit(out_file, "[.]")), n=1))
   out("Rendering animation...")
-  .stats(length(frames), fps)
+  if(end_pause > 0){
+    n.add <- round(end_pause*fps)
+    frames <- append(frames, rep(tail(frames, n = 1), times = n.add))
+    out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add ≈ ", toString(dseconds(end_pause)), " of pause at the end"))
+  }
+  .stats(n.frames = length(frames), fps)
+  
   #frames_expr <- expression(moveVis:::.lapply(frames, function(x) quiet(print(x))))
   
   if(out_ext == "gif"){

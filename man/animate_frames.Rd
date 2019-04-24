@@ -5,8 +5,8 @@
 \title{Animate frames}
 \usage{
 animate_frames(frames, out_file, fps = 25, width = 700, height = 700,
-  res = 100, display = TRUE, overwrite = FALSE, verbose = TRUE,
-  ...)
+  res = 100, end_pause = 0, display = TRUE, overwrite = FALSE,
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
@@ -20,6 +20,8 @@ animate_frames(frames, out_file, fps = 25, width = 700, height = 700,
 \item{height}{numeric, height of the output animation in pixels.}
 
 \item{res}{numeric, resolution of the output animation in ppi.}
+
+\item{end_pause}{numeric, defining how many seconds the last frame of the animation should be hold to add a pause at the the end of the animation. Default is 0 seconds to not add a pause.}
 
 \item{display}{logical, whether the animation should be displayed after rendering or not.}
 

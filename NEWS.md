@@ -9,6 +9,7 @@ Adding some small but practical features. Unreleased, available via GitHub.
 * Argument `trace_colour` of `frames_spatial()` for defining the colour of the trace.
 * Argument `na.colour` of `add_colourscale()` for defining the colouring of NA values.
 * Argument `na.show` of `add_colourscale()` to show or hide NA values in discrete background rasters.
+* Argument `end_pause` of `animate_frames()` to hold the last frame, adding a pause of a user-defined duration to the end of an animation.
 
 **Other improvements:**
 

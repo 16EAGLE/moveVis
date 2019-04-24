@@ -28,10 +28,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @param n.frames numeric
 #' @param fps numeric
 #' 
+#' @importFrom lubridate dseconds
 #' @keywords internal
 #' @noRd
-.stats <- function(n.frames, fps = 25, sign = ""){
-  out(paste0(toString(n.frames), " frames ≈ expected animation duration: ", as.character(dseconds(n.frames/fps)), " (with ", toString(fps), " fps)"), sign = sign)
+.stats <- function(n.frames, fps = 25){
+  out(paste0("Approximated animation duration: ≈ ", as.character(dseconds(n.frames/fps)), " at ", toString(fps), " fps for ", toString(n.frames), " frames"))
 }
 
 #' verbose lapply

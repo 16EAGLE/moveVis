@@ -177,8 +177,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>animate_frames</span>(<span class='no'>frames</span>, <span class='no'>out_file</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>25</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>700</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>700</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>display</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>end_pause</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>display</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -206,6 +206,10 @@
     <tr>
       <th>res</th>
       <td><p>numeric, resolution of the output animation in ppi.</p></td>
+    </tr>
+    <tr>
+      <th>end_pause</th>
+      <td><p>numeric, defining how many seconds the last frame of the animation should be hold to add a pause at the the end of the animation. Default is 0 seconds to not add a pause.</p></td>
     </tr>
     <tr>
       <th>display</th>
