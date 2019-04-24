@@ -30,8 +30,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' 
 #' @keywords internal
 #' @noRd
-.stats <- function(n.frames, fps = 25){
-  out(paste0("Number of frames: ", toString(n.frames), " ≈ Expected anmation duration: ", as.character(dseconds(n.frames/fps)), " (with ", toString(fps), " fps)"), msg = T)
+.stats <- function(n.frames, fps = 25, sign = ""){
+  out(paste0(toString(n.frames), " frames ≈ expected animation duration: ", as.character(dseconds(n.frames/fps)), " (with ", toString(fps), " fps)"), sign = sign)
 }
 
 #' verbose lapply
