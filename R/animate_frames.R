@@ -75,6 +75,7 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   out_ext <- tolower(tail(unlist(strsplit(out_file, "[.]")), n=1))
   out("Rendering animation...")
+  .stats(length(frames), fps)
   #frames_expr <- expression(moveVis:::.lapply(frames, function(x) quiet(print(x))))
   
   if(out_ext == "gif"){

@@ -120,6 +120,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   ## create data.frame from m with frame time and colour
   out("Processing movement data...")
   m.df <- .m2df(m) 
+  .stats(max(m.df$frame))
   m.split <- .split(m.df)
   
   ## create raster list

@@ -23,6 +23,17 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     } else{message(paste0(sign,input))}}}}
 }
 
+#' Outputs animation stats
+#'
+#' @param n.frames numeric
+#' @param fps numeric
+#' 
+#' @keywords internal
+#' @noRd
+.stats <- function(n.frames, fps = 25){
+  out(paste0("Number of frames: ", toString(n.frames), " ≈ Expected anmation duration: ", as.character(dseconds(n.frames/fps)), " (with ", toString(fps), " fps)"), msg = T)
+}
+
 #' verbose lapply
 #'
 #' @importFrom pbapply pblapply
