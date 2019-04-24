@@ -14,6 +14,7 @@
 #' @param path_arrow arrow, path arrow specification, as created by grid::arrow().
 #' @param path_colours character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.
 #' @param path_alpha numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.
+#' @param path_fade logical, whether paths should be faded out by adding an additional number of frames for fading equal to \code{tail_length} after the last frame or not.
 #' @param path_legend logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.
 #' @param path_legend_title character, path legend title. Default is \code{"Names"}.
 #' @param tail_length numeric, length of tail per movement path.
@@ -153,7 +154,7 @@
 #' @export
 
 frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
-                           margin_factor = 1.1, equidistant = NULL, ext = NULL, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1,
+                           margin_factor = 1.1, equidistant = NULL, ext = NULL, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
                            path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_colour = "white", ..., verbose = TRUE){
   
   ## check input arguments
@@ -199,11 +200,11 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   ## preprocess movement data
   out("Processing movement data...")
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
-  .stats(max(m.df$frame))
+  .stats(n.frames = if(isTRUE(path_fade)) (max(m.df$frame) + tail_length) else max(m.df$frame))
   
   gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
   m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                    trace_show = trace_show, trace_colour = trace_colour) # split m by size of tail
+                    trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade) # split m by size of tail
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){

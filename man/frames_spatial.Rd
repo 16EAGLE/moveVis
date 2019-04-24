@@ -10,9 +10,10 @@ frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
   margin_factor = 1.1, equidistant = NULL, ext = NULL,
   path_size = 3, path_end = "round", path_join = "round",
   path_mitre = 10, path_arrow = NULL, path_colours = NA,
-  path_alpha = 1, path_legend = TRUE, path_legend_title = "Names",
-  tail_length = 19, tail_size = 1, tail_colour = "white",
-  trace_show = FALSE, trace_colour = "white", ..., verbose = TRUE)
+  path_alpha = 1, path_fade = FALSE, path_legend = TRUE,
+  path_legend_title = "Names", tail_length = 19, tail_size = 1,
+  tail_colour = "white", trace_show = FALSE, trace_colour = "white",
+  ..., verbose = TRUE)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -56,6 +57,8 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 \item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.}
 
 \item{path_alpha}{numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.}
+
+\item{path_fade}{logical, whether paths should be faded out by adding an additional number of frames for fading equal to \code{tail_length} after the last frame or not.}
 
 \item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
 

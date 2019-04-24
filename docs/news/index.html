@@ -179,11 +179,14 @@
 <li>Argument <code>na.colour</code> of <code><a href="../reference/add_colourscale.html">add_colourscale()</a></code> for defining the colouring of NA values.</li>
 <li>Argument <code>na.show</code> of <code><a href="../reference/add_colourscale.html">add_colourscale()</a></code> to show or hide NA values in discrete background rasters.</li>
 <li>Argument <code>end_pause</code> of <code><a href="../reference/animate_frames.html">animate_frames()</a></code> to hold the last frame, adding a pause of a user-defined duration to the end of an animation.</li>
+<li>Argument <code>path_fade</code> of <code>frames_spatila()</code> to define whether paths should be faded out by adding additional frames after the last frame or not.</li>
 </ul>
 <p><strong>Other improvements:</strong></p>
 <ul>
 <li>
 <code><a href="../reference/add_colourscale.html">add_colourscale()</a></code> now calculates scale and legend with frame-wide fixed limits, when <code>colours</code> is defined as a named vector, e.g. <code><a href="https://www.rdocumentation.org/packages/base/topics/c">c("-1" = "red", "0" = "blue", "1" = "green")</a></code>.</li>
+<li>
+<code>moveVis</code> now displays the approximated duration of an animation on the console, when creating frames or rendering frames.</li>
 </ul>
 <p><br></p>
 <hr>

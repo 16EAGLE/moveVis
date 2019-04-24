@@ -10,10 +10,12 @@ Adding some small but practical features. Unreleased, available via GitHub.
 * Argument `na.colour` of `add_colourscale()` for defining the colouring of NA values.
 * Argument `na.show` of `add_colourscale()` to show or hide NA values in discrete background rasters.
 * Argument `end_pause` of `animate_frames()` to hold the last frame, adding a pause of a user-defined duration to the end of an animation.
+* Argument `path_fade` of `frames_spatila()` to define whether paths should be faded out by adding additional frames after the last frame or not.
 
 **Other improvements:**
 
 * `add_colourscale()` now calculates scale and legend with frame-wide fixed limits, when `colours` is defined as a named vector, e.g. `c("-1" = "red", "0" = "blue", "1" = "green")`.
+* `moveVis` now displays the approximated duration of an animation on the console, when creating frames or rendering frames.
 
 
 <br>

@@ -176,7 +176,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' 
 #' @importFrom grDevices colorRampPalette
 #' @noRd 
-.split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey"){
+.split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
   
   # m.names <- unique(as.character(m.df$name))
   # dummy <- lapply(m.names, function(mn){
@@ -187,7 +187,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # })
   # names(dummy) <- m.names
   
-  .lapply(1:(max(m.df$frame, na.rm = T)), function(i){ # , mn = m.names, d = dummy){
+  n.out <- max(m.df$frame, na.rm = T)
+  if(isTRUE(path_fade)) n.out <- n.out + tail_length
+  
+  .lapply(1:n.out, function(i){ # , mn = m.names, d = dummy){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
