@@ -68,6 +68,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 * `add_text()` adds static or dynamically changing text to the animation frames created with `frames_spatial()` or `frames_graph()`.
 * `add_colourscale()` adjusts the colour scales of the animation frames created with `frames_spatial()` and custom map imagery using the `r_list` argument.
 * `join_frames()` side-by-side joins the `ggplot2` objects of two or more frames lists of equal lengths into a single list of `ggplot2` objects per frame using `cowplot::plot_grid`. This is useful if you want to side-by-side combine spatial frames returned by `frames_spatial()` with graph frames returned by `frames_graph()`.
+* `get_frametimes()` extracts the timestamps associated with each frame of a list of frames created using `frames_spatial()` or `frames_graph()` and returns them as a vector.
 
 #### Animating frames (as GIF or video)
 
