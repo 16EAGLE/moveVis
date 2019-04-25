@@ -57,8 +57,8 @@ reference:
   - get_maptypes
   - frames_spatial
   - frames_graph
-- title: Layout and appearance
-  desc: Adjust frame layout and appearance
+- title: Frames adaption
+  desc: Working with frames before animating them to adjust their layout and appearance
   contents:
   - add_gg
   - add_labels
@@ -69,6 +69,7 @@ reference:
   - add_text
   - add_colourscale
   - join_frames
+  - get_frametimes
 - title: Frames animation
   desc: Animate frames as GIF or video
   contents:

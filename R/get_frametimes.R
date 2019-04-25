@@ -1,6 +1,6 @@
 #' Get frame times from frames
 #'
-#' This function extracts the timestamps associated with each frame of a list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#' This function extracts the timestamps associated with each frame of a list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
 #'
 #' @param frames list, list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 #' @return A POSIXct vector of timestamps representing the time assoicated with each frame in \code{frames}.
