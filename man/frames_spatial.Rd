@@ -58,7 +58,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{path_alpha}{numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.}
 
-\item{path_fade}{logical, whether paths should be faded out by adding an additional number of frames for fading equal to \code{tail_length} after the last frame or not.}
+\item{path_fade}{logical, whether paths should be faded towards the last frame or not. Useful, if \code{trace_show = TRUE} and you want to hold the last frame using \code{end_pause} in \code{\link{animate_frames}}.}
 
 \item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
 

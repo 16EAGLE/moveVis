@@ -32,7 +32,7 @@ animate_frames(frames, out_file, fps = 25, width = 700, height = 700,
 \item{...}{additional arguments to be passed to the render function.}
 }
 \value{
-None or an R graphics window displaying the animation
+None or the system's default image/video viewer displaying the animation
 }
 \description{
 \code{animate_frames} creates an animation from a list of frames computed with \code{\link{frames_spatial}}.

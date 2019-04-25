@@ -4,16 +4,17 @@
 \alias{add_timestamps}
 \title{Add timestamps to frames}
 \usage{
-add_timestamps(frames, m, x = NULL, y = NULL, ..., verbose = TRUE)
+add_timestamps(frames, m = NULL, x = NULL, y = NULL, ...,
+  verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
-\item{m}{\code{move} or \code{moveStack} used to create \code{frames} with \code{\link{frames_spatial}} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}}.}
+\item{m}{\code{move} or \code{moveStack}, optional. If defined, timestamps are extracted from \code{m} that must be the same object used to create \code{frames} with \code{\link{frames_spatial}}. If undefined (recommended), timestamps are extracted from the attributes of \code{frames} directly.}
 
-\item{x}{numeric, optioanl, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.}
+\item{x}{numeric, optional, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.}
 
-\item{y}{numeric, optioanl, position of timestamps on the y scale.}
+\item{y}{numeric, optional, position of timestamps on the y scale.}
 
 \item{...}{optional, arguments passed to \code{\link{add_text}}, such as \code{colour}, \code{size}, \code{type}.}
 

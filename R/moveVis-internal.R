@@ -187,10 +187,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # })
   # names(dummy) <- m.names
   
-  n.out <- max(m.df$frame, na.rm = T)
-  if(isTRUE(path_fade)) n.out <- n.out + tail_length
+  #n.out <- max(m.df$frame, na.rm = T)
+  #if(isTRUE(path_fade)) n.out <- n.out + tail_length
   
-  .lapply(1:n.out, function(i){ # , mn = m.names, d = dummy){
+  .lapply(1:max(m.df$frame, na.rm = T), function(i){ # , mn = m.names, d = dummy){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
@@ -202,19 +202,43 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     # compute colour ramp from id count
     #y.colours <- sapply(unique(y$id), function(x) rev(unique(y[y$id == x,]$colour)), simplify = F)
     y.colours <- sapply(unique(y$id), function(x) y[y$id == x,]$colour, simplify = F)
-    y$tail_colour <- unlist(mapply(y.cols = y.colours, y.size = table(y$id), function(y.cols, y.size){
+    y.count <- as.vector(table(y$id))
+    diff.max <- max(m.df$frame, na.rm = T)-max(i.range)
+    
+    y$tail_colour <- unlist(mapply(y.cols = y.colours, y.size = y.count, function(y.cols, y.size){
+      
+      if(all(isTRUE(path_fade), diff.max < tail_length, y.size > diff.max)){
+        n <- diff.max+1
+        v <- rep(tail_colour, (y.size-(n)))
+        y.cols <- tail(y.cols, n = n)
+      } else{
+        n <- y.size
+        v <- NULL
+      }
+      
       y.ramps <- lapply(unique(y.cols), function(x){
         f <- colorRampPalette(c(x, tail_colour))
-        rev(f(y.size+4)[1:y.size])
+        rev(f(n+4)[1:n])
       })
       
-      mapply(i = 1:y.size, i.ramp = as.numeric(mapvalues(y.cols, unique(y.cols), 1:length(unique(y.cols)))), function(i, i.ramp){
+      c(v, mapply(i = 1:n, i.ramp = as.numeric(mapvalues(y.cols, unique(y.cols), 1:length(unique(y.cols)))), function(i, i.ramp){
         y.ramps[[i.ramp]][i]
-      }, USE.NAMES = F)
+      }, USE.NAMES = F))
+
     }, SIMPLIFY = F))
-    
+ 
     # compute tail size from id count
-    y$tail_size <- unlist(lapply(table(y$id), function(x) seq(tail_size, path_size, length.out = x)))
+    y$tail_size <- unlist(lapply(y.count, function(y.size){
+      
+      if(all(isTRUE(path_fade), diff.max < tail_length, y.size > diff.max)){
+        n <- diff.max+1
+        v <- rep(tail_size, (y.size-(n)))
+      } else{
+        n <- y.size
+        v <- NULL
+      }
+      c(v, seq(tail_size, path_size, length.out = n))
+    }))
     
     if(all(isTRUE(trace_show) & i > tail_size)){
       

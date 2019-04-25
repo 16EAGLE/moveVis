@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Exemplary manipulated NDVI data — basemap_data • moveVis</title>
+<title>Get frame times from frames — get_frametimes • moveVis</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,12 +30,9 @@
 
 
 
-<meta property="og:title" content="Exemplary manipulated NDVI data — basemap_data" />
+<meta property="og:title" content="Get frame times from frames — get_frametimes" />
 
-<meta property="og:description" content="This datasetd contains two lists of equal lenghts:
-a list of ten single-layer raster objects, representing NDVI images covering the Lake of Constance area.
-a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...
-" />
+<meta property="og:description" content="This function extracts the timestamps associated with each frame of a list of frames created using frames_spatial or frames_graph." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -141,52 +138,71 @@ a list of made-up times that simulate acquisition times with a temporal resoluti
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Exemplary manipulated NDVI data</h1>
+    <h1>Get frame times from frames</h1>
     
-    <div class="hidden name"><code>basemap_data.Rd</code></div>
+    <div class="hidden name"><code>get_frametimes.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This datasetd contains two lists of equal lenghts:</p><ul>
-<li><p>a list of ten single-layer <code>raster</code> objects, representing NDVI images covering the Lake of Constance area.</p></li>
-<li><p>a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...</p></li>
-</ul>
+    <p>This function extracts the timestamps associated with each frame of a list of frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>basemap_data</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>List containing two lists of equal lengths: a list of <code>raster</code> objects and a list of <code>POSIXct</code> times.</p>
+    <pre class="usage"><span class='fu'>get_frametimes</span>(<span class='no'>frames</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>frames</th>
+      <td><p>list, list of frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>MODIS (MOD13Q1 NDVI)</p>
+    <p>A POSIXct vector of timestamps representing the time assoicated with each frame in <code>frames</code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This object is used by some <code>moveVis</code> examples and unit tests.</p>
+    <p><code>moveVis</code> stores the times represented by a frame as an attribute <code>"time"</code> for each <code>ggplot</code> frame.</p>
     
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>All data contained should only be used for testing <code>moveVis</code> and are not suitable to be used for analysis or interpretation.</p>
+    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>moveVis</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>move</span>)
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"move_data"</span>)
+<span class='co'># align movement</span>
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
+
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>)
+<span class='no'>frames.ts</span> <span class='kw'>&lt;-</span> <span class='fu'>get_frametimes</span>(<span class='no'>frames</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>frames.ts</span>)
+<span class='co'># }</span># NOT RUN {
+# }
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
+      <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
 
-      <li><a href="#note">Note</a></li>
-          </ul>
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

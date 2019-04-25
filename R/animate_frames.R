@@ -15,7 +15,7 @@
 #'
 #' @details An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
 #'
-#' @return None or an R graphics window displaying the animation
+#' @return None or the system's default image/video viewer displaying the animation
 #' 
 #' @importFrom av av_capture_graphics
 #' @importFrom gifski save_gif

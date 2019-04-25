@@ -16,21 +16,7 @@ navbar:
     - text: "Get Started"
       href: index.html#get-started
     - text: "Examples"
-      menu:
-      - text: "Example 1: Creating a simple movement animation"
-        href: articles/example-1.html
-      - text: "Example 2: Customizing frames"
-        href: articles/example-2.html
-      - text: "Example 3: Using a mapbox satellite base map"
-        href: articles/example-3.html
-      - text: "Example 4: Custom base maps from raster data"
-        href: articles/example-4.html
-      - text: "Example 5: Interaction graphs"
-        href: articles/example-5.html
-      - text: "Example 6: Joining frames side by side"
-        href: articles/example-6.html
-      - text: "Example 7: View movement tracks"
-        href: articles/example-7.html
+      href: index.html#examples
     - text: "Functions"
       href: reference/index.html
     - text: "Changelog"

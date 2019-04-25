@@ -78,35 +78,8 @@
 <li>
   <a href="../index.html#get-started">Get Started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Examples
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/example-1.html">Example 1: Creating a simple movement animation</a>
-    </li>
-    <li>
-      <a href="../articles/example-2.html">Example 2: Customizing frames</a>
-    </li>
-    <li>
-      <a href="../articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
-    </li>
-    <li>
-      <a href="../articles/example-4.html">Example 4: Custom base maps from raster data</a>
-    </li>
-    <li>
-      <a href="../articles/example-5.html">Example 5: Interaction graphs</a>
-    </li>
-    <li>
-      <a href="../articles/example-6.html">Example 6: Joining frames side by side</a>
-    </li>
-    <li>
-      <a href="../articles/example-7.html">Example 7: View movement tracks</a>
-    </li>
-  </ul>
+<li>
+  <a href="../index.html#examples">Examples</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -274,7 +247,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     </tr>
     <tr>
       <th>path_fade</th>
-      <td><p>logical, whether paths should be faded out by adding an additional number of frames for fading equal to <code>tail_length</code> after the last frame or not.</p></td>
+      <td><p>logical, whether paths should be faded towards the last frame or not. Useful, if <code>trace_show = TRUE</code> and you want to hold the last frame using <code>end_pause</code> in <code><a href='animate_frames.html'>animate_frames</a></code>.</p></td>
     </tr>
     <tr>
       <th>path_legend</th>

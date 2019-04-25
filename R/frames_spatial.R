@@ -14,7 +14,7 @@
 #' @param path_arrow arrow, path arrow specification, as created by grid::arrow().
 #' @param path_colours character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.
 #' @param path_alpha numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.
-#' @param path_fade logical, whether paths should be faded out by adding an additional number of frames for fading equal to \code{tail_length} after the last frame or not.
+#' @param path_fade logical, whether paths should be faded towards the last frame or not. Useful, if \code{trace_show = TRUE} and you want to hold the last frame using \code{end_pause} in \code{\link{animate_frames}}.
 #' @param path_legend logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.
 #' @param path_legend_title character, path legend title. Default is \code{"Names"}.
 #' @param tail_length numeric, length of tail per movement path.
@@ -200,7 +200,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   ## preprocess movement data
   out("Processing movement data...")
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
-  .stats(n.frames = if(isTRUE(path_fade)) (max(m.df$frame) + tail_length) else max(m.df$frame))
+  .stats(n.frames = max(m.df$frame))
   
   gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
   m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
@@ -222,9 +222,17 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     if(r_type == "discrete") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T, coord_equal = F, ...)
   } else{ gg.bmap <- .lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, coord_equal = F, ...))}
   
-  ## return frames
+  ## create frames
   out("Creating frames...")
-  return(.gg_spatial(m.split = m.split, gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), equidistant = equidistant,
-                     path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
-                     path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title))
+  frames <- .gg_spatial(m.split = m.split, gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), equidistant = equidistant,
+                        path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
+                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title)
+  
+  ## add time attribute per frame
+  frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
+    attr(x, "time") <- y
+    return(x)
+  }, SIMPLIFY = F)
+  
+  return(frames)
 }
