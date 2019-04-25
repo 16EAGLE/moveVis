@@ -78,35 +78,8 @@
 <li>
   <a href="../index.html#get-started">Get Started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Examples
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/example-1.html">Example 1: Creating a simple movement animation</a>
-    </li>
-    <li>
-      <a href="../articles/example-2.html">Example 2: Customizing frames</a>
-    </li>
-    <li>
-      <a href="../articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
-    </li>
-    <li>
-      <a href="../articles/example-4.html">Example 4: Custom base maps from raster data</a>
-    </li>
-    <li>
-      <a href="../articles/example-5.html">Example 5: Interaction graphs</a>
-    </li>
-    <li>
-      <a href="../articles/example-6.html">Example 6: Joining frames side by side</a>
-    </li>
-    <li>
-      <a href="../articles/example-7.html">Example 7: View movement tracks</a>
-    </li>
-  </ul>
+<li>
+  <a href="../index.html#examples">Examples</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -176,7 +149,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>add_timestamps</span>(<span class='no'>frames</span>, <span class='no'>m</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>add_timestamps</span>(<span class='no'>frames</span>, <span class='kw'>m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,15 +161,15 @@
     </tr>
     <tr>
       <th>m</th>
-      <td><p><code>move</code> or <code>moveStack</code> used to create <code>frames</code> with <code><a href='frames_spatial.html'>frames_spatial</a></code> of uniform time scale and time lag, e.g. prepared with <code><a href='align_move.html'>align_move</a></code>.</p></td>
+      <td><p><code>move</code> or <code>moveStack</code>, optional. If defined, timestamps are extracted from <code>m</code> that must be the same object used to create <code>frames</code> with <code><a href='frames_spatial.html'>frames_spatial</a></code>. If undefined (recommended), timestamps are extracted from the attributes of <code>frames</code> directly.</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>numeric, optioanl, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.</p></td>
+      <td><p>numeric, optional, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>numeric, optioanl, position of timestamps on the y scale.</p></td>
+      <td><p>numeric, optional, position of timestamps on the y scale.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -233,11 +207,11 @@
                          <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='co'># add timestamps as text</span>
-<span class='no'>frames.a</span> <span class='kw'>&lt;-</span> <span class='fu'>add_timestamps</span>(<span class='no'>frames</span>, <span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"text"</span>)
+<span class='no'>frames.a</span> <span class='kw'>&lt;-</span> <span class='fu'>add_timestamps</span>(<span class='no'>frames</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"text"</span>)
 <span class='no'>frames.a</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 
 <span class='co'># or use the ggplot2 "label" type:</span>
-<span class='no'>frames.b</span> <span class='kw'>&lt;-</span> <span class='fu'>add_timestamps</span>(<span class='no'>frames</span>, <span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"label"</span>)
+<span class='no'>frames.b</span> <span class='kw'>&lt;-</span> <span class='fu'>add_timestamps</span>(<span class='no'>frames</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"label"</span>)
 <span class='no'>frames.b</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 <span class='co'># }</span># NOT RUN {
 # }

@@ -23,6 +23,18 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     } else{message(paste0(sign,input))}}}}
 }
 
+#' Outputs animation stats
+#'
+#' @param n.frames numeric
+#' @param fps numeric
+#' 
+#' @importFrom lubridate dseconds
+#' @keywords internal
+#' @noRd
+.stats <- function(n.frames, fps = 25){
+  out(paste0("Approximated animation duration: ≈ ", as.character(dseconds(n.frames/fps)), " at ", toString(fps), " fps for ", toString(n.frames), " frames"))
+}
+
 #' verbose lapply
 #'
 #' @importFrom pbapply pblapply
@@ -164,7 +176,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' 
 #' @importFrom grDevices colorRampPalette
 #' @noRd 
-.split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey"){
+.split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
   
   # m.names <- unique(as.character(m.df$name))
   # dummy <- lapply(m.names, function(mn){
@@ -175,7 +187,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # })
   # names(dummy) <- m.names
   
-  .lapply(1:(max(m.df$frame, na.rm = T)), function(i){ # , mn = m.names, d = dummy){
+  #n.out <- max(m.df$frame, na.rm = T)
+  #if(isTRUE(path_fade)) n.out <- n.out + tail_length
+  
+  .lapply(1:max(m.df$frame, na.rm = T), function(i){ # , mn = m.names, d = dummy){
     
     i.range <- seq(i-tail_length, i)
     i.range <- i.range[i.range > 0]
@@ -187,19 +202,43 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     # compute colour ramp from id count
     #y.colours <- sapply(unique(y$id), function(x) rev(unique(y[y$id == x,]$colour)), simplify = F)
     y.colours <- sapply(unique(y$id), function(x) y[y$id == x,]$colour, simplify = F)
-    y$tail_colour <- unlist(mapply(y.cols = y.colours, y.size = table(y$id), function(y.cols, y.size){
+    y.count <- as.vector(table(y$id))
+    diff.max <- max(m.df$frame, na.rm = T)-max(i.range)
+    
+    y$tail_colour <- unlist(mapply(y.cols = y.colours, y.size = y.count, function(y.cols, y.size){
+      
+      if(all(isTRUE(path_fade), diff.max < tail_length, y.size > diff.max)){
+        n <- diff.max+1
+        v <- rep(tail_colour, (y.size-(n)))
+        y.cols <- tail(y.cols, n = n)
+      } else{
+        n <- y.size
+        v <- NULL
+      }
+      
       y.ramps <- lapply(unique(y.cols), function(x){
         f <- colorRampPalette(c(x, tail_colour))
-        rev(f(y.size+4)[1:y.size])
+        rev(f(n+4)[1:n])
       })
       
-      mapply(i = 1:y.size, i.ramp = as.numeric(mapvalues(y.cols, unique(y.cols), 1:length(unique(y.cols)))), function(i, i.ramp){
+      c(v, mapply(i = 1:n, i.ramp = as.numeric(mapvalues(y.cols, unique(y.cols), 1:length(unique(y.cols)))), function(i, i.ramp){
         y.ramps[[i.ramp]][i]
-      }, USE.NAMES = F)
+      }, USE.NAMES = F))
+
     }, SIMPLIFY = F))
-    
+ 
     # compute tail size from id count
-    y$tail_size <- unlist(lapply(table(y$id), function(x) seq(tail_size, path_size, length.out = x)))
+    y$tail_size <- unlist(lapply(y.count, function(y.size){
+      
+      if(all(isTRUE(path_fade), diff.max < tail_length, y.size > diff.max)){
+        n <- diff.max+1
+        v <- rep(tail_size, (y.size-(n)))
+      } else{
+        n <- y.size
+        v <- NULL
+      }
+      c(v, seq(tail_size, path_size, length.out = n))
+    }))
     
     if(all(isTRUE(trace_show) & i > tail_size)){
       
@@ -513,8 +552,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
                                             toner = "https://stamen-tiles-a.a.ssl.fastly.net/toner/",
                                             toner_bg = "https://stamen-tiles-a.a.ssl.fastly.net/toner-background/",
                                             toner_lite = "https://stamen-tiles-a.a.ssl.fastly.net/toner-lite/",
-                                            terrain = "http://a.tile.stamen.com/terrain/",
-                                            terrain_bg = "https://stamen-tiles-a.a.ssl.fastly.net/terrain-background/",
+                                            terrain = "http://tile.stamen.com/terrain/",
+                                            terrain_bg = "http://tile.stamen.com/terrain-background",
                                             mtb = "http://tile.mtbmap.cz/mtbmap_tiles/"),
                                  carto = list(light = "https://a.basemaps.cartocdn.com/light_all/",
                                               light_no_labels = "https://a.basemaps.cartocdn.com/light_nolabels/",

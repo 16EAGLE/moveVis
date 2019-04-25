@@ -9,10 +9,19 @@ Adding some small but practical features. Unreleased, available via GitHub.
 * Argument `trace_colour` of `frames_spatial()` for defining the colour of the trace.
 * Argument `na.colour` of `add_colourscale()` for defining the colouring of NA values.
 * Argument `na.show` of `add_colourscale()` to show or hide NA values in discrete background rasters.
+* Argument `end_pause` of `animate_frames()` to hold the last frame, adding a pause of a user-defined duration to the end of an animation.
+* Argument `path_fade` of `frames_spatila()` to define whether paths should be faded towards the last frame or not. Useful in combination with `trace_show = T` and when using `end_pause` of `animate_frames()`.
+* `moveVis` now stores the timestamps represented by each frame as an attribute `time` for each `ggplot` frame. Frame times can now be accessed using `get_frametimes()`.
+* `add_timestamps()` can now extract timestamps directly from frames, which makes defining `m` optional.
+
+**New functions:**
+
+* `get_frametimes()` lets you extract the timestamps associated with each frame of a list of frames created using `frames_spatial` or `frames_graph`.
 
 **Other improvements:**
 
 * `add_colourscale()` now calculates scale and legend with frame-wide fixed limits, when `colours` is defined as a named vector, e.g. `c("-1" = "red", "0" = "blue", "1" = "green")`.
+* `moveVis` now displays the approximated duration of an animation on the console, when creating frames or rendering frames.
 
 
 <br>

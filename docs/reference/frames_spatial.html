@@ -78,35 +78,8 @@
 <li>
   <a href="../index.html#get-started">Get Started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Examples
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/example-1.html">Example 1: Creating a simple movement animation</a>
-    </li>
-    <li>
-      <a href="../articles/example-2.html">Example 2: Customizing frames</a>
-    </li>
-    <li>
-      <a href="../articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
-    </li>
-    <li>
-      <a href="../articles/example-4.html">Example 4: Custom base maps from raster data</a>
-    </li>
-    <li>
-      <a href="../articles/example-5.html">Example 5: Interaction graphs</a>
-    </li>
-    <li>
-      <a href="../articles/example-6.html">Example 6: Joining frames side by side</a>
-    </li>
-    <li>
-      <a href="../articles/example-7.html">Example 7: View movement tracks</a>
-    </li>
-  </ul>
+<li>
+  <a href="../index.html#examples">Examples</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -182,9 +155,10 @@
   <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>equidistant</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
   <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>,
-  <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
-  <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>path_alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_fade</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -270,6 +244,10 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     <tr>
       <th>path_alpha</th>
       <td><p>numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.</p></td>
+    </tr>
+    <tr>
+      <th>path_fade</th>
+      <td><p>logical, whether paths should be faded towards the last frame or not. Useful, if <code>trace_show = TRUE</code> and you want to hold the last frame using <code>end_pause</code> in <code><a href='animate_frames.html'>animate_frames</a></code>.</p></td>
     </tr>
     <tr>
       <th>path_legend</th>

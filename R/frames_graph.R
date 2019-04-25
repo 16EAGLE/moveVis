@@ -120,6 +120,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   ## create data.frame from m with frame time and colour
   out("Processing movement data...")
   m.df <- .m2df(m) 
+  .stats(max(m.df$frame))
   m.split <- .split(m.df)
   
   ## create raster list
@@ -147,7 +148,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
     ## create frames
     out("Creating frames...")
     if(graph_type == "flow"){
-      return(.gg_flow(m.split, gg.df, path_legend, path_legend_title, path_size, val_seq))
+      frames <- .gg_flow(m.split, gg.df, path_legend, path_legend_title, path_size, val_seq)
     }
     if(graph_type == "hist"){
       
@@ -176,8 +177,16 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       
       ## fusing histograms for plot scaling
       all.hist <- do.call(rbind, l.hist)
-      return(.gg_hist(l.hist, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type))
+      frames <- .gg_hist(l.hist, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
     }
   }
+  
+  ## add time attribute per frame
+  frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
+    attr(x, "time") <- y
+    return(x)
+  }, SIMPLIFY = F)
+  
+  return(frames)
 }
 
