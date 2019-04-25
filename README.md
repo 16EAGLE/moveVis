@@ -130,6 +130,8 @@ You can find code examples on how to use `moveVis` here:
 
 These commented `moveVis` code snippets, addressing specific issues or questions, could also be helpful to you:
 
+<a href = "https://gist.github.com/16EAGLE/8237db3ea0f6e773e8d47bf4ebb201b6">How to hold the last frame of an animation for a defined time and make it look good by using path_fade</a> (requires `moveVis` >= 0.10.2)
+
 <a href = "https://gist.github.com/16EAGLE/16f08531f925f9de2286af277089e3d1">How to display the full traces of each path using trace_show and trace_colour with frames_spatial()</a> (requires `moveVis` >= 0.10.2)
 
 <a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual to indicate e.g. behavioral segments</a> (requires `moveVis` >= 0.10.1)
