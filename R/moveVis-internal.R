@@ -32,7 +32,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @keywords internal
 #' @noRd
 .stats <- function(n.frames, fps = 25){
-  out(paste0("Approximated animation duration: ≈ ", as.character(dseconds(n.frames/fps)), " at ", toString(fps), " fps for ", toString(n.frames), " frames"))
+  out(paste0("Approximated animation duration: \u2248 ", as.character(dseconds(n.frames/fps)), " at ", toString(fps), " fps for ", toString(n.frames), " frames"))
 }
 
 #' verbose lapply

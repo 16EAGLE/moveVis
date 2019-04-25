@@ -15,7 +15,7 @@
 #'
 #' @details An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.
 #'
-#' @return None or the system's default image/video viewer displaying the animation
+#' @return None or the default image/video viewer displaying the animation
 #' 
 #' @importFrom av av_capture_graphics
 #' @importFrom gifski save_gif
@@ -79,7 +79,7 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   if(end_pause > 0){
     n.add <- round(end_pause*fps)
     frames <- append(frames, rep(tail(frames, n = 1), times = n.add))
-    out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add ≈ ", toString(dseconds(end_pause)), " of pause at the end"))
+    out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add \u2248 ", toString(dseconds(end_pause)), " of pause at the end"))
   }
   .stats(n.frames = length(frames), fps)
   
