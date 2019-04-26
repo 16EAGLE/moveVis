@@ -1,5 +1,5 @@
 ## moveVis 0.10.2
-Adding some small but practical features. Unreleased, available via GitHub.
+Adding some small but practical features. Released on CRAN: 2019-04-26.
 
 **New features:**
 
@@ -10,7 +10,7 @@ Adding some small but practical features. Unreleased, available via GitHub.
 * Argument `na.colour` of `add_colourscale()` for defining the colouring of NA values.
 * Argument `na.show` of `add_colourscale()` to show or hide NA values in discrete background rasters.
 * Argument `end_pause` of `animate_frames()` to hold the last frame, adding a pause of a user-defined duration to the end of an animation.
-* Argument `path_fade` of `frames_spatila()` to define whether paths should be faded towards the last frame or not. Useful in combination with `trace_show = T` and when using `end_pause` of `animate_frames()`.
+* Argument `path_fade` of `frames_spatial()` to define whether paths should be faded towards the last frame or not. Useful in combination with `trace_show = T` and when using `end_pause` of `animate_frames()`.
 * `moveVis` now stores the timestamps represented by each frame as an attribute `time` for each `ggplot` frame. Frame times can now be accessed using `get_frametimes()`.
 * `add_timestamps()` can now extract timestamps directly from frames, which makes defining `m` optional.
 
