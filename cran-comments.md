@@ -1,11 +1,15 @@
 ## Test environments
 
 * Ubuntu 18.04.2 LTS, R 3.5.3 (local)
-* Ubuntu 14.04.5 LTS, R-release (travis)
+* Ubuntu 18.04.2 LTS, R-devel (local)
+* Ubuntu 14.04.5 LTS, R 3.5.3 (travis)
+* Ubuntu 14.04.5 LTS, R 3.6.0 (travis)
 * Ubuntu 14.04.5 LTS, R-devel (travis)
 * Windows Server 2008, R 3.5.3 (winbuilder)
 * Windows Server 2008, R 3.6.0 (winbuilder)
-* Windows Server 2008 R2 SP1, R-release (r-hub)
+* Windows Server 2008, R-devel (winbuilder)
+* Windows Server 2008 R2 SP1, R 3.5.3 (r-hub)
+* Windows Server 2008 R2 SP1, R 3.6.0 (r-hub)
 * Windows Server 2008 R2 SP1, R-devel (r-hub)
 
 ## R CMD check results
