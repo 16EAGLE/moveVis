@@ -1,6 +1,6 @@
 ## Test environments
 
-* Ubuntu 18.04.2 LTS, R 3.5.2 (local)
+* Ubuntu 18.04.2 LTS, R 3.5.3 (local)
 * Ubuntu 14.04.5 LTS, R-release (travis)
 * Ubuntu 14.04.5 LTS, R-devel (travis)
 * Windows Server 2008, R 3.5.3 (winbuilder)
