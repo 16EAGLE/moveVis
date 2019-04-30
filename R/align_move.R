@@ -63,7 +63,7 @@ align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod
   
   ## check m and spaceMethod
   if(!inherits(m, c("Move", "MoveStack"))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
-  m.length <- sapply(split(m), length)
+  m.length <- if(inherits(m, "MoveStack")) sapply(split(m), length) else length(m)
   if(any(m.length < 2)) out(paste0("Individual track(s) ", paste0(which(m.length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations only. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
   ## check resolution and define resolution
