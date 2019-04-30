@@ -1,5 +1,5 @@
 ## moveVis 0.10.2
-Adding some small but practical features. Released on CRAN: 2019-04-26.
+Adding some small but practical features. Released on CRAN: 2019-04-30.
 
 **New features:**
 

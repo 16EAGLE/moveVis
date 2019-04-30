@@ -12,4 +12,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This submission fixes several minor bugs.
+* This submission contains minor improvements, adds one new function and several new features.
