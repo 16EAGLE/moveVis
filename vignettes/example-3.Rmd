@@ -8,7 +8,7 @@ Thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`<
 ```R
 library(moveVis)
 library(move)
-library(magrittr)
+
 data("move_data")
 
 # align movement to unique times and regular resolution
