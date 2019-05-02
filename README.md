@@ -85,7 +85,7 @@ The following example shows how to make a simple animation using a default base 
 ```R
 library(moveVis)
 library(move)
-library(magrittr)
+
 data("move_data", package = "moveVis") # move class object
 # if your tracks are present as data.frames, see df2move() for conversion
 

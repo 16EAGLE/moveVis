@@ -10,7 +10,6 @@ library(moveVis)
 library(move)
 library(raster)
 library(ggplot2)
-library(magrittr)
 
 data("move_data")
 
