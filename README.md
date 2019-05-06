@@ -135,7 +135,9 @@ These commented `moveVis` code snippets, addressing specific issues or questions
 
 <a href = "https://gist.github.com/16EAGLE/16f08531f925f9de2286af277089e3d1">How to display the full traces of each path using trace_show and trace_colour with frames_spatial()</a> (requires `moveVis` >= 0.10.2)
 
-<a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual to indicate e.g. behavioral segments</a> (requires `moveVis` >= 0.10.1)
+<a href = "https://gist.github.com/16EAGLE/de21779c75aec8be27013f99dc311073">How to colour paths based on a continuous variable</a> (requires `moveVis` >= 0.10.1)
+
+<a href = "https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual, e.g. to indicate behavioral segments</a> (requires `moveVis` >= 0.10.1)
 
 <a href = "https://gist.github.com/16EAGLE/d69e3bed11fb6d08ee724868710ff876">How to adapt the path legend of frames created with frames_spatial()</a>
 
@@ -154,10 +156,8 @@ Detailed code examples explaining how to use specific functions are provided at 
 
 Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
 
-**Next version (0.10.2):**
+**Near future:**
 
-* [DONE] option to show the trace of the complete track or not (see `trace_show` and `trace_colour` in `frames_spatial()`)
-* [DONE] day-/night-time visualization (check out the available map types using `get_maptypes()` for bright and dark map types)
 * follow population mode
 * follow individual mode
 
