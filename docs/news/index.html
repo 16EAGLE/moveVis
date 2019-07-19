@@ -142,10 +142,11 @@
     <div id="movevis-0-10-3" class="section level2">
 <h2 class="hasAnchor">
 <a href="#movevis-0-10-3" class="anchor"></a>moveVis 0.10.3</h2>
-<p>Bug fixes. In development, not on CRAN yet</p>
+<p>Bug fixes. In development, not on CRAN yet.</p>
 <p><strong>Bug fixes:</strong></p>
 <ul>
-<li>Bug that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument ‘ext’. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.</li>
+<li>Bug that caused the scale bar distance calculated by <code><a href="../reference/add_scalebar.html">add_scalebar()</a></code> to be <code>0</code> for smaller-scale extents. Distance rounding is now iterated by digit to solve this.</li>
+<li>Bug in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument ‘ext’. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.</li>
 </ul>
 <p><br></p>
 <hr>

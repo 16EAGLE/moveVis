@@ -68,7 +68,14 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
   gg.diff <- list(x = max(gg.xy$xmax) - min(gg.xy$xmin), y = max(gg.xy$ymax) - min(gg.xy$ymin))
   
   ## calculate scale distance
-  scale.dist <- if(!is.null(distance)) distance else round((gg.dist$x*0.2)/1000)
+  if(!is.null(distance)){scale.dist <- distance}else{
+    scale.dist <- digits <- 0
+    while(scale.dist == 0){
+      scale.dist <- round((gg.dist$x*0.2)/1000, digits = digits)
+      digits <- digits+1
+    }
+  }
+  
   scale.diff <- gg.diff$x*((scale.dist*1000)/gg.dist$x)
   
   ## calculate scale postiotn

@@ -1,11 +1,12 @@
 ***
 
 ## moveVis 0.10.3
-Bug fixes. In development, not on CRAN yet
+Bug fixes. In development, not on CRAN yet.
 
 **Bug fixes:**
 
-* Bug that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument 'ext'. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.
+* Bug that caused the scale bar distance calculated by `add_scalebar()` to be `0` for smaller-scale extents. Distance rounding is now iterated by digit to solve this.
+* Bug in `frames_spatial()` that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument 'ext'. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.
 
 <br>
 
