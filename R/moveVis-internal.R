@@ -44,6 +44,15 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(isTRUE(verbose)) pblapply(X, FUN, ...) else lapply(X, FUN, ...)
 }
 
+#' verbose apply
+#'
+#' @importFrom pbapply pbapply
+#' @noRd 
+.apply <- function(X, MARGIN, FUN, ...){
+  verbose = getOption("moveVis.verbose")
+  if(isTRUE(verbose)) pbapply(X, MARGIN, FUN, ...) else apply(X, MARGIN, FUN, ...)
+}
+
 #' split movement by tail length
 #' @importFrom plyr mapvalues
 #' @importFrom sp coordinates
@@ -270,7 +279,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' spatial plot function
 #' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf
 #' @noRd 
-.gg_spatial <- function(m.split, gg.bmap, m.df, m.crs, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
+.gg_spatial <- function(m.split, gg.bmap, m.df, m.crs, gg.ext, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
                         path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names"){
   
   # frame plotting function
@@ -278,8 +287,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     ## base plot
     p <- y + geom_path(data = x, aes_string(x = "x", y = "y", group = "id"), size = x$tail_size, lineend = path_end, linejoin = path_join,
-                       linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour, alpha = path_alpha) +  theme_bw() +
-      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) + coord_sf(crs = m.crs, datum = m.crs)
+                       linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour, alpha = path_alpha, na.rm = T) +  theme_bw() +
+      coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax), expand = F, crs = m.crs, datum = m.crs, clip = "on")
+    #scale_y_continuous(expand = c(0,0), limits = c(gg.ext$ymin, gg.ext$ymax)) + 
+    #scale_x_continuous(expand = c(0,0), limits = c(gg.ext$xmin, gg.ext$xmax)) +
     
     ## add legend?
     if(isTRUE(path_legend)){
@@ -295,7 +306,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(isTRUE(print_plot)) print(p) else return(p)
   }
   
-  if(length(gg.bmap) > 1) mapply(x = m.split, y = gg.bmap, gg.fun, SIMPLIFY = F, USE.NAMES = F) else lapply(m.split, gg.fun, y = gg.bmap[[1]])
+  frames <- if(length(gg.bmap) > 1) mapply(x = m.split, y = gg.bmap, gg.fun, SIMPLIFY = F, USE.NAMES = F) else lapply(m.split, gg.fun, y = gg.bmap[[1]])
 }
 
 
@@ -427,7 +438,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   ## calculate needed slippy tiles using slippymath
   gg.ext.ll <- st_bbox(st_transform(st_as_sfc(gg.ext), crs = st_crs("+init=epsg:4326")))
   tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
-  images <- apply(tg$tiles, MARGIN = 1, function(x){
+  images <- .apply(tg$tiles, MARGIN = 1, function(x){
     file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
     
     retry <- list(do = TRUE, count = 0)

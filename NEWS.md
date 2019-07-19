@@ -1,3 +1,16 @@
+***
+
+## moveVis 0.10.3
+Bug fixes. In development, not on CRAN yet
+
+**Bug fixes:**
+
+* Bug that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument 'ext'. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.
+
+<br>
+
+***
+
 ## moveVis 0.10.2
 Adding some small but practical features. Released on CRAN: 2019-04-30.
 

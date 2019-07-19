@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.3</span>
       </span>
     </div>
 
@@ -262,7 +262,7 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='no'>frames.gr</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 <span class='co'># manipulate the labels, since now they are very dense:</span>
 <span class='co'># just replace the current scale</span>
-<span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_gg.html'>add_gg</a></span>(<span class='no'>frames.gr</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/tidyeval'>expr</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous'>scale_x_continuous</a></span>(<span class='kw'>breaks</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0.1</span>),
+<span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_gg.html'>add_gg</a></span>(<span class='no'>frames.gr</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/tidyeval.html'>expr</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span>(<span class='kw'>breaks</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0.1</span>),
                                     <span class='kw'>labels</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0.1</span>), <span class='kw'>expand</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>))))
 <span class='no'>frames.gr</span><span class='kw'>[[</span><span class='fl'>100</span>]]
 
