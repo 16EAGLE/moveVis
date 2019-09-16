@@ -112,16 +112,16 @@
 #' get_maptypes()
 #' 
 #' # use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)
-#' frames <- frames_spatial(m, map_service = "mapbox",
-#'                          map_token = "your_token_from_your_mapbox_account",
-#'                          map_type = "satellite")
+#' # frames <- frames_spatial(m, map_service = "mapbox",
+#' #                          map_token = "your_token_from_your_mapbox_account",
+#' #                          map_type = "satellite")
 #' 
 #' # if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory
 #' # to save all base maps offline so that you do not have to query the servers each time
-#' frames <- frames_spatial(m, map_service = "mapbox",
-#'                          map_token = "your_token_from_your_mapbox_account",
-#'                          map_type = "satellite",
-#'                          map_dir = "your/map_directory/")                         
+#' # frames <- frames_spatial(m, map_service = "mapbox",
+#' #                          map_token = "your_token_from_your_mapbox_account",
+#' #                          map_type = "satellite",
+#' #                          map_dir = "your/map_directory/")                         
 #' 
 #' # use your own custom base maps
 #' data("basemap_data")
@@ -142,9 +142,7 @@
 #' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discrete",
 #'                          fade_raster = FALSE)
 #' 
-#' # animate the frames created with frames_spatial;
-#' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
-#' 
+#' # then simply animate the frames using animate_frames
 #' # see ?add_colourscale to learn how to change colours of custom base maps
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph

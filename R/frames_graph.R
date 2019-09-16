@@ -61,13 +61,10 @@
 #' # the same can be done for discrete data, histogram will then be shown as bin plots
 #' 
 #' # to make your own graphs, use frames_graph to return data instead of frames
-#' data.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
+#' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
 #'                         fade_raster = TRUE, return_data = TRUE)
 #' 
-#' # animate the frames created with frames_graph;
-#' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
-#' 
-#' 
+#' # then simply animate the frames using animate_frames 
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph
 #' 
