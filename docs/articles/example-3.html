@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Using a mapbox satellite base map • moveVis</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Using a mapbox satellite base map">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -101,6 +102,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -115,59 +117,61 @@
     
     
 <p>Thanks to the <a href="http://github.com/MilesMcBain/slippymath"><code>slippymath</code></a> package used by <code>frames_spatial</code>, you can use <code>mapbox</code> base maps (e.g. satellite):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
-
-<span class="co"># align movement to unique times and regular resolution</span>
-m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">4</span>, <span class="dt">unit =</span> <span class="st">"mins"</span>)
-
-## assign some path colours by individual
-m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/split">split</a></span>(m) <span class="co"># split m into list by individual</span>
-m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mapply">mapply</a></span>(<span class="dt">x =</span> m.list, <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>), <span class="cf">function</span>(x, y){
-  x<span class="op">$</span>colour &lt;-<span class="st"> </span>y
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(x)
-}) <span class="co"># add colour per individual</span>
-m &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/move/topics/moveStack">moveStack</a></span>(m.list) <span class="co"># putting it back together into a moveStack</span>
-
-<span class="co"># create frames with mapbox satellite basemap</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
-                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>)
-<span class="co"># register at http://www.mapbox.com to get a free mapbox token</span>
-<span class="co"># that allows you to do 50.000 map requests per month free of charge</span>
-
-<span class="co"># animate the first 100 frames as example</span>
-<span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_3a.gif"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(moveVis)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(move)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"move_data"</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># align movement to unique times and regular resolution</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">4</span>, <span class="dt">unit =</span> <span class="st">"mins"</span>)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">## assign some path colours by individual</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/move/man/split.html">split</a></span>(m) <span class="co"># split m into list by individual</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/mapply.html">mapply</a></span>(<span class="dt">x =</span> m.list, <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>), <span class="cf">function</span>(x, y){</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">  x<span class="op">$</span>colour &lt;-<span class="st"> </span>y</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(x)</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">}) <span class="co"># add colour per individual</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">m &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/move/man/moveStack.html">moveStack</a></span>(m.list) <span class="co"># putting it back together into a moveStack</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co"># create frames with mapbox satellite basemap</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>)</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co"># register at http://www.mapbox.com to get a free mapbox token</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co"># that allows you to do 50.000 map requests per month free of charge</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co"># animate the first 100 frames as example</span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_3a.gif"</span>)</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4.gif"></p>
 <p>In case, you do not want to force the calculation of an equidistant (squared) extent with x and y axis representing equal surface distances, you can turn it off by setting <code>equidistant = FALSE</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to not calculate a squared (enlarged) extent:</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
-                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">equidistant =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># to not calculate a squared (enlarged) extent:</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">equidistant =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>You can also use a custom extent (and use the pipe to customize frames):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ext &lt;-<span class="st"> </span><span class="kw">extent</span>(<span class="fl">8.820289</span>, <span class="fl">9.076893</span>, <span class="fl">47.68715</span>, <span class="fl">47.80863</span>)
-
-<span class="co"># set the ext argument</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,
-                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">ext =</span> ext, <span class="dt">equidistant =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(<span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.08</span>, <span class="dt">position =</span> <span class="st">"bottomleft"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.022</span>, <span class="dt">position =</span> <span class="st">"bottomright"</span>, <span class="dt">label_margin =</span> <span class="fl">1.4</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_timestamps.html">add_timestamps</a></span>(m, <span class="dt">type =</span> <span class="st">"label"</span>)
-
-<span class="co"># animate the first 100 frames as example</span>
-<span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_3b.gif"</span>,
-               <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">width =</span> <span class="dv">800</span>, <span class="dt">res =</span> <span class="dv">82</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">ext &lt;-<span class="st"> </span><span class="kw">extent</span>(<span class="fl">8.820289</span>, <span class="fl">9.076893</span>, <span class="fl">47.68715</span>, <span class="fl">47.80863</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># set the ext argument</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">                         <span class="dt">map_token =</span> <span class="st">"YOUR_MAPBOX_TOKEN"</span>, <span class="dt">ext =</span> ext, <span class="dt">equidistant =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(<span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.08</span>, <span class="dt">position =</span> <span class="st">"bottomleft"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">colour =</span> <span class="st">"white"</span>, <span class="dt">height =</span> <span class="fl">0.022</span>, <span class="dt">position =</span> <span class="st">"bottomright"</span>, <span class="dt">label_margin =</span> <span class="fl">1.4</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/add_timestamps.html">add_timestamps</a></span>(m, <span class="dt">type =</span> <span class="st">"label"</span>)</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co"># animate the first 100 frames as example</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_3b.gif"</span>,</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">               <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">width =</span> <span class="dv">800</span>, <span class="dt">res =</span> <span class="dv">82</span>)</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example4_02.gif"></p>
 <p>For further details, see <a href="http://movevis.org/reference/join_frames.html"><code><a href="../reference/frames_spatial.html">?frames_spatial</a></code></a>.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
       </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -175,12 +179,14 @@ frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fram
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

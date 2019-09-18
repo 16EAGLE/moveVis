@@ -3,6 +3,11 @@
 ## moveVis 0.10.3
 Bug fixes. In development, not on CRAN yet.
 
+**New features:**
+
+* Argument `ext` of `frames_spatial()` now clips all tracks to `ext` if `ext` is smaller than the extent of `m`.
+* Argument `units` of `add_scalebar()` to switch between `km` and `miles`
+
 **Bug fixes:**
 
 * Bug that caused the scale bar distance calculated by `add_scalebar()` to be `0` for smaller-scale extents. Distance rounding is now iterated by digit to solve this.

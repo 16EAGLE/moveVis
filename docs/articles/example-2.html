@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Customizing frames • moveVis</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Customizing frames">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -101,6 +102,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -115,96 +117,98 @@
     
     
 <p><code>moveVis</code> is entierly based on the <code>ggplot2</code> grammar of graphics. Each list element in <code>frames</code> is a <code>ggplot2</code> object that represents a single animation frame. Thus, it is possible to customize each frame individually using <code>ggplot2</code> functions. Instead, <code>moveVis</code> provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize <code>frames</code> that we created in the prior section:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(moveVis)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(move)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(raster)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"move_data"</span>)
-
-<span class="co"># align movement tracks</span>
-move_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)
-
-<span class="co"># create frames</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
-                         <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)
-
-<span class="co"># edit frames</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="co"># add labels, e.g. axis labels</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_progress.html">add_progress</a></span>(frames) <span class="co"># add a progress bar</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(frames, <span class="dt">height =</span> <span class="fl">0.015</span>) <span class="co"># add a scale bar</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>(frames) <span class="co"># add a north arrow</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_timestamps.html">add_timestamps</a></span>(frames, move_data, <span class="dt">type =</span> <span class="st">"label"</span>) <span class="co"># add timestamps</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(moveVis)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(move)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(raster)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"move_data"</span>)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co"># align movement tracks</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">move_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co"># create frames</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">                         <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co"># edit frames</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="co"># add labels, e.g. axis labels</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_progress.html">add_progress</a></span>(frames) <span class="co"># add a progress bar</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(frames, <span class="dt">height =</span> <span class="fl">0.015</span>) <span class="co"># add a scale bar</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>(frames) <span class="co"># add a north arrow</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_timestamps.html">add_timestamps</a></span>(frames, move_data, <span class="dt">type =</span> <span class="st">"label"</span>) <span class="co"># add timestamps</span></a></code></pre></div>
 <p>Alternatively, use the pipe, which (in my opinion) makes this more elegant:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># edit frames</span>
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_progress.html">add_progress</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">height =</span> <span class="fl">0.015</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_timestamps.html">add_timestamps</a></span>(move_data, <span class="dt">type =</span> <span class="st">"label"</span>)
-
-## Have a look at one of the frames:
-frames[[<span class="dv">100</span>]]</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># edit frames</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_labels.html">add_labels</a></span>(frames, <span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_progress.html">add_progress</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_scalebar.html">add_scalebar</a></span>(<span class="dt">height =</span> <span class="fl">0.015</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_northarrow.html">add_northarrow</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/add_timestamps.html">add_timestamps</a></span>(move_data, <span class="dt">type =</span> <span class="st">"label"</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">## Have a look at one of the frames:</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">frames[[<span class="dv">100</span>]]</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_01.png"></p>
 <p>For further details on these functions, please see their help files. If you want to apply your own <code>ggplot2</code> syntax to <code>frames</code>, e.g. for drawing polygons, lines or points that are static or even change with time, you can do this frame-wise. In the following example, we customize one individual frame just as if you would work with a single <code>ggplot2</code> object:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">8.917</span>, <span class="fl">8.924</span>, <span class="fl">8.924</span>, <span class="fl">8.916</span>, <span class="fl">8.917</span>),
-                   <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">47.7678</span>, <span class="fl">47.7675</span>, <span class="fl">47.764</span>, <span class="fl">47.7646</span>, <span class="fl">47.7678</span>))
-
-<span class="co"># just customize a single frame and have a look at it</span>
-frame_test &lt;-<span class="st"> </span>frames[[<span class="dv">100</span>]] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
-                                        <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)
-frame_test</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">8.917</span>, <span class="fl">8.924</span>, <span class="fl">8.924</span>, <span class="fl">8.916</span>, <span class="fl">8.917</span>),</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">                   <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">47.7678</span>, <span class="fl">47.7675</span>, <span class="fl">47.764</span>, <span class="fl">47.7646</span>, <span class="fl">47.7678</span>))</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co"># just customize a single frame and have a look at it</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">frame_test &lt;-<span class="st"> </span>frames[[<span class="dv">100</span>]] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">                                        <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">frame_test</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_02.png"></p>
 <p>If you just want to change one or a small selection of frames, you could just manipulate those frames like shown above and assign the cusomized <code>ggplot2</code> frames to the equivalent elements in your <code>frames</code> list.</p>
 <p>If you want to edit all frames, you can use the <code><a href="../reference/add_gg.html">add_gg()</a></code> function. Here, we want to mark a field on the map on all frames. For this, we use the <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path()</a></code> function of <code>ggplot2</code> with <code><a href="../reference/add_gg.html">add_gg()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># or customize all frames at once using add_gg:</span>
-frames =<span class="st"> </span><span class="kw"><a href="../reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
-                                  <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)), <span class="dt">data =</span> data)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># or customize all frames at once using add_gg:</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">frames =<span class="st"> </span><span class="kw"><a href="../reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">                                  <span class="dt">colour =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="st">"dashed"</span>)), <span class="dt">data =</span> data)</a></code></pre></div>
 <p>The field marking is now added to all frames. Let’s add some text to describe the field marking:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_text.html">add_text</a></span>(frames, <span class="st">"Static feature"</span>, <span class="dt">x =</span> <span class="fl">8.9205</span>, <span class="dt">y =</span> <span class="fl">47.7633</span>,
-                   <span class="dt">colour =</span> <span class="st">"black"</span>, <span class="dt">size =</span> <span class="dv">3</span>)
-
-## Have a look at one of the frames:
-frames[[<span class="dv">100</span>]]</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_text.html">add_text</a></span>(frames, <span class="st">"Static feature"</span>, <span class="dt">x =</span> <span class="fl">8.9205</span>, <span class="dt">y =</span> <span class="fl">47.7633</span>,</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">                   <span class="dt">colour =</span> <span class="st">"black"</span>, <span class="dt">size =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">## Have a look at one of the frames:</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">frames[[<span class="dv">100</span>]]</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_03.png"></p>
 <p><code><a href="../reference/add_gg.html">add_gg()</a></code> can also be used to customize each frame consecutively, e.g. to add dynamic marks that move or change with time. Both arguments <code>gg</code> and <code>data</code> can take lists of the same length as <code>frames</code>. If one of these arguments or both are lists, each list element is applied to the according element in <code>frames</code>. Let’s add a another field mark that is slightly changing with each frame:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## create data.frame containing corner coordinates
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">8.96</span>, <span class="fl">8.955</span>, <span class="fl">8.959</span>, <span class="fl">8.963</span>, <span class="fl">8.968</span>, <span class="fl">8.963</span>, <span class="fl">8.96</span>),
-                   <span class="dt">y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">47.725</span>, <span class="fl">47.728</span>, <span class="fl">47.729</span>, <span class="fl">47.728</span>, <span class="fl">47.725</span>, <span class="fl">47.723</span>, <span class="fl">47.725</span>))
-## make a list from it by replicating it by the length of frames
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(data), <span class="dt">length.out =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(frames))
-
-## now alter the coordinates to make them shift
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(data, <span class="cf">function</span>(x){
-  y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/raster/topics/ncell">nrow</a></span>(x)<span class="op">-</span><span class="dv">1</span>, <span class="dt">mean =</span> <span class="fl">0.00001</span>, <span class="dt">sd =</span> <span class="fl">0.0001</span>) 
-  x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(y, y[<span class="dv">1</span>])
-})
-
-## draw each individual polygon to each frame
-frames =<span class="st"> </span><span class="kw"><a href="../reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,
-                                  <span class="dt">colour =</span> <span class="st">"black"</span>)), <span class="dt">data =</span> data)
-
-## add a text label
-frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_text.html">add_text</a></span>(frames, <span class="st">"Dynamic feature"</span>, <span class="dt">x =</span> <span class="fl">8.959</span>, <span class="dt">y =</span> <span class="fl">47.7305</span>,
-                   <span class="dt">colour =</span> <span class="st">"black"</span>, <span class="dt">size =</span> <span class="dv">3</span>)
-
-## Have a look at one of the frames:
-frames[[<span class="dv">100</span>]]</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co">## create data.frame containing corner coordinates</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">8.96</span>, <span class="fl">8.955</span>, <span class="fl">8.959</span>, <span class="fl">8.963</span>, <span class="fl">8.968</span>, <span class="fl">8.963</span>, <span class="fl">8.96</span>),</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                   <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">47.725</span>, <span class="fl">47.728</span>, <span class="fl">47.729</span>, <span class="fl">47.728</span>, <span class="fl">47.725</span>, <span class="fl">47.723</span>, <span class="fl">47.725</span>))</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">## make a list from it by replicating it by the length of frames</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(data), <span class="dt">length.out =</span> <span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(frames))</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">## now alter the coordinates to make them shift</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(data, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">  y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/raster/man/ncell.html">nrow</a></span>(x)<span class="op">-</span><span class="dv">1</span>, <span class="dt">mean =</span> <span class="fl">0.00001</span>, <span class="dt">sd =</span> <span class="fl">0.0001</span>) </a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">  x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(y, y[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">})</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">## draw each individual polygon to each frame</span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">frames =<span class="st"> </span><span class="kw"><a href="../reference/add_gg.html">add_gg</a></span>(frames, <span class="dt">gg =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">expr</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), <span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb6-15" data-line-number="15">                                  <span class="dt">colour =</span> <span class="st">"black"</span>)), <span class="dt">data =</span> data)</a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">## add a text label</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_text.html">add_text</a></span>(frames, <span class="st">"Dynamic feature"</span>, <span class="dt">x =</span> <span class="fl">8.959</span>, <span class="dt">y =</span> <span class="fl">47.7305</span>,</a>
+<a class="sourceLine" id="cb6-19" data-line-number="19">                   <span class="dt">colour =</span> <span class="st">"black"</span>, <span class="dt">size =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb6-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">## Have a look at one of the frames:</span></a>
+<a class="sourceLine" id="cb6-22" data-line-number="22">frames[[<span class="dv">100</span>]]</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_04.png"></p>
 <p>Animate the the customized frames as we did in the prior section using <code><a href="../reference/animate_frames.html">animate_frames()</a></code>. This time, let’s make a <code>.mov</code> video:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="st">"/full/path/to/example_2.gif"</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="st">"/full/path/to/example_2.gif"</span>)</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_opt.gif"></p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
       </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -212,12 +216,14 @@ frames[[<span class="dv">100</span>]]</code></pre></div>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
