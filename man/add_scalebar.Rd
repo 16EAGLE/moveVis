@@ -6,12 +6,12 @@
 \usage{
 add_scalebar(frames, distance = NULL, height = 0.015,
   position = "bottomleft", x = NULL, y = NULL, colour = "black",
-  label_margin = 1.2, verbose = TRUE)
+  label_margin = 1.2, units = "km", verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
 
-\item{distance}{numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.}
+\item{distance}{numeric, optional. Distance displayed by the scalebar (in either km or miles defined by argument \code{units}) By default, the displayed distance is calculated automatically.}
 
 \item{height}{numeric, height of the scalebar in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.015.}
 
@@ -24,6 +24,8 @@ add_scalebar(frames, distance = NULL, height = 0.015,
 \item{colour}{character, colour of the distance labels. Default is \code{"black"}.}
 
 \item{label_margin}{numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height).}
+
+\item{units}{character, either "km" for kilometers or "miles" for miles.}
 
 \item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
 }

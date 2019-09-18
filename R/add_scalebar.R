@@ -3,13 +3,14 @@
 #' This function adds a scalebar to the animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
-#' @param distance numeric, optional. Distance displayed by the scalebar in km. By default, the displayed distance is calculated automatically.
+#' @param distance numeric, optional. Distance displayed by the scalebar (in either km or miles defined by argument \code{units}) By default, the displayed distance is calculated automatically.
 #' @param height numeric, height of the scalebar in a range from 0 to 1 as the proportion of the overall height of the frame map. Default is 0.015.
 #' @param position character, position of the scalebar on the map. Either \code{"bottomleft", "upperleft", "upperright", "bottomright"}. Ignored, if \code{x} and \code{y} are set.
 #' @param x numeric, position of the bottom left corner of the scalebar on the x axis. If not set, \code{position} is used to calculate the position of the scalebar.
 #' @param y numeric, position of the bottom left corner of the scalebar on the y axis. If not set, \code{position} is used to calculate the position of the scalebar.
 #' @param colour character, colour of the distance labels. Default is \code{"black"}.
 #' @param label_margin numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height).
+#' @param units character, either "km" for kilometers or "miles" for miles.
 #'
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
@@ -47,13 +48,14 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
-add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, verbose = TRUE){
+add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bottomleft", x = NULL, y = NULL, colour = "black", label_margin = 1.2, units = "km", verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
   if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
   if(!is.character(position)) out("Argument 'position' needs to be of type 'character'.", type = 3)
+  if(isFALSE(units == "km" | units == "miles")) out("Argument 'units' must either be 'km' or 'miles'.", type = 3)
   
   check.args <- list(distance = distance, x = x, y = y)
   catch <- lapply(seq(1, length(check.args)), function(i) if(!any(is.numeric(check.args[[i]]), is.null(check.args[[i]]))) out(paste0("Argument '", names(check.args)[[i]], "' needs to be of type 'numeric'."), type = 3))
@@ -64,19 +66,20 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
                     upperright = c(max(gg.xy$xmax), max(gg.xy$ymax)), bottomright = c(max(gg.xy$xmax), min(gg.xy$ymin)))
   
   ## calculate axis distances
-  gg.dist <- list(x = distGeo(gg.corner$bottomleft, gg.corner$bottomright), y = distGeo(gg.corner$bottomleft, gg.corner$upperleft))
+  gg.dist <- list(x = distGeo(gg.corner$bottomleft, gg.corner$bottomright)/1000, y = distGeo(gg.corner$bottomleft, gg.corner$upperleft)/1000)
+  if(units == "miles") gg.dist <- lapply(gg.dist, function(x) x/1.609344 )
   gg.diff <- list(x = max(gg.xy$xmax) - min(gg.xy$xmin), y = max(gg.xy$ymax) - min(gg.xy$ymin))
   
   ## calculate scale distance
   if(!is.null(distance)){scale.dist <- distance}else{
     scale.dist <- digits <- 0
     while(scale.dist == 0){
-      scale.dist <- round((gg.dist$x*0.2)/1000, digits = digits)
+      scale.dist <- round((gg.dist$x*0.2), digits = digits)
       digits <- digits+1
     }
   }
   
-  scale.diff <- gg.diff$x*((scale.dist*1000)/gg.dist$x)
+  scale.diff <- gg.diff$x*((scale.dist)/gg.dist$x)
   
   ## calculate scale postiotn
   gg.margin <- list(bottomleft = unlist(gg.diff)*0.1,
@@ -97,7 +100,7 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
   text.margin <- (max(scale.outer$y) - min(scale.outer$y))*label_margin
   text.data <- cbind.data.frame(x = c(min(scale.outer$x), min(scale.inner$x), max(scale.outer$x)),
                                 y = (min(scale.outer$y)-text.margin),
-                                label = paste0(c(0, scale.dist/2, scale.dist), " km"),
+                                label = paste0(c(0, scale.dist/2, scale.dist), " ", units),
                                 col = colour, stringsAsFactors = F)
   
   add_gg(frames, gg = expr(list(geom_polygon(aes_string(x = "x", y = "y"), data = scale.outer, fill = "white", colour = "black"), 
