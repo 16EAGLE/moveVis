@@ -249,11 +249,13 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       c(v, seq(tail_size, path_size, length.out = n))
     }))
     
+    y$trace <- FALSE
     if(all(isTRUE(trace_show) & i > tail_size)){
       
       y.trace <- m.df[!is.na(match(m.df$frame,1:(min(i.range)-1))),]
       y.trace$colour <- y.trace$tail_colour <-  trace_colour
       y.trace$tail_size <- tail_size
+      y.trace$trace <- TRUE
       
       # join trace, reorder by frame and group by id
       y <- rbind(y, y.trace)
@@ -285,13 +287,23 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # frame plotting function
   gg.fun <- function(x, y){
     
+    x_path <- x[!x$trace,]
+    x_trace <- x[x$trace,]
+    
+    ## trace plot
+    if(nrow(x_trace) > 1){
+      p <- y + geom_path(data = x_trace, aes_string(x = "x", y = "y", group = "id"), size = x_trace$tail_size, lineend = path_end, linejoin = path_join,
+                          linemitre = path_mitre, arrow = path_arrow, colour = x_trace$tail_colour, alpha = path_alpha, na.rm = T)
+    } else p <- y
+    
     ## base plot
-    p <- y + geom_path(data = x, aes_string(x = "x", y = "y", group = "id"), size = x$tail_size, lineend = path_end, linejoin = path_join,
-                       linemitre = path_mitre, arrow = path_arrow, colour = x$tail_colour, alpha = path_alpha, na.rm = T) +  theme_bw() +
+    p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
+                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) +  theme_bw() +
       coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax), expand = F, crs = m.crs, datum = m.crs, clip = "on")
     #scale_y_continuous(expand = c(0,0), limits = c(gg.ext$ymin, gg.ext$ymax)) + 
     #scale_x_continuous(expand = c(0,0), limits = c(gg.ext$xmin, gg.ext$xmax)) +
     
+   
     ## add legend?
     if(isTRUE(path_legend)){
       l.df <- cbind.data.frame(x = x[1,]$x, y = x[1,]$y, name = levels(m.df$name),
