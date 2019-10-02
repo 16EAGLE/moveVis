@@ -576,7 +576,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
                                             toner_bg = "https://stamen-tiles-a.a.ssl.fastly.net/toner-background/",
                                             toner_lite = "https://stamen-tiles-a.a.ssl.fastly.net/toner-lite/",
                                             terrain = "http://tile.stamen.com/terrain/",
-                                            terrain_bg = "http://tile.stamen.com/terrain-background",
+                                            terrain_bg = "http://tile.stamen.com/terrain-background/",
                                             mtb = "http://tile.mtbmap.cz/mtbmap_tiles/"),
                                  carto = list(light = "https://a.basemaps.cartocdn.com/light_all/",
                                               light_no_labels = "https://a.basemaps.cartocdn.com/light_nolabels/",
