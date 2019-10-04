@@ -113,7 +113,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><a href="http://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move"><code>move</code></a>, <a href="https://github.com/edzer/sp"><code>sp</code></a> and <a href="https://github.com/rspatial/raster"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2"><code>ggplot2</code></a> frames that can be further customized. <a href="http://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski"><code>gifski</code></a> (wraping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.</p>
+<p><a href="http://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move"><code>move</code></a>, <a href="https://github.com/edzer/sp"><code>sp</code></a> and <a href="https://github.com/rspatial/raster"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2"><code>ggplot2</code></a> frames that can be further customized. <a href="http://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski"><code>gifski</code></a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.</p>
 <p><br></p>
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p> <p align="center"><sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p> <br><br><p align="center"><img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p> <p align="center"><sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 </div>
@@ -124,7 +124,7 @@
 <p><a href="http://movevis.org"><code>moveVis</code></a> 0.10.2 (stable) can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis"</span>)</a></code></pre></div>
 <p>The development version can be installed from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</a></code></pre></div>
 <p>Code written for <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span>(<span class="st">"your/download/directory"</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis-0.9.9.tar.gz"</span>, <span class="dt">repos =</span> <span class="ot">NULL</span>)</a></code></pre></div>
@@ -150,7 +150,7 @@
 <a href="#creating-frames" class="anchor"></a>Creating frames</h4>
 <ul>
 <li>
-<code><a href="reference/get_maptypes.html">get_maptypes()</a></code> returns a character vector of available map types that can be used with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>. <code>moveVis</code> supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>.</li>
+<code><a href="reference/get_maptypes.html">get_maptypes()</a></code> returns a character vector of available map types that can be used with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>. <code>moveVis</code> supports OpenStreetMap and Mapbox basemap imagery. Alternatively, you can provide custom imagery to <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>.</li>
 <li>
 <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> creates a list of <code>ggplot2</code> maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href="reference/animate_frames.html">animate_frames()</a></code>.</li>
 <li>
@@ -237,10 +237,7 @@
 <p><a href="http://movevis.org/articles/example-1.html">Example 1: Creating a simple movement animation</a></p>
 <p><a href="http://movevis.org/articles/example-2.html">Example 2: Customizing frames</a></p>
 <p><a href="http://movevis.org/articles/example-3.html">Example 3: Using a mapbox satellite base map</a></p>
-<p><a href="http://movevis.org/articles/example-4.html">Example 4: Custom base maps from raster data</a> (to be added soon)</p>
-<p><a href="http://movevis.org/articles/example-5.html">Example 5: Interaction graphs</a> (to be added soon)</p>
-<p><a href="http://movevis.org/articles/example-6.html">Example 6: Joining frames side by side</a> (to be added soon)</p>
-<p><a href="http://movevis.org/articles/example-7.html">Example 7: View movement tracks</a></p>
+<p><a href="http://movevis.org/articles/example-7.html">Example 4: View movement tracks</a></p>
 </div>
 <div id="code-snippets" class="section level2">
 <h2 class="hasAnchor">
@@ -257,7 +254,7 @@
 <div id="further-resources" class="section level2">
 <h2 class="hasAnchor">
 <a href="#further-resources" class="anchor"></a>Further resources</h2>
-<p>Detailed code examples explaining how to use specific functions are provided at the <a href="http://movevis.org/reference/index.html">fucntion help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:</p>
+<p>Detailed code examples explaining how to use specific functions are provided at the <a href="http://movevis.org/reference/index.html">function help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:</p>
 <p><a target="_blank" href="http://animove.org/wp-content/uploads/2019/04/Daniel_Palacios_animate_moveVis.html">Animating Animal Tracks From Multiple Years Over A Common Year With MoveVis: An Example With Blue Whale Argos Tracks On Movebank</a> by <a target="_blank" href="https://twitter.com/danielequs">Daniel M. Palacios</a>, <a target="_blank" href="https://mmi.oregonstate.edu/">Marine Mammal Institute</a>, Oregon State University</p>
 </div>
 <div id="features-to-be-added" class="section level2">
@@ -298,7 +295,7 @@
     <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="21.89781%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
     <a href="http://www.dlr.de/eoc/en/"><img width="16.78832%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
      <a href="http://www.bmub.bund.de/"><img width="32.11679%" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q"></a>
-    <a href="http://www.orn.mpg.de/en/"><img width="29.19708%" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
+    <a href="http://www.orn.mpg.de/en/"><img width="28%" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
 </div>
 
 </div>

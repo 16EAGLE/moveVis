@@ -81,7 +81,7 @@ frames[[100]] # display one of the frames
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_01.png"></p>
 
-You can pass any list of frames like the one we just created to `animate_frames()`. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we du not want to add any customizations to `frames` and just create a `GIF` from it. If you are not sure, which output formats can be used, run `suggest_formats()` that returns you a vector of file suffixes that can be created on your system. For making a `GIF` from `frames`, just run:
+You can pass any list of frames like the one we just created to `animate_frames()`. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we do not want to add any customization to `frames` and just create a `GIF` from it. If you are not sure, which output formats can be used, run `suggest_formats()` that returns you a vector of file suffixes that can be created on your system. For making a `GIF` from `frames`, just run:
 
 ```R
 animate_frames(frames, out_file = "/full/path/to/example_1.gif")
@@ -99,7 +99,7 @@ frames[[100]] # display one of the frames
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_02.png"></p>
 
-You may recognize that the map seems to be distorted which becomes mainly visible when looking at the map labels. By default, `moveVis` calculates an equidistant map extent (squared), with y and x axis measuring equal surface distances. In addition, `moveVis` reprojects the default base maps to the projection of your movement data. The default base maps are originially projected as `WGS 84 / Pseudo Mercator` (`epsg:3857`), also referred to as `Web Mercator`, and thus are squeezed or stretched onto the projection grid of the movement data (in this case `WGS 84 / LatLon`). 
+You may recognize that the map seems to be distorted which becomes mainly visible when looking at the map labels. By default, `moveVis` calculates an equidistant map extent (squared), with y and x axis measuring equal surface distances. In addition, `moveVis` reprojects the default base maps to the projection of your movement data. The default base maps are originally projected as `WGS 84 / Pseudo Mercator` (`epsg:3857`), also referred to as `Web Mercator`, and thus are squeezed or stretched onto the projection grid of the movement data (in this case `WGS 84 / LatLon`). 
 
 To represent the base map in its original projection, just reproject your movement data to the `WGS 84 / Pseudo Mercator` projection and disable the calculation of an equidistant extent:
 

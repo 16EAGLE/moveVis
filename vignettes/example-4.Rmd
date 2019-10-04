@@ -1,6 +1,0 @@
----
-title: "Custom base maps from raster data"
-output: html_document
----
-  
-example code to be added soon, see <a href = "http://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details.

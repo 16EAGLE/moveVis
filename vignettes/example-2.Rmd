@@ -109,7 +109,7 @@ frames[[100]]
 ```
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_04.png"></p>
 
-Animate the the customized frames as we did in the prior section using `animate_frames()`. This time, let's make a `.mov` video:
+Animate the the customized frames as we did in the prior section using `animate_frames()`.
 
 ```R
 animate_frames(frames, "/full/path/to/example_2.gif")

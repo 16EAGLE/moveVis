@@ -8,13 +8,11 @@
 
 <title>Create frames of spatial movement maps for animation — frames_spatial • moveVis</title>
 
-
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -34,11 +32,10 @@
 
 
 
-
 <meta property="og:title" content="Create frames of spatial movement maps for animation — frames_spatial" />
+
 <meta property="og:description" content="frames_spatial creates a list of ggplot2 maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using animate_frames." />
 <meta name="twitter:card" content="summary" />
-
 
 
 
@@ -112,6 +109,7 @@
   </ul>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.twitter.com/schwalbwillmann">
@@ -150,7 +148,9 @@
     </div>
 
     <div class="ref-description">
+    
     <p><code>frames_spatial</code> creates a list of <code>ggplot2</code> maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href='animate_frames.html'>animate_frames</a></code>.</p>
+    
     </div>
 
     <pre class="usage"><span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
@@ -163,7 +163,7 @@
   <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
   <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -296,19 +296,22 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
       <td><p>logical, if <code>TRUE</code>, messages on the function's progress are displayed (default).</p></td>
     </tr>
     </table>
-
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>List of ggplot2 objects, each representing a single frame.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If argument <code>path_colours</code> is not defined (set to <code>NA</code>), path colours can be defined by adding a character column named <code>colour</code> to <code>m</code>, containing a colour code or name per row (e.g. <code>"red"</code>. This way, for example, column <code>colour</code> for all rows belonging to individual A can be set to <code>"green"</code>, while column <code>colour</code> for all rows belonging to individual B can be set to <code>"red"</code>.
 Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name <code>colour</code> in <code>m</code> is missing, colours will be selected automatically. Call <code><a href='https://rdrr.io/r/grDevices/colors.html'>colours()</a></code> to see all available colours in R.</p>
 <p>Basemap colour scales can be changed/added using <code><a href='add_colourscale.html'>add_colourscale</a></code> or by using <code>ggplot2</code> commands (see <code>examples</code>). For continous scales, use <code>r_type = "gradient"</code>. For discrete scales, use <code>r_type = "discrete"</code>.</p>
 <p>The projection of <code>m</code> is treated as target projection. Default base maps accessed through a map service will be reprojected into the projection of <code>m</code>. Thus, depending on the projection of <code>m</code>, it may happen that map labels are distorted. To get undistorted map labels, reproject <code>m</code> to the web mercator projection (the default projection of the base maps): <code><a href='https://rdrr.io/pkg/move/man/spTransform.html'>spTransform(m, crs("+init=epsg:3857"))</a></code>. The <code>ggplot2</code> coordinate system will be computed based on the projection of <code>m</code> using <code>coord_sf</code>. If argument <code>equidistant</code> is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.</p>
+    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='join_frames.html'>join_frames</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>moveVis</span>)
@@ -404,9 +407,13 @@ Colours could also be arranged to change through time or by behavioral segments,
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      
       <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
+
       <li><a href="#see-also">See also</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

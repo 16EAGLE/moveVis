@@ -1,6 +1,0 @@
----
-title: "Joining frames side by side"
-output: html_document
----
-  
-example code to be added soon, see <a href = "http://movevis.org/reference/join_frames.html">`?join_frames`</a> for details.

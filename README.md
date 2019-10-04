@@ -7,7 +7,7 @@
 
 ## Introduction
 
-<a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a>, <a href="https://github.com/edzer/sp">`sp`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="http://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wraping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.
+<a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a>, <a href="https://github.com/edzer/sp">`sp`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="http://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.
 
 <br>
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
@@ -53,7 +53,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 #### Creating frames
 
-* `get_maptypes()` returns a character vector of available map types that can be used with `frames_spatial()`. `moveVis` supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to `frames_spatial()`.
+* `get_maptypes()` returns a character vector of available map types that can be used with `frames_spatial()`. `moveVis` supports OpenStreetMap and Mapbox basemap imagery. Alternatively, you can provide custom imagery to `frames_spatial()`.
 * `frames_spatial()` creates a list of `ggplot2` maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using `animate_frames()`.
 * `frames_graph()` creates a list of `ggplot2` graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using `animate_frames()`.
 
@@ -119,13 +119,7 @@ You can find code examples on how to use `moveVis` here:
 
 <a href = "http://movevis.org/articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
 
-<a href = "http://movevis.org/articles/example-4.html">Example 4: Custom base maps from raster data</a> (to be added soon)
-
-<a href = "http://movevis.org/articles/example-5.html">Example 5: Interaction graphs</a> (to be added soon)
-
-<a href = "http://movevis.org/articles/example-6.html">Example 6: Joining frames side by side</a> (to be added soon)
-
-<a href = "http://movevis.org/articles/example-7.html">Example 7: View movement tracks</a>
+<a href = "http://movevis.org/articles/example-7.html">Example 4: View movement tracks</a>
 
 ## Code snippets
 
@@ -148,7 +142,7 @@ These commented `moveVis` code snippets, addressing specific issues or questions
 
 ## Further resources
 
-Detailed code examples explaining how to use specific functions are provided at the <a href="http://movevis.org/reference/index.html">fucntion help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:
+Detailed code examples explaining how to use specific functions are provided at the <a href="http://movevis.org/reference/index.html">function help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:
 
 <a target="_blank" href = "http://animove.org/wp-content/uploads/2019/04/Daniel_Palacios_animate_moveVis.html">Animating Animal Tracks From Multiple Years Over A Common Year With MoveVis: An Example With Blue Whale Argos Tracks On Movebank</a> by <a target="_blank" href="https://twitter.com/danielequs">Daniel M. Palacios</a>, <a target="_blank" href = "https://mmi.oregonstate.edu/">Marine Mammal Institute</a>, Oregon State University
 
@@ -184,7 +178,7 @@ This initiative is part of the <a target="_blank" href="https://www.geographie.u
     <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="21.89781%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
     <a href="http://www.dlr.de/eoc/en/"><img width="16.78832%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
      <a href="http://www.bmub.bund.de/"><img width="32.11679%" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q"></a>
-    <a href="http://www.orn.mpg.de/en/"><img width="29.19708%" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
+    <a href="http://www.orn.mpg.de/en/"><img width="28%" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
 </div>
 </p>
 

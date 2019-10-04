@@ -162,7 +162,7 @@
 <a class="sourceLine" id="cb6-2" data-line-number="2">frames[[<span class="dv">100</span>]] <span class="co"># display one of the frames</span></a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_01.png"></p>
-<p>You can pass any list of frames like the one we just created to <code><a href="../reference/animate_frames.html">animate_frames()</a></code>. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we du not want to add any customizations to <code>frames</code> and just create a <code>GIF</code> from it. If you are not sure, which output formats can be used, run <code><a href="../reference/suggest_formats.html">suggest_formats()</a></code> that returns you a vector of file suffixes that can be created on your system. For making a <code>GIF</code> from <code>frames</code>, just run:</p>
+<p>You can pass any list of frames like the one we just created to <code><a href="../reference/animate_frames.html">animate_frames()</a></code>. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we do not want to add any customization to <code>frames</code> and just create a <code>GIF</code> from it. If you are not sure, which output formats can be used, run <code><a href="../reference/suggest_formats.html">suggest_formats()</a></code> that returns you a vector of file suffixes that can be created on your system. For making a <code>GIF</code> from <code>frames</code>, just run:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_1.gif"</span>)</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
@@ -172,7 +172,7 @@
 <a class="sourceLine" id="cb8-3" data-line-number="3">frames[[<span class="dv">100</span>]] <span class="co"># display one of the frames</span></a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_02.png"></p>
-<p>You may recognize that the map seems to be distorted which becomes mainly visible when looking at the map labels. By default, <code>moveVis</code> calculates an equidistant map extent (squared), with y and x axis measuring equal surface distances. In addition, <code>moveVis</code> reprojects the default base maps to the projection of your movement data. The default base maps are originially projected as <code>WGS 84 / Pseudo Mercator</code> (<code>epsg:3857</code>), also referred to as <code>Web Mercator</code>, and thus are squeezed or stretched onto the projection grid of the movement data (in this case <code>WGS 84 / LatLon</code>).</p>
+<p>You may recognize that the map seems to be distorted which becomes mainly visible when looking at the map labels. By default, <code>moveVis</code> calculates an equidistant map extent (squared), with y and x axis measuring equal surface distances. In addition, <code>moveVis</code> reprojects the default base maps to the projection of your movement data. The default base maps are originally projected as <code>WGS 84 / Pseudo Mercator</code> (<code>epsg:3857</code>), also referred to as <code>Web Mercator</code>, and thus are squeezed or stretched onto the projection grid of the movement data (in this case <code>WGS 84 / LatLon</code>).</p>
 <p>To represent the base map in its original projection, just reproject your movement data to the <code>WGS 84 / Pseudo Mercator</code> projection and disable the calculation of an equidistant extent:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">move_data &lt;-<span class="st"> </span>sp<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sp/man/spTransform.html">spTransform</a></span>(move_data, <span class="kw"><a href="https://rdrr.io/pkg/raster/man/projection.html">crs</a></span>(<span class="st">"+init=epsg:3857"</span>))</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(move_data, <span class="dt">path_colours =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),</a>
@@ -187,7 +187,6 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-
       </div>
 
 </div>
