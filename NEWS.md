@@ -1,7 +1,7 @@
 ***
 
 ## moveVis 0.10.3
-Bug fixes. In development, not on CRAN yet.
+Bug fixes. Released on CRAN: 2019-10-06.
 
 **New features:**
 

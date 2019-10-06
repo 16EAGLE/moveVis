@@ -9,10 +9,10 @@
 MODIS (MOD13Q1 NDVI)
 }
 \usage{
-basemap_data
+data(basemap_data)
 }
 \description{
-This datasetd contains two lists of equal lenghts:
+This dataset contains two lists of equal lenghts:
 \itemize{
    \item a list of ten single-layer \code{raster} objects, representing NDVI images covering the Lake of Constance area.
    \item a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...

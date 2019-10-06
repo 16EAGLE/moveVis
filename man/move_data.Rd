@@ -6,10 +6,10 @@
 \title{Exemplary simualted movement tracks}
 \format{\code{Move} object, as used by the \code{move} package.}
 \usage{
-move_data
+data(move_data)
 }
 \description{
-This datasetd contains a \code{Move} object, representing cooridnates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
+This dataset contains a \code{Move} object, representing cooridnates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
 }
 \details{
 This object is used by some \code{moveVis} examples and unit tests.
