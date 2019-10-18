@@ -164,7 +164,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(!is.null(ext)){
     
     # user extent
-    gg.ext <- st_bbox(c(xmin = ext@xmin, xmax = ext@xmax, ymin = ext@ymin, ymax = ext@ymax), crs = m.crs)
+    gg.ext <- st_bbox(c(xmin = ext[1], xmax = ext[2], ymin = ext[3], ymax = ext[4]), crs = m.crs)
     if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
     margin_factor <- 1 # no margin since user extent set
   } else{
@@ -252,7 +252,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     y$trace <- FALSE
     if(all(isTRUE(trace_show) & i > tail_size)){
       
-      y.trace <- m.df[!is.na(match(m.df$frame,1:(min(i.range)-1))),]
+      y.trace <- m.df[!is.na(match(m.df$frame,1:(min(i.range)))),]
       y.trace$colour <- y.trace$tail_colour <-  trace_colour
       y.trace$tail_size <- tail_size
       y.trace$trace <- TRUE
