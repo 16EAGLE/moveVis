@@ -1,5 +1,16 @@
 ***
 
+## moveVis 0.10.4
+Bug fixes. In development.
+
+**Bug fixes:**
+
+* Bug that caused a gap between trace and path.
+
+<br>
+
+***
+
 ## moveVis 0.10.3
 Bug fixes. Released on CRAN: 2019-10-06.
 

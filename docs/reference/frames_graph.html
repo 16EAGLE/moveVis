@@ -8,11 +8,13 @@
 
 <title>Create frames of movement-environment interaction graphs for animation — frames_graph • moveVis</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,10 +34,11 @@
 
 
 
-<meta property="og:title" content="Create frames of movement-environment interaction graphs for animation — frames_graph" />
 
+<meta property="og:title" content="Create frames of movement-environment interaction graphs for animation — frames_graph" />
 <meta property="og:description" content="frames_graph creates a list of ggplot2 graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using animate_frames." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -85,10 +88,10 @@
   <a href="../index.html#examples">Examples</a>
 </li>
 <li>
-  <a href="../reference/index.html">Functions</a>
+  <a href="../news/index.html">News</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -109,7 +112,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.twitter.com/schwalbwillmann">
@@ -148,16 +150,14 @@
     </div>
 
     <div class="ref-description">
-    
     <p><code>frames_graph</code> creates a list of <code>ggplot2</code> graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href='animate_frames.html'>animate_frames</a></code>.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>frames_graph</span>(<span class='no'>m</span>, <span class='no'>r_list</span>, <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
   <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>return_data</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"flow"</span>,
   <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>,
   <span class='kw'>val_min</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>val_max</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>val_by</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -221,20 +221,17 @@
       <td><p>logical, if <code>TRUE</code>, messages on the function's progress are displayed (default).</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>List of ggplot2 objects, each representing a single frame. If <code>return_data</code> is <code>TRUE</code>, a <code>data.frame</code> is returned (see <code>return_data</code>).</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>To later on side-by-side join spatial frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> with frames created with <code>frames_graph</code> for animation,
 equal inputs must have been used for both function calls for each of the arguments <code>m</code>, <code>r_list</code>, <code>r_times</code> and <code>fade_raster</code>.</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='join_frames.html'>join_frames</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>moveVis</span>)
@@ -286,13 +283,9 @@ equal inputs must have been used for both function calls for each of the argumen
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -17,10 +17,10 @@ navbar:
       href: index.html#get-started
     - text: "Examples"
       href: index.html#examples
+    - text: "News"
+      href: news/index.html
     - text: "Functions"
       href: reference/index.html
-    - text: "Changelog"
-      href: news/index.html
     - text: "Other packages"
       menu:
       -  text: "getSpatialData"

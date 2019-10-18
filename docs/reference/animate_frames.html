@@ -8,11 +8,13 @@
 
 <title>Animate frames — animate_frames • moveVis</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,10 +34,11 @@
 
 
 
-<meta property="og:title" content="Animate frames — animate_frames" />
 
+<meta property="og:title" content="Animate frames — animate_frames" />
 <meta property="og:description" content="animate_frames creates an animation from a list of frames computed with frames_spatial." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -85,10 +88,10 @@
   <a href="../index.html#examples">Examples</a>
 </li>
 <li>
-  <a href="../reference/index.html">Functions</a>
+  <a href="../news/index.html">News</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -109,7 +112,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.twitter.com/schwalbwillmann">
@@ -148,15 +150,13 @@
     </div>
 
     <div class="ref-description">
-    
     <p><code>animate_frames</code> creates an animation from a list of frames computed with <code><a href='frames_spatial.html'>frames_spatial</a></code>.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>animate_frames</span>(<span class='no'>frames</span>, <span class='no'>out_file</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>25</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>700</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>700</span>,
   <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>end_pause</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>display</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -205,19 +205,16 @@
       <td><p>additional arguments to be passed to the render function.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>None or the default image/video viewer displaying the animation</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>An appropriate render function is selected depending on the file extension in <code>out_file</code>: For <code>.gif</code> files, <code><a href='https://rdrr.io/pkg/gifski/man/gifski.html'>gifski::save_gif</a></code> is used, for any other (video) format, <code><a href='https://docs.ropensci.org/av/reference/capturing.html'>av::av_capture_graphics</a></code> is used.</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code> <code><a href='join_frames.html'>join_frames</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>moveVis</span>)
@@ -258,13 +255,9 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
