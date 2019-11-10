@@ -181,108 +181,82 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(gg.ext)
 }
 
-#' split movement by tail length
-#' 
+#' create paths data.frame for gg on the fly per frame
 #' @importFrom grDevices colorRampPalette
 #' @noRd 
-.split <- function(m.df, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
+.df4gg <- function(m.df, i, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
   
-  # m.names <- unique(as.character(m.df$name))
-  # dummy <- lapply(m.names, function(mn){
-  #   y <- m.df[which(m.df$name == mn)[1],]
-  #   y <- cbind(y, tail_colour = NA, tail_size = NA)
-  #   y[,c("x", "y", "time", "time_chr")] <- NA
-  #   return(y)
-  # })
-  # names(dummy) <- m.names
+  # calc range
+  i.range <- seq(i-tail_length, i)
+  i.range <- i.range[i.range > 0]
   
-  #n.out <- max(m.df$frame, na.rm = T)
-  #if(isTRUE(path_fade)) n.out <- n.out + tail_length
+  # extract all rows of frame time range
+  paths <- m.df[!is.na(match(m.df$frame,i.range)),]
+  paths <- paths[order(paths$id),]
   
-  .lapply(1:max(m.df$frame, na.rm = T), function(i){ # , mn = m.names, d = dummy){
+  # compute colour ramp from id count
+  #paths.colours <- sapply(unique(paths$id), function(x) rev(unique(paths[paths$id == x,]$colour)), simplify = F)
+  paths.colours <- sapply(unique(paths$id), function(x) paths[paths$id == x,]$colour, simplify = F)
+  paths.count <- as.vector(table(paths$id))
+  diff.max <- max(m.df$frame, na.rm = T)-max(i.range)
+  
+  paths$tail_colour <- unlist(mapply(paths.cols = paths.colours, paths.size = paths.count, function(paths.cols, paths.size){
     
-    i.range <- seq(i-tail_length, i)
-    i.range <- i.range[i.range > 0]
-    
-    # extract all rows of frame time range
-    y <- m.df[!is.na(match(m.df$frame,i.range)),]
-    y <- y[order(y$id),]
-    
-    # compute colour ramp from id count
-    #y.colours <- sapply(unique(y$id), function(x) rev(unique(y[y$id == x,]$colour)), simplify = F)
-    y.colours <- sapply(unique(y$id), function(x) y[y$id == x,]$colour, simplify = F)
-    y.count <- as.vector(table(y$id))
-    diff.max <- max(m.df$frame, na.rm = T)-max(i.range)
-    
-    y$tail_colour <- unlist(mapply(y.cols = y.colours, y.size = y.count, function(y.cols, y.size){
-      
-      if(all(isTRUE(path_fade), diff.max < tail_length, y.size > diff.max)){
-        n <- diff.max+1
-        v <- rep(tail_colour, (y.size-(n)))
-        y.cols <- tail(y.cols, n = n)
-      } else{
-        n <- y.size
-        v <- NULL
-      }
-      
-      y.ramps <- lapply(unique(y.cols), function(x){
-        f <- colorRampPalette(c(x, tail_colour))
-        rev(f(n+4)[1:n])
-      })
-      
-      c(v, mapply(i = 1:n, i.ramp = as.numeric(mapvalues(y.cols, unique(y.cols), 1:length(unique(y.cols)))), function(i, i.ramp){
-        y.ramps[[i.ramp]][i]
-      }, USE.NAMES = F))
-
-    }, SIMPLIFY = F))
- 
-    # compute tail size from id count
-    y$tail_size <- unlist(lapply(y.count, function(y.size){
-      
-      if(all(isTRUE(path_fade), diff.max < tail_length, y.size > diff.max)){
-        n <- diff.max+1
-        v <- rep(tail_size, (y.size-(n)))
-      } else{
-        n <- y.size
-        v <- NULL
-      }
-      c(v, seq(tail_size, path_size, length.out = n))
-    }))
-    
-    y$trace <- FALSE
-    if(all(isTRUE(trace_show) & i > tail_size)){
-      
-      y.trace <- m.df[!is.na(match(m.df$frame,1:(min(i.range)))),]
-      y.trace$colour <- y.trace$tail_colour <-  trace_colour
-      y.trace$tail_size <- tail_size
-      y.trace$trace <- TRUE
-      
-      # join trace, reorder by frame and group by id
-      y <- rbind(y, y.trace)
-      y <- y[order(y$frame),]
-      y <- y[order(y$id),]
+    if(all(isTRUE(path_fade), diff.max < tail_length, paths.size > diff.max)){
+      n <- diff.max+1
+      v <- rep(tail_colour, (paths.size-(n)))
+      paths.cols <- tail(paths.cols, n = n)
+    } else{
+      n <- paths.size
+      v <- NULL
     }
-    #y$colour <- factor(as.character(y$colour), level = unique(as.character(m.df$colour)))
-    #y$name <- factor(as.character(y$name), level = unique(as.character(m.df$name)))
     
-    # add NA rows, if needed ---> WRONG WAY: DO THIS FOR THE DATA.FRAME ALREADY, THAN trim leading and trailing NAs
-    # missing.names <- sapply(mn, function(x) x %in% y$name)
-    # if(!all(missing.names)){
-    #   add.rows <- do.call(rbind, lapply(d[!missing.names], function(x){
-    #     x$frame <- max(y$frame)
-    #     return(x)
-    #   }))
-    #   y <- rbind(y, add.rows)
-    # }
-    return(y)
-  })
+    paths.ramps <- lapply(unique(paths.cols), function(x){
+      f <- colorRampPalette(c(x, tail_colour))
+      rev(f(n+4)[1:n])
+    })
+    
+    c(v, mapply(i = 1:n, i.ramp = as.numeric(mapvalues(paths.cols, unique(paths.cols), 1:length(unique(paths.cols)))), function(i, i.ramp){
+      paths.ramps[[i.ramp]][i]
+    }, USE.NAMES = F))
+    
+  }, SIMPLIFY = F))
+  
+  # compute tail size from id count
+  paths$tail_size <- unlist(lapply(paths.count, function(paths.size){
+    
+    if(all(isTRUE(path_fade), diff.max < tail_length, paths.size > diff.max)){
+      n <- diff.max+1
+      v <- rep(tail_size, (paths.size-(n)))
+    } else{
+      n <- paths.size
+      v <- NULL
+    }
+    c(v, seq(tail_size, path_size, length.out = n))
+  }))
+  
+  paths$trace <- FALSE
+  if(all(isTRUE(trace_show) & i > tail_size)){
+    
+    paths.trace <- m.df[!is.na(match(m.df$frame,1:(min(i.range)))),]
+    paths.trace$colour <- paths.trace$tail_colour <-  trace_colour
+    paths.trace$tail_size <- tail_size
+    paths.trace$trace <- TRUE
+    
+    # join trace, reorder by frame and group by id
+    paths <- rbind(paths, paths.trace)
+    paths <- paths[order(paths$frame),]
+    paths <- paths[order(paths$id),]
+  }
+  return(paths)
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf
+#' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr
 #' @noRd 
-.gg_spatial <- function(m.split, gg.bmap, m.df, m.crs, gg.ext, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
-                        path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names"){
+.gg_spatial <- function(gg.bmap, m.df, m.crs, gg.ext, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
+                        path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names",
+                        tail_length = 0, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
   
   # frame plotting function
   gg.fun <- function(x, y){
@@ -318,7 +292,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(isTRUE(print_plot)) print(p) else return(p)
   }
   
-  frames <- if(length(gg.bmap) > 1) mapply(x = m.split, y = gg.bmap, gg.fun, SIMPLIFY = F, USE.NAMES = F) else lapply(m.split, gg.fun, y = gg.bmap[[1]])
+  # create frames
+  ii <- if(length(gg.bmap) > 1) expr(i) else expr(1)
+  frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
+                                                                    trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = gg.bmap[[eval(ii)]]))
 }
 
 
@@ -326,7 +303,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
 #' 
 #' @noRd
-.gg_flow <- function(m.split, gg.df, path_legend, path_legend_title, path_size, val_seq){
+.gg_flow <- function(m.df, path_legend, path_legend_title, path_size, val_seq){
 
   ## stats plot function
   gg.fun <- function(x, y, pl, plt, ps, vs){
@@ -347,8 +324,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     return(p)
   }
   
-  .lapply(1:length(m.split), function(i, x = m.split, y = gg.df, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq){
-    gg.fun(do.call(rbind, x[1:i])[,c("frame", "value", "time_chr", "id", "colour", "name")], y, pl, plt, ps, vs)
+  .lapply(1:max(m.df$frame), function(i, x = m.df, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq){
+    gg.fun(x = m.df[m.df$frame <= i,], y = m.df, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq)
   })
 }
 
@@ -505,7 +482,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @noRd
-.rFrames <- function(r_list, r_times, m.split, gg.ext, fade_raster = T, ...){
+.rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, ...){
   
   if(!is.list(r_list)){
     r_list <- list(r_list)
@@ -524,10 +501,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     r.dummy <- setValues(r.crop[[1]][[1]], NA) #produces warning during tests: no non-missing arguments to max; returning -Inf
     # r.dummy <- raster(r.crop[[1]][[1]]) # and then:
     #`values<-`(r.dummy, NA) # produces same warning. There seems no solution to this to avoid warnings
-    r_list <- rep(list(rep(list(r.dummy), length(m.split))), r.nlay)
+    r_list <- rep(list(rep(list(r.dummy), max(m.df$frame))), r.nlay)
     
     ## calcualte time differences to r_times
-    x <- lapply(m.split, function(y) max(unique(y$time, na.rm = T)))
+    x <- lapply(1:max(m.df$frame), function(y) max(unique(m.df[m.df$frame == y,]$time)))
+    
     frame_times <- unlist(x)
     attributes(frame_times) <- attributes(x[[1]])
     diff.df <- as.data.frame(sapply(r_times, function(x) abs(difftime(frame_times, x, units = "secs"))))

@@ -204,8 +204,6 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   .stats(n.frames = max(m.df$frame))
   
   gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
-  m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                    trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade) # split m by size of tail
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
@@ -215,7 +213,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   }
   
   out("Assigning raster maps to frames...")
-  r_list <- .rFrames(r_list, r_times, m.split, gg.ext, fade_raster)
+  r_list <- .rFrames(r_list, r_times, m.df, gg.ext, fade_raster)
   
   ## plot basemap
   if(length(r_list) == 1){
@@ -233,9 +231,11 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   ## create frames
   out("Creating frames...")
-  frames <- .gg_spatial(m.split = m.split, gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
+  frames <- .gg_spatial(gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
                         path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
-                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title)
+                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title,
+                        tail_length = tail_length, tail_size = tail_size, tail_colour = tail_colour, trace_show = trace_show,
+                        trace_colour = trace_colour, path_fade = path_fade)
   
   ## add time attribute per frame
   frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
