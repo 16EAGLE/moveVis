@@ -178,6 +178,15 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
     gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = m.crs)
   }
+  
+  # cut by longlat maximums
+  if(isTRUE(m.crs$epsg == 4326)){
+    if(gg.ext[1] < -180) gg.ext[1] <- -180
+    if(gg.ext[3] > 180) gg.ext[3] <- 180
+    if(gg.ext[2] < -90) gg.ext[2] <- -90
+    if(gg.ext[4] > 90) gg.ext[4] <- 90
+  }
+  
   return(gg.ext)
 }
 
