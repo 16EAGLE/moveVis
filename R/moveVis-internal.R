@@ -482,7 +482,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @noRd
-.rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, ...){
+.rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, crop_raster = T,  ...){
   
   if(!is.list(r_list)){
     r_list <- list(r_list)
@@ -493,7 +493,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   r.nlay <- nlayers(r_list[[1]])
   if(r.nlay > 1) r_list <- lapply(1:r.nlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list)
   
-  r.crop <- lapply(r_list, function(r.lay) lapply(r.lay, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
+  if(isTRUE(crop_raster)){
+    r.crop <- lapply(r_list, function(r.lay) lapply(r.lay, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
+  } else r.crop <- r_list
   
   if(n > 1){
     
