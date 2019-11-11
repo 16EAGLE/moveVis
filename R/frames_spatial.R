@@ -7,6 +7,7 @@
 #' @param r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.
 #' @param r_type character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.
 #' @param fade_raster logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.
+#' @param crop_raster logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.
 #' @param path_size numeric, size of each path.
 #' @param path_end character, either \code{"round"}, \code{"butt"} or \code{"square"}, indicating the path end style.
 #' @param path_join character, either \code{"round"}, \code{"mitre"} or \code{"bevel"}, indicating the path join style.
@@ -151,7 +152,7 @@
 #' @seealso \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
-frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
+frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
                            margin_factor = 1.1, equidistant = NULL, ext = NULL, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
                            path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_colour = "white", ..., verbose = TRUE){
   
@@ -204,8 +205,6 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   .stats(n.frames = max(m.df$frame))
   
   gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
-  m.split <- .split(m.df, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                    trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade) # split m by size of tail
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
@@ -215,7 +214,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   }
   
   out("Assigning raster maps to frames...")
-  r_list <- .rFrames(r_list, r_times, m.split, gg.ext, fade_raster)
+  r_list <- .rFrames(r_list, r_times, m.df, gg.ext, fade_raster, crop_raster = crop_raster)
   
   ## plot basemap
   if(length(r_list) == 1){
@@ -233,9 +232,11 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   ## create frames
   out("Creating frames...")
-  frames <- .gg_spatial(m.split = m.split, gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
+  frames <- .gg_spatial(gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
                         path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
-                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title)
+                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title,
+                        tail_length = tail_length, tail_size = tail_size, tail_colour = tail_colour, trace_show = trace_show,
+                        trace_colour = trace_colour, path_fade = path_fade)
   
   ## add time attribute per frame
   frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){

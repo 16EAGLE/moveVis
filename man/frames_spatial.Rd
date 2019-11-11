@@ -5,15 +5,15 @@
 \title{Create frames of spatial movement maps for animation}
 \usage{
 frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
-  fade_raster = FALSE, map_service = "osm", map_type = "streets",
-  map_res = 1, map_token = NULL, map_dir = NULL,
-  margin_factor = 1.1, equidistant = NULL, ext = NULL,
-  path_size = 3, path_end = "round", path_join = "round",
-  path_mitre = 10, path_arrow = NULL, path_colours = NA,
-  path_alpha = 1, path_fade = FALSE, path_legend = TRUE,
-  path_legend_title = "Names", tail_length = 19, tail_size = 1,
-  tail_colour = "white", trace_show = FALSE, trace_colour = "white",
-  ..., verbose = TRUE)
+  fade_raster = FALSE, crop_raster = TRUE, map_service = "osm",
+  map_type = "streets", map_res = 1, map_token = NULL,
+  map_dir = NULL, margin_factor = 1.1, equidistant = NULL,
+  ext = NULL, path_size = 3, path_end = "round",
+  path_join = "round", path_mitre = 10, path_arrow = NULL,
+  path_colours = NA, path_alpha = 1, path_fade = FALSE,
+  path_legend = TRUE, path_legend_title = "Names", tail_length = 19,
+  tail_size = 1, tail_colour = "white", trace_show = FALSE,
+  trace_colour = "white", ..., verbose = TRUE)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -25,6 +25,8 @@ frames_spatial(m, r_list = NULL, r_times = NULL, r_type = "gradient",
 \item{r_type}{character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
 
 \item{fade_raster}{logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.}
+
+\item{crop_raster}{logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.}
 
 \item{map_service}{character, either \code{"osm"}, \code{"carto"} or \code{"mapbox"}. Default is \code{"osm"}.}
 
