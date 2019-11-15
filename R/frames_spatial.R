@@ -162,6 +162,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(inherits(m, "Move")) m <- moveStack(m)
   
   ## check m time conformities
+  out("Checking temporal alignment...")
   .time_conform(m)
 
   if(!is.null(r_list)){

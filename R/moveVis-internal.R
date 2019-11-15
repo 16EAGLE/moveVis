@@ -39,9 +39,20 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #'
 #' @importFrom pbapply pblapply
 #' @noRd 
-.lapply <- function(X, FUN, ...){
-  verbose = getOption("moveVis.verbose")
-  if(isTRUE(verbose)) pblapply(X, FUN, ...) else lapply(X, FUN, ...)
+.lapply <- function(X, FUN, ..., moveVis.verbose = NULL, moveVis.ncores = NULL, moveVis.export = NULL){
+  if(is.null(moveVis.verbose)) moveVis.verbose <- getOption("moveVis.verbose")
+  if(is.null(moveVis.ncores)) moveVis.ncores <- getOption("moveVis.ncores")
+  
+  # with parallelization
+  if(moveVis.ncores > 1){
+    cl <- parallel::makeCluster(moveVis.ncores)
+    if(!is.null(moveVis.export)) parallel::clusterExport(cl, moveVis.export)
+    y <- try(parallel::parLapply(cl = cl, X, FUN, ...)) # ensures that cluster is stopped appropriately
+    parallel::stopCluster(cl)
+    if(inherits(y, "try-error")) out(y, type = 3) else return(y)
+  
+  # without parallelization
+  }else if(isTRUE(moveVis.verbose)) pblapply(X, FUN, ...) else lapply(X, FUN, ...)
 }
 
 #' verbose apply
@@ -395,8 +406,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .time_conform <- function(m){
   
   m.indi <- if(inherits(m, "MoveStack")) split(m) else list(m)
-  ts <- lapply(m.indi, timestamps)
-  tl <- lapply(m.indi, timeLag, unit = "secs")
+  ts <- .lapply(m.indi, timestamps, moveVis.verbose = F)
+  tl <- .lapply(m.indi, timeLag, unit = "secs", moveVis.verbose = F)
   
   ## check time lag
   uni.lag <- length(unique(unlist(tl))) <= 1
@@ -485,10 +496,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   }
 }
 
-
 #' assign raster to frames
 #' @importFrom raster nlayers unstack crop extent stack calc raster setValues
-#' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @noRd
 .rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, crop_raster = T,  ...){
@@ -542,6 +551,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .onLoad <- function(libname, pkgname){
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
+  if(is.null(getOption("moveVis.ncores")))  options(moveVis.ncores = 1)
   
   options(moveVis.map_api = list(osm = list(streets = "https://tile.openstreetmap.org/",
                                             streets_de = "http://a.tile.openstreetmap.de/tiles/osmde/",

@@ -36,7 +36,8 @@ Imports:
 BugReports: http://www.github.com/16eagle/moveVis/issues
 SystemRequirements: ImageMagick, FFmpeg, libav
 URL: http://movevis.org
-Suggests: 
+Suggests:
+  parallel,
   mapview,
   leaflet,
   testthat
