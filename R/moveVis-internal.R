@@ -545,6 +545,50 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(r_list)
 }
 
+
+#' create interpolated layer by frame position
+#' @noRd
+.intbylayer <- function(r_list, pos, frame, r.nlay){
+  if(length(r_list) != length(pos)) stop("Length of r_list is different to length of pos.")
+  if(frame < head(pos, n=1)) return(r_list[[1]])
+  if(frame > tail(pos, n=1)) return(r_list[[length(r_list)]])
+  if(any(frame == pos)) return(r_list[which(frame == pos)])
+  
+  # between which elements
+  i <- which(sapply(2:length(pos), function(i) all(frame > pos[i-1], frame < pos[i]), USE.NAMES = F))+1
+  
+  # rasters
+  if(r.nlay > 1){
+    x <- unstack(r_list[[i-1]])
+    y <- unstack(r_list[[i]])
+  } else{
+    x <- r_list[i-1] # keep listed using [ instead of [[ to work with lapply
+    y <- r_list[i]
+  }
+  
+  # positions
+  x.pos <- pos[i-1]
+  y.pos <- pos[i]
+  v.na <- rep(NA, (y.pos-x.pos)-1)
+  pos.frame <- (frame-x.pos)+1
+  
+  #v.fun <- function(v.x, v.y) mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, xx.pos = x.pos, yy.pos = y.pos, xy.frame = frame) na.approx(c(xx, rep(NA, (yy.pos-xx.pos)-1), yy))[(xy.frame-xx.pos)+1], SIMPLIFY = T)
+  v.fun <- Vectorize(function(x, y, ...) zoo::na.approx(c(x, v.na, y), rule = 2)[pos.frame])
+  
+  r.frame <- lapply(1:length(x), function(i.layer){
+    
+    # multicore or not?
+    if(getOption("moveVis.ncores") > 1){
+      beginCluster(getOption("moveVis.ncores"))
+      r <- clusterR(stack(x[[i.layer]], y[[i.layer]]), fun = overlay, args = list("fun" = v.fun), export = c("pos.frame", "v.na"))
+      endCluster()
+    }else r <- overlay(stack(x[[i.layer]], y[[i.layer]]), fun = v.fun)
+    return(r)
+  })
+  
+  if(length(r.frame) > 1) r.frame <- do.call(stack, r.frame) else r.frame <- r.frame[[1]]
+}
+
 #' package startup
 #' @importFrom pbapply pboptions
 #' @noRd 
