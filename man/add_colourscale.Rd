@@ -23,7 +23,7 @@ add_colourscale(frames, type, colours, labels = waiver(),
 
 \item{legend_title}{character, a legend title.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of frames.

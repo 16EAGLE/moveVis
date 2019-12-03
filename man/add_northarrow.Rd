@@ -30,7 +30,7 @@ add_northarrow(frames, height = 0.05, position = "bottomright",
 
 \item{label_size}{numeric, label font size.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of frames.

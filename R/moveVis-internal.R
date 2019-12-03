@@ -39,13 +39,13 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #'
 #' @importFrom pbapply pblapply
 #' @noRd 
-.lapply <- function(X, FUN, ..., moveVis.verbose = NULL, moveVis.ncores = NULL, moveVis.export = NULL){
+.lapply <- function(X, FUN, ..., moveVis.verbose = NULL, moveVis.n_cores = NULL, moveVis.export = NULL){
   if(is.null(moveVis.verbose)) moveVis.verbose <- getOption("moveVis.verbose")
-  if(is.null(moveVis.ncores)) moveVis.ncores <- getOption("moveVis.ncores")
+  if(is.null(moveVis.n_cores)) moveVis.n_cores <- getOption("moveVis.n_cores")
   
   # with parallelization
-  if(moveVis.ncores > 1){
-    cl <- parallel::makeCluster(moveVis.ncores)
+  if(moveVis.n_cores > 1){
+    cl <- parallel::makeCluster(moveVis.n_cores)
     if(!is.null(moveVis.export)) parallel::clusterExport(cl, moveVis.export)
     y <- try(parallel::parLapply(cl = cl, X, FUN, ...)) # ensures that cluster is stopped appropriately
     parallel::stopCluster(cl)
@@ -313,6 +313,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   }
   
   # create frames
+  i <- NULL # needs to be defined for checks
   ii <- if(length(gg.bmap) > 1) expr(i) else expr(1)
   frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
                                                                     trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = gg.bmap[[eval(ii)]]))
@@ -547,6 +548,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 
 #' create interpolated layer by frame position
+#' @importFrom raster beginCluster clusterR overlay endCluster
+#' @importFrom utils head
 #' @noRd
 .intbylayer <- function(r_list, pos, frame, r.nlay){
   if(length(r_list) != length(pos)) stop("Length of r_list is different to length of pos.")
@@ -578,8 +581,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   r.frame <- lapply(1:length(x), function(i.layer){
     
     # multicore or not?
-    if(getOption("moveVis.ncores") > 1){
-      beginCluster(getOption("moveVis.ncores"))
+    if(getOption("moveVis.n_cores") > 1){
+      beginCluster(getOption("moveVis.n_cores"))
       r <- clusterR(stack(x[[i.layer]], y[[i.layer]]), fun = overlay, args = list("fun" = v.fun), export = c("pos.frame", "v.na"))
       endCluster()
     }else r <- overlay(stack(x[[i.layer]], y[[i.layer]]), fun = v.fun)
@@ -595,7 +598,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .onLoad <- function(libname, pkgname){
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
-  if(is.null(getOption("moveVis.ncores")))  options(moveVis.ncores = 1)
+  if(is.null(getOption("moveVis.n_cores")))  options(moveVis.n_cores = 1)
   
   options(moveVis.map_api = list(osm = list(streets = "https://tile.openstreetmap.org/",
                                             streets_de = "http://a.tile.openstreetmap.de/tiles/osmde/",

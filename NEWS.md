@@ -3,9 +3,17 @@
 ## moveVis 0.10.4
 Bug fixes. In development.
 
+**New features:**
+
+* Many computationally expensive `moveVis` tasks can now be parallelized, as multi-core support for `moveVis` has been implemented.
+
+**New functions:**
+
+* `use_multicore()` lets you turn on multi-core support of `moveVis` to increase computational time through parallelization.
+
 **Bug fixes:**
 
-* Bug that caused a gap between trace and path.
+* Bug that caused a gap between traces and paths.
 
 <br>
 
