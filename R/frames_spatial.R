@@ -59,6 +59,7 @@
 #' @importFrom sp proj4string
 #' @importFrom raster crs
 #' @importFrom move n.indiv moveStack
+#' @importFrom RStoolbox ggR ggRGB
 #' 
 #' @examples 
 #' library(moveVis)
