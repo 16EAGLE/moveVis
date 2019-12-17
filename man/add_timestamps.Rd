@@ -18,7 +18,7 @@ add_timestamps(frames, m = NULL, x = NULL, y = NULL, ...,
 
 \item{...}{optional, arguments passed to \code{\link{add_text}}, such as \code{colour}, \code{size}, \code{type}.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of frames.

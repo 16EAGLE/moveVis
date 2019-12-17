@@ -22,7 +22,7 @@ add_text(frames, labels, x, y, colour = "black", size = 3,
 
 \item{type}{character, either \code{"text"} to draw text or \code{"label"} to draw text inside a box.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of frames.

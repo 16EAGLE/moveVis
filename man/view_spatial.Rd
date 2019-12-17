@@ -23,7 +23,7 @@ view_spatial(m, render_as = "mapview", time_labels = TRUE,
 
 \item{path_legend_title}{character, path legend title. Default is \code{"Names"}.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 An interatcive \code{mapview} or \code{leaflet} map.

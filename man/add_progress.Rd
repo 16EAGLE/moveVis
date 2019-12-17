@@ -13,7 +13,7 @@ add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 
 \item{size}{numeric, progress bar line size..}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of frames.

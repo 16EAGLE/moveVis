@@ -41,7 +41,7 @@
 #'        \item \code{stretch}, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
 #'        \item \code{quantiles}, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2% stretch, i.e. \code{c(0.02,0.98)}.
 #'    }
-#' @param verbose logical, if \code{TRUE}, messages on the function's progress are displayed (default).
+#' @param verbose logical, if \code{TRUE}, messages and progress information are displayed on the console (default).
 #' 
 #' @details If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
 #' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
@@ -59,7 +59,7 @@
 #' @importFrom sp proj4string
 #' @importFrom raster crs
 #' @importFrom move n.indiv moveStack
-#' @importFrom RStoolbox ggR ggRGB
+#' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @examples 
 #' library(moveVis)

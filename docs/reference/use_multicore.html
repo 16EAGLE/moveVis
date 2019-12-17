@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get frame times from frames — get_frametimes • moveVis</title>
+<title>Enable multi-core usage — use_multicore • moveVis</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Get frame times from frames — get_frametimes" />
-<meta property="og:description" content="This function extracts the timestamps associated with each frame of a list of frames created using frames_spatial or frames_graph and returns them as a vector." />
+<meta property="og:title" content="Enable multi-core usage — use_multicore" />
+<meta property="og:description" content="This function enables multi-core usage of moveVis by setting the maximum number of cores to be used." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -144,49 +144,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get frame times from frames</h1>
+    <h1>Enable multi-core usage</h1>
     
-    <div class="hidden name"><code>get_frametimes.Rd</code></div>
+    <div class="hidden name"><code>use_multicore.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function extracts the timestamps associated with each frame of a list of frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code> and returns them as a vector.</p>
+    <p>This function enables multi-core usage of <code>moveVis</code> by setting the maximum number of cores to be used.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_frametimes</span>(<span class='no'>frames</span>)</pre>
+    <pre class="usage"><span class='fu'>use_multicore</span>(<span class='kw'>n_cores</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>frames</th>
-      <td><p>list, list of frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></td>
+      <th>n_cores</th>
+      <td><p>numeric, optional, number of cores to be used. If not defined, the number of cores will be detected automatically (<code>n-1</code> cores will be used with <code>n</code> being the number of cores available).</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if <code>TRUE</code>, messages and progress information are displayed on the console (default).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A POSIXct vector of timestamps representing the time assoicated with each frame in <code>frames</code>.</p>
+    <p>None. This function is used for its side effects.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>moveVis</code> stores the times represented by a frame as an attribute <code>"time"</code> for each <code>ggplot</code> frame.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code></p></div>
+    <p>For most tasks, <code>moveVis</code> is able to use multiple cores to increase computational times through parallelization. By default, multi-core usage is disabled. This function saves the number of cores that <code>moveVis</code> should use to the global option <code>"moveVis.n_cores"</code> that can be printed using <code><a href='https://rdrr.io/r/base/options.html'>getOption("moveVis.n_cores")</a></code>.</p>
+<p><code>moveVis</code> uses the <code>parallel</code> package for parallelization.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>moveVis</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>move</span>)
+    <pre class="examples"><span class='co'># enable multi-core usage automatically</span>
+<span class='fu'>use_multicore</span>()
 
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"move_data"</span>)
-<span class='co'># align movement</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
-
-<span class='co'># \donttest{</span>
-<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>)
-<span class='no'>frames.ts</span> <span class='kw'>&lt;-</span> <span class='fu'>get_frametimes</span>(<span class='no'>frames</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>frames.ts</span>)
-<span class='co'># }</span></pre>
+<span class='co'># define number of cores manually</span>
+<span class='fu'>use_multicore</span>(<span class='kw'>n_cores</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -194,7 +189,6 @@
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
-      <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

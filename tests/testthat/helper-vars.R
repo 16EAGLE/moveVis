@@ -3,6 +3,9 @@ map_token = Sys.getenv("moveVis.map_token")
 if(map_token != "") run_mapbox <- TRUE else run_mapbox <- FALSE
 test_maps = as.logical(Sys.getenv("moveVis.test_maps"))
 
+n_cores <- as.numeric(Sys.getenv("moveVis.n_cores"))
+if(!is.na(n_cores)) use_multicore(n_cores)
+
 ## which tests to run
 # which_tests = Sys.getenv("moveVis.which_tests")
 # if(which_tests != ""){

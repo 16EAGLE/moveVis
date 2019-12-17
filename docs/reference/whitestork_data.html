@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get frame times from frames — get_frametimes • moveVis</title>
+<title>White Stork LifeTrack tracks — whitestork_data • moveVis</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Get frame times from frames — get_frametimes" />
-<meta property="og:description" content="This function extracts the timestamps associated with each frame of a list of frames created using frames_spatial or frames_graph and returns them as a vector." />
+<meta property="og:title" content="White Stork LifeTrack tracks — whitestork_data" />
+<meta property="og:description" content="This dataset contains a data.frame object, representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -144,58 +144,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get frame times from frames</h1>
+    <h1>White Stork LifeTrack tracks</h1>
     
-    <div class="hidden name"><code>get_frametimes.Rd</code></div>
+    <div class="hidden name"><code>whitestork_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function extracts the timestamps associated with each frame of a list of frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code> and returns them as a vector.</p>
+    <p>This dataset contains a <code>data.frame</code> object, representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_frametimes</span>(<span class='no'>frames</span>)</pre>
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>whitestork_data</span>)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>frames</th>
-      <td><p>list, list of frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A POSIXct vector of timestamps representing the time assoicated with each frame in <code>frames</code>.</p>
+    <p><code>data.frame</code> object</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>moveVis</code> stores the times represented by a frame as an attribute <code>"time"</code> for each <code>ggplot</code> frame.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>This object is used by some <code>moveVis</code> examples and has been included for demonstrational purposes.</p>
+<p>The dataset represents a subset of the LifeTrack White Stork dataset by Cheng et al. (2019) and Fiedler et al. (2019), available under the Creative Commons license "CC0 1.0 Universal Public Domain Dedication" on Movebank (doi:10.5441/001/1.ck04mn78/1).</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='frames_graph.html'>frames_graph</a></code></p></div>
+    <p>Cheng Y, Fiedler W, Wikelski M, Flack A (2019) "Closer-to-home" strategy benefits juvenile survival in a long-distance migratory bird. Ecology and Evolution. doi:10.1002/ece3.5395</p>    
+<p>Fiedler W, Flack A, Schäfle W, Keeves B, Quetting M, Eid B, Schmid H, Wikelski M (2019) Data from: Study "LifeTrack White Stork SW Germany" (2013-2019). Movebank Data Repository. doi:10.5441/001/1.ck04mn78</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>moveVis</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>move</span>)
-
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"move_data"</span>)
-<span class='co'># align movement</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='align_move.html'>align_move</a></span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
-
-<span class='co'># \donttest{</span>
-<span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='frames_spatial.html'>frames_spatial</a></span>(<span class='no'>m</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>, <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"watercolor"</span>)
-<span class='no'>frames.ts</span> <span class='kw'>&lt;-</span> <span class='fu'>get_frametimes</span>(<span class='no'>frames</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>frames.ts</span>)
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
+      <li><a href="#format">Format</a></li>
       <li><a href="#details">Details</a></li>
-      <li><a href="#see-also">See also</a></li>
-      <li><a href="#examples">Examples</a></li>
+      <li><a href="#references">References</a></li>
     </ul>
 
   </div>

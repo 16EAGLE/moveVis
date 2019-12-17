@@ -27,7 +27,7 @@ animate_frames(frames, out_file, fps = 25, width = 700, height = 700,
 
 \item{overwrite}{logical, wether to overwrite an existing file, if \code{out_file} is already present.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 
 \item{...}{additional arguments to be passed to the render function.}
 }

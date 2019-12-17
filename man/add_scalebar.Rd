@@ -27,7 +27,7 @@ add_scalebar(frames, distance = NULL, height = 0.015,
 
 \item{units}{character, either "km" for kilometers or "miles" for miles.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of frames.

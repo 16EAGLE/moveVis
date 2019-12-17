@@ -11,7 +11,7 @@ join_frames(frames_lists, ..., verbose = T)
 
 \item{...}{Further arguments, specifying the appearance of the joined \code{ggplot2} objects, passed to \code{\link{plot_grid}}. See \code{\link{plot_grid}} for further options.}
 
-\item{verbose}{logical, if \code{TRUE}, messages on the function's progress are displayed (default).}
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 List of ggplot2 objects, each representing a single frame.
