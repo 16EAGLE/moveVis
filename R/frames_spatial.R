@@ -173,6 +173,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     if(!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
     if(!isTRUE(r_type %in% c("gradient", "discrete", "RGB"))) out("Argument 'r_type' must eihter be 'gradient', 'discrete' or 'RGB'.", type = 3)
     if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
+    if(!is.logical(crop_raster)) out("Argument 'crop_raster' has to be either TRUE or FALSE.", type = 3)
   } else{
     if(!isTRUE(tolower(map_service) %in% names(get_maptypes()))) out(paste0("Argument 'map_service' must be ", paste0(names(moveVis::get_maptypes()), collapse = ", ")))
     if(!isTRUE(tolower(map_type) %in% get_maptypes(map_service))) out("The defined map type is not supported for the selected service. Use get_maptypes() to get all available map types.", type = 3)
@@ -218,27 +219,13 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   out("Assigning raster maps to frames...")
   r_list <- .rFrames(r_list, r_times, m.df, gg.ext, fade_raster, crop_raster = crop_raster)
   
-  ## plot basemap
-  if(length(r_list) == 1){
-    if(r_type == "gradient") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, coord_equal = F, ...)
-    if(r_type == "discrete") gg.bmap <- .lapply(r_list[[1]], ggR, ggObj = T, geom_raster = T, forceCat = T, coord_equal = F, ...)
-  } else{
-    gg.bmap <- .lapply(1:length(r_list[[1]]), function(i) ggRGB(stack(lapply(r_list, "[[", i)),  r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, coord_equal = F, ...))
-  }
-  
-  ## scale plot to extent and set na.rm to TRUE to avoid warnings
-  gg.bmap <- lapply(gg.bmap, function(x){
-    x$layers[[1]]$geom_params$na.rm <- T
-    return(x)
-  })
-  
   ## create frames
   out("Creating frames...")
-  frames <- .gg_spatial(gg.bmap = gg.bmap, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
+  frames <- .gg_spatial(r_list = r_list, r_type = r_type, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
                         path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
                         path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title,
                         tail_length = tail_length, tail_size = tail_size, tail_colour = tail_colour, trace_show = trace_show,
-                        trace_colour = trace_colour, path_fade = path_fade)
+                        trace_colour = trace_colour, path_fade = path_fade, ...)
   
   ## add time attribute per frame
   frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){

@@ -274,16 +274,24 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' spatial plot function
 #' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr
 #' @noRd 
-.gg_spatial <- function(gg.bmap, m.df, m.crs, gg.ext, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
+.gg_spatial <- function(r_list, r_type, m.df, m.crs, gg.ext, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
                         path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names",
-                        tail_length = 0, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
+                        tail_length = 0, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F, ...){
   
   # frame plotting function
-  gg.fun <- function(x, y){
+  gg.fun <- function(x, y, r_type, ...){
+    
+    ## create basemap
+    if(r_type == "gradient") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, ...)
+    if(r_type == "discrete") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, forceCat = T, ...)
+    if(r_type == "RGB") y <- ggRGB(y, r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, coord_equal = F, ...)
+    
+    ## scale plot to extent and set na.rm to TRUE to avoid warnings
+    y$layers[[1]]$geom_params$na.rm <- T
     
     x_path <- x[!x$trace,]
     x_trace <- x[x$trace,]
-    
+  
     ## trace plot
     if(nrow(x_trace) > 1){
       p <- y + geom_path(data = x_trace, aes_string(x = "x", y = "y", group = "id"), size = x_trace$tail_size, lineend = path_end, linejoin = path_join,
@@ -314,9 +322,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   # create frames
   i <- NULL # needs to be defined for checks
-  ii <- if(length(gg.bmap) > 1) expr(i) else expr(1)
+  ii <- if(length(r_list) > 1) expr(i) else expr(1)
   frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                                                                    trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = gg.bmap[[eval(ii)]]))
+                                                                       trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = r_list[[eval(ii)]], r_type = r_type, ...), moveVis.n_cores = 1)  
 }
 
 
@@ -497,99 +505,147 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   }
 }
 
-#' assign raster to frames
-#' @importFrom raster nlayers unstack crop extent stack calc raster setValues
-#' 
+
+#' create interpolated layer by frame position
+#' @importFrom utils head tail
+#' @importFrom parallel clusterExport
+#' @importFrom raster clusterR overlay brick unstack
 #' @noRd
-.rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, crop_raster = T,  ...){
+.int2frames <- function(r_list, pos, frames, n.rlay, cl){
+  i.frames <- frames
+  
+  # get frames outside shoulders not to be interpolated
+  r.frames <- rep(list(NULL), length(i.frames))
+  early <- i.frames < head(pos, n=1)
+  if(any(early)) r.frames[which(early)] <- r_list[which(early)]
+  i.frames <- i.frames[!early]
+  
+  late <- i.frames > tail(pos, n=1)
+  if(any(late)) r.frames[which(late)] <- r_list[which(late)]
+  i.frames <- i.frames[!late]
+  
+  exist <- match(i.frames, pos)
+  if(any(!is.na(exist))){
+    r.frames[which(!is.na(exist))] <- r_list[na.omit(exist)]
+    i.frames <- i.frames[-which(!is.na(exist))]
+  }
+  
+  # between which elements
+  i.frames <- sapply(2:length(pos), function(i){
+    y <- i.frames > pos[i-1] & i.frames < pos[i]
+    if(any(y)) return(i.frames[which(y)])
+  }, USE.NAMES = F)
+  i.rasters <- which(!sapply(i.frames, is.null))+1
+  i.frames <- i.frames[i.rasters-1]
+  
+  # interpolation function
+  v.fun <- function(v.x, v.y, ...) t(mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, ...) zoo::na.approx(c(xx, v.na, yy), rule = 2)[pos.frames], SIMPLIFY = T))
+  #v.fun <- function(v.x, v.y) mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, xx.pos = x.pos, yy.pos = y.pos, xy.frame = frame) zoo::na.approx(c(xx, rep(NA, (yy.pos-xx.pos)-1), yy))[(xy.frame-xx.pos)+1], SIMPLIFY = T)
+  #v.fun <- Vectorize(function(x, y, ...) zoo::na.approx(c(x, v.na, y), rule = 2)[pos.frame])
+  
+  # iterate over shoulder ranges
+  for(i in i.rasters){
+    
+    # rasters
+    if(n.rlay > 1){
+      x <- unstack(r_list[[i-1]])
+      y <- unstack(r_list[[i]])
+    } else{
+      x <- r_list[i-1] # keep listed using [ instead of [[ to work with lapply
+      y <- r_list[i]
+    }
+    
+    # positions
+    x.pos <- pos[i-1]
+    y.pos <- pos[i]
+    v.na <- rep(NA, (y.pos-x.pos)-1)
+    pos.frames <- (i.frames[[which(i.rasters == i)]]-x.pos)+1
+    if(getOption("moveVis.n_cores") > 1) clusterExport(cl, c("v.na", "pos.frames"), envir = environment())
+    
+    # interpolate layer-wise
+    r <- lapply(1:length(x), function(i.layer){
+      if(getOption("moveVis.n_cores") > 1){
+        clusterR(stack(x[[i.layer]], y[[i.layer]]), fun = overlay, args = list("fun" = v.fun), cl = cl) # export = c("pos.frames", "v.na"))
+      }else overlay(stack(x[[i.layer]], y[[i.layer]]), fun = v.fun)
+    })
+    
+    # disassemble brick time- and layerwise
+    if(length(r) > 1){
+      for(j in 1:length(i.frames[[which(i.rasters == i)]])){
+        r.frames[[match(i.frames[[which(i.rasters == i)]], frames)[j]]] <- brick(lapply(1:n.rlay, function(lay) r[[lay]][[j]]))
+      }
+    } else{
+      r.frames[match(i.frames[[which(i.rasters == i)]], frames)] <- if(inherits(r[[1]], "RasterLayer")) r else r.frames[match(i.frames[[which(i.rasters == i)]], frames)] <- unstack(r[[1]])
+    }
+  }
+  return(r.frames)
+}
+
+
+#' assign raster to frames
+#' @importFrom raster nlayers crop extent brick writeRaster dataType
+#' @importFrom parallel makeCluster stopCluster
+#' @noRd
+.rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, crop_raster = T, ...){
   
   if(!is.list(r_list)){
     r_list <- list(r_list)
     n <- 1
   } else n <- length(r_list)
+  n.rlay <- nlayers(r_list[[1]])
   
-  ## rearrange bandwise and crop
-  r.nlay <- nlayers(r_list[[1]])
-  if(r.nlay > 1) r_list <- lapply(1:r.nlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list)
+  #if(n.rlay > 1) r_list <- lapply(1:n.rlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list) #FRIDAY
   
   if(isTRUE(crop_raster)){
-    r.crop <- lapply(r_list, function(r.lay) lapply(r.lay, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
-  } else r.crop <- r_list
+    r_list <- lapply(r_list, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out")
+  }
   
   if(n > 1){
     
-    ## create frame list, top list is bands, second list is times
-    r.dummy <- setValues(r.crop[[1]][[1]], NA) #produces warning during tests: no non-missing arguments to max; returning -Inf
-    # r.dummy <- raster(r.crop[[1]][[1]]) # and then:
-    #`values<-`(r.dummy, NA) # produces same warning. There seems no solution to this to avoid warnings
-    r_list <- rep(list(rep(list(r.dummy), max(m.df$frame))), r.nlay)
-    
     ## calcualte time differences to r_times
     x <- lapply(1:max(m.df$frame), function(y) max(unique(m.df[m.df$frame == y,]$time)))
-    
     frame_times <- unlist(x)
     attributes(frame_times) <- attributes(x[[1]])
     diff.df <- as.data.frame(sapply(r_times, function(x) abs(difftime(frame_times, x, units = "secs"))))
     
     ## assign r_list positions per frame times
     pos.df <- data.frame(frame = 1:nrow(diff.df), pos_r = apply(diff.df, MARGIN = 1, which.min))
-    if(isTRUE(fade_raster)) pos.df <- pos.df[apply(diff.df[,unique(pos.df[,2])], MARGIN = 2, which.min),] #pos.df[!duplicated(pos.df$pos_r, fromLast = T),]
-    for(i in 1:r.nlay) r_list[[i]][pos.df[,1]] <- r.crop[[i]][pos.df[,2]]
     
     ## interpolate/extrapolate
     if(isTRUE(fade_raster)){
+      pos.df <- pos.df[apply(diff.df[,unique(pos.df[,2])], MARGIN = 2, which.min),]
       
-      for(i in 1:r.nlay) r_list[[i]] <- stack(r_list[[i]])
-      r_list <- lapply(r_list, function(x) unstack(calc(x, fun = .approxNA)))
+      # start cluster and interpolate over all frames or badge-wise
+      if(getOption("moveVis.n_cores") > 1) cl <- makeCluster(getOption("moveVis.n_cores"))
+      if(is.FALSE(getOption("moveVis.use_disk"))){
+        r_list <- .int2frames(r_list, pos = pos.df$frame, frames = unique(m.df$frame), n.rlay = n.rlay, cl = cl)
+      } else{
+        
+        # create frames badge-wise?
+        badges <- unique(unlist(sapply(2:length(pos.df$frame), function(i){
+          c(seq(pos.df$frame[i-1], pos.df$frame[i], by = getOption("moveVis.n_memory_frames")), pos.df$frame[i])
+        }, simplify = F)))
+        
+        # write to drive instead of memory
+        files <- unlist(sapply(2:length(badges), function(i){
+          frames <- if(i == 2) (badges[i-1]):badges[i] else (badges[i-1]+1):badges[i]
+          r <- .int2frames(r_list, pos = pos.df$frame, frames = frames, n.rlay = n.rlay, cl = cl)
+          y <- paste0(getOption("moveVis.dir_frames"), "/moveVis_frame_", frames, ".tif")
+          catch <- sapply(1:length(r), function(j) writeRaster(r[[j]], filename = y[[j]], datatype = dataType(r_list[[1]]), overwrite = T))
+          return(y)
+        }, USE.NAMES = F))
+        
+        # link to files
+        r_list <- lapply(files, brick)
+      }
+      if(getOption("moveVis.n_cores") > 1) stopCluster(cl)
+    }else{
+      r_list <- r_list[pos.df$pos_r]
     }
-  } else{r_list <- r.crop}
+  }else{r_list <- r_list}
   return(r_list)
 }
 
-#' create interpolated layer by frame position
-#' @importFrom raster beginCluster clusterR overlay endCluster
-#' @importFrom utils head
-#' @noRd
-.intbylayer <- function(r_list, pos, frame, r.nlay){
-  if(length(r_list) != length(pos)) stop("Length of r_list is different to length of pos.")
-  if(frame < head(pos, n=1)) return(r_list[[1]])
-  if(frame > tail(pos, n=1)) return(r_list[[length(r_list)]])
-  if(any(frame == pos)) return(r_list[which(frame == pos)])
-  
-  # between which elements
-  i <- which(sapply(2:length(pos), function(i) all(frame > pos[i-1], frame < pos[i]), USE.NAMES = F))+1
-  
-  # rasters
-  if(r.nlay > 1){
-    x <- unstack(r_list[[i-1]])
-    y <- unstack(r_list[[i]])
-  } else{
-    x <- r_list[i-1] # keep listed using [ instead of [[ to work with lapply
-    y <- r_list[i]
-  }
-  
-  # positions
-  x.pos <- pos[i-1]
-  y.pos <- pos[i]
-  v.na <- rep(NA, (y.pos-x.pos)-1)
-  pos.frame <- (frame-x.pos)+1
-  
-  #v.fun <- function(v.x, v.y) mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, xx.pos = x.pos, yy.pos = y.pos, xy.frame = frame) na.approx(c(xx, rep(NA, (yy.pos-xx.pos)-1), yy))[(xy.frame-xx.pos)+1], SIMPLIFY = T)
-  v.fun <- Vectorize(function(x, y, ...) zoo::na.approx(c(x, v.na, y), rule = 2)[pos.frame])
-  
-  r.frame <- lapply(1:length(x), function(i.layer){
-    
-    # multicore or not?
-    if(getOption("moveVis.n_cores") > 1){
-      beginCluster(getOption("moveVis.n_cores"))
-      r <- clusterR(stack(x[[i.layer]], y[[i.layer]]), fun = overlay, args = list("fun" = v.fun), export = c("pos.frame", "v.na"))
-      endCluster()
-    }else r <- overlay(stack(x[[i.layer]], y[[i.layer]]), fun = v.fun)
-    return(r)
-  })
-  
-  if(length(r.frame) > 1) r.frame <- do.call(stack, r.frame) else r.frame <- r.frame[[1]]
-}
 
 #' package startup
 #' @importFrom pbapply pboptions
@@ -598,6 +654,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
   if(is.null(getOption("moveVis.n_cores")))  options(moveVis.n_cores = 1)
+  if(is.null(getOption("moveVis.use_disk")))  options(moveVis.use_disk = FALSE)
+  if(is.null(getOption("moveVis.dir_frames"))){
+    options(moveVis.dir_frames = paste0(tempdir(), "/moveVis"))
+    if(!dir.exists(getOption("moveVis.dir_frames"))) dir.create(getOption("moveVis.dir_frames"))
+  }
   
   options(moveVis.map_api = list(osm = list(streets = "https://tile.openstreetmap.org/",
                                             streets_de = "http://a.tile.openstreetmap.de/tiles/osmde/",

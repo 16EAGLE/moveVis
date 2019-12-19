@@ -1,7 +1,7 @@
 ***
 
 ## moveVis 0.10.4
-Bug fixes. In development.
+Added parallelization and new memory settings. Bug fixes. In development.
 
 **New features:**
 
@@ -10,6 +10,7 @@ Bug fixes. In development.
 **New functions:**
 
 * `use_multicore()` lets you turn on multi-core support of `moveVis` to increase computational time through parallelization.
+* `use_disk4frames()` enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
 
 **Bug fixes:**
 

@@ -149,7 +149,7 @@
     <div id="movevis-0-10-4" class="section level2">
 <h2 class="hasAnchor">
 <a href="#movevis-0-10-4" class="anchor"></a>moveVis 0.10.4</h2>
-<p>Bug fixes. In development.</p>
+<p>Added parallelization and new memory settings. Bug fixes. In development.</p>
 <p><strong>New features:</strong></p>
 <ul>
 <li>Many computationally expensive <code>moveVis</code> tasks can now be parallelized, as multi-core support for <code>moveVis</code> has been implemented.</li>
@@ -157,7 +157,9 @@
 <p><strong>New functions:</strong></p>
 <ul>
 <li>
-<code><a href="../reference/use_multicore.html">use_multicore()</a></code> lets you turn on multi-core support of <code>moveVis</code> to increase computational time through parallelization.</li>
+<code><a href="../reference/settings.html">use_multicore()</a></code> lets you turn on multi-core support of <code>moveVis</code> to increase computational time through parallelization.</li>
+<li>
+<code><a href="../reference/settings.html">use_disk4frames()</a></code> enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.</li>
 </ul>
 <p><strong>Bug fixes:</strong></p>
 <ul>
