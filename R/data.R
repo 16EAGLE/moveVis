@@ -28,7 +28,7 @@
 #' @usage data(whitestork_data)
 #' @docType data
 #' 
-"whitestork_data"
+"df"
 
 #' Exemplary manipulated NDVI data
 #' 
