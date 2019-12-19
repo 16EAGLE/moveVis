@@ -546,7 +546,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(r_list)
 }
 
-
 #' create interpolated layer by frame position
 #' @importFrom raster beginCluster clusterR overlay endCluster
 #' @importFrom utils head
