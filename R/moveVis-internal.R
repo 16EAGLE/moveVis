@@ -509,7 +509,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' create interpolated layer by frame position
 #' @importFrom utils head tail
 #' @importFrom parallel clusterExport
-#' @importFrom raster clusterR overlay brick unstack
+#' @importFrom raster clusterR overlay brick unstack stack
 #' @noRd
 .int2frames <- function(r_list, pos, frames, n.rlay, cl){
   i.frames <- frames
@@ -617,7 +617,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       
       # start cluster and interpolate over all frames or badge-wise
       if(getOption("moveVis.n_cores") > 1) cl <- makeCluster(getOption("moveVis.n_cores"))
-      if(is.FALSE(getOption("moveVis.use_disk"))){
+      if(isFALSE(getOption("moveVis.use_disk"))){
         r_list <- .int2frames(r_list, pos = pos.df$frame, frames = unique(m.df$frame), n.rlay = n.rlay, cl = cl)
       } else{
         
