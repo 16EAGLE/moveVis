@@ -517,11 +517,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # get frames outside shoulders not to be interpolated
   r.frames <- rep(list(NULL), length(i.frames))
   early <- i.frames < head(pos, n=1)
-  if(any(early)) r.frames[which(early)] <- r_list[which(early)]
+  if(any(early)) r.frames[i.frames[which(early)]] <- head(r_list, n=1)
   i.frames <- i.frames[!early]
   
   late <- i.frames > tail(pos, n=1)
-  if(any(late)) r.frames[which(late)] <- r_list[which(late)]
+  if(any(late)) r.frames[i.frames[which(late)]] <- tail(r_list, n=1)
   i.frames <- i.frames[!late]
   
   exist <- match(i.frames, pos)
