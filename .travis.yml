@@ -3,6 +3,10 @@ r:
   - oldrel
   - release
   - devel
+env:
+  - moveVis_n_cores=1
+  - moveVis_test_maps=FALSE
+
 sudo: required
 
 before_install:

@@ -13,7 +13,7 @@ if(isTRUE(test_maps)){
   
     frames_types <- lapply(test_services, function(service) lapply(get_maptypes(service), function(x, s = service){
       cat(paste0(" ", s, ": ", x, "\n"))
-      frames <- frames_spatial(m.aligned, map_service = s, map_type = x, map_token = Sys.getenv("moveVis.map_token"),
+      frames <- frames_spatial(m.aligned, map_service = s, map_type = x, map_token = Sys.getenv("moveVis_map_token"),
                                map_dir = test_dir, verbose = F)
       expect_is(frames, "list")
       expect_length(frames, 180)
