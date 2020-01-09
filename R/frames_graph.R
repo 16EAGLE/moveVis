@@ -73,7 +73,7 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
-frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, return_data = FALSE, graph_type = "flow", path_size = 1, path_legend = TRUE, path_legend_title = "Names", 
+frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_legend = TRUE, path_legend_title = "Names", 
                          val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T){
 
   ## check input arguments
@@ -120,12 +120,12 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   .stats(max(m.df$frame))
   
   ## create raster list
-  r_list <- .rFrames(r_list, r_times, m.df, .ext(m.df, st_crs(proj4string(m))), fade_raster = fade_raster)
-  m.df$value <- sapply(1:nrow(m.df), function(i) extract(r_list[[1]][[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F)
+  r_list <- .rFrames(r_list, r_times, m.df, .ext(m.df, st_crs(proj4string(m))), fade_raster = fade_raster, crop_raster = crop_raster)
+  m.df$value <- sapply(1:nrow(m.df), function(i) extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F)
   
   ## create value sequence
-  if(is.null(val_min)) val_min <- floor(min(sapply(r_list[[1]], minValue), na.rm = T))
-  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list[[1]], maxValue), na.rm = T))
+  if(is.null(val_min)) val_min <- floor(min(sapply(r_list, minValue), na.rm = T))
+  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list, maxValue), na.rm = T))
   val_digits <- nchar(strsplit(as.character(val_by), "[.]")[[1]][2])
   if(is.na(val_digits)) val_digits <- 0
   val_seq <- seq(val_min, val_max, by = val_by)

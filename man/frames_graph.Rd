@@ -5,9 +5,10 @@
 \title{Create frames of movement-environment interaction graphs for animation}
 \usage{
 frames_graph(m, r_list, r_times, r_type = "gradient",
-  fade_raster = FALSE, return_data = FALSE, graph_type = "flow",
-  path_size = 1, path_legend = TRUE, path_legend_title = "Names",
-  val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T)
+  fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE,
+  graph_type = "flow", path_size = 1, path_legend = TRUE,
+  path_legend_title = "Names", val_min = NULL, val_max = NULL,
+  val_by = 0.1, verbose = T)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
@@ -19,6 +20,8 @@ frames_graph(m, r_list, r_times, r_type = "gradient",
 \item{r_type}{character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
 
 \item{fade_raster}{logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.}
+
+\item{crop_raster}{logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.}
 
 \item{return_data}{logical, if \code{TRUE}, instead of a list of frames, a \code{data.frame} containing the values extracted from \code{r_list} per individual, location and time is returned. This \code{data.frame} can be used to create your own multi- or monotemporal \code{ggplot2} movement-environemnt interaction graphs.}
 
