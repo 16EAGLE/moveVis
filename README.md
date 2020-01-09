@@ -104,7 +104,7 @@ frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
 frames[[100]] # preview one of the frames, e.g. the 100th frame
 
 # animate frames
-animate_frames(frames, out_file = "/full/path/to/moveVis.gif")
+animate_frames(frames, out_file = "moveVis.gif")
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
