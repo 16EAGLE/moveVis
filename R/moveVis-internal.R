@@ -526,7 +526,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   
   exist <- match(i.frames, pos)
   if(any(!is.na(exist))){
-    r.frames[which(!is.na(exist))] <- r_list[na.omit(exist)]
+    r.frames[i.frames[which(!is.na(exist))]] <- r_list[na.omit(exist)]
     i.frames <- i.frames[-which(!is.na(exist))]
   }
   
