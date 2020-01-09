@@ -163,7 +163,7 @@
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_01.png"></p>
 <p>You can pass any list of frames like the one we just created to <code><a href="../reference/animate_frames.html">animate_frames()</a></code>. This function will turn your frames into an animation, written as a GIF image or a video file. For now, we do not want to add any customization to <code>frames</code> and just create a <code>GIF</code> from it. If you are not sure, which output formats can be used, run <code><a href="../reference/suggest_formats.html">suggest_formats()</a></code> that returns you a vector of file suffixes that can be created on your system. For making a <code>GIF</code> from <code>frames</code>, just run:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_1.gif"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"example_1.gif"</span>)</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
 <p>We have just used an <code>OSM</code> base map that does not contain any map labels. How would the same frames look like with a standard <code>OSM</code> streets base map?</p>
@@ -181,7 +181,7 @@
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_03.png"></p>
 <p>Finally, animate the newly created frames:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/example_1b.gif"</span>, <span class="dt">width =</span> <span class="dv">700</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">80</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"example_1b.gif"</span>, <span class="dt">width =</span> <span class="dv">700</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">80</span>)</a></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1b.gif"></p>
   </div>

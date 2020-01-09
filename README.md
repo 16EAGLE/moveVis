@@ -78,6 +78,10 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 #### Viewing movement tracks
 * `view_spatial()` displays movement tracks on an interactive `mapview` or `leaflet` map.
 
+#### Processing settings
+* `use_multicore()` enables multi-core usage for computational expensive processing steps.
+* `use_disk4frames()` enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
+
 ## Get started
 
 The following example shows how to make a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of `ggplot2` frames and turning these frames into an animated `GIF`:

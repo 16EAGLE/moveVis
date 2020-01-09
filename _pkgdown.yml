@@ -79,10 +79,16 @@ reference:
   desc: View movement tracks
   contents:
   - view_spatial
+- title: Procesing settings
+  desc: Control session-wide settings
+  contents:
+  - use_multicore
+  - use_disk4frames
 - title: Other help pages
   contents:
   - move_data
   - basemap_data
+  - df
   - moveVis-package
   - '%>%'
 

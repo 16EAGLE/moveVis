@@ -201,6 +201,16 @@
 <code><a href="reference/view_spatial.html">view_spatial()</a></code> displays movement tracks on an interactive <code>mapview</code> or <code>leaflet</code> map.</li>
 </ul>
 </div>
+<div id="processing-settings" class="section level4">
+<h4 class="hasAnchor">
+<a href="#processing-settings" class="anchor"></a>Processing settings</h4>
+<ul>
+<li>
+<code><a href="reference/settings.html">use_multicore()</a></code> enables multi-core usage for computational expensive processing steps.</li>
+<li>
+<code><a href="reference/settings.html">use_disk4frames()</a></code> enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.</li>
+</ul>
+</div>
 </div>
 <div id="get-started" class="section level2">
 <h2 class="hasAnchor">
@@ -227,7 +237,7 @@
 <a class="sourceLine" id="cb4-19" data-line-number="19">frames[[<span class="dv">100</span>]] <span class="co"># preview one of the frames, e.g. the 100th frame</span></a>
 <a class="sourceLine" id="cb4-20" data-line-number="20"></a>
 <a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co"># animate frames</span></a>
-<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"/full/path/to/moveVis.gif"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"moveVis.gif"</span>)</a></code></pre></div>
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 </div>
 <div id="examples" class="section level2">

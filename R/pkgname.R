@@ -25,6 +25,8 @@
 #'    \item \code{\link{suggest_formats}} returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
 #'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 #'    \item \code{\link{view_spatial}} displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
+#'    \item \code{\link{use_multicore}} enables multi-core usage for computational expensive processing steps. 
+#'    \item \code{\link{use_disk4frames}} enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
 #' }
 #' 
 #' The majority of this functions can be used with the forward pipe operater \code{\%>\%}, which is re-exported by \code{moveVis}.

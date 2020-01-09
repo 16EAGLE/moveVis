@@ -180,6 +180,8 @@ The <code>moveVis</code> package is closely connected to the <code>move</code> p
 <li><p><code><a href='suggest_formats.html'>suggest_formats</a></code> returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href='animate_frames.html'>animate_frames</a></code> on your system.</p></li>
 <li><p><code><a href='animate_frames.html'>animate_frames</a></code> creates an animation from a list of frames computed with <code><a href='frames_spatial.html'>frames_spatial</a></code> or <code><a href='frames_graph.html'>frames_graph</a></code>.</p></li>
 <li><p><code><a href='view_spatial.html'>view_spatial</a></code> displays movement tracks on an interactive <code>mapview</code> or <code>leaflet</code> map.</p></li>
+<li><p><code><a href='settings.html'>use_multicore</a></code> enables multi-core usage for computational expensive processing steps.</p></li>
+<li><p><code><a href='settings.html'>use_disk4frames</a></code> enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.</p></li>
 </ul>
 
 <p>The majority of this functions can be used with the forward pipe operater <code>%&gt;%</code>, which is re-exported by <code>moveVis</code>.</p>
