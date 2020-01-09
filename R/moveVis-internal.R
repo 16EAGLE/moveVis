@@ -92,7 +92,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   #   })))
   # }))
   
-  m.df$frame <- as.numeric(mapvalues(m.df$time_chr, unique(m.df$time_chr), 1:length(unique(m.df$time_chr))))
+  m.df$frame <- sapply(m.df$time, function(x) which(sort(unique(m.df$time)) == x))
   # m.df <- m.df[order(m.df$frame),]
   
   ## handle colours, either provided as a field in m or argument or computed randomly
@@ -531,10 +531,10 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   }
   
   # between which elements
-  i.frames <- sapply(2:length(pos), function(i){
+  i.frames <- lapply(2:length(pos), function(i){
     y <- i.frames > pos[i-1] & i.frames < pos[i]
     if(any(y)) return(i.frames[which(y)])
-  }, USE.NAMES = F)
+  })
   i.rasters <- which(!sapply(i.frames, is.null))+1
   i.frames <- i.frames[i.rasters-1]
   
