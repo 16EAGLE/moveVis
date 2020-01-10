@@ -4,9 +4,16 @@
 \alias{add_labels}
 \title{Add labels to frames}
 \usage{
-add_labels(frames, title = waiver(), subtitle = waiver(),
-  caption = waiver(), tag = waiver(), x = waiver(), y = waiver(),
-  verbose = TRUE)
+add_labels(
+  frames,
+  title = waiver(),
+  subtitle = waiver(),
+  caption = waiver(),
+  tag = waiver(),
+  x = waiver(),
+  y = waiver(),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

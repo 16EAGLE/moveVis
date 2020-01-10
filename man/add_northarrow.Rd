@@ -4,10 +4,19 @@
 \alias{add_northarrow}
 \title{Add north arrow to frames}
 \usage{
-add_northarrow(frames, height = 0.05, position = "bottomright",
-  x = NULL, y = NULL, colour = "black", size = 1,
-  label_text = "N", label_margin = 0.4, label_size = 5,
-  verbose = TRUE)
+add_northarrow(
+  frames,
+  height = 0.05,
+  position = "bottomright",
+  x = NULL,
+  y = NULL,
+  colour = "black",
+  size = 1,
+  label_text = "N",
+  label_margin = 0.4,
+  label_size = 5,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

@@ -4,9 +4,18 @@
 \alias{add_scalebar}
 \title{Add scalebar to frames}
 \usage{
-add_scalebar(frames, distance = NULL, height = 0.015,
-  position = "bottomleft", x = NULL, y = NULL, colour = "black",
-  label_margin = 1.2, units = "km", verbose = TRUE)
+add_scalebar(
+  frames,
+  distance = NULL,
+  height = 0.015,
+  position = "bottomleft",
+  x = NULL,
+  y = NULL,
+  colour = "black",
+  label_margin = 1.2,
+  units = "km",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

@@ -4,9 +4,16 @@
 \alias{add_colourscale}
 \title{Add scale to frames}
 \usage{
-add_colourscale(frames, type, colours, labels = waiver(),
-  na.colour = "grey50", na.show = TRUE, legend_title = NULL,
-  verbose = TRUE)
+add_colourscale(
+  frames,
+  type,
+  colours,
+  labels = waiver(),
+  na.colour = "grey50",
+  na.show = TRUE,
+  legend_title = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

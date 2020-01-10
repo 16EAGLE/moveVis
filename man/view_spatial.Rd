@@ -4,9 +4,16 @@
 \alias{view_spatial}
 \title{View movements on an interactive map}
 \usage{
-view_spatial(m, render_as = "mapview", time_labels = TRUE,
-  stroke = TRUE, path_colours = NA, path_legend = TRUE,
-  path_legend_title = "Names", verbose = TRUE)
+view_spatial(
+  m,
+  render_as = "mapview",
+  time_labels = TRUE,
+  stroke = TRUE,
+  path_colours = NA,
+  path_legend = TRUE,
+  path_legend_title = "Names",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack}. May contain a column named \code{colour} to control path colours (see \code{details}).}

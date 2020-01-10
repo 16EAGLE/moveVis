@@ -4,8 +4,13 @@
 \alias{align_move}
 \title{Align movement data}
 \usage{
-align_move(m, res = "min", digit = "min", unit = "secs",
-  spaceMethod = "greatcircle")
+align_move(
+  m,
+  res = "min",
+  digit = "min",
+  unit = "secs",
+  spaceMethod = "greatcircle"
+)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).}

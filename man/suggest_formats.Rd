@@ -4,8 +4,9 @@
 \alias{suggest_formats}
 \title{Suggest known file formats}
 \usage{
-suggest_formats(suggested = c("gif", "mov", "mp4", "flv", "avi", "mpeg",
-  "3gp", "ogg"))
+suggest_formats(
+  suggested = c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")
+)
 }
 \arguments{
 \item{suggested}{character, a vector of suggested file formats which are checked to be known by the available renderers on the running system. By default, these are \code{c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")}.}

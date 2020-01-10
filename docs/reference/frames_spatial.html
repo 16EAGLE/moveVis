@@ -153,16 +153,39 @@
     <p><code>frames_spatial</code> creates a list of <code>ggplot2</code> maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href='animate_frames.html'>animate_frames</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>frames_spatial</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
-  <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>crop_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>,
-  <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"streets"</span>, <span class='kw'>map_res</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>, <span class='kw'>equidistant</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
-  <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>, <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>path_fade</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>, <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>,
-  <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>frames_spatial</span>(
+  <span class='no'>m</span>,
+  <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
+  <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>crop_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>map_service</span> <span class='kw'>=</span> <span class='st'>"osm"</span>,
+  <span class='kw'>map_type</span> <span class='kw'>=</span> <span class='st'>"streets"</span>,
+  <span class='kw'>map_res</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>map_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>map_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>margin_factor</span> <span class='kw'>=</span> <span class='fl'>1.1</span>,
+  <span class='kw'>equidistant</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>path_size</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>path_end</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
+  <span class='kw'>path_join</span> <span class='kw'>=</span> <span class='st'>"round"</span>,
+  <span class='kw'>path_mitre</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>path_arrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>path_colours</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>path_fade</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>path_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>path_legend_title</span> <span class='kw'>=</span> <span class='st'>"Names"</span>,
+  <span class='kw'>tail_length</span> <span class='kw'>=</span> <span class='fl'>19</span>,
+  <span class='kw'>tail_size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

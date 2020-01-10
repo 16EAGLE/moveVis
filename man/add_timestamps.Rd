@@ -4,8 +4,7 @@
 \alias{add_timestamps}
 \title{Add timestamps to frames}
 \usage{
-add_timestamps(frames, m = NULL, x = NULL, y = NULL, ...,
-  verbose = TRUE)
+add_timestamps(frames, m = NULL, x = NULL, y = NULL, ..., verbose = TRUE)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

@@ -4,11 +4,23 @@
 \alias{frames_graph}
 \title{Create frames of movement-environment interaction graphs for animation}
 \usage{
-frames_graph(m, r_list, r_times, r_type = "gradient",
-  fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE,
-  graph_type = "flow", path_size = 1, path_legend = TRUE,
-  path_legend_title = "Names", val_min = NULL, val_max = NULL,
-  val_by = 0.1, verbose = T)
+frames_graph(
+  m,
+  r_list,
+  r_times,
+  r_type = "gradient",
+  fade_raster = FALSE,
+  crop_raster = TRUE,
+  return_data = FALSE,
+  graph_type = "flow",
+  path_size = 1,
+  path_legend = TRUE,
+  path_legend_title = "Names",
+  val_min = NULL,
+  val_max = NULL,
+  val_by = 0.1,
+  verbose = T
+)
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}

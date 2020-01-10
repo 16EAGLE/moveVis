@@ -4,8 +4,16 @@
 \alias{add_text}
 \title{Add static or dynamic text to frames}
 \usage{
-add_text(frames, labels, x, y, colour = "black", size = 3,
-  type = "text", verbose = TRUE)
+add_text(
+  frames,
+  labels,
+  x,
+  y,
+  colour = "black",
+  size = 3,
+  type = "text",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}

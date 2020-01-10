@@ -89,9 +89,9 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   if(out_ext == "gif"){
     if(length(frames) > 800) out("The number of frames exceeds 800 and the GIF format is used. This format may not be suitable for animations with a high number of frames, since it causes large file sizes. Consider using a video file format instead.", type = 2)
-    save_gif(.lapply(frames, function(x) moveVis:::quiet(print(x))), gif_file = out_file, width = width, height = height, delay = (1/fps), progress = verbose, res = res, ...)
+    save_gif(.lapply(frames, function(x) quiet(print(x)), moveVis.export = "quiet"), gif_file = out_file, width = width, height = height, delay = (1/fps), progress = verbose, res = res, ...)
   }else{
-    av_capture_graphics(.lapply(frames, function(x) moveVis:::quiet(print(x))), output = out_file, width = width, height = height, res = res, framerate = fps, verbose = verbose, ...) #, vfilter =' framerate=fps=10') 
+    av_capture_graphics(.lapply(frames, function(x) quiet(print(x)), moveVis.export = "quiet"), output = out_file, width = width, height = height, res = res, framerate = fps, verbose = verbose, ...) #, vfilter =' framerate=fps=10') 
   }
   if(isTRUE(display)) utils::browseURL(out_file)
 }

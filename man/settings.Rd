@@ -8,8 +8,12 @@
 \usage{
 use_multicore(n_cores = NULL, verbose = TRUE)
 
-use_disk4frames(use_disk = TRUE, dir_frames = paste0(tempdir(),
-  "/moveVis"), n_memory_frames = NULL, verbose = TRUE)
+use_disk4frames(
+  use_disk = TRUE,
+  dir_frames = paste0(tempdir(), "/moveVis"),
+  n_memory_frames = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{n_cores}{numeric, optional, number of cores to be used. If not defined, the number of cores will be detected automatically (\code{n-1} cores will be used with \code{n} being the number of cores available).}
