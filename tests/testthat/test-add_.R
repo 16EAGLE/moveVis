@@ -20,6 +20,6 @@ test_that("add_ functions, gradient", {
     y <- rnorm(nrow(x)-1, mean = 0.00001, sd = 0.0001) 
     x + c(y, y[1])
   })
-  expect_length(expect_is(add_gg(frames, gg = expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black")), data = data), "list"), 180)
+  expect_length(expect_is(add_gg(frames, gg = ggplot2::expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black")), data = data), "list"), 180)
 })
 #}
