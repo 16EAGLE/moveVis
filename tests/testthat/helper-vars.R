@@ -21,7 +21,7 @@ if(test_dir != ""){
 }else{
   test_dir <- tempdir()
 }
-cat("Test directory: ", test_dir)
+cat("Test directory: ", test_dir, "\n")
 
 data("move_data", package = "moveVis", envir = environment())
 data("basemap_data", package = "moveVis", envir = environment())

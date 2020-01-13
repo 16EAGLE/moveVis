@@ -51,19 +51,19 @@ test_that("frames_spatial (different extent/proj settings)", {
   ext <- raster::extent(m)*1.1
 
   # custom extent
-  frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], ext = ext, verbose = F)
+  frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, ext = ext, verbose = F)
   expect_is(frames, "list")
   expect_length(frames, 180)
   expect_is(frames[[1]], "ggplot")
 
   # equidistant FALSE
-  frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], equidistant = F, verbose = F)
+  frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F)
   expect_is(frames, "list")
   expect_length(frames, 180)
   expect_is(frames[[1]], "ggplot")
 
   # equidistant on TRUE
-  frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], equidistant = T, ext = ext, verbose = F)
+  frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = T, ext = ext, verbose = F)
   expect_is(frames, "list")
   expect_length(frames, 180)
   expect_is(frames[[1]], "ggplot")
@@ -71,7 +71,7 @@ test_that("frames_spatial (different extent/proj settings)", {
   # other projections
   frames <- lapply(c("+init=epsg:32632", "+init=epsg:3857"), function(p){
     m <- sp::spTransform(m, raster::crs(p))
-    frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], equidistant = F, map_res = 0.7, verbose = F)
+    frames <- frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F)
     expect_is(frames, "list")
     expect_length(frames, 180)
     expect_is(frames[[1]], "ggplot")
