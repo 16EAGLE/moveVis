@@ -41,3 +41,6 @@ script:
 
 after_success:
   - Rscript -e 'covr::codecov()'
+
+after_failure:
+  - cat '/home/travis/build/16EAGLE/moveVis/moveVis.Rcheck/00check.log'
