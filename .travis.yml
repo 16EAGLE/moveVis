@@ -37,10 +37,9 @@ install:
 
 script:
   - R CMD build .
-  - R CMD check *tar.gz
+  - R CMD check *tar.gz --no-tests
+  - R -e 'devtools::test("/home/travis/build/16EAGLE/moveVis/")'
 
 after_success:
   - Rscript -e 'covr::codecov()'
 
-after_failure:
-  - cat '/home/travis/build/16EAGLE/moveVis/moveVis.Rcheck/00check.log'
