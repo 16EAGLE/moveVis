@@ -59,6 +59,7 @@ use_disk4frames <- function(use_disk = TRUE, dir_frames = paste0(tempdir(), "/mo
   
   # checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
+  if(!dir.exists(dir_frames)) dir.create(dir_frames, recursive = T)
   if(!is.null(n_memory_frames)) if(n_memory_frames < 3){
     out("Minimum number of frames in memory is 3.", type = 2)
     n_memory_frames <- 3

@@ -390,13 +390,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   })
 }
 
-
-#' add to frames
-#' @noRd 
-.addToFrames <- function(frames, eval) lapply(frames, function(x, y = eval){
-  x + y
-})
-
 #' convert units
 #' @noRd 
 .convert_units <- function(unit){
@@ -492,43 +485,29 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # seems to be a bug
 }
 
-#' interpolate over NAs
-#' @importFrom zoo na.approx
-#' @noRd
-#.approxNA <- function(x) if(all(is.na(x))) rep(NA, length(x)) else na.approx(x, rule = 2)
-.approxNA <- function(x){
-  y <- na.approx(x, rule = 2)
-  
-  if(length(y) == length(x)) y else{
-    if(length(y) == 0) return(rep(NA, length(x)))
-    if(length(y) == 1) return(rep(y, length(x)))
-  }
-}
-
-
 #' create interpolated layer by frame position
 #' @importFrom utils head tail
 #' @importFrom parallel clusterExport
 #' @importFrom raster clusterR overlay brick unstack stack
 #' @noRd
 .int2frames <- function(r_list, pos, frames, n.rlay, cl){
-  i.frames <- frames
   
   # get frames outside shoulders not to be interpolated
-  r.frames <- rep(list(NULL), length(i.frames))
-  early <- i.frames < head(pos, n=1)
-  if(any(early)) r.frames[i.frames[which(early)]] <- head(r_list, n=1)
-  i.frames <- i.frames[!early]
+  r.frames <- rep(list(NULL), length(frames))
+  names(r.frames) <- frames
+  early <- as.numeric(names(r.frames)) < head(pos, n=1)
+  if(any(early)) r.frames[early] <- head(r_list, n=1)
   
-  late <- i.frames > tail(pos, n=1)
-  if(any(late)) r.frames[i.frames[which(late)]] <- tail(r_list, n=1)
-  i.frames <- i.frames[!late]
+  late <- as.numeric(names(r.frames)) > tail(pos, n=1)
+  if(any(late)) r.frames[late] <- tail(r_list, n=1)
   
-  exist <- match(i.frames, pos)
+  exist <- match(as.numeric(names(r.frames)), pos)
   if(any(!is.na(exist))){
-    r.frames[i.frames[which(!is.na(exist))]] <- r_list[na.omit(exist)]
-    i.frames <- i.frames[-which(!is.na(exist))]
+    r.frames[!is.na(exist)] <- r_list[na.omit(exist)]
   }
+  
+  # collect remaining frame ids
+  i.frames <- as.numeric(names(r.frames)[sapply(r.frames, is.null)])
   
   # between which elements
   i.frames <- lapply(2:length(pos), function(i){
@@ -575,7 +554,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
         r.frames[[match(i.frames[[which(i.rasters == i)]], frames)[j]]] <- brick(lapply(1:n.rlay, function(lay) r[[lay]][[j]]))
       }
     } else{
-      r.frames[match(i.frames[[which(i.rasters == i)]], frames)] <- if(inherits(r[[1]], "RasterLayer")) r else r.frames[match(i.frames[[which(i.rasters == i)]], frames)] <- unstack(r[[1]])
+      r.frames[match(i.frames[[which(i.rasters == i)]], frames)] <- if(inherits(r[[1]], "RasterLayer")) r else unstack(r[[1]])
     }
   }
   return(r.frames)
@@ -623,7 +602,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
         
         # create frames badge-wise?
         badges <- unique(unlist(sapply(2:length(pos.df$frame), function(i){
-          c(seq(pos.df$frame[i-1], pos.df$frame[i], by = getOption("moveVis.n_memory_frames")), pos.df$frame[i])
+          c(seq(pos.df$frame[i-1], pos.df$frame[i],
+                by = if(is.null(getOption("moveVis.n_memory_frames"))) length(unique(m.df$frame)) else getOption("moveVis.n_memory_frames")),
+          pos.df$frame[i])
         }, simplify = F)))
         
         # write to drive instead of memory
