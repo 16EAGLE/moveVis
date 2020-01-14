@@ -3,13 +3,13 @@
 \name{settings}
 \alias{settings}
 \alias{use_multicore}
-\alias{use_disk4frames}
+\alias{use_disk}
 \title{moveVis settings}
 \usage{
 use_multicore(n_cores = NULL, verbose = TRUE)
 
-use_disk4frames(
-  use_disk = TRUE,
+use_disk(
+  frames_to_disk = TRUE,
   dir_frames = paste0(tempdir(), "/moveVis"),
   n_memory_frames = NULL,
   verbose = TRUE
@@ -20,7 +20,7 @@ use_disk4frames(
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 
-\item{use_disk}{logical, whether to use disk space for creating frames or not. If \code{TRUE}, frames will be written to \code{dir_frames}, clearing memory.}
+\item{frames_to_disk}{logical, whether to use disk space for creating frames or not. If \code{TRUE}, frames will be written to \code{dir_frames}, clearing memory.}
 
 \item{dir_frames}{character, directory where to save frame during frames creating.}
 
@@ -35,7 +35,7 @@ These functions control session-wide settings that can increase processing speed
 \details{
 \code{use_multicore} enables multi-core usage of \code{moveVis} by setting the maximum number of cores to be used. This can strongly increase the speed of creating frames.
 
-\code{use_disk4frames} enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
+\code{use_disk} enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
 
 For most tasks, \code{moveVis} is able to use multiple cores to increase computational times through parallelization. By default, multi-core usage is disabled. This function saves the number of cores that \code{moveVis} should use to the global option \code{"moveVis.n_cores"} that can be printed using \code{getOption("moveVis.n_cores")}.
 
@@ -52,6 +52,6 @@ use_multicore(n_cores = 2)
 
 # allow disk use with default directory
 # and maxiumum of 50 frames in memory
-use_disk4frames(use_disk = TRUE, n_memory_frames = 50)
+use_disk(frames_to_disk = TRUE, n_memory_frames = 50)
 
 }

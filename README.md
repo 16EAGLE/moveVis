@@ -80,7 +80,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 #### Processing settings
 * `use_multicore()` enables multi-core usage for computational expensive processing steps.
-* `use_disk4frames()` enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
+* `use_disk()` enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
 
 ## Get started
 

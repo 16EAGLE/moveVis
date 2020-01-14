@@ -155,8 +155,8 @@
 
     <pre class="usage"><span class='fu'>use_multicore</span>(<span class='kw'>n_cores</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>use_disk4frames</span>(
-  <span class='kw'>use_disk</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+<span class='fu'>use_disk</span>(
+  <span class='kw'>frames_to_disk</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>dir_frames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"/moveVis"</span>),
   <span class='kw'>n_memory_frames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
@@ -174,7 +174,7 @@
       <td><p>logical, if <code>TRUE</code>, messages and progress information are displayed on the console (default).</p></td>
     </tr>
     <tr>
-      <th>use_disk</th>
+      <th>frames_to_disk</th>
       <td><p>logical, whether to use disk space for creating frames or not. If <code>TRUE</code>, frames will be written to <code>dir_frames</code>, clearing memory.</p></td>
     </tr>
     <tr>
@@ -193,7 +193,7 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>use_multicore</code> enables multi-core usage of <code>moveVis</code> by setting the maximum number of cores to be used. This can strongly increase the speed of creating frames.</p>
-<p><code>use_disk4frames</code> enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.</p>
+<p><code>use_disk</code> enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.</p>
 <p>For most tasks, <code>moveVis</code> is able to use multiple cores to increase computational times through parallelization. By default, multi-core usage is disabled. This function saves the number of cores that <code>moveVis</code> should use to the global option <code>"moveVis.n_cores"</code> that can be printed using <code><a href='https://rdrr.io/r/base/options.html'>getOption("moveVis.n_cores")</a></code>.</p>
 <p>How much memory is needed to create frames depends on the frame resolution (number of pixels) and the number of frames. Depending on how much memory is available it can make sense to allow disk usage and set a maximum number of frames to be hold in memory that won't fill up the available memory completely.</p>
 <p><code>moveVis</code> uses the <code>parallel</code> package for parallelization.</p>
@@ -207,7 +207,7 @@
 
 <span class='co'># allow disk use with default directory</span>
 <span class='co'># and maxiumum of 50 frames in memory</span>
-<span class='fu'>use_disk4frames</span>(<span class='kw'>use_disk</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>n_memory_frames</span> <span class='kw'>=</span> <span class='fl'>50</span>)</pre>
+<span class='fu'>use_disk</span>(<span class='kw'>frames_to_disk</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>n_memory_frames</span> <span class='kw'>=</span> <span class='fl'>50</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

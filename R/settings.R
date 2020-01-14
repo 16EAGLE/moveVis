@@ -4,11 +4,11 @@
 #' 
 #' \code{use_multicore} enables multi-core usage of \code{moveVis} by setting the maximum number of cores to be used. This can strongly increase the speed of creating frames.
 #' 
-#' \code{use_disk4frames} enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
+#' \code{use_disk} enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
 #' 
 #' @inheritParams frames_spatial
 #' @param n_cores numeric, optional, number of cores to be used. If not defined, the number of cores will be detected automatically (\code{n-1} cores will be used with \code{n} being the number of cores available).
-#' @param use_disk logical, whether to use disk space for creating frames or not. If \code{TRUE}, frames will be written to \code{dir_frames}, clearing memory.
+#' @param frames_to_disk logical, whether to use disk space for creating frames or not. If \code{TRUE}, frames will be written to \code{dir_frames}, clearing memory.
 #' @param dir_frames character, directory where to save frame during frames creating.
 #' @param n_memory_frames numeric, maximum number of frames allowed to be hold in memory. This number defines after how many frames memory should be cleared by writing frames in memory to disk.
 #' 
@@ -30,7 +30,7 @@
 #' 
 #' # allow disk use with default directory
 #' # and maxiumum of 50 frames in memory
-#' use_disk4frames(use_disk = TRUE, n_memory_frames = 50)
+#' use_disk(frames_to_disk = TRUE, n_memory_frames = 50)
 #' 
 #' @name settings
 #' @export
@@ -55,7 +55,7 @@ use_multicore <- function(n_cores = NULL, verbose = TRUE){
 
 #' @rdname settings
 #' @export
-use_disk4frames <- function(use_disk = TRUE, dir_frames = paste0(tempdir(), "/moveVis"), n_memory_frames = NULL, verbose = TRUE){
+use_disk <- function(frames_to_disk = TRUE, dir_frames = paste0(tempdir(), "/moveVis"), n_memory_frames = NULL, verbose = TRUE){
   
   # checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -66,11 +66,11 @@ use_disk4frames <- function(use_disk = TRUE, dir_frames = paste0(tempdir(), "/mo
   }
   
   # options
-  if(isTRUE(use_disk)){
-    options(moveVis.use_disk = TRUE, moveVis.dir_frames = dir_frames, moveVis.n_memory_frames = n_memory_frames)
+  if(isTRUE(frames_to_disk)){
+    options(moveVis.frames_to_disk = TRUE, moveVis.dir_frames = dir_frames, moveVis.n_memory_frames = n_memory_frames)
     out(paste0("Disk usage for creating frames enabled.\nDirectory: '", dir_frames, "'\nMaximum number of frames which will be hold in memory: ", if(is.null(n_memory_frames)) "auto." else as.character(n_memory_frames)))
   } else{
-    options(moveVis.use_disk = FALSE, moveVis.dir_frames = NULL, moveVis.n_memory_frames = NULL)
+    options(moveVis.frames_to_disk = FALSE, moveVis.dir_frames = NULL, moveVis.n_memory_frames = NULL)
     out(paste0("Disk usage for creating frames disabled.\nAll frames will be hold in memory."))
   }
 }

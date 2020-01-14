@@ -5,12 +5,12 @@ Added parallelization and new memory settings. Bug fixes. In development.
 
 **New features:**
 
-* Many computationally expensive `moveVis` tasks can now be parallelized, as multi-core support for `moveVis` has been implemented.
+* Many computationally expensive `moveVis` tasks can now be parallelized, as multi-core support for `moveVis` has been implemented (see `use_multicore()`)
 
 **New functions:**
 
 * `use_multicore()` lets you turn on multi-core support of `moveVis` to increase computational time through parallelization.
-* `use_disk4frames()` enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
+* `use_disk()` enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
 
 **Bug fixes:**
 

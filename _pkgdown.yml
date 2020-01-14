@@ -83,7 +83,7 @@ reference:
   desc: Control session-wide settings
   contents:
   - use_multicore
-  - use_disk4frames
+  - use_disk
 - title: Other help pages
   contents:
   - move_data
