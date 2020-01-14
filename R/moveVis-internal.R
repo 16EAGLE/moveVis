@@ -273,8 +273,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' spatial plot function
 #' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr
+#' @importFrom RStoolbox ggRGB ggR
 #' @noRd 
-.gg_spatial <- function(r_list, r_type, m.df, m.crs, gg.ext, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
+.gg_spatial <- function(r_list, r_type, m.df, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
                         path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names",
                         tail_length = 0, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F, ...){
   
@@ -300,8 +301,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     
     ## base plot
     p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
-                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) +  theme_bw() +
-      coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax), expand = F, crs = m.crs, datum = m.crs, clip = "on")
+                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) +  theme_bw() + x$coord_sf[[1]]
+      #coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax), expand = F, crs = m.crs, datum = m.crs, clip = "on")
     #scale_y_continuous(expand = c(0,0), limits = c(gg.ext$ymin, gg.ext$ymax)) + 
     #scale_x_continuous(expand = c(0,0), limits = c(gg.ext$xmin, gg.ext$xmax)) +
     
@@ -596,7 +597,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       
       # start cluster and interpolate over all frames or badge-wise
       if(getOption("moveVis.n_cores") > 1) cl <- makeCluster(getOption("moveVis.n_cores"))
-      if(isFALSE(getOption("moveVis.use_disk"))){
+      if(isFALSE(getOption("moveVis.frames_to_disk"))){
         r_list <- .int2frames(r_list, pos = pos.df$frame, frames = unique(m.df$frame), n.rlay = n.rlay, cl = cl)
       } else{
         
@@ -635,7 +636,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
   if(is.null(getOption("moveVis.n_cores")))  options(moveVis.n_cores = 1)
-  if(is.null(getOption("moveVis.use_disk")))  options(moveVis.use_disk = FALSE)
+  if(is.null(getOption("moveVis.frames_to_disk")))  options(moveVis.frames_to_disk = FALSE)
   if(is.null(getOption("moveVis.dir_frames"))){
     options(moveVis.dir_frames = paste0(tempdir(), "/moveVis"))
     if(!dir.exists(getOption("moveVis.dir_frames"))) dir.create(getOption("moveVis.dir_frames"))

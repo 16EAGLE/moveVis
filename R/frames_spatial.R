@@ -59,7 +59,6 @@
 #' @importFrom sp proj4string
 #' @importFrom raster crs
 #' @importFrom move n.indiv moveStack
-#' @importFrom RStoolbox ggRGB ggR
 #' 
 #' @examples 
 #' library(moveVis)
@@ -209,6 +208,11 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
   
+  ## follow
+  #if(is.na(follow)){ # fixed extent?
+  m.df$coord_sf <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+                                          expand = F, crs = proj4string(m), datum = proj4string(m), clip = "on"))
+  
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
@@ -221,7 +225,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   ## create frames
   out("Creating frames...")
-  frames <- .gg_spatial(r_list = r_list, r_type = r_type, m.df = m.df, m.crs = proj4string(m), gg.ext = gg.ext, equidistant = equidistant,
+  frames <- .gg_spatial(r_list = r_list, r_type = r_type, m.df = m.df, equidistant = equidistant,
                         path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
                         path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title,
                         tail_length = tail_length, tail_size = tail_size, tail_colour = tail_colour, trace_show = trace_show,
