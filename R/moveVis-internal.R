@@ -325,7 +325,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   i <- NULL # needs to be defined for checks
   ii <- if(length(r_list) > 1) expr(i) else expr(1)
   frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                                                                       trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = r_list[[eval(ii)]], r_type = r_type, ...), moveVis.n_cores = 1)  
+                                                                     trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = r_list[[eval(ii)]], r_type = r_type, ...), moveVis.n_cores = 1)  
 }
 
 
@@ -602,11 +602,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       } else{
         
         # create frames badge-wise?
-        badges <- unique(unlist(sapply(2:length(pos.df$frame), function(i){
-          c(seq(pos.df$frame[i-1], pos.df$frame[i],
+        badges <- unique(c(unlist(sapply(2:length(pos.df$frame), function(i){
+          c(seq(if(i == 2) 1 else pos.df$frame[i-1], pos.df$frame[i],
                 by = if(is.null(getOption("moveVis.n_memory_frames"))) length(unique(m.df$frame)) else getOption("moveVis.n_memory_frames")),
           pos.df$frame[i])
-        }, simplify = F)))
+        }, simplify = F)), max(m.df$frame)))
         
         # write to drive instead of memory
         files <- unlist(sapply(2:length(badges), function(i){
