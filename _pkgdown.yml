@@ -6,7 +6,7 @@ home:
   - text: Browse source code
     href: http://github.com/16eagle/moveVis
   - text: Find out more about our work
-    href: http://remote-sensing.eu
+    href: http://remote-sensing.org
 
 navbar:
   #type: inverse
@@ -36,7 +36,7 @@ navbar:
     - icon: fa-github fa-lg
       href: http://www.github.com/16eagle
     - icon: fa-globe fa-lg
-      href: http://remote-sensing.eu
+      href: http://jakob.schwalb-willmann.de
 
 #template:
 #  params:
