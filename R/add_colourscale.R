@@ -68,7 +68,6 @@ add_colourscale <- function(frames, type, colours, labels = waiver(), na.colour 
   if(!inherits(type, "character")) out("Argument 'type' must be of type 'character'.", type = 3)
   if(!any(c("gradient", "discrete") %in% type)) out("Argument 'type' must either be 'gradient' or 'discrete'.", type = 3)
   if(!inherits(colours, "character")) out("Argument 'colours' must be of type 'character'.", type = 3)
-  if(length(colours) == 0) out("Argument 'colours' must have length greater than 0.", type = 3)
   if(all(type == "discrete", !inherits(labels, "waiver"))){
     if(!inherits(labels, "character")) out("Argument 'labels' must be of type 'character'.", type = 3)
     if(length(labels) != length(colours)) out("Arguments 'colours' and 'labels' must have equal lengths.", type = 3)

@@ -3,10 +3,15 @@ context("frames_graph")
 
 #if("frames_graph" %in% which_tests){
 test_that("frames_graph (gradient, flow)", {
+  # correct calls
   frames <- frames_graph(m.aligned, r_grad, r_times, graph_type = "flow", verbose = F)
   expect_is(frames, "list")
   expect_length(frames, 180)
   expect_is(frames[[1]], "ggplot")
+  
+  # false calls
+  expect_error(frames_graph(NA, r_grad, r_times, graph_type = "flow", verbose = F))
+  # add more
 })
 
 test_that("frames_graph (gradient, hist)", {
