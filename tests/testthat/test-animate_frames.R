@@ -8,7 +8,7 @@ test_that("animate_frames", {
   expect_null(animate_frames(frames, out_file = file.gif, verbose = F, overwrite = T, display = F))
   
   file.mov <- tempfile(tmpdir = test_dir, fileext = ".mov")
-  expect_null(animate_frames(frames, out_file = file.mov, verbose = F, overwrite = T, display = T))
+  expect_null(animate_frames(frames, out_file = file.mov, verbose = F, overwrite = T, display = F))
   
   # end pause
   expect_null(animate_frames(frames, out_file = file.mov, verbose = F, overwrite = T, display = F, end_pause = 2))
