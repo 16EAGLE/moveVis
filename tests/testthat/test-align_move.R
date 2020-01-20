@@ -23,5 +23,6 @@ test_that("align_move (default)", {
   expect_error(align_move(NA)) # wrong class
   expect_error(align_move(m, res = FALSE))
   expect_error(align_move(m, digit = FALSE))
+  expect_error(align_move(m, unit = "abc"))
 })
 #}

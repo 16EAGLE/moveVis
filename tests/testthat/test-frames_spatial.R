@@ -45,6 +45,9 @@ test_that("frames_spatial (raster, gradient)", {
   expect_is(frames[[1]], "ggplot") # single raster
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "list"), 180)
   expect_is(frames[[1]], "ggplot") # path arrow
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", trace_show = T, verbose = F), "list"), 180)
+  expect_is(frames[[1]], "ggplot") # show trace
+  
   
   # false calls
   expect_error(frames_spatial(m, r_grad, r_times, r_type = "gradient", verbose = F)) # diveriging temporal resolution (m not aligend)

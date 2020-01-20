@@ -20,3 +20,7 @@ test_that("use_disk", {
   expect_output(expect_warning(use_disk(frames_to_disk = TRUE, n_memory_frames = 2)))
   use_disk(frames_to_disk = FALSE, verbose = F)
 })
+
+test_that("onLoad", {
+  expect_invisible(moveVis:::.onLoad())
+})

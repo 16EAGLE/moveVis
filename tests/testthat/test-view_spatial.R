@@ -12,6 +12,7 @@ test_that("view_spatial", {
   expect_error(view_spatial(m, render_as = "abc"))
   expect_error(view_spatial(m, render_as = NA))
   expect_error(view_spatial(NA))
+  expect_error(view_spatial(m, path_colours = "1"))
   expect_error(view_spatial(m, path_legend = "1"))
   expect_error(view_spatial(m, time_labels = "1"))
   expect_error(view_spatial(m, path_legend_title = 1))

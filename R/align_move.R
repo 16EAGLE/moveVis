@@ -66,16 +66,16 @@ align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod
   m.length <- if(inherits(m, "MoveStack")) sapply(split(m), length) else length(m)
   if(any(m.length < 2)) out(paste0("Individual track(s) ", paste0(which(m.length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations only. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
+  ## check time.digit
+  ts <- timestamps(m)
+  time.digits <- unique(as.numeric(format(ts, .convert_units(unit))))
+  
   ## check resolution and define resolution
   if(all(!c(inherits(res, "numeric"), inherits(res, "character")))) out("Argument 'res' must either be numeric or one of c('min', 'max', 'mean').", type = 3)
   if(res == "min") res <- min(unique(unlist(timeLag(m, unit))))
   if(res == "max") res <- max(unique(unlist(timeLag(m, unit))))
   if(res == "mean") res <- round(mean(unique(unlist(timeLag(m, unit)))))
   res <- as.difftime(res, units = unit)
-  
-  ## check time.digit
-  ts <- timestamps(m)
-  time.digits <- unique(as.numeric(format(ts, .convert_units(unit))))
   
   if(all(!c(inherits(digit, "numeric"), inherits(digit, "character")))) out("Argument 'digit' must either be numeric or one of c('min', 'max', 'mean').", type = 3)
   if(digit == "min") digit <- min(time.digits)

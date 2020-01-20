@@ -399,9 +399,8 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   if(is.na(sub)){
     sub <- match(unit, names(unit.c))
     if(is.na(sub)) out(paste0("Unit '", unit, "' is not supported."), type = 3) else unit.c[sub]
-  } else{
-    return(names(unit.c)[sub])
   }
+  return(unit.c[sub])
 }
 
 #' detect time gaps
