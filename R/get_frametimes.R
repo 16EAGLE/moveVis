@@ -35,7 +35,7 @@ get_frametimes <- function(frames){
   ft <- unlist(x)
   attributes(ft) <- attributes(x[[1]])
   
-  if(is.null(ft)) out("No associated timestamps per frame could be found in frames. Did you use frames_spatial or frames_graph to create the supplied list of frames?", type = 3)
+  if(all(is.na(ft))) out("No associated timestamps per frame could be found in frames. Did you use frames_spatial or frames_graph to create the supplied list of frames?", type = 3)
   if(any(is.na(ft))) out("At least one frame is missing the time attribute.", type = 2)
   
   return(ft)

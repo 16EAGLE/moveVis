@@ -42,8 +42,8 @@ subset_move <- function(m, from, to, tz = "UTC"){
   
   # subset by time
   ts <- timestamps(m)
-  if(from < min(ts)) out("Argument 'from' cannot be smaller than the minimum timestamp of m.")
-  if(to > max(ts)) out("Argument 'to' cannot be greater than the maximum timestamp of m.")
+  if(from < min(ts)) out("Argument 'from' cannot be smaller than the minimum timestamp of m.", type = 3)
+  if(to > max(ts)) out("Argument 'to' cannot be greater than the maximum timestamp of m.", type = 3)
   
   ts.order <- order(ts)
   m.df <- as(m, "data.frame")
