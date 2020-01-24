@@ -15,7 +15,7 @@
 #'
 #' This dataset contains a \code{data.frame} object, representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.
 #' 
-#' @details This object is used by some \code{moveVis} examples and has been included for demonstrational purposes.
+#' @details These objects are used by some \code{moveVis} examples and have been included for demonstrational purposes.
 #' 
 #' The dataset represents a subset of the LifeTrack White Stork dataset by Cheng et al. (2019) and Fiedler et al. (2019), available under the Creative Commons license "CC0 1.0 Universal Public Domain Dedication" on Movebank (doi:10.5441/001/1.ck04mn78/1).
 #'
@@ -24,11 +24,22 @@
 #'     
 #' Fiedler W, Flack A, Schäfle W, Keeves B, Quetting M, Eid B, Schmid H, Wikelski M (2019) Data from: Study "LifeTrack White Stork SW Germany" (2013-2019). Movebank Data Repository. doi:10.5441/001/1.ck04mn78 
 #'
-#' @format \code{data.frame} object
+#' @format
+#' \itemize{
+#'    \item \code{df} is a \code{data.frame} object
+#'    \item \code{m} is a \code{moveStack} object
+#' } 
+#' 
+#' 
 #' @usage data(whitestork_data)
 #' @docType data
+#' @name whitestork_data
 #' 
 "df"
+
+#' @rdname whitestork_data
+#' @usage NULL
+"m"
 
 #' Exemplary manipulated NDVI data
 #' 

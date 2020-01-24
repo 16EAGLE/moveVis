@@ -36,7 +36,7 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
   
   # checks
   if(!inherits(df, "data.frame")) out("Argument 'df' must be of type 'data.frame'.", type = 3)
-  df <- data.frame(df)
+  df <- data.frame(df, check.names = F)
   df.names <- colnames(df)
   
   catch <- try(crs(proj), silent = T)
