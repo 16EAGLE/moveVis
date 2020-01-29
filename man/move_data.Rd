@@ -3,7 +3,7 @@
 \docType{data}
 \name{move_data}
 \alias{move_data}
-\title{Exemplary simulated movement tracks}
+\title{Example simulated movement tracks}
 \format{\code{Move} object, as used by the \code{move} package.}
 \usage{
 data(move_data)

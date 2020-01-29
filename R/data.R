@@ -1,4 +1,4 @@
-#' Exemplary simulated movement tracks
+#' Example simulated movement tracks
 #'
 #' This dataset contains a \code{Move} object, representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
 #' 
@@ -41,7 +41,7 @@
 #' @usage NULL
 "m"
 
-#' Exemplary manipulated NDVI data
+#' Example manipulated NDVI data
 #' 
 #' This dataset contains two lists of equal lenghts:
 #' \itemize{

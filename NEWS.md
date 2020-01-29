@@ -6,6 +6,7 @@ Added parallelization and new memory settings. Bug fixes. In development.
 **New features:**
 
 * Many computationally expensive `moveVis` tasks can now be parallelized, as multi-core support for `moveVis` has been implemented (see `use_multicore()`)
+* Added a new example data set `whitestork_data`, representing coordinates and acquisition times of 15 White Storks migrating from Lake of Constance, Germany, to Africa.
 
 **New functions:**
 

@@ -3,7 +3,7 @@
 \docType{data}
 \name{basemap_data}
 \alias{basemap_data}
-\title{Exemplary manipulated NDVI data}
+\title{Example manipulated NDVI data}
 \format{List containing two lists of equal lengths: a list of \code{raster} objects and a list of \code{POSIXct} times.}
 \source{
 MODIS (MOD13Q1 NDVI)
