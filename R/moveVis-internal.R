@@ -627,6 +627,19 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(r_list)
 }
 
+#' package attatching
+#' @noRd 
+.onAttach <- function(...) {
+  messages <- c(
+    "Do you need help with moveVis? Have a look at the docs on our web page: http://movevis.org/",
+    "Find out about new features added to moveVis at http://movevis.org/news/index.html",
+    "Find example code and code snippets at http://movevis.org/index.html#examples",
+    "Find a collection of moveVis animations created by other users on Twitter: https://twitter.com/schwalbwillmann",
+    "Are you missing a feature or did you find a bug? Please open an issue at https://github.com/16eagle/movevis/issues",
+    "Read our accompanying open-access paper published in 'Methods in Ecology and Evolution': https://doi.org/10.1111/2041-210X.13374"
+  )
+  packageStartupMessage(paste(strwrap(sample(messages, 1)), collapse = "\n"))
+  }
 
 #' package startup
 #' @importFrom pbapply pboptions

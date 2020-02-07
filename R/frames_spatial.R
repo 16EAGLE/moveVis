@@ -208,14 +208,6 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
   
-  ## follow
-  #if(is.na(follow)){ # fixed extent?
-  # follow = "T342g"
-  # 
-  # sapply(1:max(m.df$frame), function(i){
-  #   if(follow %in% m.df[i,]$name)
-  # })
-  
   m.df$coord_sf <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
                                           expand = F, crs = proj4string(m), datum = proj4string(m), clip = "on"))
   

@@ -5,6 +5,8 @@ home:
   links:
   - text: Browse source code
     href: http://github.com/16eagle/moveVis
+  - text: Read our accompanying MEE paper
+    href: https://doi.org/10.1111/2041-210X.13374
   - text: Find out more about our work
     href: http://remote-sensing.org
 

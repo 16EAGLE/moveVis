@@ -179,12 +179,27 @@ For other news on the work at at the Department of Remote Sensing of the Univers
           
 This initiative is part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
 
+
 <p align="justify">
-<div>
-    <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="21.89781%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
-    <a href="http://www.dlr.de/eoc/en/"><img width="16.78832%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
-     <a href="http://www.bmub.bund.de/"><img width="32.11679%" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q"></a>
-    <a href="http://www.orn.mpg.de/en/"><img width="28%" src="https://www.molgen.mpg.de/188611/mpi_Seew_LogoText-1355515314.gif"></a>
-</div>
+<div style="display: flex">
+  <div style="flex: 12%; padding-top: 20px">
+    <img src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg">
+  </div>
+  <div style="flex: 4%;  padding-top: 20px">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png">
+  </div>
+  <div style="flex: 27%;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX92Q6lhYFo0Rv7p7Y3obqFXsxRyjXMNKSJ_q9bAvXYdFd5wOF3Q">
+  </div>
+  <div style="flex: 57%; margin-right: -175px; padding-top: 19px">
+    <img src="https://www.ab.mpg.de/assets/institutes/headers/ab-desktop-en-f5e37e52669eea9b91e5541acadce71e17f3f6c5dc32f2e68b81253560ed6f4b.svg">
+  </div>
+</div> 
 </p>
+
+## Citation
+
+An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the `moveVis` R package has been peer-reviewed by and published in *'Methods in Ecology and Evolution'* (see https://doi.org/10.1111/2041-210X.13374). Please cite moveVis, e.g. when you use it in publications or presentations, using the output of `citation("moveVis")` or as follows:
+
+*Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. doi:10.1111/2041-210X.13374*
 
