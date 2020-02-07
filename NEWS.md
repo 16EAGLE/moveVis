@@ -1,7 +1,7 @@
 ***
 
 ## moveVis 0.10.4
-Added parallelization and new memory settings. Bug fixes. In development.
+Publication, added parallelization, new memory settings and bug fixes. In development.
 
 **Peer-reviewed publication:**
 * An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the `moveVis` R package has been peer-reviewed by and published in *'Methods in Ecology and Evolution'* (see https://doi.org/10.1111/2041-210X.13374).
