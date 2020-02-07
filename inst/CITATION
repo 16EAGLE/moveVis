@@ -5,6 +5,6 @@ citEntry(entry = "article",
   title = "moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R",
   journal = "Methods in Ecology and Evolution",
   year = "2020",
-  doi = "doi:10.1111/2041-210X.13374",
-  textVersion = "Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. doi:10.1111/2041-210X.13374"
+  doi = "10.1111/2041-210X.13374",
+  textVersion = "Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. https://doi.org/10.1111/2041-210X.13374"
 )

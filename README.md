@@ -23,7 +23,7 @@
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
-<a href="http://movevis.org">`moveVis`</a> 0.10.3 (stable) can be installed from CRAN:
+The latest stable version of <a href="http://movevis.org">`moveVis`</a> can be installed from CRAN:
 
 ```r
 install.packages("moveVis")
@@ -192,5 +192,5 @@ This initiative is part of the <a target="_blank" href="https://www.geographie.u
 
 An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the `moveVis` R package has been peer-reviewed by and published in *'Methods in Ecology and Evolution'* (see https://doi.org/10.1111/2041-210X.13374). Please cite moveVis, e.g. when you use it in publications or presentations, using the output of `citation("moveVis")` or as follows:
 
-*Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. doi:10.1111/2041-210X.13374*
+*Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. https://doi.org/10.1111/2041-210X.13374*
 

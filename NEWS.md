@@ -1,11 +1,11 @@
 ***
 
 ## moveVis 0.10.4
-Publication, added parallelization, new memory settings and bug fixes. In development.
+Publication, added parallelization, new memory settings and bug fixes. Submitted to CRAN.
 
 **Peer-reviewed publication:**
 * An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the `moveVis` R package has been peer-reviewed by and published in *'Methods in Ecology and Evolution'* (see https://doi.org/10.1111/2041-210X.13374).
-* Reference: *Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. doi:10.1111/2041-210X.13374*.
+* Reference: *Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. https://doi.org/10.1111/2041-210X.13374*.
 * Citation: Please use `citation("moveVis")` to cite moveVis, e.g. when you use it in publications or presentations.
 
 **New features:**
