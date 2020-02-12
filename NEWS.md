@@ -5,7 +5,7 @@ Bug patch. Pending to be available via CRAN.
 
 **Bug fixes:**
 
-* Major bug that caused memory overload and very slow processing speeds when using `frames_spatial`
+* Major bug introduced with version 0.10.4 that caused memory overload and very slow processing speeds when using `frames_spatial`
 
 <br>
 
