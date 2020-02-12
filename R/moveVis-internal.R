@@ -280,12 +280,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
                         tail_length = 0, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F, ...){
   
   # frame plotting function
-  gg.fun <- function(x, y, r_type, ...){
-    
-    ## create basemap
-    if(r_type == "gradient") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, ...)
-    if(r_type == "discrete") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, forceCat = T, ...)
-    if(r_type == "RGB") y <- ggRGB(y, r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, coord_equal = F, ...)
+  gg.fun <- function(x, y){
     
     ## scale plot to extent and set na.rm to TRUE to avoid warnings
     y$layers[[1]]$geom_params$na.rm <- T
@@ -321,11 +316,27 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(isTRUE(print_plot)) print(p) else return(p)
   }
   
+  # create base maps
+  gg.bmap <- function(y, r_type, ...){
+    if(r_type == "gradient") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, ...)
+    if(r_type == "discrete") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, forceCat = T, ...) 
+    if(r_type == "RGB") y <- ggRGB(y, r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, coord_equal = F, ...)
+    return(y)
+  }
+  
   # create frames
   i <- NULL # needs to be defined for checks
-  ii <- if(length(r_list) > 1) expr(i) else expr(1)
-  frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                                                                     trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade), y = r_list[[eval(ii)]], r_type = r_type, ...), moveVis.n_cores = 1)  
+  if(length(r_list) > 1){
+    frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
+                                                                       trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade),
+                                                            y = gg.bmap(r_list[[i]], r_type, ...)), moveVis.n_cores = 1)
+  } else{
+    bmap <- gg.bmap(r_list[[1]], r_type, ...)
+    frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour, 
+                                                                       trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade),
+                                                            y = bmap), moveVis.n_cores = 1)
+  }
+  return(frames)
 }
 
 

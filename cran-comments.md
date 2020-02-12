@@ -14,4 +14,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This submission contains minor improvements and bug fixes and adds two new functions
+* This unplanned patch release fixes a major bug that caused memory overload and very slow processing speeds and thus made the current CRAN version 0.10.4 nearly unusable
