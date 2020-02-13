@@ -129,8 +129,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' square it
-#' @importFrom geosphere distGeo
-#' @importFrom sf st_bbox st_transform st_as_sfc st_crs
+#' @importFrom sf st_bbox st_transform st_as_sfc st_crs st_distance st_sfc st_point
 #' @noRd 
 .equidistant <- function(ext, margin_factor = 1){
   
@@ -138,11 +137,11 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   ext.ll <- st_bbox(st_transform(st_as_sfc(ext), st_crs("+init=epsg:4326")))
   
   # calculate corner coordinates
-  corn <- rbind(c(ext.ll[1], ext.ll[2]), c(ext.ll[1], ext.ll[4]), c(ext.ll[3], ext.ll[2]), c(ext.ll[3], ext.ll[4]))
-  colnames(corn) <- c("x", "y")
+  corn <- list(c(ext.ll[1], ext.ll[2]), c(ext.ll[1], ext.ll[4]), c(ext.ll[3], ext.ll[2]), c(ext.ll[3], ext.ll[4]))
+  corn <- lapply(corn, function(x) st_sfc(st_point(x), crs = st_crs("+init=epsg:4326")))
   
   # calculate difference and distance
-  ax.dist <- c(distGeo(corn[1,], corn[3,]), distGeo(corn[1,], corn[2,]))
+  ax.dist <- as.numeric(c(st_distance(corn[[1]], corn[[3]]), suppressPackageStartupMessages(st_distance(corn[[1]], corn[[2]]))))
   ax.diff <- c(ext.ll[3]-ext.ll[1], ext.ll[4]-ext.ll[2])
   
   # add difference to match equal distances

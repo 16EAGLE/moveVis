@@ -16,11 +16,8 @@
 #' @return List of frames.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 geom_line geom_text aes_string
-#' @importFrom geosphere distGeo
-#' 
+#' @importFrom ggplot2 geom_line geom_text aes_string expr
 #' @importFrom grid arrow unit
-#' @importFrom ggplot2 expr
 #'
 #' @examples 
 #' library(moveVis)

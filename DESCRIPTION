@@ -17,7 +17,6 @@ Imports:
   sf,
   move,
   RStoolbox,
-  geosphere,
   slippymath,
   lubridate,
   ggplot2,

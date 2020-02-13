@@ -16,7 +16,7 @@
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 geom_polygon geom_text aes_string expr
-#' @importFrom geosphere distGeo
+#' @importFrom sf st_distance st_sfc st_point
 #'
 #' @examples 
 #' library(moveVis)
@@ -61,12 +61,16 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
   catch <- lapply(seq(1, length(check.args)), function(i) if(!any(is.numeric(check.args[[i]]), is.null(check.args[[i]]))) out(paste0("Argument '", names(check.args)[[i]], "' needs to be of type 'numeric'."), type = 3))
  
   ## calculate gg plot dimensions
+  gg.crs <- frames[[1]]$coordinates$crs
   gg.xy <- ggplot_build(frames[[1]])$data[[1]]
   gg.corner <- list(bottomleft = c(min(gg.xy$xmin), min(gg.xy$ymin)), upperleft = c(min(gg.xy$xmin), max(gg.xy$ymax)),
                     upperright = c(max(gg.xy$xmax), max(gg.xy$ymax)), bottomright = c(max(gg.xy$xmax), min(gg.xy$ymin)))
   
+  gg.corner_sf <- lapply(gg.corner, function(x) st_sfc(st_point(x), crs = gg.crs))
+  gg.dist <- list(x = as.numeric(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$bottomright, by_element = T))/1000,
+                  y = as.numeric(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$upperleft, by_element = T))/1000)
+  
   ## calculate axis distances
-  gg.dist <- list(x = distGeo(gg.corner$bottomleft, gg.corner$bottomright)/1000, y = distGeo(gg.corner$bottomleft, gg.corner$upperleft)/1000)
   if(units == "miles") gg.dist <- lapply(gg.dist, function(x) x/1.609344 )
   gg.diff <- list(x = max(gg.xy$xmax) - min(gg.xy$xmin), y = max(gg.xy$ymax) - min(gg.xy$ymin))
   
@@ -79,6 +83,9 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
     }
   }
   
+  # round to even
+  if(scale.dist > 10) scale.dist <- round(scale.dist/2)*2
+
   scale.diff <- gg.diff$x*((scale.dist)/gg.dist$x)
   
   ## calculate scale postiotn
