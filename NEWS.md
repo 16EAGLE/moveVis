@@ -1,5 +1,16 @@
 ***
 
+## moveVis 0.10.5
+Revised distance calculations. Development version.
+
+**New features:**
+
+* Reduced dependencies through new distance calculations requiring solely `sf`
+
+<br>
+
+***
+
 ## moveVis 0.10.4-1
 Bug patch. Pending to be available via CRAN.
 
