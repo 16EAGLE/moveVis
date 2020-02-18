@@ -67,8 +67,8 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
                     upperright = c(max(gg.xy$xmax), max(gg.xy$ymax)), bottomright = c(max(gg.xy$xmax), min(gg.xy$ymin)))
   
   gg.corner_sf <- lapply(gg.corner, function(x) st_sfc(st_point(x), crs = gg.crs))
-  gg.dist <- list(x = as.numeric(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$bottomright, by_element = T))/1000,
-                  y = as.numeric(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$upperleft, by_element = T))/1000)
+  gg.dist <- list(x = as.numeric(suppressPackageStartupMessages(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$bottomright, by_element = T)))/1000,
+                  y = as.numeric(suppressPackageStartupMessages(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$upperleft, by_element = T)))/1000)
   
   ## calculate axis distances
   if(units == "miles") gg.dist <- lapply(gg.dist, function(x) x/1.609344 )
