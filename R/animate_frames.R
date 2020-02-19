@@ -17,8 +17,8 @@
 #'
 #' @return None or the default image/video viewer displaying the animation
 #' 
-#' @importFrom av av_capture_graphics
-#' @importFrom gifski save_gif
+#' @importFrom av av_encode_video
+#' @importFrom gifski gifski
 #' @importFrom ggplot2 quo
 #' @importFrom lubridate dseconds
 #' @importFrom utils tail
@@ -87,11 +87,31 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   #frames_expr <- expression(moveVis:::.lapply(frames, function(x) quiet(print(x))))
   
-  if(out_ext == "gif"){
-    if(length(frames) > 800) out("The number of frames exceeds 800 and the GIF format is used. This format may not be suitable for animations with a high number of frames, since it causes large file sizes. Consider using a video file format instead.", type = 2)
-    save_gif(.lapply(frames, function(x) quiet(print(x)), moveVis.n_cores = 1), gif_file = out_file, width = width, height = height, delay = (1/fps), progress = verbose, res = res, ...)
-  }else{
-    av_capture_graphics(.lapply(frames, function(x) quiet(print(x)), moveVis.n_cores = 1), output = out_file, width = width, height = height, res = res, framerate = fps, verbose = verbose, ...) #, vfilter =' framerate=fps=10') 
-  }
+  # create PNGs
+  frames_dir <- paste0(tempdir(), "/moveVis/frames/")
+  dir.create(frames_dir, recursive = T)
+  
+  tryCatch({
+    file <- file.path(frames_dir, "frame_%05d.png")
+    grDevices::png(file, width = width, height = height, res = res)
+    graphics::par(ask = FALSE)
+    .lapply(frames, function(x) quiet(print(x)), moveVis.n_cores = 1)
+    grDevices::dev.off()
+    frames_files <- list.files(frames_dir, full.names = TRUE)
+    
+    # animate PNGs
+    if(out_ext == "gif"){
+      if(length(frames) > 800) out("The number of frames exceeds 800 and the GIF format is used. This format may not be suitable for animations with a high number of frames, since it causes large file sizes. Consider using a video file format instead.", type = 2)
+      gifski(frames_files, gif_file = out_file, width = width, height = height, delay = (1/fps), progress = verbose)
+      #save_gif(.lapply(frames, function(x) quiet(print(x)), moveVis.n_cores = 1), gif_file = out_file, width = width, height = height, delay = (1/fps), progress = verbose, res = res, ...)
+    }else{
+      av_encode_video(frames_files, output = out_file, framerate = fps, verbose = verbose, ...)
+      #av_capture_graphics(.lapply(frames, function(x) quiet(print(x)), moveVis.n_cores = 1), output = out_file, width = width, height = height, res = res, framerate = fps, verbose = verbose, ...) #, vfilter =' framerate=fps=10') 
+    }
+  }, error = function(e){
+    unlink(frames_dir, recursive = TRUE)
+    out(paste0("Error creating animation: ", as.character(e)), type = 3)
+  }, finally = unlink(frames_dir, recursive = TRUE))
+  
   if(isTRUE(display)) utils::browseURL(out_file)
 }
