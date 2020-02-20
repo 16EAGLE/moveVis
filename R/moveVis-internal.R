@@ -66,7 +66,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' split movement by tail length
 #' @importFrom plyr mapvalues
-#' @importFrom sp coordinates
 #' @importFrom move n.indiv timestamps trackId 
 #' 
 #' @importFrom methods as
@@ -75,7 +74,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 .m2df <- function(m, path_colours = NA){
   
   ## create data.frame from m with frame time and colour
-  m.df <- cbind(as.data.frame(coordinates(m)), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
+  m.df <- cbind(as.data.frame(m@coords), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
         time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
   colnames(m.df)[1:2] <- c("x", "y")
   

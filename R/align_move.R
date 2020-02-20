@@ -24,7 +24,6 @@
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom move timestamps timeLag interpolateTime moveStack move split
-#' @importFrom sp coordinates
 #' @importFrom raster crs
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
@@ -96,7 +95,7 @@ align_move <- function(m, res = "min", digit = "min", unit = "secs", spaceMethod
     interpolateTime(x, ts.t, spaceMethod)
   }))
   
-  m[,c("x", "y")] <- coordinates(m)
+  m[,c("x", "y")] <- m@coords
   m[,"time"] <- timestamps(m)
   return(m)
 }

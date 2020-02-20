@@ -56,7 +56,6 @@
 #' 
 #' @importFrom raster compareCRS nlayers
 #' @importFrom sf st_crs
-#' @importFrom sp proj4string
 #' @importFrom raster crs
 #' @importFrom move n.indiv moveStack
 #' 
@@ -206,10 +205,10 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
   .stats(n.frames = max(m.df$frame))
   
-  gg.ext <- .ext(m.df, m.crs = st_crs(proj4string(m)), ext, margin_factor, equidistant) # calcualte extent
+  gg.ext <- .ext(m.df, m.crs = st_crs(m), ext, margin_factor, equidistant) # calcualte extent
   
   m.df$coord_sf <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                          expand = F, crs = proj4string(m), datum = proj4string(m), clip = "on"))
+                                          expand = F, crs = st_crs(m)$proj4string, datum = st_crs(m)$proj4string, clip = "on"))
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){

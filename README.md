@@ -6,6 +6,7 @@
 [![Build Status](https://travis-ci.org/16EAGLE/moveVis.svg?branch=master)](https://travis-ci.org/16EAGLE/moveVis) 
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/16EAGLE/moveVis?branch=master&svg=true)](https://ci.appveyor.com/project/16EAGLE/moveVis)
 [![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://codecov.io/gh/16EAGLE/moveVis)
+[![Package dependencies](https://tinyverse.netlify.com/badge/moveVis)](https://CRAN.R-project.org/package=moveVis)
 
 ## Introduction
 

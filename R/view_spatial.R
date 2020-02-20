@@ -15,8 +15,6 @@
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
-#' @importFrom sp proj4string
-#' @importFrom dplyr %>%
 #' 
 #' @examples 
 #' \dontrun{
@@ -64,7 +62,7 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE,  stroke =
   if(render_as == "mapview"){
     if(length(grep("mapview", rownames(utils::installed.packages()))) == 0) out("'mapview' has to be installed to use this function. Use install.packages('mapview').", type = 3)
     map <- mapview::mapview(m.df, map.types = "OpenStreetMap", xcol = "x", ycol = "y", zcol = "name", legend = path_legend,
-                     crs = proj4string(m), grid = F, layer.name = path_legend_title, col.regions = unique(m.df$colour),
+                     crs = st_crs(m)$proj4string, grid = F, layer.name = path_legend_title, col.regions = unique(m.df$colour),
                      label = if(isTRUE(time_labels)) m.df$time_chr else NULL, stroke = stroke)
   }
   
@@ -73,13 +71,13 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE,  stroke =
     if(length(grep("leaflet", rownames(utils::installed.packages()))) == 0) out("'leaflet' has to be installed to use this function. Use install.packages('leaflet').", type = 3)
     
     m.split <- split(m.df, m.df$name)
-    map <- leaflet::leaflet(m.df) %>% leaflet::addTiles()
-    for(i in 1:length(m.split)) map <- map %>% 
-      leaflet::addCircleMarkers(lng = m.split[[i]]$x, lat = m.split[[i]]$y,
-                                radius = 5.5, color = "black", stroke = stroke, fillColor = m.split[[i]]$colour, fillOpacity = 0.6, weight = 2, opacity = 1,
-                                label = if(isTRUE(time_labels)) m.split[[i]]$time_chr else NULL)
-    map <- map %>% leaflet::addLegend(colors = unique(m.df$colour), labels = unique(m.df$name), opacity = 1, title = path_legend_title) %>% 
-      leaflet::addScaleBar(position = "bottomleft")
+    map <- leaflet::addTiles(map = leaflet::leaflet(m.df))
+    for(i in 1:length(m.split)) map <- leaflet::addCircleMarkers(map = map, lng = m.split[[i]]$x, lat = m.split[[i]]$y,
+                                                                 radius = 5.5, color = "black", stroke = stroke, fillColor = m.split[[i]]$colour, fillOpacity = 0.6, weight = 2, opacity = 1,
+                                                                 label = if(isTRUE(time_labels)) m.split[[i]]$time_chr else NULL)
+    map <- leaflet::addScaleBar(map = leaflet::addLegend(map = map, colors = unique(m.df$colour),
+                                                         labels = unique(m.df$name), opacity = 1, title = path_legend_title), position = "bottomleft")
+      
   }
   return(map)
 }
