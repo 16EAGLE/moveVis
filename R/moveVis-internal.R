@@ -448,7 +448,7 @@ repl_vals <- function(data, x, y){
       
       ## download tiles
       url <- paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", if(map_service == "mapbox") paste0("?access_token=", map_token) else NULL)
-      if(!file.exists(file)) utils::download.file(url = url, destfile = file, quiet = T) #curl_download(url = url, destfile = file)
+      if(!file.exists(file)) curl_download(url = url, destfile = file) #utils::download.file(url = url, destfile = file, quiet = T) 
       
       # test if file can be loaded
       catch <- try(image_read(file), silent = T)

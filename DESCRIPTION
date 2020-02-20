@@ -26,6 +26,7 @@ Imports:
   zoo,
   methods,
   av,
+  curl,
   pbapply,
   magrittr
 BugReports: http://www.github.com/16eagle/moveVis/issues
