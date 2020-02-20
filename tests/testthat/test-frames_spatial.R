@@ -95,7 +95,13 @@ test_that("frames_spatial (different extent/proj settings)", {
 
   # other projections
   frames <- lapply(c("+init=epsg:32632", "+init=epsg:3857"), function(p){
-    m <- sp::spTransform(m, raster::crs(p))
+    
+    # transform using sf
+    m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(p))
+    m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
+    m <- df2move(m_tf, proj = p, x = "X", y = "Y", time = "time", track_id = "id")
+    #m <- sp::spTransform(m, raster::crs(p))
+    
     frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "list"), 180)
     expect_is(frames[[1]], "ggplot")
     frames[[100]]

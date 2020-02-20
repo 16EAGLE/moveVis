@@ -14,7 +14,6 @@
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 annotate expr
-#' @importFrom dplyr bind_cols
 #'
 #' @examples 
 #' library(moveVis)
@@ -65,7 +64,11 @@ add_text <- function(frames, labels, x, y, colour = "black", size = 3, type = "t
     if(length(v) != length(frames)) out(paste0("Length of argument ", names(check)[[i]], " must either be 1 or equal to the length of agrument 'frames'."), type = 3)
     return(v)
   }, simplify = F)
-  data <- as.data.frame(bind_cols(data), stringsAsFactors = F)
+  
+  data.classes <- sapply(data, class)
+  data <- as.data.frame(do.call(cbind, data), stringsAsFactors = F)
+  for(i in 1:ncol(data)) class(data[,i]) <- data.classes[i]
+  
   data <- split(data, seq(nrow(data)))
   
   add_gg(frames, gg = expr(annotate(type, x = data[[2]], y = data[[3]], label = data[[1]], colour = data[[4]], size = data[[5]])), data = data, type = type)

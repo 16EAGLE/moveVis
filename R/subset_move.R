@@ -12,7 +12,6 @@
 #' @seealso \code{\link{df2move}}
 #' 
 #' @importFrom move moveStack move
-#' @importFrom methods as
 #' 
 #' @examples
 #' library(moveVis)
@@ -46,7 +45,7 @@ subset_move <- function(m, from, to, tz = "UTC"){
   if(to > max(ts)) out("Argument 'to' cannot be greater than the maximum timestamp of m.", type = 3)
   
   ts.order <- order(ts)
-  m.df <- as(m, "data.frame")
+  m.df <- methods::as(m, "data.frame")
   m.df <- m.df[ts.order[ts[ts.order] >= from & ts[ts.order] <= to],]
   
   df2move(m.df, proj = crs(m), x = "coords.x1", y = "coords.x2", time = "timestamps", data = m.df, 

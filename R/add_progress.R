@@ -49,9 +49,6 @@ add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){
   if(!inherits(size, "numeric")) out("Argument 'size' needs to be of type 'numeric'.", type = 3)
   
   gg.xy <- ggplot_build(frames[[1]])$data[[1]]
-  # gg.xy <- lapply(ggplot_build(frames[[1]])$data, function(x) cbind.data.frame(x = x$x, xmin = x$xmin, xmax = x$xmax,
-  #                                                                              y = x$y, ymin = x$ymin, ymax = x$ymax))
-  # gg.xy <- bind_rows(gg.xy[!sapply(gg.xy, is.null)])
   
   data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(x, x.min = min(gg.xy$xmin), y = max(gg.xy$ymax)){
     cbind.data.frame(x = c(x.min, x), y = c(y, y))

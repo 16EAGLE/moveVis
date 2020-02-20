@@ -21,7 +21,6 @@
 #' @importFrom gifski gifski
 #' @importFrom ggplot2 quo
 #' @importFrom lubridate dseconds
-#' @importFrom utils tail
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
@@ -71,16 +70,16 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   if(!is.character(out_file)) out("Argument 'out_file' must be of type 'character'.", type = 3)
   of_split <- strsplit(out_file, "/")[[1]]
-  if(length(of_split) > 1) if(isFALSE(dir.exists(paste0(head(of_split, n = -1), collapse = "/")))) out("Target directory of 'out_file' does not exist.", type = 3)
+  if(length(of_split) > 1) if(isFALSE(dir.exists(paste0(utils::head(of_split, n = -1), collapse = "/")))) out("Target directory of 'out_file' does not exist.", type = 3)
   if(all(file.exists(out_file), !isTRUE(overwrite))) out("Defined output file already exists and overwriting is disabled.", type = 3)
   num.args <- c(fps = fps, width = width, height = height, res = res)
   catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
   
-  out_ext <- tolower(tail(unlist(strsplit(out_file, "[.]")), n=1))
+  out_ext <- tolower(utils::tail(unlist(strsplit(out_file, "[.]")), n=1))
   out("Rendering animation...")
   if(end_pause > 0){
     n.add <- round(end_pause*fps)
-    frames <- append(frames, rep(tail(frames, n = 1), times = n.add))
+    frames <- append(frames, rep(utils::tail(frames, n = 1), times = n.add))
     out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add \u2248 ", toString(dseconds(end_pause)), " of pause at the end"))
   }
   .stats(n.frames = length(frames), fps)

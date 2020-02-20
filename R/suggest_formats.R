@@ -10,7 +10,6 @@
 #' @seealso \code{\link{animate_frames}}
 #' 
 #' @importFrom av av_muxers
-#' @importFrom stats na.omit
 #' 
 #' @examples
 #' # find out which formats are available
@@ -24,7 +23,7 @@
 
 suggest_formats <- function(suggested = c("gif", "mov", "mp4", "flv", "avi", "mpeg", "3gp", "ogg")){
   
-  mux <- as.character(na.omit(av_muxers()$extensions))
+  mux <- as.character(stats::na.omit(av_muxers()$extensions))
   mux <- unlist(sapply(mux, function(x) unlist(strsplit(x, ",")), simplify = F, USE.NAMES = F))
-  return(mux[as.numeric(na.omit(match(suggested, mux)))])
+  return(mux[as.numeric(stats::na.omit(match(suggested, mux)))])
 }

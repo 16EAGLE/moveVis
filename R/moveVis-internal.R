@@ -35,6 +35,20 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   out(paste0("Approximated animation duration: \u2248 ", as.character(dseconds(n.frames/fps)), " at ", toString(fps), " fps for ", toString(n.frames), " frames"))
 }
 
+#' Replace value
+#'
+#' @param data vector to be replaced by values
+#' @param x values which to replace
+#' @param y values to replace to
+#'
+#' @keywords internal
+#' @noRd
+repl_vals <- function(data, x, y){
+  for(i in 1:length(x)) data[data == x[i]] <- y[i]
+  data <- methods::as(data, class(y))
+  return(data)
+}
+
 #' verbose lapply
 #'
 #' @importFrom pbapply pblapply
@@ -65,37 +79,19 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' split movement by tail length
-#' @importFrom plyr mapvalues
 #' @importFrom move n.indiv timestamps trackId 
-#' 
-#' @importFrom methods as
-#' @importFrom grDevices colours
 #' @noRd 
 .m2df <- function(m, path_colours = NA){
   
   ## create data.frame from m with frame time and colour
-  m.df <- cbind(as.data.frame(m@coords), id = as.numeric(mapvalues(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m))),
+  m.df <- cbind(as.data.frame(m@coords), id = repl_vals(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m)),
         time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
   colnames(m.df)[1:2] <- c("x", "y")
   
-  ## append data.frame by times missing per track
-  # ts <- unique(m.df$time)
-  # m.df <- do.call(rbind, lapply(unique(m.df$name), function(x){
-  #   df <- m.df[m.df$name == x,]
-  #   dummy <- df[1,]
-  #   dummy[,c("x", "y", "time", "time_chr")] <- NA
-  #   rbind(df, do.call(rbind, lapply(ts[!sapply(ts, function(y) y %in% df$time)], function(z, d = dummy){
-  #     d$time <- z
-  #     d$time_chr <- as.character(z)
-  #     return(d)
-  #   })))
-  # }))
-  
   m.df$frame <- sapply(m.df$time, function(x) which(sort(unique(m.df$time)) == x))
-  # m.df <- m.df[order(m.df$frame),]
   
   ## handle colours, either provided as a field in m or argument or computed randomly
-  m.info <- as(m, "data.frame")
+  m.info <- methods::as(m, "data.frame")
   if(all(!is.character(path_colours), !all(is.na(m.info$colour)))){
     
     ## get colours from column
@@ -104,24 +100,12 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(!is.character(path_colours)){
       
       path_colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
-      path_colours <- c(path_colours, sample(colours()[-sapply(path_colours, match, table = colours())]))
+      path_colours <- c(path_colours, sample(grDevices::colours()[-sapply(path_colours, match, table = grDevices::colours())]))
       #path_colours <- sample(rep(path_colours, ceiling(n.indiv(m) / length(path_colours))))
     }
-    m.df$colour <- mapvalues(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
+    m.df$colour <- repl_vals(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
   }
   
-  # if(!is.null(m.info$colour)){
-  #   m.df$colour <- as.character(m.info$colour)
-  # }else{
-  #   if(is.na(path_colours)){
-  #     path_colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
-  #     path_colours <- c(path_colours, sample(colours()[-sapply(path_colours, match, table = colours())]))
-  #     path_colours <- rep(path_colours, ceiling(n.indiv(m) / length(path_colours)))
-  #   }
-  #   m.df$colour <- mapvalues(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
-  # }
-  
-  #m.df$colour <- factor(as.character(m.df$colour), level = unique(as.character(m.df$colour)))
   m.df <- m.df[order(m.df$frame),]
   m.df$name <- factor(as.character(m.df$name), levels = unique(as.character(m.df$name)))
   return(m.df)
@@ -200,7 +184,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' create paths data.frame for gg on the fly per frame
-#' @importFrom grDevices colorRampPalette
 #' @noRd 
 .df4gg <- function(m.df, i, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
   
@@ -223,18 +206,18 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     if(all(isTRUE(path_fade), diff.max < tail_length, paths.size > diff.max)){
       n <- diff.max+1
       v <- rep(tail_colour, (paths.size-(n)))
-      paths.cols <- tail(paths.cols, n = n)
+      paths.cols <- utils::tail(paths.cols, n = n)
     } else{
       n <- paths.size
       v <- NULL
     }
     
     paths.ramps <- lapply(unique(paths.cols), function(x){
-      f <- colorRampPalette(c(x, tail_colour))
+      f <- grDevices::colorRampPalette(c(x, tail_colour))
       rev(f(n+4)[1:n])
     })
     
-    c(v, mapply(i = 1:n, i.ramp = as.numeric(mapvalues(paths.cols, unique(paths.cols), 1:length(unique(paths.cols)))), function(i, i.ramp){
+    c(v, mapply(i = 1:n, i.ramp = repl_vals(paths.cols, unique(paths.cols), 1:length(unique(paths.cols))), function(i, i.ramp){
       paths.ramps[[i.ramp]][i]
     }, USE.NAMES = F))
     
@@ -449,7 +432,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' get map
 #' @importFrom slippymath bbox_to_tile_grid compose_tile_grid
-#' @importFrom curl curl_download
 #' @importFrom raster projectRaster extent res res<- projectExtent
 #' @importFrom magick image_read image_write image_convert
 #' @noRd 
@@ -466,7 +448,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       
       ## download tiles
       url <- paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", if(map_service == "mapbox") paste0("?access_token=", map_token) else NULL)
-      if(!file.exists(file)) curl_download(url = url, destfile = file)
+      if(!file.exists(file)) utils::download.file(url = url, destfile = file, quiet = T) #curl_download(url = url, destfile = file)
       
       # test if file can be loaded
       catch <- try(image_read(file), silent = T)
@@ -495,8 +477,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 }
 
 #' create interpolated layer by frame position
-#' @importFrom utils head tail
-#' @importFrom parallel clusterExport
 #' @importFrom raster clusterR overlay brick unstack stack
 #' @noRd
 .int2frames <- function(r_list, pos, frames, n.rlay, cl){
@@ -504,15 +484,15 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   # get frames outside shoulders not to be interpolated
   r.frames <- rep(list(NULL), length(frames))
   names(r.frames) <- frames
-  early <- as.numeric(names(r.frames)) < head(pos, n=1)
-  if(any(early)) r.frames[early] <- head(r_list, n=1)
+  early <- as.numeric(names(r.frames)) < utils::head(pos, n=1)
+  if(any(early)) r.frames[early] <- utils::head(r_list, n=1)
   
-  late <- as.numeric(names(r.frames)) > tail(pos, n=1)
-  if(any(late)) r.frames[late] <- tail(r_list, n=1)
+  late <- as.numeric(names(r.frames)) > utils::tail(pos, n=1)
+  if(any(late)) r.frames[late] <- utils::tail(r_list, n=1)
   
   exist <- match(as.numeric(names(r.frames)), pos)
   if(any(!is.na(exist))){
-    r.frames[!is.na(exist)] <- r_list[na.omit(exist)]
+    r.frames[!is.na(exist)] <- r_list[stats::na.omit(exist)]
   }
   
   # collect remaining frame ids
@@ -548,7 +528,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     y.pos <- pos[i]
     v.na <- rep(NA, (y.pos-x.pos)-1)
     pos.frames <- (i.frames[[which(i.rasters == i)]]-x.pos)+1
-    if(getOption("moveVis.n_cores") > 1) clusterExport(cl, c("v.na", "pos.frames"), envir = environment())
+    if(getOption("moveVis.n_cores") > 1) parallel::clusterExport(cl, c("v.na", "pos.frames"), envir = environment())
     
     # interpolate layer-wise
     r <- lapply(1:length(x), function(i.layer){
@@ -572,7 +552,6 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 #' assign raster to frames
 #' @importFrom raster nlayers crop extent brick writeRaster dataType
-#' @importFrom parallel makeCluster stopCluster
 #' @noRd
 .rFrames <- function(r_list, r_times, m.df, gg.ext, fade_raster = T, crop_raster = T, ...){
   
@@ -604,7 +583,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
       pos.df <- pos.df[apply(diff.df[,unique(pos.df[,2])], MARGIN = 2, which.min),]
       
       # start cluster and interpolate over all frames or badge-wise
-      if(getOption("moveVis.n_cores") > 1) cl <- makeCluster(getOption("moveVis.n_cores"))
+      if(getOption("moveVis.n_cores") > 1) cl <- parallel::makeCluster(getOption("moveVis.n_cores"))
       if(isFALSE(getOption("moveVis.frames_to_disk"))){
         r_list <- .int2frames(r_list, pos = pos.df$frame, frames = unique(m.df$frame), n.rlay = n.rlay, cl = cl)
       } else{
@@ -628,7 +607,7 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
         # link to files
         r_list <- lapply(files, brick)
       }
-      if(getOption("moveVis.n_cores") > 1) stopCluster(cl)
+      if(getOption("moveVis.n_cores") > 1) parallel::stopCluster(cl)
     }else{
       r_list <- r_list[pos.df$pos_r]
     }

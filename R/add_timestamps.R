@@ -13,7 +13,6 @@
 #'
 #' @importFrom ggplot2 ggplot_build
 #' @importFrom move timestamps
-#' @importFrom dplyr bind_rows
 #'
 #' @examples 
 #' library(moveVis)
@@ -59,8 +58,8 @@ add_timestamps <- function(frames, m = NULL, x = NULL, y = NULL, ..., verbose = 
   
   if(is.null(x)){
     gg.xy <- lapply(ggplot_build(frames[[1]])$data, function(x) cbind.data.frame(x = x$x, y= x$y))
-    gg.xy <- bind_rows(gg.xy[!sapply(gg.xy, is.null)])
-  
+    gg.xy <- do.call(rbind, gg.xy[!sapply(gg.xy, is.null)])
+    
     x <- min(gg.xy$x)+((max(gg.xy$x)-min(gg.xy$x))/2)
     y <- max(gg.xy$y)-((max(gg.xy$y)-min(gg.xy$y))*0.05)
   }

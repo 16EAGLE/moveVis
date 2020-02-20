@@ -23,15 +23,11 @@ Imports:
   cowplot,
   gifski,
   magick,
+  zoo,
+  methods,
   av,
   pbapply,
-  curl,
-  plyr,
-  dplyr,
-  zoo,
-  magrittr,
-  methods,
-  grDevices
+  magrittr
 BugReports: http://www.github.com/16eagle/moveVis/issues
 SystemRequirements: ImageMagick, FFmpeg, libav
 URL: http://movevis.org
