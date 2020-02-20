@@ -15,6 +15,7 @@ Imports:
   raster,
   sp,
   sf,
+  lwgeom,
   move,
   RStoolbox,
   slippymath,
