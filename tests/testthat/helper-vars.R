@@ -6,6 +6,10 @@ test_maps = as.logical(Sys.getenv("moveVis_test_maps"))
 n_cores <- as.numeric(Sys.getenv("moveVis_n_cores"))
 if(!is.na(n_cores)) if(n_cores > 1) use_multicore(n_cores)
 
+check_mapview <- any(grepl("mapview", installed.packages()[,1]))
+check_leaflet <- any(grepl("leaflet", installed.packages()[,1]))
+
+
 ## which tests to run
 # which_tests = Sys.getenv("moveVis_which_tests")
 # if(which_tests != ""){
