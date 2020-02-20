@@ -434,6 +434,7 @@ repl_vals <- function(data, x, y){
 #' @importFrom slippymath bbox_to_tile_grid compose_tile_grid
 #' @importFrom raster projectRaster extent res res<- projectExtent
 #' @importFrom magick image_read image_write image_convert
+#' @importFrom curl curl_download
 #' @noRd 
 .getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs){
   
