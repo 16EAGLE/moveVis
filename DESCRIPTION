@@ -16,7 +16,6 @@ Imports:
   sf,
   lwgeom,
   move,
-  RStoolbox,
   slippymath,
   lubridate,
   ggplot2,

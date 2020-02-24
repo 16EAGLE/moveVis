@@ -33,13 +33,11 @@
 #' @param map_dir character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
 #' If you use moveVis often for the same area it is recommended to set this argument to a directory persistent throughout sessions (e.g. in your user folder), 
 #' so that baesmap tiles that had been already downloaded by moveVis do not have to be requested again.
-#' @param ... Additional arguments customizing the frame background, passed to \code{RStoolbox::ggR} or \code{RStoolbox::ggRGB}:
+#' @param ... Additional arguments customizing the frame background:
 #'    \itemize{
 #'        \item \code{alpha}, numeric, background transparency (0-1).
-#'        \item \code{hue}, numeric, hue value for color calculation (0-1). Change if you need anything else than greyscale. Only effective if sat > 0.
-#'        \item \code{sat}, numeric, saturation value for color calculation (0,1). Change if you need anything else than greyscale.
-#'        \item \code{stretch}, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
-#'        \item \code{quantiles}, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2% stretch, i.e. \code{c(0.02,0.98)}.
+#'        \item \code{maxpixels}, maximum number of pixels to be plotted per frame. Defaults to 500000. Reduce to decrease detail and increase rendering speeds.
+#'        \item \code{macColorValue}, numeric, only relevant for RGB backgrounds (i.e. if \code{r_type = "RGB"} or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.
 #'    }
 #' @param verbose logical, if \code{TRUE}, messages and progress information are displayed on the console (default).
 #' 

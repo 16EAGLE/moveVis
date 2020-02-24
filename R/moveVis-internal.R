@@ -124,7 +124,7 @@ repl_vals <- function(data, x, y){
   corn <- lapply(corn, function(x) st_sfc(st_point(x), crs = st_crs("+init=epsg:4326")))
   
   # calculate difference and distance
-  ax.dist <- as.numeric(c(st_distance(corn[[1]], corn[[3]]), suppressPackageStartupMessages(st_distance(corn[[1]], corn[[2]]))))
+  ax.dist <- as.numeric(c(suppressPackageStartupMessages(st_distance(corn[[1]], corn[[3]])), suppressPackageStartupMessages(st_distance(corn[[1]], corn[[2]]))))
   ax.diff <- c(ext.ll[3]-ext.ll[1], ext.ll[4]-ext.ll[2])
   
   # add difference to match equal distances
@@ -253,8 +253,8 @@ repl_vals <- function(data, x, y){
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr
-#' @importFrom RStoolbox ggRGB ggR
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster
+#' @importFrom raster aggregate ncell
 #' @noRd 
 .gg_spatial <- function(r_list, r_type, m.df, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
                         path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names",
@@ -298,11 +298,36 @@ repl_vals <- function(data, x, y){
   }
   
   # create base maps
-  gg.bmap <- function(y, r_type, ...){
-    if(r_type == "gradient") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, ...)
-    if(r_type == "discrete") y <- ggR(y, ggObj = T, geom_raster = T, coord_equal = F, forceCat = T, ...) 
-    if(r_type == "RGB") y <- ggRGB(y, r = 1, g = 2, b = 3, ggObj = T, geom_raster = T, coord_equal = F, ...)
-    return(y)
+  gg.bmap <- function(r, r_type, ...){
+    extras <- list(...)
+    if(!is.null(extras$maxpixels)) maxpixels <- extras$maxpixels else maxpixels <- 500000
+    if(!is.null(extras$alpha)) alpha <- extras$alpha else alpha <- 1
+    if(!is.null(extras$maxColorValue)) maxColorValue <- extras$maxColorValue else maxColorValue <- NA
+    
+    # aggregate raster if too large
+    if(maxpixels < ncell(r)) r <- aggregate(r, fact = ceiling(ncell(r)/maxpixels))
+    
+    # transform into data.frame
+    df <- data.frame(raster::as.data.frame(r, xy = T))
+    colnames(df) <- c("x", "y", paste0("val", 1:(ncol(df)-2)))
+    
+    # factor if discrete to show categrocial legend
+    df$fill <- df$val1
+    if(r_type == "discrete") df$fill <- as.factor(df$fill)
+    
+    # transform to RGB colours
+    if(r_type == "RGB"){
+      if(is.na(maxColorValue)) maxColorValue <- max(c(df$val1, df$val2, df$val3))
+      
+      if(maxColorValue < max(c(df$val1, df$val2, df$val3))){
+        out("maxColorValue < maximum raster value. maxColorValue is set to maximum raster value.", type = 2)
+        maxColorValue <- max(c(df$val1, df$val2, df$val3))
+      }
+      df$fill <- grDevices::rgb(red = df$val1, green = df$val2, blue = df$val3, maxColorValue = maxColorValue)
+    }
+    gg <- ggplot(df) + geom_raster(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
+    if(r_type == "RGB") gg <- gg + scale_fill_identity() 
+    return(gg)
   }
   
   # create frames
@@ -310,9 +335,9 @@ repl_vals <- function(data, x, y){
   if(length(r_list) > 1){
     frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
                                                                        trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade),
-                                                            y = gg.bmap(r_list[[i]], r_type, ...)), moveVis.n_cores = 1)
+                                                            y = gg.bmap(r = r_list[[i]], r_type, ...)), moveVis.n_cores = 1)
   } else{
-    bmap <- gg.bmap(r_list[[1]], r_type, ...)
+    bmap <- gg.bmap(r = r_list[[1]], r_type, ...)
     frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour, 
                                                                        trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade),
                                                             y = bmap), moveVis.n_cores = 1)

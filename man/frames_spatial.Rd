@@ -99,13 +99,11 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{trace_colour}{character, colour of the trace. Default is "white". It is recommended to define the same colours for both \code{trace_colour} and  \code{tail_colour} to enforce an uninterrupted colour transition form the tail to the trace.}
 
-\item{...}{Additional arguments customizing the frame background, passed to \code{RStoolbox::ggR} or \code{RStoolbox::ggRGB}:
+\item{...}{Additional arguments customizing the frame background:
 \itemize{
     \item \code{alpha}, numeric, background transparency (0-1).
-    \item \code{hue}, numeric, hue value for color calculation (0-1). Change if you need anything else than greyscale. Only effective if sat > 0.
-    \item \code{sat}, numeric, saturation value for color calculation (0,1). Change if you need anything else than greyscale.
-    \item \code{stretch}, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
-    \item \code{quantiles}, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2% stretch, i.e. \code{c(0.02,0.98)}.
+    \item \code{maxpixels}, maximum number of pixels to be plotted per frame. Defaults to 500000. Reduce to decrease detail and increase rendering speeds.
+    \item \code{macColorValue}, numeric, only relevant for RGB backgrounds (i.e. if \code{r_type = "RGB"} or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.
 }}
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
