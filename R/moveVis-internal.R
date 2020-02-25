@@ -253,7 +253,7 @@ repl_vals <- function(data, x, y){
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster geom_tile
 #' @importFrom raster aggregate ncell
 #' @noRd 
 .gg_spatial <- function(r_list, r_type, m.df, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
@@ -317,15 +317,33 @@ repl_vals <- function(data, x, y){
     
     # transform to RGB colours
     if(r_type == "RGB"){
-      if(is.na(maxColorValue)) maxColorValue <- max(c(df$val1, df$val2, df$val3))
+      if(is.na(maxColorValue)) maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
       
-      if(maxColorValue < max(c(df$val1, df$val2, df$val3))){
+      if(maxColorValue < max(c(df$val1, df$val2, df$val3), na.rm = T)){
         out("maxColorValue < maximum raster value. maxColorValue is set to maximum raster value.", type = 2)
-        maxColorValue <- max(c(df$val1, df$val2, df$val3))
+        maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
       }
+      
+      # remove NAs
+      na.sel <- is.na(df$val1) & is.na(df$val2) & is.na(df$val3)
+      if(any(na.sel)) df <- df[!na.sel,]
+      
       df$fill <- grDevices::rgb(red = df$val1, green = df$val2, blue = df$val3, maxColorValue = maxColorValue)
+    } else{
+      
+      # remove NAs
+      na.sel <- is.na(df$val1)
+      if(any(na.sel)) df <- df[!na.sel,]
     }
-    gg <- ggplot(df) + geom_raster(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
+    gg <- ggplot(df)
+    
+    # if NA gaps are there, use geom_tile, otherwise make it fast using geom_raster
+    if(any(na.sel)){
+      gg <- gg + geom_tile(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
+    } else{
+      gg <- gg + geom_raster(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
+    }
+    
     if(r_type == "RGB") gg <- gg + scale_fill_identity() 
     return(gg)
   }

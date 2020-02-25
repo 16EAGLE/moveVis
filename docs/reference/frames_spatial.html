@@ -310,12 +310,10 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments customizing the frame background, passed to <code><a href='https://rdrr.io/pkg/RStoolbox/man/ggR.html'>RStoolbox::ggR</a></code> or <code><a href='https://rdrr.io/pkg/RStoolbox/man/ggRGB.html'>RStoolbox::ggRGB</a></code>:</p><ul>
+      <td><p>Additional arguments customizing the frame background:</p><ul>
 <li><p><code>alpha</code>, numeric, background transparency (0-1).</p></li>
-<li><p><code>hue</code>, numeric, hue value for color calculation (0-1). Change if you need anything else than greyscale. Only effective if sat &gt; 0.</p></li>
-<li><p><code>sat</code>, numeric, saturation value for color calculation (0,1). Change if you need anything else than greyscale.</p></li>
-<li><p><code>stretch</code>, character, either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.</p></li>
-<li><p><code>quantiles</code>, numeric vector with two elements, min and max quantiles to stretch to. Defaults to 2<!-- % stretch, i.e. \code{c(0.02,0.98)}. --></p></li>
+<li><p><code>maxpixels</code>, maximum number of pixels to be plotted per frame. Defaults to 500000. Reduce to decrease detail and increase rendering speeds.</p></li>
+<li><p><code>macColorValue</code>, numeric, only relevant for RGB backgrounds (i.e. if <code>r_type = "RGB"</code> or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.</p></li>
 </ul></td>
     </tr>
     <tr>

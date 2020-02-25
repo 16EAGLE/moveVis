@@ -24,6 +24,7 @@ if(isTRUE(test_maps)){
   test_that("frames_spatial (test all map types)", {
   
     frames_types <- lapply(test_services, function(service) lapply(get_maptypes(service), function(x, s = service){
+      #tryCatch({
       cat(paste0(" ", s, ": ", x, "\n"))
       frames <- frames_spatial(m.aligned, map_service = s, map_type = x, map_token = Sys.getenv("moveVis_map_token"),
                                map_dir = test_dir, verbose = F)
@@ -31,6 +32,7 @@ if(isTRUE(test_maps)){
       expect_length(frames, 180)
       expect_is(frames[[1]], "ggplot")
       return(frames[[100]])
+      #})
     }))
   })
 }

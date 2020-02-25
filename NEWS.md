@@ -6,6 +6,9 @@ Revised distance calculations. Development version.
 **New features:**
 
 * Reduced dependencies
+* Distance calculations are now based on `lwgeom`
+* Refined base map plotting (see additional arguments `...` of `frames_spatial` for available options)
+* Added `NA` handling for base maps (e.g. rasterized labels)
 
 <br>
 
