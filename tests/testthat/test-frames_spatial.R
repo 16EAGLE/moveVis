@@ -130,5 +130,7 @@ test_that("frames_spatial (cross_dateline)", {
   frames <- expect_length(expect_is(frames_spatial(m, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "list"), 180)
   
+  m <- sp::spTransform(m, CRSobj = sp::CRS("+init=epsg:32632"))
+  frames <- expect_error(frames_spatial(m, verbose = F, cross_dateline = T))
   
 })

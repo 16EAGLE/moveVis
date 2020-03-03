@@ -211,6 +211,8 @@ repl_vals <- function(data, x, y){
 #' @noRd 
 .x_labels <- function(x){
   x.num <- x
+  x <- as.character(abs(x.num))
+  x <- paste0(x, "°")
   
   # remove NAs
   x[is.na(x.num)] <- ""
@@ -220,9 +222,6 @@ repl_vals <- function(data, x, y){
   x.num[x.num < -180] <- x.num[x.num < -180]+360
   x.num[x.num > 180] <- x.num[x.num > 180]-360
   
-  
-  x <- as.character(abs(x.num))
-  x <- paste0(x, "°")
   
   # assign Northing/Southing
   x[x.num > 0] <- paste0(x[x.num > 0], "E")
