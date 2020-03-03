@@ -114,3 +114,21 @@ test_that("frames_spatial (different extent/proj settings)", {
   expect_warning(frames_spatial(m.aligned, map_res = 0.1, ext = raster::extent(m.aligned)*0.1, verbose = F))
   
 })
+
+test_that("frames_spatial (cross_dateline)", {
+  
+  # shift across dateline
+  l.df <- lapply(move::split(m.aligned), as.data.frame)
+  df <- do.call(rbind, mapply(x = names(l.df), y = l.df, function(x, y){
+    y$id = x
+    return(y)
+  }, SIMPLIFY = F))
+  df$x <- df$x+171.06
+  df$x[df$x > 180] <- df$x[df$x > 180]-360
+  
+  m <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
+  frames <- expect_length(expect_is(frames_spatial(m, map_service = "carto", map_type = "light",
+                                                   verbose = F, cross_dateline = T), "list"), 180)
+  
+  
+})

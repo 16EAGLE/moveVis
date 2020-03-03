@@ -150,7 +150,7 @@ repl_vals <- function(data, x, y){
 #' generate extent
 #' @importFrom sf st_bbox st_intersects st_as_sfc
 #' @noRd 
-.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE){
+.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = FALSE){
   
   ## calcualte ext
   m.ext <- st_bbox(c(xmin = min(m.df$x, na.rm = T), xmax = max(m.df$x, na.rm = T), ymin = min(m.df$y, na.rm = T), ymax = max(m.df$y, na.rm = T)), crs = m.crs)
@@ -164,24 +164,89 @@ repl_vals <- function(data, x, y){
     gg.ext <- m.ext
   }
   
+  xy.diff <- if(isTRUE(cross_dateline)){
+    c(abs(abs(max(m.df$x[m.df$x < 0])) - min(m.df$x[m.df$x > 0])), gg.ext[4]-gg.ext[2])/2
+  }else (gg.ext[3:4] - gg.ext[1:2])/2
+  
+  
   # squared equidistant extent or not
-  if(isTRUE(equidistant)){
-    gg.ext <- .equidistant(gg.ext, margin_factor = margin_factor)
-  }else{
-    xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
-    gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = m.crs)
+  if(isTRUE(cross_dateline)){
+    
+    # split extents for both dateline sides
+    gg.ext <- list("west" = gg.ext, "east" = gg.ext)
+    
+    # cut extents and add margins to x components
+    gg.ext$west[[1]] <- -180 #xmin
+    gg.ext$west[[3]] <- max(m.df$x[m.df$x < 0]) + xy.diff[1]*(-1+margin_factor) #xmax
+    gg.ext$east[[1]] <- min(m.df$x[m.df$x > 0]) - xy.diff[1]*(-1+margin_factor) #xmin
+    gg.ext$east[[3]] <- 180 #xmax
+    
+    # add margins to y components
+    gg.ext$west[[2]] <- gg.ext$west[[2]] - xy.diff[2]*(-1+margin_factor) #ymin
+    gg.ext$west[[4]] <- gg.ext$west[[4]] + xy.diff[2]*(-1+margin_factor) #ymax
+    gg.ext$east[[2]] <- gg.ext$east[[2]] - xy.diff[2]*(-1+margin_factor) #ymin
+    gg.ext$east[[4]] <- gg.ext$east[[4]] + xy.diff[2]*(-1+margin_factor) #ymax
+    
+  } else{
+    
+    # equidistant currently not supported for cross_dateline
+    if(isTRUE(equidistant)){
+      gg.ext <- .equidistant(gg.ext, margin_factor = margin_factor)
+    }else{
+      gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = m.crs)
+    }
+    
+    # cut by longlat maximums
+    if(isTRUE(m.crs$epsg == 4326)){
+      if(gg.ext[1] < -180) gg.ext[1] <- -180
+      if(gg.ext[3] > 180) gg.ext[3] <- 180
+      if(gg.ext[2] < -90) gg.ext[2] <- -90
+      if(gg.ext[4] > 90) gg.ext[4] <- 90
+    }
   }
-  
-  # cut by longlat maximums
-  if(isTRUE(m.crs$epsg == 4326)){
-    if(gg.ext[1] < -180) gg.ext[1] <- -180
-    if(gg.ext[3] > 180) gg.ext[3] <- 180
-    if(gg.ext[2] < -90) gg.ext[2] <- -90
-    if(gg.ext[4] > 90) gg.ext[4] <- 90
-  }
-  
   return(gg.ext)
 }
+
+#' calculate x labels from breaks
+#' @noRd 
+.x_labels <- function(x){
+  x.num <- x
+  
+  # remove NAs
+  x[is.na(x.num)] <- ""
+  x.num[is.na(x.num)] <- 0
+  
+  # shift dateline crossings
+  x.num[x.num < -180] <- x.num[x.num < -180]+360
+  x.num[x.num > 180] <- x.num[x.num > 180]-360
+  
+  
+  x <- as.character(abs(x.num))
+  x <- paste0(x, "°")
+  
+  # assign Northing/Southing
+  x[x.num > 0] <- paste0(x[x.num > 0], "E")
+  x[x.num < 0] <- paste0(x[x.num < 0], "W")
+  return(x)
+}
+
+#' calculate y labels from breaks
+#' @noRd 
+.y_labels <- function(x){
+  x.num <- x
+  x <- as.character(abs(x.num))
+  x <- paste0(x, "°")
+  
+  # remove NAs
+  x[is.na(x.num)] <- ""
+  x.num[is.na(x.num)] <- 0
+  
+  # assign Northing/Southing
+  x[x.num > 0] <- paste0(x[x.num > 0], "N")
+  x[x.num < 0] <- paste0(x[x.num < 0], "S")
+  return(x)
+}
+
 
 #' create paths data.frame for gg on the fly per frame
 #' @noRd 
@@ -253,7 +318,7 @@ repl_vals <- function(data, x, y){
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster geom_tile
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster geom_tile coord_equal
 #' @importFrom raster aggregate ncell
 #' @noRd 
 .gg_spatial <- function(r_list, r_type, m.df, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
@@ -277,12 +342,9 @@ repl_vals <- function(data, x, y){
     
     ## base plot
     p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
-                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) +  theme_bw() + x$coord_sf[[1]]
-      #coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax), expand = F, crs = m.crs, datum = m.crs, clip = "on")
-    #scale_y_continuous(expand = c(0,0), limits = c(gg.ext$ymin, gg.ext$ymax)) + 
-    #scale_x_continuous(expand = c(0,0), limits = c(gg.ext$xmin, gg.ext$xmax)) +
+                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) + 
+      theme_bw() + x$coord[[1]] + x$scalex[[1]] + x$scaley[[1]]
     
-   
     ## add legend?
     if(isTRUE(path_legend)){
       l.df <- cbind.data.frame(x = x[1,]$x, y = x[1,]$y, name = levels(m.df$name),
@@ -473,47 +535,106 @@ repl_vals <- function(data, x, y){
   # sapply(ts.dl, function(x) x > 1)
 }
 
+#' combine two extents into one
+#' @noRd 
+.combine_ext <- function(ext.both){
+  ext.combi <- ext.both[[1]]
+  ext.combi@xmin <- min(c(ext.both[[1]]@xmin, ext.both[[2]]@xmin))
+  ext.combi@xmax <- max(c(ext.both[[1]]@xmax, ext.both[[2]]@xmax))
+  return(ext.combi)
+}
+
+#' expand two extents by the one with larger x range
+#' @noRd 
+.expand_ext <- function(ext.both, rg){
+  if(which.min(rg) == 1){
+    ext.both[[which.min(rg)]]@xmin <- -180+ext.both[[which.min(rg)]]@xmin-180
+    ext.both[[which.min(rg)]]@xmax <- -180+ext.both[[which.min(rg)]]@xmax-180
+  } else{
+    ext.both[[which.max(rg)]]@xmin <- 180+ext.both[[which.max(rg)]]@xmin+180
+    ext.both[[which.max(rg)]]@xmax <- 180+ext.both[[which.max(rg)]]@xmax+180
+  }
+  return(ext.both)
+}
+
+#' shift two extents by 180 lon degrees
+#' @noRd 
+.shift_ext <- function(ext.both){
+  
+  shift <- function(x) if(x >= 0) x-180 else x +180
+  
+  lapply(ext.both, function(x){
+    x@xmin <- shift(x@xmin)
+    x@xmax <- shift(x@xmax)
+    return(x)
+  })
+}
+
 #' get map
 #' @importFrom slippymath bbox_to_tile_grid compose_tile_grid
-#' @importFrom raster projectRaster extent res res<- projectExtent
+#' @importFrom raster projectRaster extent extent<- resample extend merge
 #' @importFrom magick image_read image_write image_convert
 #' @importFrom curl curl_download
 #' @noRd 
 .getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs){
   
+  if(inherits(gg.ext, "bbox")) gg.ext <- list(gg.ext)
+  
   ## calculate needed slippy tiles using slippymath
-  gg.ext.ll <- st_bbox(st_transform(st_as_sfc(gg.ext), crs = st_crs("+init=epsg:4326")))
-  tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
-  images <- .apply(tg$tiles, MARGIN = 1, function(x){
-    file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
-    
-    retry <- list(do = TRUE, count = 0)
-    while(retry$do){
+  r <- lapply(gg.ext, function(y){
+    gg.ext.ll <- st_bbox(st_transform(st_as_sfc(y), crs = st_crs("+init=epsg:4326")))
+    tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
+    images <- .apply(tg$tiles, MARGIN = 1, function(x){
+      file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
       
-      ## download tiles
-      url <- paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", if(map_service == "mapbox") paste0("?access_token=", map_token) else NULL)
-      if(!file.exists(file)) curl_download(url = url, destfile = file) #utils::download.file(url = url, destfile = file, quiet = T) 
-      
-      # test if file can be loaded
-      catch <- try(image_read(file), silent = T)
-      if(inherits(catch, "try-error")){
-        unlink(file)
-        retry$count <- retry$count+1
-        if(retry$count < 10) retry$do <- TRUE else out(paste0("Base map download failed: ", catch), type = 3)
-      } else{
-        retry$do <- FALSE
+      retry <- list(do = TRUE, count = 0)
+      while(retry$do){
+        
+        ## download tiles
+        url <- paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", x[1], "/", x[2], ".png", if(map_service == "mapbox") paste0("?access_token=", map_token) else NULL)
+        if(!file.exists(file)) curl_download(url = url, destfile = file) #utils::download.file(url = url, destfile = file, quiet = T) 
+        
+        # test if file can be loaded
+        catch <- try(image_read(file), silent = T)
+        if(inherits(catch, "try-error")){
+          unlink(file)
+          retry$count <- retry$count+1
+          if(retry$count < 10) retry$do <- TRUE else out(paste0("Base map download failed: ", catch), type = 3)
+        } else{
+          retry$do <- FALSE
+        }
       }
-    }
+      
+      ## covnert imagery
+      image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
+      return(file)
+    })
     
-    ## covnert imagery
-    image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
-    return(file)
+    ## composite imagery
+    r <- compose_tile_grid(tg, images)
+    crop(projectRaster(r, crs = m.crs), extent(y[1], y[3], y[2], y[4]), snap = "out")
   })
   
-  ## composite imagery
-  r <- compose_tile_grid(tg, images)
-  list(crop(projectRaster(r, crs = m.crs), extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out"))
+  if(length(r) > 1){
+    
+    # extend over dateline
+    ext.both <- list(east = extent(r$east), west = extent(r$west))
+    rg <- c("east"= diff(c(ext.both$east@xmin, ext.both$east@xmax)), "west" = diff(c(ext.both$west@xmin, ext.both$west@xmax)))
+    
+    ext.both <- .expand_ext(ext.both, rg)
+    #ext.both <- .shift_ext(ext.both)
+    extent(r$east) <- ext.both$east
+    extent(r$west) <- ext.both$west
+    
+    # extend lower res raster, resample higher res raster and merge both
+    ext.combi <- .combine_ext(ext.both)
+    
+    r[[which.min(rg)]] <- extend(r[[which.min(rg)]], ext.combi)
+    r[[which.max(rg)]] <- resample(r[[which.max(rg)]], r[[which.min(rg)]])
+    r <- list(merge(r[[1]], r[[2]]))
+  }
   
+  return(r)
   #projectRaster produces hidden warnings:
   # no non-missing arguments to max; returning -Inf
   # no non-missing arguments to min; returning -Inf

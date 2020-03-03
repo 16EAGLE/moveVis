@@ -23,6 +23,7 @@
 #' @param tail_colour character, colour of the last tail element, to which the path colour is faded. Default is "white".
 #' @param trace_show logical, whether to show the trace of the complete path or not.
 #' @param trace_colour character, colour of the trace. Default is "white". It is recommended to define the same colours for both \code{trace_colour} and  \code{tail_colour} to enforce an uninterrupted colour transition form the tail to the trace.
+#' @param cross_dateline logical, whether tracks are crossing the dateline (longitude 180 to -180) or not. If \code{TRUE}, frames are expanded towards the side of the dateline that is smaller. Applies only if the CRS of m is geographical (lon/lat). If \code{FALSE} (default), frames are clipped at the maximum longitudes and tracks cannot cross.
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
 #' @param equidistant logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.
 #' @param ext \code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).
@@ -151,7 +152,7 @@
 
 frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
                            margin_factor = 1.1, equidistant = NULL, ext = NULL, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
-                           path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_colour = "white", ..., verbose = TRUE){
+                           path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
   
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -198,21 +199,53 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
   
+  if(all(!all.equal(st_crs(m)[[1]], 4326), isTRUE(cross_dateline))){
+    out("Argument 'cross_dateline' is ignored, since the coordinate reference system of 'm' is not geographical (long/lat).", type = 2)
+    cross_dateline <- FALSE
+  }
+  
   ## preprocess movement data
   out("Processing movement data...")
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
   .stats(n.frames = max(m.df$frame))
   
-  gg.ext <- .ext(m.df, m.crs = st_crs(m), ext, margin_factor, equidistant) # calcualte extent
+  gg.ext <- .ext(m.df, m.crs = st_crs(m), ext, margin_factor, equidistant, cross_dateline) # calcualte extent
   
-  m.df$coord_sf <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                          expand = F, crs = st_crs(m)$proj4string, datum = st_crs(m)$proj4string, clip = "on"))
+  ## shift coordinates crossing dateline
+  if(isTRUE(cross_dateline)){
+    rg <- c("pos" = diff(range(m.df$x[m.df$x >= 0])), "neg" = diff(range(m.df$x[m.df$x < 0])))
+    if(which.max(rg) == 1){
+      m.df$x[m.df$x < 0] <- 180+m.df$x[m.df$x < 0]+180
+    } else{
+      m.df$x[m.df$x >= 0] <- -180+m.df$x[m.df$x >= 0]-180
+    }
+  }  
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
     r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs = crs(m))
     r_type <- "RGB"
+  }
+  
+  # calculate frames extents and coord labes
+  if(isTRUE(cross_dateline)){
+    # calculate extent shifted across dateline
+    gg.ext <- .combine_ext(.expand_ext(list(extent(gg.ext$east[[1]], gg.ext$east[[3]], gg.ext$east[[2]], gg.ext$east[[4]]),
+                                            extent(gg.ext$west[[1]], gg.ext$west[[3]], gg.ext$west[[2]], gg.ext$west[[4]])), rg))
+    gg.ext <- st_bbox(c(xmin = gg.ext@xmin, xmax = gg.ext@xmax, ymin = gg.ext@ymin, ymax = gg.ext@ymax), crs = st_crs(m))
+    
+    # use coord_equal for dateline crossingngs in EPSG:4326 only
+    m.df$coord <- list(ggplot2::coord_equal(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+                                       expand = F, clip = "on"))
+    m.df$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels))
+    m.df$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
+  } else{
+    
+    # use coord_sf for all other cases
+    m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+                                         expand = F, crs = st_crs(m)$proj4string, datum = st_crs(m)$proj4string, clip = "on"))
+    m.df$scaley <- m.df$scalex <- NULL
   }
   
   out("Assigning raster maps to frames...")
