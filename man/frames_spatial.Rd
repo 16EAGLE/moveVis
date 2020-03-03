@@ -100,7 +100,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{trace_colour}{character, colour of the trace. Default is "white". It is recommended to define the same colours for both \code{trace_colour} and  \code{tail_colour} to enforce an uninterrupted colour transition form the tail to the trace.}
 
-\item{cross_dateline}{logical, whether tracks are crossing the dateline (longitude 180 to -180) or not. If \code{TRUE}, frames are expanded towards the side of the dateline that is smaller. Applies only if the CRS of m is geographical (lon/lat). If \code{FALSE} (default), frames are clipped at the maximum longitudes and tracks cannot cross.}
+\item{cross_dateline}{logical, whether tracks are crossing the dateline (longitude 180/-180) or not. If \code{TRUE}, frames are expanded towards the side of the dateline that is smaller in space. Applies only if the CRS of \code{m} is not projected (geographical, lon/lat). If \code{FALSE} (default), frames are clipped at the minimum and maximum longitudes and tracks cannot cross.}
 
 \item{...}{Additional arguments customizing the frame background:
 \itemize{

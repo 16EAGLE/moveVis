@@ -183,6 +183,7 @@
   <span class='kw'>tail_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
   <span class='kw'>trace_show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>trace_colour</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='kw'>cross_dateline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
@@ -307,6 +308,10 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
     <tr>
       <th>trace_colour</th>
       <td><p>character, colour of the trace. Default is "white". It is recommended to define the same colours for both <code>trace_colour</code> and  <code>tail_colour</code> to enforce an uninterrupted colour transition form the tail to the trace.</p></td>
+    </tr>
+    <tr>
+      <th>cross_dateline</th>
+      <td><p>logical, whether tracks are crossing the dateline (longitude 180/-180) or not. If <code>TRUE</code>, frames are expanded towards the side of the dateline that is smaller in space. Applies only if the CRS of <code>m</code> is not projected (geographical, lon/lat). If <code>FALSE</code> (default), frames are clipped at the minimum and maximum longitudes and tracks cannot cross.</p></td>
     </tr>
     <tr>
       <th>...</th>

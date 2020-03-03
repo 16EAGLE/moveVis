@@ -149,14 +149,15 @@
     <div id="movevis-0-10-x" class="section level2">
 <h2 class="hasAnchor">
 <a href="#movevis-0-10-x" class="anchor"></a>moveVis 0.10.X</h2>
-<p>Revised distance calculations. Development version.</p>
+<p>Revised distance calculations &amp; handling of dateline crossings. Development version.</p>
 <p><strong>New features:</strong></p>
 <ul>
-<li>Reduced dependencies</li>
+<li>Argument <code>cross_dateline</code> of <code>frames_spatial</code> to indicate that unprojected tracks in lon/lat cross the dateline. Instead of clipping frames at longitudes -180 and 180, <code>moveVis</code> extends frames and connects tracks across the dateline.</li>
 <li>Distance calculations are now based on <code>lwgeom</code>
 </li>
 <li>Refined base map plotting (see additional arguments <code>...</code> of <code>frames_spatial</code> for available options)</li>
 <li>Added <code>NA</code> handling for base maps (e.g. rasterized labels)</li>
+<li>Reduced dependencies</li>
 </ul>
 <p><br></p>
 <hr>
