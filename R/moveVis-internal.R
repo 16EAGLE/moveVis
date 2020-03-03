@@ -318,7 +318,7 @@ repl_vals <- function(data, x, y){
 }
 
 #' spatial plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster geom_tile coord_equal
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster geom_tile
 #' @importFrom raster aggregate ncell
 #' @noRd 
 .gg_spatial <- function(r_list, r_type, m.df, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 

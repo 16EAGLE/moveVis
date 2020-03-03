@@ -203,6 +203,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     out("Argument 'cross_dateline' is ignored, since the coordinate reference system of 'm' is not geographical (long/lat).", type = 2)
     cross_dateline <- FALSE
   }
+  if(isTRUE(cross_dateline)) equidistant <- FALSE
   
   ## preprocess movement data
   out("Processing movement data...")
@@ -236,8 +237,8 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     gg.ext <- st_bbox(c(xmin = gg.ext@xmin, xmax = gg.ext@xmax, ymin = gg.ext@ymin, ymax = gg.ext@ymax), crs = st_crs(m))
     
     # use coord_equal for dateline crossingngs in EPSG:4326 only
-    m.df$coord <- list(ggplot2::coord_equal(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                       expand = F, clip = "on"))
+    m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+                                         expand = F, clip = "on"))
     m.df$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels))
     m.df$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
   } else{
