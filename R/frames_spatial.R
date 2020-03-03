@@ -199,7 +199,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
   
-  if(all(!all.equal(st_crs(m)[[1]], 4326), isTRUE(cross_dateline))){
+  if(all(as.integer(st_crs(m)[[1]]) != as.integer(4326), isTRUE(cross_dateline))){
     out("Argument 'cross_dateline' is ignored, since the coordinate reference system of 'm' is not geographical (long/lat).", type = 2)
     cross_dateline <- FALSE
   }
