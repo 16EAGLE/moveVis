@@ -129,9 +129,9 @@ test_that("frames_spatial (cross_dateline)", {
   frames <- expect_length(expect_is(frames_spatial(m, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "list"), 180)
   # transform using sf
-  m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(32632))
+  m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs("+init=epsg:32632"))
   m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
-  m <- df2move(m_tf, proj = sf::st_crs(32632)[[2]], x = "X", y = "Y", time = "time", track_id = "id")
+  m <- df2move(m_tf, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
   #m <- sp::spTransform(m, CRSobj = sp::CRS("+init=epsg:32632"))
   frames <- expect_warning(frames_spatial(m, verbose = F, cross_dateline = T))
   
