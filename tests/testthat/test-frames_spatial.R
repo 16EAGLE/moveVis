@@ -102,7 +102,6 @@ test_that("frames_spatial (different extent/proj settings)", {
     m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(p))
     m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
     m <- df2move(m_tf, proj = p, x = "X", y = "Y", time = "time", track_id = "id")
-    #m <- sp::spTransform(m, raster::crs(p))
     
     frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "list"), 180)
     expect_is(frames[[1]], "ggplot")
@@ -129,8 +128,11 @@ test_that("frames_spatial (cross_dateline)", {
   m <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
   frames <- expect_length(expect_is(frames_spatial(m, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "list"), 180)
-  
-  m <- sp::spTransform(m, CRSobj = sp::CRS("+init=epsg:32632"))
-  frames <- expect_error(frames_spatial(m, verbose = F, cross_dateline = T))
+  # transform using sf
+  m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(32632))
+  m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
+  m <- df2move(m_tf, proj = sf::st_crs(32632)[[2]], x = "X", y = "Y", time = "time", track_id = "id")
+  #m <- sp::spTransform(m, CRSobj = sp::CRS("+init=epsg:32632"))
+  frames <- expect_warning(frames_spatial(m, verbose = F, cross_dateline = T))
   
 })

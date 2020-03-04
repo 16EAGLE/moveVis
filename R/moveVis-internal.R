@@ -211,39 +211,42 @@ repl_vals <- function(data, x, y){
 #' @noRd 
 .x_labels <- function(x){
   x.num <- x
-  x <- as.character(abs(x.num))
-  x <- paste0(x, "°")
   
   # remove NAs
-  x[is.na(x.num)] <- ""
+  which.na <- is.na(x.num)
   x.num[is.na(x.num)] <- 0
   
   # shift dateline crossings
   x.num[x.num < -180] <- x.num[x.num < -180]+360
   x.num[x.num > 180] <- x.num[x.num > 180]-360
   
+  x <- as.character(abs(x.num))
+  x <- paste0('"', x, '"', "*degree")
+  x[which.na] <- ""
   
   # assign Northing/Southing
-  x[x.num > 0] <- paste0(x[x.num > 0], "E")
-  x[x.num < 0] <- paste0(x[x.num < 0], "W")
-  return(x)
+  x[x.num > 0] <- paste0(x[x.num > 0], "*E")
+  x[x.num < 0] <- paste0(x[x.num < 0], "*W")
+  return(parse(text=x))
 }
 
 #' calculate y labels from breaks
 #' @noRd 
 .y_labels <- function(x){
   x.num <- x
-  x <- as.character(abs(x.num))
-  x <- paste0(x, "°")
   
   # remove NAs
-  x[is.na(x.num)] <- ""
+  which.na <- is.na(x.num)
   x.num[is.na(x.num)] <- 0
   
+  x <- as.character(abs(x.num))
+  x <- paste0('"', x, '"', "*degree")
+  x[which.na] <- ""
+  
   # assign Northing/Southing
-  x[x.num > 0] <- paste0(x[x.num > 0], "N")
-  x[x.num < 0] <- paste0(x[x.num < 0], "S")
-  return(x)
+  x[x.num > 0] <- paste0(x[x.num > 0], "*N")
+  x[x.num < 0] <- paste0(x[x.num < 0], "*S")
+  return(parse(text=x))
 }
 
 
