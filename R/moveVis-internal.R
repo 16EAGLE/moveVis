@@ -800,6 +800,9 @@ repl_vals <- function(data, x, y){
 #' @importFrom pbapply pboptions
 #' @noRd 
 .onLoad <- function(libname, pkgname){
+  catch <- try(lwgeom::lwgeom_extSoftVersion()) # lwgeom is needed for st_distance, but no import of sf.
+  # Importing an lwgeom function here to avoid NOTE on missing imports
+  
   pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
   if(is.null(getOption("moveVis.n_cores")))  options(moveVis.n_cores = 1)

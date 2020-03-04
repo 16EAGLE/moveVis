@@ -125,14 +125,14 @@ test_that("frames_spatial (cross_dateline)", {
   df$x <- df$x+171.06
   df$x[df$x > 180] <- df$x[df$x > 180]-360
   
-  m <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
-  frames <- expect_length(expect_is(frames_spatial(m, map_service = "carto", map_type = "light",
+  m.shifted <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
+  frames <- expect_length(expect_is(frames_spatial(m.shifted, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "list"), 180)
   # transform using sf
-  m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs("+init=epsg:32632"))
-  m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
-  m <- df2move(m_tf, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
+  df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs("+init=epsg:32632"))
+  df <- cbind.data.frame(sf::st_coordinates(df), time = df$time, id = move::trackId(m.shifted))
+  m.shifted.repro <- df2move(df, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
   #m <- sp::spTransform(m, CRSobj = sp::CRS("+init=epsg:32632"))
-  frames <- expect_warning(frames_spatial(m, verbose = F, cross_dateline = T))
+  frames <- expect_warning(frames_spatial(m.shifted.repro, verbose = F, cross_dateline = T))
   
 })
