@@ -47,9 +47,12 @@ m.shifted <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time"
 
 # transform using sf
 df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs("+init=epsg:32632"))
+print(sf::st_coordinates(df))
 df <- cbind.data.frame(sf::st_coordinates(df), time = df$time, id = move::trackId(m.shifted))
-
-m.shifted.repro <- df2move(df, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
+print(df)
+print(is.na(df$X))
+print(is.na(df$Y))
+m.shifted.repro <- df2move(df = df, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
 
 ## base map
 r_grad <- basemap_data[[1]]
