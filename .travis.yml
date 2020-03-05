@@ -8,7 +8,7 @@ sudo: required
 
 addons:
   sources:
-      - sourceline: 'ppa:cran/ffmpeg-3'
+#     - sourceline: 'ppa:cran/ffmpeg-3'
       - sourceline: 'ppa:cran/ffmpeg-4'
       - sourceline: 'ppa:cran/imagemagick'
   apt:
@@ -17,7 +17,8 @@ addons:
       - libudunits2-dev
       - libgdal-dev
       - cargo
-      - ffmpeg
+      - libavformat-dev
+      - libavcodec-dev
       - libavfilter-dev
       - libavdevice-dev
       - libmagick++-dev
