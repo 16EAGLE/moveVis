@@ -16,6 +16,7 @@ addons:
       - libudunits2-dev
       - libgdal-dev
       - cargo
+      - ffmpeg
       - libavfilter-dev
       - libmagick++-dev
 
