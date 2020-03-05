@@ -7,6 +7,10 @@ r:
 sudo: required
 
 addons:
+  sources:
+      - sourceline: 'ppa:cran/ffmpeg-3'
+      - sourceline: 'ppa:cran/ffmpeg-4'
+      - sourceline: 'ppa:cran/imagemagick'
   apt:
     packages:
       - libudunits2-dev
