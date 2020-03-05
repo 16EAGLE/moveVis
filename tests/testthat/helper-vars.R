@@ -34,6 +34,23 @@ data("basemap_data", package = "moveVis", envir = environment())
 m <- move_data
 m.aligned <- align_move(m, res = 4, unit = "mins")
 
+# shift across dateline
+l.df <- lapply(move::split(m.aligned), as.data.frame)
+df <- do.call(rbind, mapply(x = names(l.df), y = l.df, function(x, y){
+  y$id = x
+  return(y)
+}, SIMPLIFY = F))
+df$x <- df$x+171.06
+df$x[df$x > 180] <- df$x[df$x > 180]-360
+
+m.shifted <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
+
+# transform using sf
+df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs("+init=epsg:32632"))
+df <- cbind.data.frame(sf::st_coordinates(df), time = df$time, id = move::trackId(m.shifted))
+
+m.shifted.repro <- df2move(df, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
+
 ## base map
 r_grad <- basemap_data[[1]]
 r_disc <- lapply(r_grad, function(x){

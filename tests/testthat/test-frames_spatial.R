@@ -116,23 +116,8 @@ test_that("frames_spatial (different extent/proj settings)", {
 
 test_that("frames_spatial (cross_dateline)", {
   
-  # shift across dateline
-  l.df <- lapply(move::split(m.aligned), as.data.frame)
-  df <- do.call(rbind, mapply(x = names(l.df), y = l.df, function(x, y){
-    y$id = x
-    return(y)
-  }, SIMPLIFY = F))
-  df$x <- df$x+171.06
-  df$x[df$x > 180] <- df$x[df$x > 180]-360
-  
-  m.shifted <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
   frames <- expect_length(expect_is(frames_spatial(m.shifted, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "list"), 180)
-  # transform using sf
-  df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs("+init=epsg:32632"))
-  df <- cbind.data.frame(sf::st_coordinates(df), time = df$time, id = move::trackId(m.shifted))
-  m.shifted.repro <- df2move(df, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
-  #m <- sp::spTransform(m, CRSobj = sp::CRS("+init=epsg:32632"))
   frames <- expect_warning(frames_spatial(m.shifted.repro, verbose = F, cross_dateline = T))
   
 })
