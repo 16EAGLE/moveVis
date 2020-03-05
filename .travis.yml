@@ -12,12 +12,14 @@ addons:
       - sourceline: 'ppa:cran/ffmpeg-4'
       - sourceline: 'ppa:cran/imagemagick'
   apt:
+    update: true
     packages:
       - libudunits2-dev
       - libgdal-dev
       - cargo
       - ffmpeg
       - libavfilter-dev
+      - libavdevice-dev
       - libmagick++-dev
 
 before_install:
