@@ -49,6 +49,19 @@ repl_vals <- function(data, x, y){
   return(data)
 }
 
+
+#' interpolate NAs
+#'
+#' @param v vector with NAs to be replaced by interpolated values
+#' @param rule see approxfun
+#'
+#' @keywords internal
+#' @noRd
+.na.approx <- function(v, rule = 2){
+  s <- 1:length(v)
+  stats::approx(x = s[!is.na(v)], y = v[!is.na(v)], rule = rule, xout = s)$y
+}
+
 #' verbose lapply
 #'
 #' @importFrom pbapply pblapply
@@ -674,7 +687,8 @@ repl_vals <- function(data, x, y){
   i.frames <- i.frames[i.rasters-1]
   
   # interpolation function
-  v.fun <- function(v.x, v.y, ...) t(mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, ...) zoo::na.approx(c(xx, v.na, yy), rule = 2)[pos.frames], SIMPLIFY = T))
+  v.fun <- function(v.x, v.y, ...) t(mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, ...) .na.approx(c(xx, v.na, yy))[pos.frames], SIMPLIFY = T))
+  #v.fun <- function(v.x, v.y, ...) t(mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, ...) zoo::na.approx(c(xx, v.na, yy), rule = 2)[pos.frames], SIMPLIFY = T))
   #v.fun <- function(v.x, v.y) mapply(xx = v.x, yy = v.y, FUN = function(xx, yy, xx.pos = x.pos, yy.pos = y.pos, xy.frame = frame) zoo::na.approx(c(xx, rep(NA, (yy.pos-xx.pos)-1), yy))[(xy.frame-xx.pos)+1], SIMPLIFY = T)
   #v.fun <- Vectorize(function(x, y, ...) zoo::na.approx(c(x, v.na, y), rule = 2)[pos.frame])
   

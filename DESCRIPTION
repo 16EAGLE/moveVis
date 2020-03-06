@@ -12,22 +12,22 @@ License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.0.2
 Imports:
+  move,
   raster,
   sf,
   lwgeom,
-  move,
   slippymath,
   lubridate,
+  curl,
   ggplot2,
   cowplot,
-  gifski,
   magick,
-  zoo,
-  methods,
+  gifski,
   av,
-  curl,
   pbapply,
-  magrittr
+  magrittr,
+  methods,
+  stats
 BugReports: http://www.github.com/16eagle/moveVis/issues
 SystemRequirements: ImageMagick, FFmpeg, libav
 URL: http://movevis.org
