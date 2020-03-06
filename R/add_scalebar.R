@@ -16,7 +16,7 @@
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 geom_polygon geom_text aes_string expr
-#' @importFrom sf st_distance st_sfc st_point
+#' @importFrom sf st_distance st_sfc st_point st_crs
 #'
 #' @examples 
 #' library(moveVis)
@@ -63,13 +63,29 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
   ## calculate gg plot dimensions
   gg.crs <- frames[[1]]$coordinates$crs
   gg.xy <- ggplot_build(frames[[1]])$data[[1]]
-  gg.corner <- list(bottomleft = c(min(gg.xy$xmin), min(gg.xy$ymin)), upperleft = c(min(gg.xy$xmin), max(gg.xy$ymax)),
-                    upperright = c(max(gg.xy$xmax), max(gg.xy$ymax)), bottomright = c(max(gg.xy$xmax), min(gg.xy$ymin)))
   
-  gg.corner_sf <- lapply(gg.corner, function(x) st_sfc(st_point(x), crs = gg.crs))
+  .corner <- function(xy){
+    list(bottomleft = c(min(xy$xmin), min(xy$ymin)), upperleft = c(min(xy$xmin), max(xy$ymax)),
+         upperright = c(max(xy$xmax), max(xy$ymax)), bottomright = c(max(xy$xmax), min(xy$ymin)))
+  }
+  gg.corner <- .corner(gg.xy)
+  
+  # cross_dateline
+  if(is.null(gg.crs)){
+    gg.crs <- st_crs(4326)
+    gg.xy_cdl <- gg.xy
+    gg.xy_cdl$xmin[gg.xy_cdl$xmin < -180] <- -180
+    gg.xy_cdl$xmax[gg.xy_cdl$xmax < -180] <- -180
+    gg.xy_cdl$xmin[gg.xy_cdl$xmin > 180] <- 180
+    gg.xy_cdl$xmax[gg.xy$xmax > 180] <- 180
+    gg.corner_sf <- lapply(.corner(gg.xy_cdl), function(x) st_sfc(st_point(x), crs = gg.crs))
+    # THIS SOLUTION IS NOT CORRECT - SCALES WILL BE TOO SMALL!
+  } else {
+    gg.corner_sf <- lapply(gg.corner, function(x) st_sfc(st_point(x), crs = gg.crs))
+  }
   gg.dist <- list(x = as.numeric(suppressPackageStartupMessages(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$bottomright, by_element = T)))/1000,
                   y = as.numeric(suppressPackageStartupMessages(st_distance(gg.corner_sf$bottomleft, gg.corner_sf$upperleft, by_element = T)))/1000)
-  
+ 
   ## calculate axis distances
   if(units == "miles") gg.dist <- lapply(gg.dist, function(x) x/1.609344 )
   gg.diff <- list(x = max(gg.xy$xmax) - min(gg.xy$xmin), y = max(gg.xy$ymax) - min(gg.xy$ymin))

@@ -1,6 +1,7 @@
 skip_on_cran()
 context("add_ functions")
 frames <- frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", verbose = F)
+frames_nocrs <- frames_spatial(m.shifted, map_service = "carto", map_type = "light", verbose = F, cross_dateline = T)
 
 #if("add_" %in% which_tests){
 test_that("add_colourscale", {
@@ -80,6 +81,7 @@ test_that("add_scalebar", {
   expect_length(expect_is(add_scalebar(frames, distance = 1.5), "list"), 180)
   expect_length(expect_is(add_scalebar(frames, distance = 1.5, units = "miles"), "list"), 180)
   expect_length(expect_is(add_scalebar(frames), "list"), 180)
+  expect_length(expect_is(add_scalebar(frames_nocrs), "list"), 180)
   
   # false call
   expect_error(add_scalebar(NA, distance = 1.5, colour = "black", 0.018)) # false frames

@@ -159,10 +159,6 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
   if(inherits(m, "Move")) m <- moveStack(m)
   
-  ## check m time conformities
-  out("Checking temporal alignment...")
-  .time_conform(m)
-
   if(!is.null(r_list)){
     if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
     if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
@@ -203,7 +199,12 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     out("Argument 'cross_dateline' is ignored, since the coordinate reference system of 'm' is not geographical (long/lat).", type = 2)
     cross_dateline <- FALSE
   }
+  if(all(isTRUE(cross_dateline), !is.null(r_list))) out("Argument 'cross_dateline' only works with default base maps. Arguments 'r_list' and 'r_times' cannot be used, if cross_dateline = TRUE.\nTip: Reproject 'm' to another CRS that better suits the region if you want to use 'r_list' with tracks crossing the dateline.", type = 3)
   if(isTRUE(cross_dateline)) equidistant <- FALSE
+  
+  ## check m time conformities
+  out("Checking temporal alignment...")
+  .time_conform(m)
   
   ## preprocess movement data
   out("Processing movement data...")
