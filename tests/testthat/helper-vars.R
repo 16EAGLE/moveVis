@@ -46,11 +46,9 @@ df$x[df$x > 180] <- df$x[df$x > 180]-360
 m.shifted <- df2move(df, "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
 
 # transform using sf
-print(df)
-print(sf::st_as_sf(m.shifted))
-df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs("+init=epsg:32632"))
+df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs("+init=epsg:3995"))
 df <- cbind.data.frame(sf::st_coordinates(df), time = df$time, id = move::trackId(m.shifted))
-m.shifted.repro <- df2move(df = df, proj = "+init=epsg:32632", x = "X", y = "Y", time = "time", track_id = "id")
+m.shifted.repro <- df2move(df = df, proj = "+init=epsg:3995", x = "X", y = "Y", time = "time", track_id = "id")
 
 ## base map
 r_grad <- basemap_data[[1]]
