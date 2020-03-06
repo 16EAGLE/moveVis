@@ -4,14 +4,10 @@ r:
   - release
   - devel
 
-sudo: required
+#sudo: required
 
 addons:
-  sources:
-#     - sourceline: 'ppa:cran/ffmpeg-3'
-      - sourceline: 'ppa:cran/ffmpeg-4'
-      - sourceline: 'ppa:cran/imagemagick'
-  apt:
+ apt:
     update: true
     packages:
       - libudunits2-dev
@@ -22,6 +18,10 @@ addons:
       - libavfilter-dev
       - libavdevice-dev
       - libmagick++-dev
+    sources:
+#     - sourceline: 'ppa:cran/ffmpeg-4'
+      - sourceline: 'ppa:cran/ffmpeg-3'
+      - sourceline: 'ppa:cran/imagemagick'
 
 before_install:
 # - sudo apt-get install gdal-bin # version to old, get updated ppa
