@@ -126,12 +126,12 @@
 <a class="sourceLine" id="cb1-7" data-line-number="7">m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">4</span>, <span class="dt">unit =</span> <span class="st">"mins"</span>)</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">## assign some path colours by individual</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/move/man/split.html">split</a></span>(m) <span class="co"># split m into list by individual</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://bartk.gitlab.io/move/reference/split.html">split</a></span>(m) <span class="co"># split m into list by individual</span></a>
 <a class="sourceLine" id="cb1-11" data-line-number="11">m.list &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/mapply.html">mapply</a></span>(<span class="dt">x =</span> m.list, <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>), <span class="cf">function</span>(x, y){</a>
 <a class="sourceLine" id="cb1-12" data-line-number="12">  x<span class="op">$</span>colour &lt;-<span class="st"> </span>y</a>
 <a class="sourceLine" id="cb1-13" data-line-number="13">  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(x)</a>
 <a class="sourceLine" id="cb1-14" data-line-number="14">}) <span class="co"># add colour per individual</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">m &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/move/man/moveStack.html">moveStack</a></span>(m.list) <span class="co"># putting it back together into a moveStack</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">m &lt;-<span class="st"> </span><span class="kw"><a href="https://bartk.gitlab.io/move/reference/moveStack.html">moveStack</a></span>(m.list) <span class="co"># putting it back together into a moveStack</span></a>
 <a class="sourceLine" id="cb1-16" data-line-number="16"></a>
 <a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co"># create frames with mapbox satellite basemap</span></a>
 <a class="sourceLine" id="cb1-18" data-line-number="18">frames &lt;-<span class="st"> </span><span class="kw"><a href="../reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">map_service =</span> <span class="st">"mapbox"</span>, <span class="dt">map_type =</span> <span class="st">"satellite"</span>,</a>

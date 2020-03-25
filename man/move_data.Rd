@@ -4,7 +4,9 @@
 \name{move_data}
 \alias{move_data}
 \title{Example simulated movement tracks}
-\format{\code{Move} object, as used by the \code{move} package.}
+\format{
+\code{Move} object, as used by the \code{move} package.
+}
 \usage{
 data(move_data)
 }

@@ -6,10 +6,14 @@
 \alias{df}
 \alias{m}
 \title{White Stork LifeTrack tracks}
-\format{\itemize{
+\format{
+\itemize{
    \item \code{df} is a \code{data.frame} object
    \item \code{m} is a \code{moveStack} object
-}}
+}
+
+An object of class \code{MoveStack} with 155173 rows and 3 columns.
+}
 \usage{
 data(whitestork_data)
 }

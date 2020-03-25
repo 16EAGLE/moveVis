@@ -24,7 +24,6 @@
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom move timestamps timeLag interpolateTime moveStack move split
-#' @importFrom raster crs
 #' @importFrom lubridate second<- minute<- hour<- day<- 
 #'
 #' @seealso \code{\link{df2move}} \code{\link{frames_spatial}} \code{\link{frames_graph}}

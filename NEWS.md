@@ -9,7 +9,11 @@ Revised distance calculations & handling of dateline crossings. Development vers
 * Distance calculations are now based on `lwgeom`
 * Refined base map plotting (see additional arguments `...` of `frames_spatial` for available options)
 * Added `NA` handling for base maps (e.g. rasterized labels)
-* Reduced dependencies
+* Dropped dependencies
+
+**Bug fixes:**
+
+* Minor errors and warnings caused by reverse dependency changes of package `sf`
 
 <br>
 

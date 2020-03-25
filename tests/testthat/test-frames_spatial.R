@@ -3,7 +3,7 @@ context("frames_spatial")
 
 test_that("frames_spatial (default maps)", {
   # correct call
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, verbose = F, map_res = 0.1), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m = m.aligned, verbose = F, map_res = 0.1), "list"), 180)
   expect_is(frames[[1]], "ggplot")
   
   # false calls

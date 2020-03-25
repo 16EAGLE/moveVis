@@ -519,7 +519,7 @@ repl_vals <- function(data, x, y){
 #' @noRd 
 .time_conform <- function(m){
   
-  m.indi <- if(inherits(m, "MoveStack")) split(m) else list(m)
+  m.indi <- if(inherits(m, "MoveStack")) move::split(m) else list(m)
   ts <- .lapply(m.indi, timestamps, moveVis.verbose = F)
   tl <- .lapply(m.indi, timeLag, unit = "secs", moveVis.verbose = F)
   
@@ -626,7 +626,7 @@ repl_vals <- function(data, x, y){
     })
     
     ## composite imagery
-    r <- compose_tile_grid(tg, images)
+    r <- quiet(compose_tile_grid(tg, images))
     crop(projectRaster(r, crs = m.crs), extent(y[1], y[3], y[2], y[4]), snap = "out")
   })
   
