@@ -1,7 +1,7 @@
 ***
 
-## moveVis 0.10.X
-Revised distance calculations & handling of dateline crossings. Development version.
+## moveVis 0.10.5
+Revised distance calculations & handling of dateline crossings. Released on CRAN: 2020-03-28
 
 **New features:**
 

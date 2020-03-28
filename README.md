@@ -157,7 +157,7 @@ Detailed code examples explaining how to use specific functions are provided at 
 
 <a target="_blank" href = "https://chirpscholekster.nl/downloads/movevis_example_code.R">Reproducible example of how to combine animal tracking data, tidal water height data and a heightmap to visualize animal movement with moveVis</a> by <a target="_blank" href="https://twitter.com/hjvdkolk">Henk-Jan van der Kolk</a>, <a target="_blank" href = "https://nioo.knaw.nl/en">The Netherlands Institute of Ecology (NIOO-KNAW)</a>
 
-<a target="_blank" href = "http://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230k">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href = "https://www.movebank.org/">Movebank</a>
+<a target="_blank" href = "http://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href = "https://www.movebank.org/">Movebank</a>
 
 ## Features to be added
 
