@@ -1,7 +1,13 @@
+url: https://movevis.org
+
 development:
   mode: release
-#  version_label: warning
-#  version_tooltip: "Pre-release version"
+
+template:
+  params:
+    docsearch:
+      api_key: a482704aa04a35b75610bde292d047b8
+      index_name: movevis
 
 home:
   links:
@@ -98,6 +104,7 @@ articles:
   - example-2
   - example-3
   - example-7
+
 
 #articles:
 #- title: Examples

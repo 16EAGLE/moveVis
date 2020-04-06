@@ -3,6 +3,7 @@
 ^LICENSE$
 ^\.travis.yml$
 ^_pkgdown.yml$
+^pkgdown$
 ^\.gitignore$
 ^\.Rhistory$
 docs

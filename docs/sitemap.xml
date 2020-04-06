@@ -1,96 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://movevis.org/index.html</loc>
+    <loc>https://movevis.org/index.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_colourscale.html</loc>
+    <loc>https://movevis.org/reference/add_colourscale.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_gg.html</loc>
+    <loc>https://movevis.org/reference/add_gg.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_labels.html</loc>
+    <loc>https://movevis.org/reference/add_labels.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_northarrow.html</loc>
+    <loc>https://movevis.org/reference/add_northarrow.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_progress.html</loc>
+    <loc>https://movevis.org/reference/add_progress.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_scalebar.html</loc>
+    <loc>https://movevis.org/reference/add_scalebar.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_text.html</loc>
+    <loc>https://movevis.org/reference/add_text.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/add_timestamps.html</loc>
+    <loc>https://movevis.org/reference/add_timestamps.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/align_move.html</loc>
+    <loc>https://movevis.org/reference/align_move.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/animate_frames.html</loc>
+    <loc>https://movevis.org/reference/animate_frames.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/basemap_data.html</loc>
+    <loc>https://movevis.org/reference/basemap_data.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/deprecated.html</loc>
+    <loc>https://movevis.org/reference/deprecated.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/df2move.html</loc>
+    <loc>https://movevis.org/reference/df2move.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/frames_graph.html</loc>
+    <loc>https://movevis.org/reference/frames_graph.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/frames_spatial.html</loc>
+    <loc>https://movevis.org/reference/frames_spatial.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/get_frametimes.html</loc>
+    <loc>https://movevis.org/reference/get_frametimes.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/get_maptypes.html</loc>
+    <loc>https://movevis.org/reference/get_maptypes.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/join_frames.html</loc>
+    <loc>https://movevis.org/reference/join_frames.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/moveVis-package.html</loc>
+    <loc>https://movevis.org/reference/moveVis-package.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/move_data.html</loc>
+    <loc>https://movevis.org/reference/move_data.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/reexports.html</loc>
+    <loc>https://movevis.org/reference/reexports.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/settings.html</loc>
+    <loc>https://movevis.org/reference/settings.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/subset_move.html</loc>
+    <loc>https://movevis.org/reference/subset_move.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/suggest_formats.html</loc>
+    <loc>https://movevis.org/reference/suggest_formats.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/view_spatial.html</loc>
+    <loc>https://movevis.org/reference/view_spatial.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/reference/whitestork_data.html</loc>
+    <loc>https://movevis.org/reference/whitestork_data.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/articles/example-1.html</loc>
+    <loc>https://movevis.org/articles/example-1.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/articles/example-2.html</loc>
+    <loc>https://movevis.org/articles/example-2.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/articles/example-3.html</loc>
+    <loc>https://movevis.org/articles/example-3.html</loc>
   </url>
   <url>
-    <loc>http://movevis.org/articles/example-7.html</loc>
+    <loc>https://movevis.org/articles/example-7.html</loc>
   </url>
 </urlset>
