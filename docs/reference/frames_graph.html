@@ -8,13 +8,11 @@
 
 <title>Create frames of movement-environment interaction graphs for animation — frames_graph • moveVis</title>
 
-
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -38,9 +36,10 @@
 
 
 
-
 <meta property="og:title" content="Create frames of movement-environment interaction graphs for animation — frames_graph" />
+
 <meta property="og:description" content="frames_graph creates a list of ggplot2 graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using animate_frames." />
+
 
 
 
@@ -115,6 +114,7 @@
   </ul>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="http://www.twitter.com/schwalbwillmann">
@@ -153,7 +153,9 @@
     </div>
 
     <div class="ref-description">
+    
     <p><code>frames_graph</code> creates a list of <code>ggplot2</code> graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using <code><a href='animate_frames.html'>animate_frames</a></code>.</p>
+    
     </div>
 
     <pre class="usage"><span class='fu'>frames_graph</span>(
@@ -173,7 +175,7 @@
   <span class='kw'>val_by</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='no'>T</span>
 )</pre>
-
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -241,17 +243,20 @@
       <td><p>logical, if <code>TRUE</code>, messages and progress information are displayed on the console (default).</p></td>
     </tr>
     </table>
-
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>List of ggplot2 objects, each representing a single frame. If <code>return_data</code> is <code>TRUE</code>, a <code>data.frame</code> is returned (see <code>return_data</code>).</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>To later on side-by-side join spatial frames created using <code><a href='frames_spatial.html'>frames_spatial</a></code> with frames created with <code>frames_graph</code> for animation,
 equal inputs must have been used for both function calls for each of the arguments <code>m</code>, <code>r_list</code>, <code>r_times</code> and <code>fade_raster</code>.</p>
+    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='frames_spatial.html'>frames_spatial</a></code> <code><a href='join_frames.html'>join_frames</a></code> <code><a href='animate_frames.html'>animate_frames</a></code></p></div>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>moveVis</span>)

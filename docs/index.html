@@ -105,15 +105,15 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="movevis" class="section level1">
+<div id="movevis-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#movevis" class="anchor"></a>moveVis <a href="http://movevis.org"><img align="right" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_hex.png"></a>
+<a href="#movevis-" class="anchor"></a>moveVis <a href="http://movevis.org"><img align="right" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_hex.png"></a>
 </h1></div>
 
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><a href="http://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g.Â from GPS tracking) and temporal changes of environmental data (e.g.Â from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move"><code>move</code></a> and <a href="https://github.com/rspatial/raster"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2"><code>ggplot2</code></a> frames that can be further customized. <a href="http://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski"><code>gifski</code></a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.</p>
+<p><a href="http://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move"><code>move</code></a> and <a href="https://github.com/rspatial/raster"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2"><code>ggplot2</code></a> frames that can be further customized. <a href="http://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski"><code>gifski</code></a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.</p>
 <p>A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access paper</a> accompanying <code>moveVis</code> has been published in <em>Methods in Ecology and Evolution</em>.</p>
 <br><p align="center">
 <img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
@@ -131,7 +131,7 @@
 <p>The latest stable version of <a href="http://movevis.org"><code>moveVis</code></a> can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis"</span>)</pre></div>
 <p>The development version can be installed from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</pre></div>
 <p>Code written for <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:</p>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span>(<span class="st">"your/download/directory"</span>)
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis-0.9.9.tar.gz"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="kw">NULL</span>)</pre></div>
@@ -149,7 +149,7 @@
 <li>
 <code><a href="reference/align_move.html">align_move()</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</li>
 <li>
-<code><a href="reference/subset_move.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g.Â a particular day.</li>
+<code><a href="reference/subset_move.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.</li>
 </ul>
 </div>
 <div id="creating-frames" class="section level4">
@@ -169,7 +169,7 @@
 <a href="#adapting-frames" class="anchor"></a>Adapting frames</h4>
 <ul>
 <li>
-<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> functions (e.g.Â to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> `add_``functions:</li>
+<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> `add_``functions:</li>
 <li>
 <code><a href="reference/add_labels.html">add_labels()</a></code> adds character labels such as title or axis labels to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
@@ -264,7 +264,7 @@
 <p><a href="https://gist.github.com/16EAGLE/8237db3ea0f6e773e8d47bf4ebb201b6">How to hold the last frame of an animation for a defined time and make it look good by using path_fade</a></p>
 <p><a href="https://gist.github.com/16EAGLE/16f08531f925f9de2286af277089e3d1">How to display the full traces of each path using trace_show and trace_colour with frames_spatial()</a></p>
 <p><a href="https://gist.github.com/16EAGLE/de21779c75aec8be27013f99dc311073">How to colour paths based on a continuous variable</a></p>
-<p><a href="https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual, e.g.Â to indicate behavioral segments</a></p>
+<p><a href="https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual, e.g. to indicate behavioral segments</a></p>
 <p><a href="https://gist.github.com/16EAGLE/d69e3bed11fb6d08ee724868710ff876">How to adapt the path legend of frames created with frames_spatial()</a></p>
 <p><a href="https://gist.github.com/16EAGLE/1afc1c08d0b2e8696aec5d9f39894266">How to create a data.frame containing each track coordinate per frame</a></p>
 <p><a href="https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a> (hacky, not a very optimal solution)</p>
@@ -288,13 +288,13 @@
 </ul>
 <p><strong>Some day:</strong></p>
 <ul>
-<li>3D animations, e.g.Â for including altitude data</li>
+<li>3D animations, e.g. for including altitude data</li>
 </ul>
 </div>
 <div id="related-packages" class="section level2">
 <h2 class="hasAnchor">
 <a href="#related-packages" class="anchor"></a>Related packages</h2>
-<p>The Department of Remote Sensing of the University of WÃ¼rzburg has developed other R packages that might interest you:</p>
+<p>The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:</p>
 <ul>
 <li>
 <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,</li>
@@ -303,7 +303,7 @@
 <li>
 <a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.</li>
 </ul>
-<p>For other news on the work at at the Department of Remote Sensing of the University of WÃ¼rzburg, click <a target="_blank" href="http://remote-sensing.eu/">here</a>.</p>
+<p>For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a target="_blank" href="http://remote-sensing.eu/">here</a>.</p>
 </div>
 <div id="acknowledgements" class="section level2">
 <h2 class="hasAnchor">
@@ -319,7 +319,7 @@
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
-<p>An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the <code>moveVis</code> R package has been peer-reviewed by and published in <em>âMethods in Ecology and Evolutionâ</em> (see <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a>). Please cite moveVis, e.g.Â when you use it in publications or presentations, using the output of <code><a href="https://rdrr.io/r/utils/citation.html">citation("moveVis")</a></code> or as follows:</p>
+<p>An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the <code>moveVis</code> R package has been peer-reviewed by and published in <em>‘Methods in Ecology and Evolution’</em> (see <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a>). Please cite moveVis, e.g. when you use it in publications or presentations, using the output of <code><a href="https://rdrr.io/r/utils/citation.html">citation("moveVis")</a></code> or as follows:</p>
 <p><em>Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a></em></p>
 </div>
 </div>
