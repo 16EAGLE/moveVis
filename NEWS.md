@@ -1,5 +1,16 @@
 ***
 
+## moveVis 0.10.5-1
+Unreleased development version.
+
+**New features:**
+
+* New base map types have been added, now supporting the ESRI map server REST API. Call `get_maptypes` for an overview. New map types include `natgeo_world_map`, `usa_topo_maps`, `world_imagery`, `world_physical_map`, `world_shaded_relief`, `world_street_map`, `world_terrain_base`, `world_topo_map`, `world_dark_gray_base`, `world_dark_gray_reference`, `world_light_gray_base`, `world_light_gray_reference`, `world_hillshade_dark`, `world_hillshade`, `world_ocean_base`, `world_ocean_reference`, `antarctic_imagery`, `arctic_imagery`, `arctic_ocean_base`, `arctic_ocean_reference`, `world_boundaries_and_places_alternate`, `world_boundaries_and_places`, `world_reference_overlay`, `world_transportation`, `delorme_world_base_map` and `world_navigation_charts`. 
+
+<br>
+
+***
+
 ## moveVis 0.10.5
 Revised distance calculations & handling of dateline crossings. Released on CRAN: 2020-03-28
 

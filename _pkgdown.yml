@@ -1,5 +1,7 @@
 development:
   mode: release
+#  version_label: warning
+#  version_tooltip: "Pre-release version"
 
 home:
   links:
@@ -39,12 +41,6 @@ navbar:
       href: http://www.github.com/16eagle
     - icon: fa-globe fa-lg
       href: http://jakob.schwalb-willmann.de
-
-#template:
-#  params:
-#    docsearch:
-#      api_key: API_KEY
-#      index_name: INDEX_NAME
 
 reference:
 - title: Data preparation

@@ -6,19 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Movement Data Visualization • moveVis</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Movement Data Visualization">
 <meta property="og:description" content="Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.">
-<meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,22 +113,28 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><a href="http://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move"><code>move</code></a> and <a href="https://github.com/rspatial/raster"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2"><code>ggplot2</code></a> frames that can be further customized. <a href="http://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski"><code>gifski</code></a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.</p>
+<p><a href="http://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g.Â from GPS tracking) and temporal changes of environmental data (e.g.Â from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move"><code>move</code></a> and <a href="https://github.com/rspatial/raster"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2"><code>ggplot2</code></a> frames that can be further customized. <a href="http://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski"><code>gifski</code></a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files.</p>
 <p>A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access paper</a> accompanying <code>moveVis</code> has been published in <em>Methods in Ecology and Evolution</em>.</p>
-<p><br></p>
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p> <p align="center"><sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p> <br><br><p align="center"><img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p> <p align="center"><sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
+<br><p align="center">
+<img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
+<p align="center">
+<sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
+<br><br><p align="center">
+<img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p>
+<p align="center">
+<sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed.</p>
 <p>The latest stable version of <a href="http://movevis.org"><code>moveVis</code></a> can be installed from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis"</span>)</pre></div>
 <p>The development version can be installed from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"16EAGLE/moveVis"</span>)</pre></div>
 <p>Code written for <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span>(<span class="st">"your/download/directory"</span>)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis-0.9.9.tar.gz"</span>, <span class="dt">repos =</span> <span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span>(<span class="st">"your/download/directory"</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"moveVis-0.9.9.tar.gz"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="kw">NULL</span>)</pre></div>
 </div>
 <div id="function-overview" class="section level2">
 <h2 class="hasAnchor">
@@ -143,7 +149,7 @@
 <li>
 <code><a href="reference/align_move.html">align_move()</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</li>
 <li>
-<code><a href="reference/subset_move.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.</li>
+<code><a href="reference/subset_move.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g.Â a particular day.</li>
 </ul>
 </div>
 <div id="creating-frames" class="section level4">
@@ -163,7 +169,7 @@
 <a href="#adapting-frames" class="anchor"></a>Adapting frames</h4>
 <ul>
 <li>
-<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> `add_``functions:</li>
+<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> functions (e.g.Â to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> `add_``functions:</li>
 <li>
 <code><a href="reference/add_labels.html">add_labels()</a></code> adds character labels such as title or axis labels to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
@@ -217,29 +223,30 @@
 <h2 class="hasAnchor">
 <a href="#get-started" class="anchor"></a>Get started</h2>
 <p>The following example shows how to make a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of <code>ggplot2</code> frames and turning these frames into an animated <code>GIF</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(moveVis)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(move)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"move_data"</span>, <span class="dt">package =</span> <span class="st">"moveVis"</span>) <span class="co"># move class object</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co"># if your tracks are present as data.frames, see df2move() for conversion</span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co"># align move_data to a uniform time scale</span></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8">m &lt;-<span class="st"> </span><span class="kw"><a href="reference/align_move.html">align_move</a></span>(move_data, <span class="dt">res =</span> <span class="dv">240</span>, <span class="dt">digit =</span> <span class="dv">0</span>, <span class="dt">unit =</span> <span class="st">"secs"</span>)</a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co"># create spatial frames with a OpenStreetMap watercolour map</span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11">frames &lt;-<span class="st"> </span><span class="kw"><a href="reference/frames_spatial.html">frames_spatial</a></span>(m, <span class="dt">path_colours =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),</a>
-<a class="sourceLine" id="cb4-12" data-line-number="12">                         <span class="dt">map_service =</span> <span class="st">"osm"</span>, <span class="dt">map_type =</span> <span class="st">"watercolor"</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="reference/add_labels.html">add_labels</a></span>(<span class="dt">x =</span> <span class="st">"Longitude"</span>, <span class="dt">y =</span> <span class="st">"Latitude"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># add some customizations, such as axis labels</span></a>
-<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="reference/add_northarrow.html">add_northarrow</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="reference/add_scalebar.html">add_scalebar</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="st">  </span><span class="kw"><a href="reference/add_timestamps.html">add_timestamps</a></span>(m, <span class="dt">type =</span> <span class="st">"label"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="reference/add_progress.html">add_progress</a></span>()</a>
-<a class="sourceLine" id="cb4-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb4-19" data-line-number="19">frames[[<span class="dv">100</span>]] <span class="co"># preview one of the frames, e.g. the 100th frame</span></a>
-<a class="sourceLine" id="cb4-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co"># animate frames</span></a>
-<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="kw"><a href="reference/animate_frames.html">animate_frames</a></span>(frames, <span class="dt">out_file =</span> <span class="st">"moveVis.gif"</span>)</a></code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
+<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">moveVis</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">move</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"move_data"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"moveVis"</span>) <span class="co"># move class object</span>
+<span class="co"># if your tracks are present as data.frames, see df2move() for conversion</span>
+
+<span class="co"># align move_data to a uniform time scale</span>
+<span class="no">m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/align_move.html">align_move</a></span>(<span class="no">move_data</span>, <span class="kw">res</span> <span class="kw">=</span> <span class="fl">240</span>, <span class="kw">digit</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">unit</span> <span class="kw">=</span> <span class="st">"secs"</span>)
+
+<span class="co"># create spatial frames with a OpenStreetMap watercolour map</span>
+<span class="no">frames</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/frames_spatial.html">frames_spatial</a></span>(<span class="no">m</span>, <span class="kw">path_colours</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>),
+                         <span class="kw">map_service</span> <span class="kw">=</span> <span class="st">"osm"</span>, <span class="kw">map_type</span> <span class="kw">=</span> <span class="st">"watercolor"</span>, <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">0.5</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/add_labels.html">add_labels</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"Longitude"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Latitude"</span>) <span class="kw">%&gt;%</span> <span class="co"># add some customizations, such as axis labels</span>
+  <span class="fu"><a href="reference/add_northarrow.html">add_northarrow</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/add_scalebar.html">add_scalebar</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/add_timestamps.html">add_timestamps</a></span>(<span class="no">m</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"label"</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/add_progress.html">add_progress</a></span>()
+
+<span class="no">frames</span><span class="kw">[[</span><span class="fl">100</span>]] <span class="co"># preview one of the frames, e.g. the 100th frame</span>
+
+<span class="co"># animate frames</span>
+<span class="fu"><a href="reference/animate_frames.html">animate_frames</a></span>(<span class="no">frames</span>, <span class="kw">out_file</span> <span class="kw">=</span> <span class="st">"moveVis.gif"</span>)</pre></div>
+<p align="center">
+<img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
@@ -257,7 +264,7 @@
 <p><a href="https://gist.github.com/16EAGLE/8237db3ea0f6e773e8d47bf4ebb201b6">How to hold the last frame of an animation for a defined time and make it look good by using path_fade</a></p>
 <p><a href="https://gist.github.com/16EAGLE/16f08531f925f9de2286af277089e3d1">How to display the full traces of each path using trace_show and trace_colour with frames_spatial()</a></p>
 <p><a href="https://gist.github.com/16EAGLE/de21779c75aec8be27013f99dc311073">How to colour paths based on a continuous variable</a></p>
-<p><a href="https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual, e.g. to indicate behavioral segments</a></p>
+<p><a href="https://gist.github.com/16EAGLE/2a2ad684b3ea2c874cfcb5b364bc573c">How to assign multiple path colours per individual, e.g.Â to indicate behavioral segments</a></p>
 <p><a href="https://gist.github.com/16EAGLE/d69e3bed11fb6d08ee724868710ff876">How to adapt the path legend of frames created with frames_spatial()</a></p>
 <p><a href="https://gist.github.com/16EAGLE/1afc1c08d0b2e8696aec5d9f39894266">How to create a data.frame containing each track coordinate per frame</a></p>
 <p><a href="https://gist.github.com/16EAGLE/4bfb0ca589204c53041244aa705b456b">How to overlay frames with additional transparent rasters changing over time</a> (hacky, not a very optimal solution)</p>
@@ -281,13 +288,13 @@
 </ul>
 <p><strong>Some day:</strong></p>
 <ul>
-<li>3D animations, e.g. for including altitude data</li>
+<li>3D animations, e.g.Â for including altitude data</li>
 </ul>
 </div>
 <div id="related-packages" class="section level2">
 <h2 class="hasAnchor">
 <a href="#related-packages" class="anchor"></a>Related packages</h2>
-<p>The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:</p>
+<p>The Department of Remote Sensing of the University of WÃ¼rzburg has developed other R packages that might interest you:</p>
 <ul>
 <li>
 <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,</li>
@@ -296,7 +303,7 @@
 <li>
 <a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.</li>
 </ul>
-<p>For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a target="_blank" href="http://remote-sensing.eu/">here</a>.</p>
+<p>For other news on the work at at the Department of Remote Sensing of the University of WÃ¼rzburg, click <a target="_blank" href="http://remote-sensing.eu/">here</a>.</p>
 </div>
 <div id="acknowledgements" class="section level2">
 <h2 class="hasAnchor">
@@ -305,23 +312,20 @@
 <p align="justify">
 </p>
 <div>
-    <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="26%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
-    <a href="http://www.dlr.de/eoc/en/"><img width="17%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
-     <a href="https://www.bmu.de/en/"><img width="30%" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"></a>
-    <a href="https://www.ab.mpg.de/"><img width="20%" src="https://upload.wikimedia.org/wikipedia/en/c/c9/Max-Planck-Gesellschaft.svg"></a>
+<a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="26%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a> <a href="http://www.dlr.de/eoc/en/"><img width="17%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a> <a href="https://www.bmu.de/en/"><img width="30%" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"></a> <a href="https://www.ab.mpg.de/"><img width="20%" src="https://upload.wikimedia.org/wikipedia/en/c/c9/Max-Planck-Gesellschaft.svg"></a>
 </div>
 
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
-<p>An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the <code>moveVis</code> R package has been peer-reviewed by and published in <em>‘Methods in Ecology and Evolution’</em> (see <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a>). Please cite moveVis, e.g. when you use it in publications or presentations, using the output of <code><a href="https://rdrr.io/r/utils/citation.html">citation("moveVis")</a></code> or as follows:</p>
+<p>An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the <code>moveVis</code> R package has been peer-reviewed by and published in <em>âMethods in Ecology and Evolutionâ</em> (see <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a>). Please cite moveVis, e.g.Â when you use it in publications or presentations, using the output of <code><a href="https://rdrr.io/r/utils/citation.html">citation("moveVis")</a></code> or as follows:</p>
 <p><em>Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a></em></p>
 </div>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
@@ -352,7 +356,7 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Jakob Schwalb-Willmann <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Jakob Schwalb-Willmann <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-2665-1509" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -377,7 +381,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
 </div>
 
       </footer>

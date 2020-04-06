@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -142,10 +146,21 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       
     </div>
 
+    <div id="movevis-0-10-5-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#movevis-0-10-5-1" class="anchor"></a>moveVis 0.10.5-1</h2>
+<p>Unreleased development version.</p>
+<p><strong>New features:</strong></p>
+<ul>
+<li>New base map types have been added, now supporting the ESRI map server REST API. Call <code>get_maptypes</code> for an overview. New map types include <code>natgeo_world_map</code>, <code>usa_topo_maps</code>, <code>world_imagery</code>, <code>world_physical_map</code>, <code>world_shaded_relief</code>, <code>world_street_map</code>, <code>world_terrain_base</code>, <code>world_topo_map</code>, <code>world_dark_gray_base</code>, <code>world_dark_gray_reference</code>, <code>world_light_gray_base</code>, <code>world_light_gray_reference</code>, <code>world_hillshade_dark</code>, <code>world_hillshade</code>, <code>world_ocean_base</code>, <code>world_ocean_reference</code>, <code>antarctic_imagery</code>, <code>arctic_imagery</code>, <code>arctic_ocean_base</code>, <code>arctic_ocean_reference</code>, <code>world_boundaries_and_places_alternate</code>, <code>world_boundaries_and_places</code>, <code>world_reference_overlay</code>, <code>world_transportation</code>, <code>delorme_world_base_map</code> and <code>world_navigation_charts</code>.</li>
+</ul>
+<p><br></p>
+<hr>
+</div>
     <div id="movevis-0-10-5" class="section level2">
 <h2 class="hasAnchor">
 <a href="#movevis-0-10-5" class="anchor"></a>moveVis 0.10.5</h2>
@@ -156,7 +171,7 @@
 <li>Distance calculations are now based on <code>lwgeom</code>
 </li>
 <li>Refined base map plotting (see additional arguments <code>...</code> of <code>frames_spatial</code> for available options)</li>
-<li>Added <code>NA</code> handling for base maps (e.g. rasterized labels)</li>
+<li>Added <code>NA</code> handling for base maps (e.g.Â rasterized labels)</li>
 <li>Dropped dependencies</li>
 </ul>
 <p><strong>Bug fixes:</strong></p>
@@ -185,9 +200,9 @@
 <p>Publication, added parallelization, new memory settings and bug fixes. Released on CRAN: 2020-02-07</p>
 <p><strong>Peer-reviewed publication:</strong></p>
 <ul>
-<li>An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the <code>moveVis</code> R package has been peer-reviewed by and published in <em>‘Methods in Ecology and Evolution’</em> (see <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a>).</li>
+<li>An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the <code>moveVis</code> R package has been peer-reviewed by and published in <em>âMethods in Ecology and Evolutionâ</em> (see <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a>).</li>
 <li>Reference: <em>Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. <a href="https://doi.org/10.1111/2041-210X.13374" class="uri">https://doi.org/10.1111/2041-210X.13374</a></em>.</li>
-<li>Citation: Please use <code><a href="https://rdrr.io/r/utils/citation.html">citation("moveVis")</a></code> to cite moveVis, e.g. when you use it in publications or presentations.</li>
+<li>Citation: Please use <code><a href="https://rdrr.io/r/utils/citation.html">citation("moveVis")</a></code> to cite moveVis, e.g.Â when you use it in publications or presentations.</li>
 </ul>
 <p><strong>New features:</strong></p>
 <ul>
@@ -221,7 +236,7 @@
 <p><strong>Bug fixes:</strong></p>
 <ul>
 <li>Bug that caused the scale bar distance calculated by <code><a href="../reference/add_scalebar.html">add_scalebar()</a></code> to be <code>0</code> for smaller-scale extents. Distance rounding is now iterated by digit to solve this.</li>
-<li>Bug in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument ‘ext’. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.</li>
+<li>Bug in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> that resulted in wrong plot extents when an extent smaller than the extent of m was provided using argument âextâ. In such a case, movement tracks are now clipped to small extents and move outside of the visible frame instead of altering the frame extent.</li>
 <li>Bug that causes traces to cover paths if <code>trace_show = TRUE</code>. Traces are now always displayed behind paths.</li>
 </ul>
 <p><br></p>
@@ -234,7 +249,7 @@
 <p><strong>New features:</strong></p>
 <ul>
 <li>Argument <code>path_alpha</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for defining path transparency.</li>
-<li>Argument <code>tail_colour</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> makes it now possible to define the colour of the last tail element, to which the path colour is faded. Default is “white”.</li>
+<li>Argument <code>tail_colour</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> makes it now possible to define the colour of the last tail element, to which the path colour is faded. Default is âwhiteâ.</li>
 <li>Argument <code>trace_show</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for displaying the trace of the complete path (instead that it vanishes after the tail).</li>
 <li>Argument <code>trace_colour</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for defining the colour of the trace.</li>
 <li>Argument <code>na.colour</code> of <code><a href="../reference/add_colourscale.html">add_colourscale()</a></code> for defining the colouring of NA values.</li>
@@ -268,7 +283,7 @@
 <p><strong>Bug fixes:</strong></p>
 <ul>
 <li>Bug that prevented the use of equal colours for multiple individuals</li>
-<li>Bug that prevented the use of multiple colours per individual, e.g. colouring by behavioral segments/change points</li>
+<li>Bug that prevented the use of multiple colours per individual, e.g.Â colouring by behavioral segments/change points</li>
 <li>Bug that caused an error when using <code>fade_raster = T</code> in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> due to unequal vector lengths returned by the internal interpolation function (issue #45)</li>
 <li>Bug that caused false time assignments or an error, if <code>fade_raster = F</code> and/or <code>r_times</code> contained time elements outside the time range covered by the timestamps of <code>m</code>. <br>
 </li>
@@ -284,7 +299,7 @@
 <li>movement data preparation, frames creation, layout/appearance editing and animation are now seperated, allowing you to customize each of these steps individually.</li>
 <li>any <code>ggplot2</code> syntax can now be added to every single frame, allowing you to customize almost everything that can be customized using <code>ggplot2</code>
 </li>
-<li>to make customization easier, a variety of <code>add_</code> functions wrapping pre-defined <code>ggplot2</code> functions are included. For example, <code>add_gg</code> offers dynamic overplotting, e.g. for polygons or points that change over time</li>
+<li>to make customization easier, a variety of <code>add_</code> functions wrapping pre-defined <code>ggplot2</code> functions are included. For example, <code>add_gg</code> offers dynamic overplotting, e.g.Â for polygons or points that change over time</li>
 <li>track colours can now be provided as a <code>colour</code> column in your movement data, allowing segmentation coulouring or colouring based on a logic, you defined beforhand</li>
 <li>map elements can be positioned freely or individual map-elements can be created as <code>ggplot2</code> functions</li>
 <li>Your animation does not have to be a fixed-size squared standard extent: With the <code>ext</code> argument of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> you can define user-defined area of interest (AOI), which scales the frame extent to a specific area</li>
@@ -317,7 +332,7 @@
 <p><br><strong>New features:</strong></p>
 <ul>
 <li>Static basemaps defined through <code>map_type</code> are now retrieved from either OpenStreetMaps for thematic imagery or Microsoft Bing Maps for satellite/hybrid imagery. The usage of OpenStreetMaps is free. For intensive use of the Bing Maps basemap options, please provide your own Bing Maps API key through the <code>api_key</code> argument, after registering at Microsoft here: <a href="https://msdn.microsoft.com/en-us/library/ff428642.aspx" class="uri">https://msdn.microsoft.com/en-us/library/ff428642.aspx</a>. Google Maps services will be implemented in a future update for restricted usage using an API key.</li>
-<li>New baemaps options via <code>map_type</code>: “satellite” (default), “hybrid”, “roadmap”, “roadmap_dark”, “roadmap_bw”, “roadmap_watercolor”.</li>
+<li>New baemaps options via <code>map_type</code>: âsatelliteâ (default), âhybridâ, âroadmapâ, âroadmap_darkâ, âroadmap_bwâ, âroadmap_watercolorâ.</li>
 <li>New argument <code>map_zoom</code> for <code>animate_move</code>: Increase or decrease the degree of detail of a static basemap.</li>
 <li>New argument <code>map_crop</code> for <code>animate_move</code>: Define, if a static basemap should be cropped to the extent of <code>m</code> or if a wider extent of optimal resolution should be used.</li>
 </ul>
@@ -367,27 +382,27 @@
 <p><br><strong>New functions:</strong></p>
 <ul>
 <li>
-<code><a href="../reference/deprecated.html">get_libraries()</a></code> – handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be called for code compatibility reasons</li>
+<code><a href="../reference/deprecated.html">get_libraries()</a></code> â handles all extern libraries that are needed for video formats. Just run it to get information on what you need to install. Replaces get_imconvert(), which can still be called for code compatibility reasons</li>
 <li>
-<code><a href="../reference/deprecated.html">get_formats()</a></code> – outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.</li>
+<code><a href="../reference/deprecated.html">get_formats()</a></code> â outputs all file formats that can be used with moveVis depending on which libraries are installed on the system.</li>
 </ul>
 <p><br><strong>New features:</strong></p>
 <ul>
 <li>moveVis supports now multiple video formats in addition to GIF, if it is linked to a video library (either FFmpeg of libav)</li>
 <li>animate_move() now detects temporal resolution and uniformity of timestamps automatically to determine, if interpolation needs to be applied to calculate uniform frame times per frame tick</li>
 <li>animate_move() now calculates and displays the final animation duration derived from the total number of output frames and the fps prior to generating each frame, so that the user can already approximate which size the output animation will have.</li>
-<li>added “frames_tres” to animate_move() to change temporal resolution through linear interpolation</li>
-<li>added “frames_pixres” to animate_move() to adjust frame ppi</li>
-<li>added “paths_na.hold” to animate_move() for defining how to deal with data gaps (hold or not hold last path location)</li>
-<li>added “time_bar_col” to animate_move() for changing colouring of the time bar at the top border of the map</li>
-<li>added “out_format” to animate_move() for defining output file format</li>
-<li>added “indi_names” to animate_move() for defining individual names vector manually</li>
-<li>added “scalebar_dist” to animate_move() for defining the scalebar length manually</li>
-<li>added “overwrite” to animate_move() to regulate output file writing behaviour</li>
+<li>added âframes_tresâ to animate_move() to change temporal resolution through linear interpolation</li>
+<li>added âframes_pixresâ to animate_move() to adjust frame ppi</li>
+<li>added âpaths_na.holdâ to animate_move() for defining how to deal with data gaps (hold or not hold last path location)</li>
+<li>added âtime_bar_colâ to animate_move() for changing colouring of the time bar at the top border of the map</li>
+<li>added âout_formatâ to animate_move() for defining output file format</li>
+<li>added âindi_namesâ to animate_move() for defining individual names vector manually</li>
+<li>added âscalebar_distâ to animate_move() for defining the scalebar length manually</li>
+<li>added âoverwriteâ to animate_move() to regulate output file writing behaviour</li>
 </ul>
 <p><br><strong>Improvements:</strong></p>
 <ul>
-<li>it is now possible to use the ‘layer’ argument to specify one (static) raster object without specifying ‘layer_dt’, which is only needed, if several raster objects are handed over as a list.</li>
+<li>it is now possible to use the âlayerâ argument to specify one (static) raster object without specifying âlayer_dtâ, which is only needed, if several raster objects are handed over as a list.</li>
 <li>in some situations, the movement data extent was bigger than the cropped layer extent: this works now</li>
 <li>in some situations, stat animation lines were cut off, this should be resolved now</li>
 <li>recoding of multiple processing steps to increase processing speed and stability</li>
@@ -408,10 +423,10 @@
 <p><br><strong>New features:</strong></p>
 <ul>
 <li>RGB stats support added for animate_stats() and animate_move()</li>
-<li>added animate_move() argument “time_scale” to enable a time scale</li>
-<li>added animate_move() argument “frame_layout” for user friendly, complex layouting of the output GIF by specifiying the plot locations</li>
-<li>added animate_move() argument “layer_stretch”</li>
-<li>added animate_move() expert arguments “conv_cmd” and “conv_frames”</li>
+<li>added animate_move() argument âtime_scaleâ to enable a time scale</li>
+<li>added animate_move() argument âframe_layoutâ for user friendly, complex layouting of the output GIF by specifiying the plot locations</li>
+<li>added animate_move() argument âlayer_stretchâ</li>
+<li>added animate_move() expert arguments âconv_cmdâ and âconv_framesâ</li>
 </ul>
 <p><br><strong>Improvements:</strong></p>
 <ul>
@@ -434,7 +449,7 @@
 <p><br><strong>New features:</strong></p>
 <ul>
 <li>
-<code><a href="../reference/deprecated.html">animate_stats()</a></code> – Enables creation of statistic plot animations visualizing possible relationships between movement paths and basemap. Define individual plot designs based on ggplot2 syntax.</li>
+<code><a href="../reference/deprecated.html">animate_stats()</a></code> â Enables creation of statistic plot animations visualizing possible relationships between movement paths and basemap. Define individual plot designs based on ggplot2 syntax.</li>
 <li>stats arguments for animate_move(): Enables statistic plot animations side-by-side with the spatial plot animation of animate_move. Use the animate_stats() arguments with animate_move().</li>
 <li>extent_factor argument for animate_move(): Increase the distance between the spatial extents of the movement paths and the basemap.</li>
 </ul>
@@ -451,7 +466,7 @@
 <p>fixing major bug. Released on CRAN: 2017-06-28</p>
 <p><br><strong>Improvements:</strong></p>
 <ul>
-<li>Fixed a major bug causing an unavoidable error when creating animations with animate_move() using user defined basemaps (Error message: ‘Error in eval(expr, envir, enclos) : Object ’frame_l’ not found’)</li>
+<li>Fixed a major bug causing an unavoidable error when creating animations with animate_move() using user defined basemaps (Error message: âError in eval(expr, envir, enclos) : Object âframe_lâ not foundâ)</li>
 </ul>
 <p><br></p>
 <hr>
@@ -479,11 +494,11 @@
 <ul>
 <li>Added moveStack support: animate_move() now takes also moveStack objects in addition to list objects</li>
 <li>
-<code><a href="../reference/deprecated.html">animate_raster()</a></code> – for animating just basemaps/for doing the same as with animate_move(), but without movement data</li>
+<code><a href="../reference/deprecated.html">animate_raster()</a></code> â for animating just basemaps/for doing the same as with animate_move(), but without movement data</li>
 </ul>
 <p><br><strong>Improvements:</strong></p>
 <ul>
-<li>Bug fix: Function now takes movebank.org data –&gt; there had been a static code line preventing the read-out of movement coordinates, which is now solved.</li>
+<li>Bug fix: Function now takes movebank.org data â&gt; there had been a static code line preventing the read-out of movement coordinates, which is now solved.</li>
 <li>Several major and minor bug fixes</li>
 </ul>
 <p><br><strong>Bug report contributors:</strong></p>
@@ -513,29 +528,10 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#movevis-0-10-5">0.10.5</a></li>
-        <li><a href="#movevis-0-10-4-1">0.10.4-1</a></li>
-        <li><a href="#movevis-0-10-4">0.10.4</a></li>
-        <li><a href="#movevis-0-10-3">0.10.3</a></li>
-        <li><a href="#movevis-0-10-2">0.10.2</a></li>
-        <li><a href="#movevis-0-10-1">0.10.1</a></li>
-        <li><a href="#movevis-0-10-0">0.10.0</a></li>
-        <li><a href="#movevis-0-9-9">0.9.9</a></li>
-        <li><a href="#movevis-0-9-8">0.9.8</a></li>
-        <li><a href="#movevis-0-9-7">0.9.7</a></li>
-        <li><a href="#movevis-0-9-6">0.9.6</a></li>
-        <li><a href="#movevis-0-9-5">0.9.5</a></li>
-        <li><a href="#movevis-0-9-4">0.9.4</a></li>
-        <li><a href="#movevis-0-9-3">0.9.3</a></li>
-        <li><a href="#movevis-0-9-2">0.9.2</a></li>
-        <li><a href="#movevis-0-9-1">0.9.1</a></li>
-        <li><a href="#movevis-0-9-0">0.9.0</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
@@ -547,7 +543,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
 </div>
 
       </footer>
