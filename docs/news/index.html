@@ -177,8 +177,8 @@
 <p><strong>New features:</strong></p>
 <ul>
 <li>
-<code>frames_spatial</code> now supports Mapbox terrain base maps. Just set <code>map_service = "mapbox"</code> and <code>map_type = "terrain"</code> to create frames with a terrain DEM base map. Colours can be changed using <code>add_colourscale</code>.</li>
-<li>New ESRI base map types have been added, now supporting the ESRI map server REST API. Call <code>get_maptypes</code> for an overview. New map types include <code>natgeo_world_map</code>, <code>usa_topo_maps</code>, <code>world_imagery</code>, <code>world_physical_map</code>, <code>world_shaded_relief</code>, <code>world_street_map</code>, <code>world_terrain_base</code>, <code>world_topo_map</code>, <code>world_dark_gray_base</code>, <code>world_dark_gray_reference</code>, <code>world_light_gray_base</code>, <code>world_light_gray_reference</code>, <code>world_hillshade_dark</code>, <code>world_hillshade</code>, <code>world_ocean_base</code>, <code>world_ocean_reference</code>, <code>antarctic_imagery</code>, <code>arctic_imagery</code>, <code>arctic_ocean_base</code>, <code>arctic_ocean_reference</code>, <code>world_boundaries_and_places_alternate</code>, <code>world_boundaries_and_places</code>, <code>world_reference_overlay</code>, <code>world_transportation</code>, <code>delorme_world_base_map</code> and <code>world_navigation_charts</code>.</li>
+<code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> now supports Mapbox terrain base maps. Just set <code>map_service = "mapbox"</code> and <code>map_type = "terrain"</code> (and <code>map_token</code> to your mapbox token) to create frames with a terrain DEM base map. Colours can be changed using <code>add_colourscale</code>.</li>
+<li>New ESRI base map types have been added, now supporting the ESRI map server REST API. Call <code><a href="../reference/get_maptypes.html">get_maptypes()</a></code> for an overview. New map types include <code>natgeo_world_map</code>, <code>usa_topo_maps</code>, <code>world_imagery</code>, <code>world_physical_map</code>, <code>world_shaded_relief</code>, <code>world_street_map</code>, <code>world_terrain_base</code>, <code>world_topo_map</code>, <code>world_dark_gray_base</code>, <code>world_dark_gray_reference</code>, <code>world_light_gray_base</code>, <code>world_light_gray_reference</code>, <code>world_hillshade_dark</code>, <code>world_hillshade</code>, <code>world_ocean_base</code>, <code>world_ocean_reference</code>, <code>antarctic_imagery</code>, <code>arctic_imagery</code>, <code>arctic_ocean_base</code>, <code>arctic_ocean_reference</code>, <code>world_boundaries_and_places_alternate</code>, <code>world_boundaries_and_places</code>, <code>world_reference_overlay</code>, <code>world_transportation</code>, <code>delorme_world_base_map</code> and <code>world_navigation_charts</code>.</li>
 <li>added documentation search using <code>DocSearch</code> to web page</li>
 </ul>
 <p><br></p>
@@ -190,10 +190,10 @@
 <p>Revised distance calculations &amp; handling of dateline crossings. Released on CRAN: 2020-03-28</p>
 <p><strong>New features:</strong></p>
 <ul>
-<li>Argument <code>cross_dateline</code> of <code>frames_spatial</code> to indicate that unprojected tracks in lon/lat cross the dateline. Instead of clipping frames at longitudes -180 and 180, <code>moveVis</code> extends frames and connects tracks across the dateline.</li>
+<li>Argument <code>cross_dateline</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> to indicate that unprojected tracks in lon/lat cross the dateline. Instead of clipping frames at longitudes -180 and 180, <code>moveVis</code> extends frames and connects tracks across the dateline.</li>
 <li>Distance calculations are now based on <code>lwgeom</code>
 </li>
-<li>Refined base map plotting (see additional arguments <code>...</code> of <code>frames_spatial</code> for available options)</li>
+<li>Refined base map plotting (see additional arguments <code>...</code> of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> for available options)</li>
 <li>Added <code>NA</code> handling for base maps (e.g. rasterized labels)</li>
 <li>Dropped dependencies</li>
 </ul>
@@ -211,7 +211,7 @@
 <p>Bug patch. Released on CRAN: 2020-02-12</p>
 <p><strong>Bug fixes:</strong></p>
 <ul>
-<li>Major bug introduced with version 0.10.4 that caused memory overload and very slow processing speeds when using <code>frames_spatial</code>
+<li>Major bug introduced with version 0.10.4 that caused memory overload and very slow processing speeds when using <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>
 </li>
 </ul>
 <p><br></p>
