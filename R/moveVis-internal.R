@@ -632,6 +632,12 @@ repl_vals <- function(data, x, y){
     crop(projectRaster(r, crs = m.crs), extent(y[1], y[3], y[2], y[4]), snap = "out")
   })
   
+  if(all(map_service == "mapbox", map_type == "terrain")){
+    r[[1]] <-  -10000 + ((r[[1]][[1]] * 256 * 256 + r[[1]][[2]] * 256 + r[[1]][[3]]) * 0.1)
+    #r_terr <- terrain(r, opt = c("slope", "aspect"))
+    #r_hs <- hillShade(r_terr$slope, r_terr$aspect)
+  }
+  
   if(length(r) > 1){
     
     # extend over dateline
@@ -863,6 +869,7 @@ repl_vals <- function(data, x, y){
                                               voyager_only_labels = "https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/",
                                               voyager_labels_under = "https://a.basemaps.cartocdn.com/rastertiles/voyager_labels_under/"),
                                  mapbox = lapply(c(satellite = "mapbox.satellite",
+                                                   terrain = "mapbox.terrain-rgb",
                                                    streets = "mapbox.streets",
                                                    streets_basic = "mapbox.streets-basic",
                                                    hybrid = "mapbox.streets-satellite",

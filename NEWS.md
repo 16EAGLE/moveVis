@@ -5,7 +5,9 @@ Unreleased development version.
 
 **New features:**
 
-* New base map types have been added, now supporting the ESRI map server REST API. Call `get_maptypes` for an overview. New map types include `natgeo_world_map`, `usa_topo_maps`, `world_imagery`, `world_physical_map`, `world_shaded_relief`, `world_street_map`, `world_terrain_base`, `world_topo_map`, `world_dark_gray_base`, `world_dark_gray_reference`, `world_light_gray_base`, `world_light_gray_reference`, `world_hillshade_dark`, `world_hillshade`, `world_ocean_base`, `world_ocean_reference`, `antarctic_imagery`, `arctic_imagery`, `arctic_ocean_base`, `arctic_ocean_reference`, `world_boundaries_and_places_alternate`, `world_boundaries_and_places`, `world_reference_overlay`, `world_transportation`, `delorme_world_base_map` and `world_navigation_charts`. 
+* `frames_spatial()` now supports Mapbox terrain base maps. Just set `map_service = "mapbox"` and `map_type = "terrain"` (and `map_token` to your mapbox token) to create frames with a terrain DEM base map. Colours can be changed using `add_colourscale`.
+* New ESRI base map types have been added, now supporting the ESRI map server REST API. Call `get_maptypes()` for an overview. New map types include `natgeo_world_map`, `usa_topo_maps`, `world_imagery`, `world_physical_map`, `world_shaded_relief`, `world_street_map`, `world_terrain_base`, `world_topo_map`, `world_dark_gray_base`, `world_dark_gray_reference`, `world_light_gray_base`, `world_light_gray_reference`, `world_hillshade_dark`, `world_hillshade`, `world_ocean_base`, `world_ocean_reference`, `antarctic_imagery`, `arctic_imagery`, `arctic_ocean_base`, `arctic_ocean_reference`, `world_boundaries_and_places_alternate`, `world_boundaries_and_places`, `world_reference_overlay`, `world_transportation`, `delorme_world_base_map` and `world_navigation_charts`. 
+* added documentation search using `DocSearch` to web page
 
 <br>
 
@@ -16,9 +18,9 @@ Revised distance calculations & handling of dateline crossings. Released on CRAN
 
 **New features:**
 
-* Argument `cross_dateline` of `frames_spatial` to indicate that unprojected tracks in lon/lat cross the dateline. Instead of clipping frames at longitudes -180 and 180, `moveVis` extends frames and connects tracks across the dateline.
+* Argument `cross_dateline` of `frames_spatial()` to indicate that unprojected tracks in lon/lat cross the dateline. Instead of clipping frames at longitudes -180 and 180, `moveVis` extends frames and connects tracks across the dateline.
 * Distance calculations are now based on `lwgeom`
-* Refined base map plotting (see additional arguments `...` of `frames_spatial` for available options)
+* Refined base map plotting (see additional arguments `...` of `frames_spatial()` for available options)
 * Added `NA` handling for base maps (e.g. rasterized labels)
 * Dropped dependencies
 
@@ -35,7 +37,7 @@ Bug patch. Released on CRAN: 2020-02-12
 
 **Bug fixes:**
 
-* Major bug introduced with version 0.10.4 that caused memory overload and very slow processing speeds when using `frames_spatial`
+* Major bug introduced with version 0.10.4 that caused memory overload and very slow processing speeds when using `frames_spatial()`
 
 <br>
 

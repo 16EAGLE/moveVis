@@ -227,7 +227,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
     r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs = crs(m))
-    r_type <- "RGB"
+    if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   }
   
   # calculate frames extents and coord labes
