@@ -21,6 +21,7 @@ addons:
     sources:
       - sourceline: 'ppa:cran/ffmpeg-3'
       - sourceline: 'ppa:cran/imagemagick'
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
 before_install:
   - R -e 'install.packages("devtools")'
