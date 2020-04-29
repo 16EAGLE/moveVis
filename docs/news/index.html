@@ -180,6 +180,12 @@
 <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> now supports Mapbox terrain base maps. Just set <code>map_service = "mapbox"</code> and <code>map_type = "terrain"</code> (and <code>map_token</code> to your mapbox token) to create frames with a terrain DEM base map. Colours can be changed using <code>add_colourscale</code>.</li>
 <li>New ESRI base map types have been added, now supporting the ESRI map server REST API. Call <code><a href="../reference/get_maptypes.html">get_maptypes()</a></code> for an overview. New map types include <code>natgeo_world_map</code>, <code>usa_topo_maps</code>, <code>world_imagery</code>, <code>world_physical_map</code>, <code>world_shaded_relief</code>, <code>world_street_map</code>, <code>world_terrain_base</code>, <code>world_topo_map</code>, <code>world_dark_gray_base</code>, <code>world_dark_gray_reference</code>, <code>world_light_gray_base</code>, <code>world_light_gray_reference</code>, <code>world_hillshade_dark</code>, <code>world_hillshade</code>, <code>world_ocean_base</code>, <code>world_ocean_reference</code>, <code>antarctic_imagery</code>, <code>arctic_imagery</code>, <code>arctic_ocean_base</code>, <code>arctic_ocean_reference</code>, <code>world_boundaries_and_places_alternate</code>, <code>world_boundaries_and_places</code>, <code>world_reference_overlay</code>, <code>world_transportation</code>, <code>delorme_world_base_map</code> and <code>world_navigation_charts</code>.</li>
 <li>added documentation search using <code>DocSearch</code> to web page</li>
+<li>Argument <code>digit</code> of <code><a href="../reference/align_move.html">align_move()</a></code> is deprecated, since digits are now calculated automatically.</li>
+<li>Multiple improvements to <code><a href="../reference/align_move.html">align_move()</a></code>, including printing of the detected resolution to which data are aligned.</li>
+</ul>
+<p><strong>Bug fixes:</strong></p>
+<ul>
+<li>Bug that caused <code><a href="../reference/align_move.html">align_move()</a></code> to break with an unspecific error message when at least one trajectory of <code>m</code> covered a time range shorter than the requested temporal resolution. The function now warns the user when a temporal resolution is selected that cannot be applied to at least one trajectory and excludes the trajectory/trajectories in question from the returned object.</li>
 </ul>
 <p><br></p>
 <hr>
@@ -566,7 +572,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -14,7 +14,7 @@ library(ggplot2)
 data("move_data")
 
 # align movement tracks
-move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+move_data <- align_move(move_data, res = 4, unit = "mins")
 
 # create frames
 frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),

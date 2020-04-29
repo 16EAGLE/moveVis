@@ -25,10 +25,10 @@ We can conclude that each track has a sampling rate of roughly 4 minutes, howeve
 * make all tracks share unique timestamps that can be assigned to frames
 * make all tracks share unique, steady sampling rates without gaps
 
-You can use  <a href="http://movevis.org/reference/align_move.html">`align_move()`</a> to align `move_data` to a sampling rate of 4 minutes (240 seconds) at the seconds digit ":00":
+You can use  <a href="http://movevis.org/reference/align_move.html">`align_move()`</a> to align `move_data` to a sampling rate of 4 minutes:
 
 ```R
-move_data <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+move_data <- align_move(move_data, res = 4, unit = "mins")
 ```
 
 Instead, you could apply your own functions for aligning your data, e.g. using more advanced interpolation methods.

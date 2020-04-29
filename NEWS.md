@@ -8,6 +8,12 @@ Unreleased development version.
 * `frames_spatial()` now supports Mapbox terrain base maps. Just set `map_service = "mapbox"` and `map_type = "terrain"` (and `map_token` to your mapbox token) to create frames with a terrain DEM base map. Colours can be changed using `add_colourscale`.
 * New ESRI base map types have been added, now supporting the ESRI map server REST API. Call `get_maptypes()` for an overview. New map types include `natgeo_world_map`, `usa_topo_maps`, `world_imagery`, `world_physical_map`, `world_shaded_relief`, `world_street_map`, `world_terrain_base`, `world_topo_map`, `world_dark_gray_base`, `world_dark_gray_reference`, `world_light_gray_base`, `world_light_gray_reference`, `world_hillshade_dark`, `world_hillshade`, `world_ocean_base`, `world_ocean_reference`, `antarctic_imagery`, `arctic_imagery`, `arctic_ocean_base`, `arctic_ocean_reference`, `world_boundaries_and_places_alternate`, `world_boundaries_and_places`, `world_reference_overlay`, `world_transportation`, `delorme_world_base_map` and `world_navigation_charts`. 
 * added documentation search using `DocSearch` to web page
+* Argument `digit` of `align_move()` is deprecated, since digits are now calculated automatically.
+* Multiple improvements to `align_move()`, including printing of the detected resolution to which data are aligned.
+
+**Bug fixes:**
+
+* Bug that caused `align_move()` to break with an unspecific error message when at least one trajectory of `m` covered a time range shorter than the requested temporal resolution. The function now warns the user when a temporal resolution is selected that cannot be applied to at least one trajectory and excludes the trajectory/trajectories in question from the returned object.
 
 <br>
 

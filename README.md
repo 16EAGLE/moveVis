@@ -99,7 +99,7 @@ data("move_data", package = "moveVis") # move class object
 # if your tracks are present as data.frames, see df2move() for conversion
 
 # align move_data to a uniform time scale
-m <- align_move(move_data, res = 240, digit = 0, unit = "secs")
+m <- align_move(move_data, res = 4, unit = "mins")
 
 # create spatial frames with a OpenStreetMap watercolour map
 frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),

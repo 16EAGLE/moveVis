@@ -182,10 +182,11 @@ a consistent, unique temporal resolution for all moving individuals to turn reco
 
     <pre class="usage"><span class='fu'>align_move</span>(
   <span class='no'>m</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"min"</span>,
-  <span class='kw'>digit</span> <span class='kw'>=</span> <span class='st'>"min"</span>,
-  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"secs"</span>,
-  <span class='kw'>spaceMethod</span> <span class='kw'>=</span> <span class='st'>"greatcircle"</span>
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"minimum"</span>,
+  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>spaceMethod</span> <span class='kw'>=</span> <span class='st'>"greatcircle"</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -198,26 +199,26 @@ a consistent, unique temporal resolution for all moving individuals to turn reco
     <tr>
       <th>res</th>
       <td><p>either numeric, representing the temporal resolution, to which <code>m</code> should be aligned to (see argument <code>unit</code>), or character:</p><ul>
-<li><p><code>"min"</code> to use the smalles temporal resolution of <code>m</code> (default)</p></li>
-<li><p><code>"max"</code> to use the largest temporal resolution of <code>m</code></p></li>
+<li><p><code>"minimum"</code> to use the smallest temporal resolution of <code>m</code> (default)</p></li>
+<li><p><code>"maximum"</code> to use the largest temporal resolution of <code>m</code></p></li>
 <li><p><code>"mean"</code> to use the rounded average temporal resolution of <code>m</code></p></li>
 </ul></td>
     </tr>
     <tr>
-      <th>digit</th>
-      <td><p>either numeric, indicating to which digits of a specifc unit (see argument <code>unit</code>) the time scale of <code>m</code> should be aligned (e.g. 0 to align the time scale to second ":00", if <code>unit</code> is set to <code>secs</code>), or character:</p><ul>
-<li><p><code>"min"</code> to use the smallest digit of the defined <code>unit</code> (default)</p></li>
-<li><p><code>"max"</code> to use the largest digit of the defined <code>unit</code></p></li>
-<li><p><code>"mean"</code> to use the rounded average digit of the defined <code>unit</code></p></li>
-</ul></td>
-    </tr>
-    <tr>
       <th>unit</th>
-      <td><p>character, either <code>"secs"</code>, <code>"mins"</code>, <code>"hours"</code>, <code>"days"</code>, indicating the temporal unit, to which <code>res</code> and <code>digit</code> are referring.</p></td>
+      <td><p>character, temporal unit of <code>res</code>. Either <code>"secs"</code>, <code>"mins"</code>, <code>"hours"</code>, <code>"days"</code>. No effect, if <code>res</code> is not defined.</p></td>
     </tr>
     <tr>
       <th>spaceMethod</th>
       <td><p>character, either <code>"euclidean"</code>, <code>"greatcircle"</code> or <code>"rhumbline"</code>, indicating the interpolation function to be used to interpolate locations of <code>m</code> to the aligned time scale. Interpolation is performed using <code><a href='https://bartk.gitlab.io/move/reference/interpolateTime.html'>move::interpolateTime</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>deprecated arguments including <code>digit</code>.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if <code>TRUE</code>, messages and progress information are displayed on the console (default).</p></td>
     </tr>
     </table>
 
@@ -239,20 +240,16 @@ a consistent, unique temporal resolution for all moving individuals to turn reco
 <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>move_data</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)))
 
 <span class='co'># use align_move to correct move_data to a uniform time scale and lag using interpolation.</span>
-<span class='co'># resolution of 4 minutes (240 seconds) at digit 0 (:00 seconds) per timestamp:</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>240</span>, <span class='kw'>digit</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>m</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)))
-
-<span class='co'># resolution of 1 hour (3600 seconds) at digit 0 (:00 seconds) per timestamp:</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>3600</span>, <span class='kw'>digit</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>m</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)))
-
-<span class='co'># resolution of 1 hour (15 seconds) at digit 0 (:00 seconds) per timestamp:</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>digit</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>m</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)))
+<span class='co'># resolution of 4 minutes:</span>
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='kw'>m</span> <span class='kw'>=</span> <span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>m</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)))
 
 <span class='co'># resolution of 1 hour:</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"mins"</span>)
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"hours"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>m</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"hours"</span>)))
+
+<span class='co'># resolution of 15 seconds:</span>
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>align_move</span>(<span class='no'>move_data</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://bartk.gitlab.io/move/reference/timeLag.html'>timeLag</a></span>(<span class='no'>m</span>, <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"secs"</span>)))</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -269,7 +266,7 @@ a consistent, unique temporal resolution for all moving individuals to turn reco
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
