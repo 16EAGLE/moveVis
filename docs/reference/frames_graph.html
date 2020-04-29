@@ -285,7 +285,7 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='no'>r_list</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>1</span>]]
 <span class='no'>r_times</span> <span class='kw'>&lt;-</span> <span class='no'>basemap_data</span><span class='kw'>[[</span><span class='fl'>2</span>]]
 
-<span class='co'># \donttest{</span>
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># use the same inputs to create a non-spatial graph, e.g. a flow graph:</span>
 <span class='no'>frames.gr</span> <span class='kw'>&lt;-</span> <span class='fu'>frames_graph</span>(<span class='no'>m</span>, <span class='kw'>r_list</span> <span class='kw'>=</span> <span class='no'>r_list</span>, <span class='kw'>r_times</span> <span class='kw'>=</span> <span class='no'>r_times</span>, <span class='kw'>r_type</span> <span class='kw'>=</span> <span class='st'>"gradient"</span>,
                           <span class='kw'>fade_raster</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>graph_type</span> <span class='kw'>=</span> <span class='st'>"flow"</span>)
@@ -317,7 +317,7 @@ equal inputs must have been used for both function calls for each of the argumen
 <span class='co'># or frames_graph</span>
 
 <span class='co'># see ?animate_frames on how to animate your list of frames</span>
-<span class='co'># }</span></pre>
+}</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

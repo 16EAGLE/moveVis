@@ -134,7 +134,7 @@ data("move_data")
 # align movement
 m <- align_move(move_data, res = 4, unit = "mins")
 
-\donttest{
+\dontrun{
 # with osm watercolor base map
 frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
 # take a look at one of the frames, e.g. the 100th

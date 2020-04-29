@@ -32,7 +32,7 @@ data("basemap_data", package = "moveVis", envir = environment())
 
 ## movement
 m <- move_data
-m.aligned <- align_move(m, res = 4, unit = "mins")
+m.aligned <- align_move(m, res = 4, unit = "mins", verbose = F)
 
 # shift across dateline
 l.df <- lapply(move::split(m.aligned), as.data.frame)

@@ -44,7 +44,7 @@
 #' # align movement
 #' m <- align_move(move_data, res = 4, unit = "mins")
 #' 
-#' \donttest{
+#' \dontrun{
 #' frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
 #' frames[[100]] # take a look at one of the frames
 #' 

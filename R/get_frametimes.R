@@ -15,7 +15,7 @@
 #' # align movement
 #' m <- align_move(move_data, res = 4, unit = "mins")
 #' 
-#' \donttest{
+#' \dontrun{
 #' frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
 #' frames.ts <- get_frametimes(frames)
 #' print(frames.ts)

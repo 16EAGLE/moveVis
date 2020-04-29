@@ -58,7 +58,7 @@ m <- align_move(move_data, res = 4, unit = "mins")
 r_list <- basemap_data[[1]]
 r_times <- basemap_data[[2]]
 
-\donttest{
+\dontrun{
 frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
                          fade_raster = TRUE)
 
