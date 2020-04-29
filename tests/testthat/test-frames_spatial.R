@@ -3,7 +3,7 @@ context("frames_spatial")
 
 test_that("frames_spatial (default maps)", {
   # correct call
-  frames <- expect_length(expect_is(frames_spatial(m = m.aligned, verbose = F, map_res = 0.1), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m = m.aligned, verbose = F, map_res = 0.1), "list"), 188)
   expect_is(frames[[1]], "ggplot")
   
   # false calls
@@ -29,7 +29,7 @@ if(isTRUE(test_maps)){
       frames <- frames_spatial(m.aligned, map_service = s, map_type = x, map_token = Sys.getenv("moveVis_map_token"),
                                map_dir = test_dir, verbose = F)
       expect_is(frames, "list")
-      expect_length(frames, 180)
+      expect_length(frames, 188)
       expect_is(frames[[1]], "ggplot")
       return(frames[[100]])
       #})
@@ -39,15 +39,15 @@ if(isTRUE(test_maps)){
 
 test_that("frames_spatial (raster, gradient)", {
   # correct calls
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot") # move stack
-  frames <- expect_length(expect_is(frames_spatial(m.aligned[[1]], r_grad, r_times, r_type = "gradient", verbose = F), "list"), 135)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned[[1]], r_grad, r_times, r_type = "gradient", verbose = F), "list"), 143)
   expect_is(frames[[1]], "ggplot") # single move
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad[[5]], r_times[[5]], r_type = "gradient", verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad[[5]], r_times[[5]], r_type = "gradient", verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot") # single raster
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot") # path arrow
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", trace_show = T, verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", trace_show = T, verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot") # show trace
   
   
@@ -69,12 +69,12 @@ test_that("frames_spatial (raster, gradient)", {
 })
 
 test_that("frames_spatial (raster, gradient, fade)", {
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", fade_raster = T, verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", fade_raster = T, verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot")
 })
 
 test_that("frames_spatial (raster, discrete)", {
-  frames <-  expect_length(expect_is(frames_spatial(m.aligned, r_disc, r_times, r_type = "discrete", verbose = F), "list"), 180)
+  frames <-  expect_length(expect_is(frames_spatial(m.aligned, r_disc, r_times, r_type = "discrete", verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot")
 })
 #}
@@ -84,15 +84,15 @@ test_that("frames_spatial (different extent/proj settings)", {
   ext <- raster::extent(m)*1.1
 
   # custom extent
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, ext = ext, verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, ext = ext, verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot")
 
   # equidistant FALSE
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot")
 
   # equidistant on TRUE
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = T, ext = ext, verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = T, ext = ext, verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot")
 
   # other projections
@@ -103,7 +103,7 @@ test_that("frames_spatial (different extent/proj settings)", {
     m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
     m <- df2move(m_tf, proj = p, x = "X", y = "Y", time = "time", track_id = "id")
     
-    frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "list"), 180)
+    frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "list"), 188)
     expect_is(frames[[1]], "ggplot")
     frames[[100]]
   })
@@ -117,7 +117,7 @@ test_that("frames_spatial (different extent/proj settings)", {
 test_that("frames_spatial (cross_dateline)", {
   
   frames <- expect_length(expect_is(frames_spatial(m.shifted, map_service = "carto", map_type = "light",
-                                                   verbose = F, cross_dateline = T), "list"), 180)
+                                                   verbose = F, cross_dateline = T), "list"), 188)
   frames <- expect_warning(frames_spatial(m.shifted.repro, verbose = F, cross_dateline = T))
   frames <- expect_error(frames_spatial(m.shifted, r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F, cross_dateline = T))
   

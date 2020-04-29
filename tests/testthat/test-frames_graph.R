@@ -4,10 +4,10 @@ context("frames_graph")
 #if("frames_graph" %in% which_tests){
 test_that("frames_graph (gradient, flow)", {
   # correct calls
-  frames <- expect_length(expect_is(frames_graph(m.aligned, r_grad, r_times, graph_type = "flow", verbose = F), "list"), 180) # multi raster
+  frames <- expect_length(expect_is(frames_graph(m.aligned, r_grad, r_times, graph_type = "flow", verbose = F), "list"), 188) # multi raster
   expect_is(frames[[1]], "ggplot")
   
-  frames <- expect_length(expect_is(frames_graph(m.aligned, r_grad[[5]], r_times[[5]], graph_type = "flow", verbose = F), "list"), 180) # single raster
+  frames <- expect_length(expect_is(frames_graph(m.aligned, r_grad[[5]], r_times[[5]], graph_type = "flow", verbose = F), "list"), 188) # single raster
   expect_is(frames[[1]], "ggplot")
   
   expect_is(frames_graph(m.aligned, r_grad, r_times, graph_type = "flow", return_data = T, verbose = F), "data.frame") # return data.frame
@@ -37,7 +37,7 @@ test_that("frames_graph (gradient, flow)", {
 
 test_that("frames_graph (gradient, hist)", {
   # correct calls
-  frames <- expect_length(expect_is(frames_graph(m.aligned, r_grad, r_times, graph_type = "hist", verbose = F), "list"), 180)
+  frames <- expect_length(expect_is(frames_graph(m.aligned, r_grad, r_times, graph_type = "hist", verbose = F), "list"), 188)
   expect_is(frames[[1]], "ggplot")
   
   # false calls
@@ -48,7 +48,7 @@ test_that("frames_graph (gradient, hist)", {
 
 
 test_that("frames_graph (discrete, flow)", {
-  frames <- expect_length(expect_is(frames_graph(m.aligned, r_disc, r_times, r_type = "discrete", graph_type = "flow", verbose = F, val_by = 1), "list"), 180)
+  frames <- expect_length(expect_is(frames_graph(m.aligned, r_disc, r_times, r_type = "discrete", graph_type = "flow", verbose = F, val_by = 1), "list"), 188)
   expect_is(frames[[1]], "ggplot")
   
   # warning calls
@@ -57,7 +57,7 @@ test_that("frames_graph (discrete, flow)", {
 })
 
 test_that("frames_graph (discrete, hist)", {
-  frames <- expect_length(expect_is(frames_graph(m.aligned, r_disc, r_times, r_type = "discrete", graph_type = "hist", verbose = F, val_by = 1), "list"), 180)
+  frames <- expect_length(expect_is(frames_graph(m.aligned, r_disc, r_times, r_type = "discrete", graph_type = "hist", verbose = F, val_by = 1), "list"), 188)
   expect_is(frames[[1]], "ggplot")
 })
 #}

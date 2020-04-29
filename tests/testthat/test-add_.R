@@ -6,12 +6,12 @@ frames_nocrs <- frames_spatial(m.shifted, map_service = "carto", map_type = "lig
 #if("add_" %in% which_tests){
 test_that("add_colourscale", {
   # correct calls for type="gradient"
-  expect_length(expect_is(add_colourscale(frames, type = "gradient", colours = c("orange", "white", "darkgreen"), legend_title = "NDVI"), "list"), 180) # defualt
-  expect_length(expect_is(add_colourscale(frames, type = "gradient", colours = c("0.1" = "orange", "0.2" = "white", "0.3" = "darkgreen"), legend_title = "NDVI"), "list"), 180) # named colours
+  expect_length(expect_is(add_colourscale(frames, type = "gradient", colours = c("orange", "white", "darkgreen"), legend_title = "NDVI"), "list"), 188) # defualt
+  expect_length(expect_is(add_colourscale(frames, type = "gradient", colours = c("0.1" = "orange", "0.2" = "white", "0.3" = "darkgreen"), legend_title = "NDVI"), "list"), 188) # named colours
   
   # correct calls for type="discrete"
-  expect_length(expect_is(add_colourscale(frames, type = "discrete", colours = c("orange", "white", "darkgreen"), legend_title = "NDVI"), "list"), 180)
-  expect_length(expect_is(add_colourscale(frames, type = "discrete", colours = c("0.1" = "orange", "0.2" = "white", "0.3" = "darkgreen"), legend_title = "NDVI"), "list"), 180) # named colours
+  expect_length(expect_is(add_colourscale(frames, type = "discrete", colours = c("orange", "white", "darkgreen"), legend_title = "NDVI"), "list"), 188)
+  expect_length(expect_is(add_colourscale(frames, type = "discrete", colours = c("0.1" = "orange", "0.2" = "white", "0.3" = "darkgreen"), legend_title = "NDVI"), "list"), 188) # named colours
   
   # false calls for type="gradient"
   expect_error(add_colourscale(NA, type = "gradient", colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")) # false frames
@@ -36,7 +36,7 @@ test_that("add_gg", {
     y <- rnorm(nrow(x)-1, mean = 0.00001, sd = 0.0001) 
     x + c(y, y[1])
   })
-  expect_length(expect_is(add_gg(frames, gg = ggplot2::expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black")), data = data), "list"), 180)
+  expect_length(expect_is(add_gg(frames, gg = ggplot2::expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black")), data = data), "list"), 188)
   
   # false calls
   expect_error(add_gg(frames, gg = ggplot2::expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black")), data = data[-1]))
@@ -46,7 +46,7 @@ test_that("add_gg", {
 
 test_that("add_labels", {
   # correct call
-  expect_length(expect_is(add_labels(frames, x = "Longitude", y = "Latitude"), "list"), 180)
+  expect_length(expect_is(add_labels(frames, x = "Longitude", y = "Latitude"), "list"), 188)
   
   # false calls
   expect_error(add_labels("x", x = "Longitude", y = "Latitude"))
@@ -57,7 +57,7 @@ test_that("add_labels", {
 
 test_that("add_northarrow", {
   # correct call
-  expect_length(expect_is(add_northarrow(frames, colour = "black"), "list"), 180)
+  expect_length(expect_is(add_northarrow(frames, colour = "black"), "list"), 188)
   
   # false calls
   expect_error(add_northarrow(NA, colour = "black"))
@@ -67,7 +67,7 @@ test_that("add_northarrow", {
 
 test_that("add_progress", {
   # correct call
-  expect_length(expect_is(add_progress(frames), "list"), 180)
+  expect_length(expect_is(add_progress(frames), "list"), 188)
   
   # false calls
   expect_error(add_progress(NA))
@@ -78,10 +78,10 @@ test_that("add_progress", {
 
 test_that("add_scalebar", {
   # correct calls
-  expect_length(expect_is(add_scalebar(frames, distance = 1.5), "list"), 180)
-  expect_length(expect_is(add_scalebar(frames, distance = 1.5, units = "miles"), "list"), 180)
-  expect_length(expect_is(add_scalebar(frames), "list"), 180)
-  expect_length(expect_is(add_scalebar(frames_nocrs), "list"), 180)
+  expect_length(expect_is(add_scalebar(frames, distance = 1.5), "list"), 188)
+  expect_length(expect_is(add_scalebar(frames, distance = 1.5, units = "miles"), "list"), 188)
+  expect_length(expect_is(add_scalebar(frames), "list"), 188)
+  expect_length(expect_is(add_scalebar(frames_nocrs), "list"), 188)
   
   # false call
   expect_error(add_scalebar(NA, distance = 1.5, colour = "black", 0.018)) # false frames
@@ -92,7 +92,7 @@ test_that("add_scalebar", {
 
 test_that("add_text", {
   # correct call
-  expect_length(expect_is(add_text(frames, "Some text", x = 8.96, y = 47.73, type = "text", colour = "black"), "list"), 180)
+  expect_length(expect_is(add_text(frames, "Some text", x = 8.96, y = 47.73, type = "text", colour = "black"), "list"), 188)
   
   # false calls
   expect_error(add_text(NA, "Some text", x = 8.96, y = 47.73, type = "text", colour = "black")) # false frames
@@ -107,7 +107,7 @@ test_that("add_text", {
 
 test_that("add_timestamps", {
   # correct call
-  expect_length(expect_is(add_timestamps(frames, type = "label", colour = "black"), "list"), 180)
+  expect_length(expect_is(add_timestamps(frames, type = "label", colour = "black"), "list"), 188)
   
   # false calls
   expect_error(add_timestamps(NA, type = "label", colour = "black")) # false frames
