@@ -1,7 +1,7 @@
 ***
 
 ## moveVis 0.10.5-1
-Unreleased development version.
+Development version.
 
 **New features:**
 
@@ -55,7 +55,7 @@ Publication, added parallelization, new memory settings and bug fixes. Released 
 **Peer-reviewed publication:**
 
 * An <a href="https://doi.org/10.1111/2041-210X.13374">open-access paper</a> accompanying the `moveVis` R package has been peer-reviewed by and published in *'Methods in Ecology and Evolution'* (see https://doi.org/10.1111/2041-210X.13374).
-* Reference: *Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. Accepted Author Manuscript. https://doi.org/10.1111/2041-210X.13374*.
+* Reference: *Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. Methods in Ecology and Evolution. 2020; 11: 664–669. https://doi.org/10.1111/2041-210X.13374*.
 * Citation: Please use `citation("moveVis")` to cite moveVis, e.g. when you use it in publications or presentations.
 
 **New features:**
