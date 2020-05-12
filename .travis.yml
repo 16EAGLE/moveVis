@@ -5,26 +5,12 @@ r:
   - devel
 dist: bionic
 
-addons:
- apt:
-    sources:
-      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-      - sourceline: 'ppa:cran/ffmpeg-3'
-      - sourceline: 'ppa:cran/imagemagick'
-    update: true
-    packages:
-      - libudunits2-dev
-      - libproj-dev
-      - libgeos-dev
-      - libgdal-dev
-      - cargo
-      - libavformat-dev
-      - libavcodec-dev
-      - libavfilter-dev
-      - libavdevice-dev
-      - libmagick++-dev
-
 before_install:
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+  - sudo add-apt-repository -y ppa:cran/ffmpeg-3
+  - sudo add-apt-repository -y ppa:cran/imagemagick
+  - sudo apt-get -q update
+  - sudo apt-get -y install libproj-dev libudunits2-dev libgeos-dev libgdal-dev cargo libavformat-dev libavcodec-dev libavfilter-dev libavdevice-dev libmagick++-dev
   - R -e 'install.packages("devtools")'
   - R -e 'install.packages("covr")'
 
