@@ -130,6 +130,9 @@ You can find code examples on how to use `moveVis` here:
 
 <a href = "http://movevis.org/articles/example-7.html">Example 4: View movement tracks</a>
 
+<a href = "https://besjournals.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2F2041-210X.13374&file=mee313374-sup-0001-AppendixS1.docx">Real-data example using White Storks (*Ciconia ciconia*) migration movement data [.docx]</a>
+
+
 ## Code snippets
 
 These commented `moveVis` code snippets, addressing specific issues or questions, could also be helpful to you:
@@ -158,6 +161,12 @@ Detailed code examples explaining how to use specific functions are provided at 
 <a target="_blank" href = "https://chirpscholekster.nl/downloads/movevis_example_code.R">Reproducible example of how to combine animal tracking data, tidal water height data and a heightmap to visualize animal movement with moveVis</a> by <a target="_blank" href="https://twitter.com/hjvdkolk">Henk-Jan van der Kolk</a>, <a target="_blank" href = "https://nioo.knaw.nl/en">The Netherlands Institute of Ecology (NIOO-KNAW)</a>
 
 <a target="_blank" href = "http://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href = "https://www.movebank.org/">Movebank</a>
+
+
+## Mentions
+
+Blog post: Featured article in <a target="_blank" href = "https://methodsblog.com/2020/05/05/issue-11-5-our-may-issue-is-now-online/">Issue 11.5: Our May issue is now online!</a> by <a target="_blank" href = "https://besjournals.onlinelibrary.wiley.com/journal/2041210x">Methods in Ecology and Evolution</a>
+
 
 ## Features to be added
 

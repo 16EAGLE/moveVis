@@ -195,7 +195,8 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
   
-  if(all(as.integer(st_crs(m)$epsg) != as.integer(4326), isTRUE(cross_dateline), na.rm = T)){
+  m.crs <- quiet(st_crs(m))
+  if(all(m.crs != st_crs(4326), isTRUE(cross_dateline), na.rm = T)){ # quiet due to +init warnings
     out("Argument 'cross_dateline' is ignored, since the coordinate reference system of 'm' is not geographical (long/lat).", type = 2)
     cross_dateline <- FALSE
   }
@@ -211,7 +212,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
   .stats(n.frames = max(m.df$frame))
   
-  gg.ext <- .ext(m.df, m.crs = st_crs(m), ext, margin_factor, equidistant, cross_dateline) # calcualte extent
+  gg.ext <- .ext(m.df, m.crs, ext, margin_factor, equidistant, cross_dateline) # calcualte extent
   
   ## shift coordinates crossing dateline
   if(isTRUE(cross_dateline)){
@@ -235,7 +236,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     # calculate extent shifted across dateline
     gg.ext <- .combine_ext(.expand_ext(list(extent(gg.ext$east[[1]], gg.ext$east[[3]], gg.ext$east[[2]], gg.ext$east[[4]]),
                                             extent(gg.ext$west[[1]], gg.ext$west[[3]], gg.ext$west[[2]], gg.ext$west[[4]])), rg))
-    gg.ext <- st_bbox(c(xmin = gg.ext@xmin, xmax = gg.ext@xmax, ymin = gg.ext@ymin, ymax = gg.ext@ymax), crs = st_crs(m))
+    gg.ext <- st_bbox(c(xmin = gg.ext@xmin, xmax = gg.ext@xmax, ymin = gg.ext@ymin, ymax = gg.ext@ymax), crs = m.crs)
     
     # use coord_equal for dateline crossingngs in EPSG:4326 only
     m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
@@ -246,7 +247,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     
     # use coord_sf for all other cases
     m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                         expand = F, crs = st_crs(m)$proj4string, datum = st_crs(m)$proj4string, clip = "on"))
+                                         expand = F, crs = st_crs(m), datum = st_crs(m), clip = "on"))
     m.df$scaley <- m.df$scalex <- NULL
   }
   

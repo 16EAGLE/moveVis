@@ -3,25 +3,26 @@ r:
   - oldrel
   - release
   - devel
+dist: bionic
 
 addons:
  apt:
     update: true
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+      - sourceline: 'ppa:cran/ffmpeg-3'
+      - sourceline: 'ppa:cran/imagemagick'
     packages:
       - libudunits2-dev
-      - libgdal-dev
       - libproj-dev
       - libgeos-dev
+      - libgdal-dev
       - cargo
       - libavformat-dev
       - libavcodec-dev
       - libavfilter-dev
       - libavdevice-dev
       - libmagick++-dev
-    sources:
-      - sourceline: 'ppa:cran/ffmpeg-3'
-      - sourceline: 'ppa:cran/imagemagick'
-      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
 before_install:
   - R -e 'install.packages("devtools")'

@@ -16,7 +16,6 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{subset_move}}
 #' 
 #' @importFrom move move moveStack
-#' @importFrom raster crs
 #' 
 #' @examples
 #' library(moveVis)
@@ -39,8 +38,8 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
   df <- data.frame(df, check.names = F)
   df.names <- colnames(df)
   
-  catch <- try(crs(proj), silent = T)
-  if(inherits(catch, "try-error")) out("Argument 'proj' seems not to represent a valid projection.", type = 3)
+  crs <- try(sf::st_crs(proj), silent = T)
+  if(inherits(crs, "try-error")) out("Argument 'proj' seems not to represent a valid projection.", type = 3)
   
   catch <- sapply(c(x, y, time), function(x) if(!isTRUE(x %in% df.names)) out(paste0("Column named '", x, "' cannot be found in 'df'."), type = 3))
   if(!is.null(data)) if(nrow(data) != nrow(df)) out("Number of rows in 'data' must be equal to number of rows in 'df'.", type = 3)
@@ -57,9 +56,9 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
     m.split <- mapply(dfx = df.split, id = id.sub, function(dfx, id){
       dfx <- dfx[order(dfx[, time]),]
       if(is.null(data)){
-        move(x = dfx[,x], y = dfx[,y], time = dfx[,time], proj = proj, animal = dfx[, track_id], ...)
+        move(x = dfx[,x], y = dfx[,y], time = dfx[,time], proj = crs$proj4string, animal = dfx[, track_id], ...)
       } else{
-        move(x = dfx[,x], y = dfx[,y], time = dfx[,time], proj = proj, animal = dfx[, track_id], data = data[id,], ...)
+        move(x = dfx[,x], y = dfx[,y], time = dfx[,time], proj = crs$proj4string, animal = dfx[, track_id], data = data[id,], ...)
       }
     })
     if(length(m.split) == 1) m.split[[1]] else moveStack(m.split)
@@ -68,9 +67,9 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
     # make move for one individual
     df <- df[order(df[, time]),]
     if(is.null(data)){
-      move(x = df[,x], y = df[,y], time = df[,time], proj = proj, ...)
+      move(x = df[,x], y = df[,y], time = df[,time], proj = crs$proj4string, ...)
     } else{
-      move(x = df[,x], y = df[,y], time = df[,time], proj = proj, data = data, ...)
+      move(x = df[,x], y = df[,y], time = df[,time], proj = crs$proj4string, data = data, ...)
     }
   }
 }

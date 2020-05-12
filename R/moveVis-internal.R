@@ -58,8 +58,10 @@ repl_vals <- function(data, x, y){
 #' @keywords internal
 #' @noRd
 .na.approx <- function(v, rule = 2){
-  s <- 1:length(v)
-  stats::approx(x = s[!is.na(v)], y = v[!is.na(v)], rule = rule, xout = s)$y
+  if(length(which(!is.na(v))) < 2) return(v) else{
+    s <- 1:length(v)
+    stats::approx(x = s[!is.na(v)], y = v[!is.na(v)], rule = rule, xout = s)$y 
+  }
 }
 
 #' verbose lapply
@@ -130,11 +132,11 @@ repl_vals <- function(data, x, y){
 .equidistant <- function(ext, margin_factor = 1){
   
   # lat lon extent
-  ext.ll <- st_bbox(st_transform(st_as_sfc(ext), st_crs("+init=epsg:4326")))
+  ext.ll <- st_bbox(st_transform(st_as_sfc(ext), st_crs(4326)))
   
   # calculate corner coordinates
   corn <- list(c(ext.ll[1], ext.ll[2]), c(ext.ll[1], ext.ll[4]), c(ext.ll[3], ext.ll[2]), c(ext.ll[3], ext.ll[4]))
-  corn <- lapply(corn, function(x) st_sfc(st_point(x), crs = st_crs("+init=epsg:4326")))
+  corn <- lapply(corn, function(x) st_sfc(st_point(x), crs = st_crs(4326)))
   
   # calculate difference and distance
   ax.dist <- as.numeric(c(suppressPackageStartupMessages(st_distance(corn[[1]], corn[[3]])), suppressPackageStartupMessages(st_distance(corn[[1]], corn[[2]]))))
@@ -148,14 +150,14 @@ repl_vals <- function(data, x, y){
     x.devi <- ((ax.diff[1]/ax.dist[1])*ax.dist[1])-ax.diff[1]
     y.devi <- ((ax.diff[2]/ax.dist[2])*(ax.dist[1]-ax.dist[2])/2) 
   }
-  ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs("+init=epsg:4326"))
+  ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs(4326))
   
   ## add margin
   if(margin_factor > 1){
     ax.diff <- c(ext.ll.sq[3]-ext.ll.sq[1], ext.ll.sq[4]-ext.ll.sq[2])
     x.devi <- ((ax.diff[1]*margin_factor)-ax.diff[1])
     y.devi <- ((ax.diff[2]*margin_factor)-ax.diff[2])
-    ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs("+init=epsg:4326"))
+    ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs(4326))
   }
   return(st_bbox(st_transform(st_as_sfc(ext.ll.sq), st_crs(ext))))
 }
@@ -597,7 +599,7 @@ repl_vals <- function(data, x, y){
   
   ## calculate needed slippy tiles using slippymath
   r <- lapply(gg.ext, function(y){
-    gg.ext.ll <- st_bbox(st_transform(st_as_sfc(y), crs = st_crs("+init=epsg:4326")))
+    gg.ext.ll <- st_bbox(st_transform(st_as_sfc(y), crs = st_crs(4326)))
     tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
     images <- .apply(tg$tiles, MARGIN = 1, function(x){
       file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
