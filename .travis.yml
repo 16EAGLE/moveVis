@@ -9,7 +9,7 @@ addons:
  apt:
     update: true
     sources:
-      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable/ubuntu'
       - sourceline: 'ppa:cran/ffmpeg-3'
       - sourceline: 'ppa:cran/imagemagick'
     packages:
