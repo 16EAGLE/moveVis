@@ -334,115 +334,6 @@ repl_vals <- function(data, x, y){
   return(paths)
 }
 
-#' spatial plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw guides guide_legend coord_sf expr geom_raster geom_tile
-#' @importFrom raster aggregate ncell
-#' @noRd 
-.gg_spatial <- function(r_list, r_type, m.df, path_size = 3, path_end = "round", path_join = "round", path_alpha = 1, equidistant = T, 
-                        path_mitre = 10, path_arrow = NULL, print_plot = T, path_legend = T, path_legend_title = "Names",
-                        tail_length = 0, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F, ...){
-  
-  # frame plotting function
-  gg.fun <- function(x, y){
-    
-    ## scale plot to extent and set na.rm to TRUE to avoid warnings
-    y$layers[[1]]$geom_params$na.rm <- T
-    
-    x_path <- x[!x$trace,]
-    x_trace <- x[x$trace,]
-  
-    ## trace plot
-    if(nrow(x_trace) > 1){
-      p <- y + geom_path(data = x_trace, aes_string(x = "x", y = "y", group = "id"), size = x_trace$tail_size, lineend = path_end, linejoin = path_join,
-                          linemitre = path_mitre, arrow = path_arrow, colour = x_trace$tail_colour, alpha = path_alpha, na.rm = T)
-    } else p <- y
-    
-    ## base plot
-    p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
-                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) + 
-      theme_bw() + x$coord[[1]] + x$scalex[[1]] + x$scaley[[1]]
-    
-    ## add legend?
-    if(isTRUE(path_legend)){
-      l.df <- cbind.data.frame(x = x[1,]$x, y = x[1,]$y, name = levels(m.df$name),
-                               colour = as.character(m.df$colour[sapply(as.character(unique(m.df$name)), function(x) match(x, m.df$name)[1] )]), stringsAsFactors = F)
-      l.df$name <- factor(l.df$name, levels = l.df$name)
-      l.df <- rbind(l.df, l.df)
-      
-      p <- p + geom_path(data = l.df, aes_string(x = "x", y = "y", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) + guides(color = guide_legend(order = 1))
-    }    
-    
-    if(isTRUE(equidistant)) p <- p + theme(aspect.ratio = 1)
-    if(isTRUE(print_plot)) print(p) else return(p)
-  }
-  
-  # create base maps
-  gg.bmap <- function(r, r_type, ...){
-    extras <- list(...)
-    if(!is.null(extras$maxpixels)) maxpixels <- extras$maxpixels else maxpixels <- 500000
-    if(!is.null(extras$alpha)) alpha <- extras$alpha else alpha <- 1
-    if(!is.null(extras$maxColorValue)) maxColorValue <- extras$maxColorValue else maxColorValue <- NA
-    
-    # aggregate raster if too large
-    if(maxpixels < ncell(r)) r <- aggregate(r, fact = ceiling(ncell(r)/maxpixels))
-    
-    # transform into data.frame
-    df <- data.frame(raster::as.data.frame(r, xy = T))
-    colnames(df) <- c("x", "y", paste0("val", 1:(ncol(df)-2)))
-    
-    # factor if discrete to show categrocial legend
-    df$fill <- df$val1
-    if(r_type == "discrete") df$fill <- as.factor(df$fill)
-    
-    # transform to RGB colours
-    if(r_type == "RGB"){
-      if(is.na(maxColorValue)) maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
-      
-      if(maxColorValue < max(c(df$val1, df$val2, df$val3), na.rm = T)){
-        out("maxColorValue < maximum raster value. maxColorValue is set to maximum raster value.", type = 2)
-        maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
-      }
-      
-      # remove NAs
-      na.sel <- is.na(df$val1) & is.na(df$val2) & is.na(df$val3)
-      if(any(na.sel)) df <- df[!na.sel,]
-      
-      df$fill <- grDevices::rgb(red = df$val1, green = df$val2, blue = df$val3, maxColorValue = maxColorValue)
-    } else{
-      
-      # remove NAs
-      na.sel <- is.na(df$val1)
-      if(any(na.sel)) df <- df[!na.sel,]
-    }
-    gg <- ggplot(df)
-    
-    # if NA gaps are there, use geom_tile, otherwise make it fast using geom_raster
-    if(any(na.sel)){
-      gg <- gg + geom_tile(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
-    } else{
-      gg <- gg + geom_raster(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
-    }
-    
-    if(r_type == "RGB") gg <- gg + scale_fill_identity() 
-    return(gg)
-  }
-  
-  # create frames
-  i <- NULL # needs to be defined for checks
-  if(length(r_list) > 1){
-    frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour,
-                                                                       trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade),
-                                                            y = gg.bmap(r = r_list[[i]], r_type, ...)), moveVis.n_cores = 1)
-  } else{
-    bmap <- gg.bmap(r = r_list[[1]], r_type, ...)
-    frames <- .lapply(1:max(m.df$frame), function(i) gg.fun(x = .df4gg(m.df, i = i, tail_length = tail_length, path_size = path_size, tail_size = tail_size, tail_colour = tail_colour, 
-                                                                       trace_show = trace_show, trace_colour = trace_colour, path_fade = path_fade),
-                                                            y = bmap), moveVis.n_cores = 1)
-  }
-  return(frames)
-}
-
-
 #' flow stats plot function
 #' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
 #' 
@@ -806,6 +697,185 @@ repl_vals <- function(data, x, y){
   return(r_list)
 }
 
+#' frame plotting function
+#' @importFrom ggplot2 geom_path aes_string theme scale_colour_manual theme_bw guides guide_legend  
+#' @noRd
+gg.fun <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant){
+  
+  ## scale plot to extent and set na.rm to TRUE to avoid warnings
+  y$layers[[1]]$geom_params$na.rm <- T
+  
+  x_path <- x[!x$trace,]
+  x_trace <- x[x$trace,]
+  
+  ## trace plot
+  if(nrow(x_trace) > 1){
+    p <- y + geom_path(data = x_trace, aes_string(x = "x", y = "y", group = "id"), size = x_trace$tail_size, lineend = path_end, linejoin = path_join,
+                       linemitre = path_mitre, arrow = path_arrow, colour = x_trace$tail_colour, alpha = path_alpha, na.rm = T)
+  } else p <- y
+  
+  ## base plot
+  p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
+                     linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) + 
+    theme_bw() + x$coord[[1]] + x$scalex[[1]] + x$scaley[[1]]
+  
+  ## add legend?
+  if(isTRUE(path_legend)){
+    l.df <- cbind.data.frame(x = x[1,]$x, y = x[1,]$y, name = levels(m_names),
+                             colour = as.character(m_colour[sapply(as.character(unique(m_names)), function(x) match(x, m_names)[1] )]), stringsAsFactors = F)
+    l.df$name <- factor(l.df$name, levels = l.df$name)
+    l.df <- rbind(l.df, l.df)
+    
+    p <- p + geom_path(data = l.df, aes_string(x = "x", y = "y", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) + guides(color = guide_legend(order = 1))
+  }    
+  
+  if(isTRUE(equidistant)) p <- p + theme(aspect.ratio = 1)
+  return(p)
+}
+
+#' create base maps
+#' @importFrom ggplot2 ggplot aes_string scale_fill_identity geom_raster geom_tile
+#' @importFrom raster aggregate ncell
+#' @noRd 
+gg.bmap <- function(r, r_type, maxpixels = 500000, alpha = 1, maxColorValue = NA){
+  # aggregate raster if too large
+  if(maxpixels < ncell(r)) r <- aggregate(r, fact = ceiling(ncell(r)/maxpixels))
+  
+  # transform into data.frame
+  df <- data.frame(raster::as.data.frame(r, xy = T))
+  colnames(df) <- c("x", "y", paste0("val", 1:(ncol(df)-2)))
+  
+  # factor if discrete to show categrocial legend
+  df$fill <- df$val1
+  if(r_type == "discrete") df$fill <- as.factor(df$fill)
+  
+  # transform to RGB colours
+  if(r_type == "RGB"){
+    if(is.na(maxColorValue)) maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
+    
+    if(maxColorValue < max(c(df$val1, df$val2, df$val3), na.rm = T)){
+      out("maxColorValue < maximum raster value. maxColorValue is set to maximum raster value.", type = 2)
+      maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
+    }
+    
+    # remove NAs
+    na.sel <- is.na(df$val1) & is.na(df$val2) & is.na(df$val3)
+    if(any(na.sel)) df <- df[!na.sel,]
+    
+    df$fill <- grDevices::rgb(red = df$val1, green = df$val2, blue = df$val3, maxColorValue = maxColorValue)
+  } else{
+    
+    # remove NAs
+    na.sel <- is.na(df$val1)
+    if(any(na.sel)) df <- df[!na.sel,]
+  }
+  gg <- ggplot(df)
+  
+  # if NA gaps are there, use geom_tile, otherwise make it fast using geom_raster
+  if(any(na.sel)){
+    gg <- gg + geom_tile(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
+  } else{
+    gg <- gg + geom_raster(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
+  }
+  
+  if(r_type == "RGB") gg <- gg + scale_fill_identity() 
+  return(gg)
+}
+
+
+#' print methods
+#' @noRd
+#' @export
+print.moveVis <- function(frames) {
+  if(inherits(frames, "frames_spatial")){
+    cat(paste0("Spatial frames of class moveVis\n"))
+    cat(paste0("number of frames: ", as.character(max(frames$move_data$frame)), "\n"))
+    cat(paste0("temporal extent:  ", paste0(frames$move_data$time_chr[1], "' to '", frames$move_data$time_chr[nrow(frames$move_data)]), "\n"))
+    cat(paste0("spatial extent:   ", paste0(mapply(x = names(frames$aesthetics$gg.ext), y = frames$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
+    cat(paste0("raster type:      ", frames$aesthetics$r_type, "\n"))
+    cat(paste0("basemap:          ", if(frames$aesthetics$map_service != "custom") paste0("'", frames$aesthetics$map_type, "' from '", frames$aesthetics$map_type, "'") else "custom", "\n"))
+    cat(paste0("names:            '", paste0(unique(frames$move_data$name), collapse = "', '"), "'\n"))
+    cat(paste0("additions:        ", if(!is.null(frames$additions)) "TRUE" else "FALSE", "\n"))
+  }
+}
+
+#' length methods
+#' @noRd
+#' @export
+length.moveVis <- function(frames){
+  max(frames$move_data$frame)
+}
+
+#' #' names methods
+#' #' @export
+#' names.moveVis <- function(frames){
+#'   unique(frames$move_data$name)
+#' }
+
+#' render methods
+#' @noRd
+#' @export
+"[[.moveVis" <- function(frames, ...) {
+  i <- list(...)[[1]]
+  
+  # check subscripts
+  if(i > max(frames$move_data$frame)) stop(paste0("Subscript out of bounds. Length of frames is ", max(frames$move_data$frame), "."), call. = FALSE)
+  
+  # plot frame on the fly
+  gg <- gg.fun(x = .df4gg(frames$move_data,
+                          i = i,
+                          tail_length = frames$aesthetics$tail_length,
+                          path_size = frames$aesthetics$path_size,
+                          tail_size = frames$aesthetics$tail_size,
+                          tail_colour = frames$aesthetics$tail_colour,
+                          trace_show = frames$aesthetics$trace_show,
+                          trace_colour = frames$aesthetics$trace_colour,
+                          path_fade = frames$aesthetics$path_fade),
+               y = gg.bmap(r = frames$raster_data[[if(length(frames$raster_data) > 1) i else 1]],
+                           r_type = frames$aesthetics$r_type,
+                           maxpixels = frames$aesthetics$maxpixels,
+                           alpha = frames$aesthetics$alpha,
+                           maxColorValue = frames$aesthetics$maxColorValue),
+               m_names = frames$move_data$name,
+               m_colour = frames$move_data$colour,
+               path_end = frames$aesthetics$path_end,
+               path_join = frames$aesthetics$path_join,
+               path_mitre = frames$aesthetics$path_mitre,
+               path_arrow = frames$aesthetics$path_arrow,
+               path_alpha = frames$aesthetics$path_alpha,
+               path_legend = frames$aesthetics$path_legend,
+               path_legend_title = frames$aesthetics$path_legend_title,
+               path_size = frames$aesthetics$path_size,
+               equidistant = frames$aesthetics$equidistant)
+  
+  # any additions?
+  if(!is.null(frames$additions)){
+    for(ix in 1:length(frames$additions)){
+      x <- frames$additions[[ix]]
+      if(length(x$arg) > 0) for(j in 1:length(x$arg)) assign(names(x$arg)[[j]], x$arg[[j]])
+      if(length(x$data) > 0) assign("data", x$data[[i]])
+      gg <- gg + eval(x$expr[[i]])
+    }
+  }
+  return(gg)
+}
+
+#' render methods
+#' @noRd
+#' @export
+"[.moveVis" <- function(frames, ...) {
+  i <- list(...)[[1]]
+  bounds <- sapply(i, function(j) any(j < 1, j > max(frames$move_data$frame)))
+  if(all(bounds)) stop(paste0("Subscript out of bounds. Length of frames is ", max(frames$move_data$frame), "."), call. = FALSE)
+  if(any(bounds)) warning(paste0("Subscript extends beyond bounds and is thus truncated. Length of frames is ", max(frames$move_data$frame), "."), call. = FALSE, immediate. = FALSE)
+  i <- i[!bounds]
+  sub <- apply(sapply(..., function(j) frames$move_data$frame == j), MARGIN = 1, any)
+  frames$move_data <- frames$move_data[sub,]
+  if(length(frames$raster_data) > 1) frames$raster_data <- frames$rraster_data[sub,]
+  
+  return(frames)
+}
+
 #' package attatching
 #' @noRd 
 .onAttach <- function(...) {
@@ -827,7 +897,7 @@ repl_vals <- function(data, x, y){
   catch <- try(lwgeom::lwgeom_extSoftVersion()) # lwgeom is needed for st_distance, but no import of sf.
   # Importing an lwgeom function here to avoid NOTE on missing imports
   
-  pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
+  pbapply::pboptions(type = "timer", char = "=", txt.width = getOption("width")-30) # can be changed to "none"
   if(is.null(getOption("moveVis.verbose")))  options(moveVis.verbose = FALSE)
   if(is.null(getOption("moveVis.n_cores")))  options(moveVis.n_cores = 1)
   if(is.null(getOption("moveVis.frames_to_disk")))  options(moveVis.frames_to_disk = FALSE)

@@ -25,18 +25,6 @@
 #' @export
 
 get_frametimes <- function(frames){
-  
-  x <- lapply(frames, function(x){
-    y <- attr(x, "time")
-    if(!inherits(y, "POSIXct")) y <- NA
-    return(y)
-  })
-  
-  ft <- unlist(x)
-  attributes(ft) <- attributes(x[[1]])
-  
-  if(all(is.na(ft))) out("No associated timestamps per frame could be found in frames. Did you use frames_spatial or frames_graph to create the supplied list of frames?", type = 3)
-  if(any(is.na(ft))) out("At least one frame is missing the time attribute.", type = 2)
-  
-  return(ft)
+  if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
+  return(unique(frames$move_data$time))
 }

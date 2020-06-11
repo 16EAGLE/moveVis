@@ -111,7 +111,7 @@ add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
   if(inherits(data, "list")){
     if(length(data) != length(frames)) out("Argument 'data' is a list und thus must be of same length as 'frames'.", type = 3)
   } else{
-    data <- rep(list(data), length(frames))
+    if(!is.null(data)) data <- rep(list(data), length(frames))
   }
   
   ## gg is not a list, make it one
@@ -122,8 +122,8 @@ add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
   }
   if(!is.call(gg[[1]])) out("Argument 'gg' must be an expression or a list of expressions (see ?moveVis::add_gg and ?ggplot2::expr).", type = 3)
   
-  mapply(.frame = frames, .gg = gg, data = data, function(.frame, .gg, data, arg = list(...)){
-    if(length(arg) > 0) for(i in 1:length(arg)) assign(names(arg)[[i]], arg[[i]])
-    return(.frame + eval(.gg)) #parse(text = paste0(y, collapse = " + ")))
-  }, USE.NAMES = F, SIMPLIFY = F)
+  if(is.null(frames$additions)) frames$additions <- list(list(expr = gg, data = data, arg = list(...))) else{
+    frames$additions <- c(frames$additions, list(list(expr = gg, data = data, arg = list(...))))
+  }
+  return(frames)
 }

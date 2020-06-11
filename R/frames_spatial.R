@@ -184,6 +184,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
   char.args <- c(path_end = path_end, path_join = path_join, path_legend_title = path_legend_title)
   catch <- sapply(1:length(char.args), function(i) if(!is.character(char.args[[i]])) out(paste0("Argument '", names(char.args)[[i]], "' must be of type 'numeric'."), type = 3))
+  extras <- list(...)
   
   if(!is.null(ext)){
     if(!inherits(ext, "Extent")) out("Argument 'ext' must be of type 'Extent' (see raster::extent), if defined.", type = 3)
@@ -229,6 +230,9 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     out("Retrieving and compositing basemap imagery...")
     r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs = crs(m))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
+  } else{
+    map_service <- "custom"
+    map_type <- "custom"
   }
   
   # calculate frames extents and coord labes
@@ -254,19 +258,36 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   out("Assigning raster maps to frames...")
   r_list <- .rFrames(r_list, r_times, m.df, gg.ext, fade_raster, crop_raster = crop_raster)
   
-  ## create frames
-  out("Creating frames...")
-  frames <- .gg_spatial(r_list = r_list, r_type = r_type, m.df = m.df, equidistant = equidistant,
-                        path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
-                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title,
-                        tail_length = tail_length, tail_size = tail_size, tail_colour = tail_colour, trace_show = trace_show,
-                        trace_colour = trace_colour, path_fade = path_fade, ...)
-  
-  ## add time attribute per frame
-  frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
-    attr(x, "time") <- y
-    return(x)
-  }, SIMPLIFY = F)
+  # create frames object
+  frames <- list(
+    move_data = m.df,
+    raster_data = r_list,
+    aesthetics = c(list(
+      equidistant = equidistant,
+      path_size = path_size,
+      path_end = path_end,
+      path_join = path_join,
+      path_alpha = path_alpha,
+      path_mitre = path_mitre,
+      path_arrow = path_arrow, 
+      path_legend = path_legend,
+      path_legend_title = path_legend_title,
+      tail_length = tail_length,
+      tail_size = tail_size,
+      tail_colour = tail_colour,
+      trace_show = trace_show,
+      trace_colour = trace_colour,
+      path_fade = path_fade,
+      gg.ext = gg.ext,
+      map_service = map_service,
+      map_type = map_type,
+      r_type = r_type),
+      maxpixels = if(!is.null(extras$maxpixels)) extras$maxpixels else 500000,
+      alpha = if(!is.null(extras$alpha)) extras$alpha else 1,
+      maxColorValue = if(!is.null(extras$maxColorValue)) extras$maxColorValue else NA),
+    additions = NULL
+  )
+  attr(frames, "class") <- c("moveVis", "frames_spatial")
   
   return(frames)
 }

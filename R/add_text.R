@@ -48,8 +48,7 @@ add_text <- function(frames, labels, x, y, colour = "black", size = 3, type = "t
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
-  if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
+  if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
   
   if(!is.character(labels)) out("Argument 'labels' must be of type 'character'.", type = 3)
   if(!is.character(colour)) out("Argument 'colour' must be of type 'character'.", type = 3)
