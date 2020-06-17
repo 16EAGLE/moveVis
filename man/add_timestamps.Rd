@@ -7,9 +7,9 @@
 add_timestamps(frames, m = NULL, x = NULL, y = NULL, ..., verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
-\item{m}{\code{move} or \code{moveStack}, optional. If defined, timestamps are extracted from \code{m} that must be the same object used to create \code{frames} with \code{\link{frames_spatial}}. If undefined (recommended), timestamps are extracted from the attributes of \code{frames} directly.}
+\item{m}{deprecated, times are natively stored in \code{moveVis frames_spatial} objects.}
 
 \item{x}{numeric, optional, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.}
 

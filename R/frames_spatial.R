@@ -1,9 +1,9 @@
 #' Create frames of spatial movement maps for animation
 #'
-#' \code{frames_spatial} creates a list of \code{ggplot2} maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
+#' \code{frames_spatial} creates frames from movement and map/raster data. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 #'
 #' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
-#' @param r_list list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
+#' @param r_list list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
 #' @param r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.
 #' @param r_type character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.
 #' @param fade_raster logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.
@@ -49,7 +49,7 @@
 #' 
 #' The projection of \code{m} is treated as target projection. Default base maps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection of the base maps): \code{spTransform(m, crs("+init=epsg:3857"))}. The \code{ggplot2} coordinate system will be computed based on the projection of \code{m} using \code{coord_sf}. If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
 #'
-#' @return List of ggplot2 objects, each representing a single frame.
+#' @return A frames object of class \code{moveVis}.
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
@@ -145,7 +145,7 @@
 #' # see ?add_colourscale to learn how to change colours of custom base maps
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph
-#' # see ?animate_frames on how to animate your list of frames
+#' # see ?animate_frames on how to animate a frames
 #' }
 #' @seealso \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
@@ -184,6 +184,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
   char.args <- c(path_end = path_end, path_join = path_join, path_legend_title = path_legend_title)
   catch <- sapply(1:length(char.args), function(i) if(!is.character(char.args[[i]])) out(paste0("Argument '", names(char.args)[[i]], "' must be of type 'numeric'."), type = 3))
+  extras <- list(...)
   
   if(!is.null(ext)){
     if(!inherits(ext, "Extent")) out("Argument 'ext' must be of type 'Extent' (see raster::extent), if defined.", type = 3)
@@ -229,6 +230,9 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     out("Retrieving and compositing basemap imagery...")
     r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs = crs(m))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
+  } else{
+    map_service <- "custom"
+    map_type <- "custom"
   }
   
   # calculate frames extents and coord labes
@@ -254,19 +258,36 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   out("Assigning raster maps to frames...")
   r_list <- .rFrames(r_list, r_times, m.df, gg.ext, fade_raster, crop_raster = crop_raster)
   
-  ## create frames
-  out("Creating frames...")
-  frames <- .gg_spatial(r_list = r_list, r_type = r_type, m.df = m.df, equidistant = equidistant,
-                        path_size = path_size, path_end = path_end, path_join = path_join, path_alpha = path_alpha, path_mitre = path_mitre,
-                        path_arrow = path_arrow, print_plot = F, path_legend = path_legend, path_legend_title = path_legend_title,
-                        tail_length = tail_length, tail_size = tail_size, tail_colour = tail_colour, trace_show = trace_show,
-                        trace_colour = trace_colour, path_fade = path_fade, ...)
-  
-  ## add time attribute per frame
-  frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
-    attr(x, "time") <- y
-    return(x)
-  }, SIMPLIFY = F)
+  # create frames object
+  frames <- list(
+    move_data = m.df,
+    raster_data = r_list,
+    aesthetics = c(list(
+      equidistant = equidistant,
+      path_size = path_size,
+      path_end = path_end,
+      path_join = path_join,
+      path_alpha = path_alpha,
+      path_mitre = path_mitre,
+      path_arrow = path_arrow, 
+      path_legend = path_legend,
+      path_legend_title = path_legend_title,
+      tail_length = tail_length,
+      tail_size = tail_size,
+      tail_colour = tail_colour,
+      trace_show = trace_show,
+      trace_colour = trace_colour,
+      path_fade = path_fade,
+      gg.ext = gg.ext,
+      map_service = map_service,
+      map_type = map_type,
+      r_type = r_type),
+      maxpixels = if(!is.null(extras$maxpixels)) extras$maxpixels else 500000,
+      alpha = if(!is.null(extras$alpha)) extras$alpha else 1,
+      maxColorValue = if(!is.null(extras$maxColorValue)) extras$maxColorValue else NA),
+    additions = NULL
+  )
+  attr(frames, "class") <- c("moveVis", "frames_spatial")
   
   return(frames)
 }

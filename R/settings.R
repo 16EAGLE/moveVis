@@ -6,11 +6,14 @@
 #' 
 #' \code{use_disk} enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
 #' 
+#' \code{set_engine} defines the plotting engine to be used for rendering and animating frames. Currently, \code{moveVis} supports \code{ggplot2} for 2D and \code{rgl} for 3D renders and animations.
+#' 
 #' @inheritParams frames_spatial
 #' @param n_cores numeric, optional, number of cores to be used. If not defined, the number of cores will be detected automatically (\code{n-1} cores will be used with \code{n} being the number of cores available).
 #' @param frames_to_disk logical, whether to use disk space for creating frames or not. If \code{TRUE}, frames will be written to \code{dir_frames}, clearing memory.
 #' @param dir_frames character, directory where to save frame during frames creating.
 #' @param n_memory_frames numeric, maximum number of frames allowed to be hold in memory. This number defines after how many frames memory should be cleared by writing frames in memory to disk.
+#' @param engine character, the default engine to render and animate frames with. Either \code{"ggplot2"} for 2D or \code{"rgl"} for 3D renders and animations.
 #' 
 #' @return None. These functions are used for their side effects.
 #' 
@@ -73,4 +76,11 @@ use_disk <- function(frames_to_disk = TRUE, dir_frames = paste0(tempdir(), "/mov
     options(moveVis.frames_to_disk = FALSE, moveVis.dir_frames = NULL, moveVis.n_memory_frames = NULL)
     out(paste0("Disk usage for creating frames disabled.\nAll frames will be hold in memory."))
   }
+}
+
+#' @rdname settings
+#' @export
+set_engine <- function(engine = "ggplot2"){
+  if(all(engine != "ggplot2", engine != "rgl")) out("Argument 'engine' must be either 'ggplot2' for 2D or 'rgl' for 3D renders and animations.", type = 3)
+  options(moveVis.engine = engine)
 }

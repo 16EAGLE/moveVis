@@ -52,8 +52,7 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
-  if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
+  if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
   if(!is.character(position)) out("Argument 'position' needs to be of type 'character'.", type = 3)
   if(isFALSE(units == "km" | units == "miles")) out("Argument 'units' must either be 'km' or 'miles'.", type = 3)
   

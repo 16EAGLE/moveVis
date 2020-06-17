@@ -7,16 +7,13 @@
 get_frametimes(frames)
 }
 \arguments{
-\item{frames}{list, list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 }
 \value{
-A POSIXct vector of timestamps representing the time assoicated with each frame in \code{frames}.
+A POSIXct vector of timestamps representing the time associated with each frame.
 }
 \description{
-This function extracts the timestamps associated with each frame of a list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
-}
-\details{
-\code{moveVis} stores the times represented by a frame as an attribute \code{"time"} for each \code{ggplot} frame.
+This function extracts the timestamps associated with each frame from a \code{moveVis} object created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
 }
 \examples{
 library(moveVis)

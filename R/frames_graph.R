@@ -16,7 +16,7 @@
 #' @details To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 #' equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
 #'
-#' @return List of ggplot2 objects, each representing a single frame. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
+#' @return An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
@@ -67,7 +67,7 @@
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph
 #' 
-#' # see ?animate_frames on how to animate your list of frames
+#' # see ?animate_frames on how to animate frames
 #' }
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
@@ -139,9 +139,10 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
     
     ## create frames
     out("Creating frames...")
-    if(graph_type == "flow"){
-      frames <- .gg_flow(m.df, path_legend, path_legend_title, path_size, val_seq)
-    }
+    # if(graph_type == "flow"){
+    #   #frames <- .gg_flow(m.df, path_legend, path_legend_title, path_size, val_seq)
+    # }
+    hist_data <- NULL
     if(graph_type == "hist"){
       
       dummy <- do.call(rbind, lapply(unique(m.df$id), function(id){
@@ -151,7 +152,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       
       ## Calculating time-cumulative value histogram per individual and timestep
       #out("Calculating histogram...")
-      l.hist <- lapply(1:max(m.df$frame), function(i, d = dummy){
+      hist_data <- lapply(1:max(m.df$frame), function(i, d = dummy){
         x <- m.df[unlist(lapply(1:i, function(x) which(m.df$frame == x))),]
         
         x <- do.call(rbind, lapply(unique(x$id), function(id){
@@ -168,16 +169,25 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       })
       
       ## fusing histograms for plot scaling
-      all.hist <- do.call(rbind, l.hist)
-      frames <- .gg_hist(l.hist, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
+      # all.hist <- do.call(rbind, hist_data)
+      #frames <- .gg_hist(hist_data, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
     }
   }
   
-  ## add time attribute per frame
-  frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
-    attr(x, "time") <- y
-    return(x)
-  }, SIMPLIFY = F)
+  # create frames object
+  frames <- list(
+    move_data = m.df,
+    hist_data = hist_data,
+    type = paste0("ggplot (", graph_type, " graph)"),
+    graph_type = graph_type,
+    aesthetics = list(
+      path_legend = path_legend,
+      path_legend_title = path_legend_title,
+      val_seq = val_seq,
+      r_type = r_type),
+    additions = NULL
+  )
+  attr(frames, "class") <- c("moveVis", "frames_graph")
   
   return(frames)
 }

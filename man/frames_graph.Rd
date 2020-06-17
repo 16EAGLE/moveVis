@@ -25,7 +25,7 @@ frames_graph(
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
 
-\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
+\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
 
 \item{r_times}{list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
 
@@ -58,7 +58,7 @@ frames_graph(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of ggplot2 objects, each representing a single frame. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
+An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 }
 \description{
 \code{frames_graph} creates a list of \code{ggplot2} graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
@@ -110,7 +110,7 @@ frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradi
 # see all add_ functions on how to customize your frames created with frames_spatial
 # or frames_graph
 
-# see ?animate_frames on how to animate your list of frames
+# see ?animate_frames on how to animate frames
 }
 }
 \seealso{

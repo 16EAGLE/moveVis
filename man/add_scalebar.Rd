@@ -18,7 +18,7 @@ add_scalebar(
 )
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{distance}{numeric, optional. Distance displayed by the scalebar (in either km or miles defined by argument \code{units}) By default, the displayed distance is calculated automatically.}
 
