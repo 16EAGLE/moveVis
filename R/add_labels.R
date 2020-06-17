@@ -3,7 +3,7 @@
 #' This function adds character labels such as title or axis labels to animation frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams frames_spatial
-#' @param frames list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.
+#' @param frames an object of class \code{moveVis} created with \code{\link{frames_spatial}}.
 #' @param title character, frame title. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.
 #' @param subtitle character, frame subtitle. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.
 #' @param caption character, frame caption. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.

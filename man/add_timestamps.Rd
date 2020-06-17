@@ -7,7 +7,7 @@
 add_timestamps(frames, m = NULL, x = NULL, y = NULL, ..., verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{m}{deprecated, times are natively stored in \code{moveVis frames_spatial} objects.}
 

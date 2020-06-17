@@ -4,6 +4,7 @@
 \alias{settings}
 \alias{use_multicore}
 \alias{use_disk}
+\alias{set_engine}
 \title{moveVis settings}
 \usage{
 use_multicore(n_cores = NULL, verbose = TRUE)
@@ -14,6 +15,8 @@ use_disk(
   n_memory_frames = NULL,
   verbose = TRUE
 )
+
+set_engine(engine = "ggplot2")
 }
 \arguments{
 \item{n_cores}{numeric, optional, number of cores to be used. If not defined, the number of cores will be detected automatically (\code{n-1} cores will be used with \code{n} being the number of cores available).}
@@ -25,6 +28,8 @@ use_disk(
 \item{dir_frames}{character, directory where to save frame during frames creating.}
 
 \item{n_memory_frames}{numeric, maximum number of frames allowed to be hold in memory. This number defines after how many frames memory should be cleared by writing frames in memory to disk.}
+
+\item{engine}{character, the default engine to render and animate frames with. Either \code{"ggplot2"} for 2D or \code{"rgl"} for 3D renders and animations.}
 }
 \value{
 None. These functions are used for their side effects.
@@ -36,6 +41,8 @@ These functions control session-wide settings that can increase processing speed
 \code{use_multicore} enables multi-core usage of \code{moveVis} by setting the maximum number of cores to be used. This can strongly increase the speed of creating frames.
 
 \code{use_disk} enables the usage of disk space for creating frames. This can prevent memory overload when creating frames for very large animations.
+
+\code{set_engine} defines the plotting engine to be used for rendering and animating frames. Currently, \code{moveVis} supports \code{ggplot2} for 2D and \code{rgl} for 3D renders and animations.
 
 For most tasks, \code{moveVis} is able to use multiple cores to increase computational times through parallelization. By default, multi-core usage is disabled. This function saves the number of cores that \code{moveVis} should use to the global option \code{"moveVis.n_cores"} that can be printed using \code{getOption("moveVis.n_cores")}.
 

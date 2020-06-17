@@ -1,11 +1,10 @@
 #' Get frame times from frames
 #'
-#' This function extracts the timestamps associated with each frame of a list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
+#' This function extracts the timestamps associated with each frame from a \code{moveVis} object created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
 #'
-#' @param frames list, list of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#' @return A POSIXct vector of timestamps representing the time assoicated with each frame in \code{frames}.
+#' @inheritParams add_gg
+#' @return A POSIXct vector of timestamps representing the time associated with each frame.
 #' 
-#' @details \code{moveVis} stores the times represented by a frame as an attribute \code{"time"} for each \code{ggplot} frame.
 #' 
 #' @examples 
 #' library(moveVis)

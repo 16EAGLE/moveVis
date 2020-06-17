@@ -19,7 +19,7 @@ add_northarrow(
 )
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{height}{numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map.}
 

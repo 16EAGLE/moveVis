@@ -7,7 +7,7 @@
 add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{colour}{character, progress bar colour.}
 

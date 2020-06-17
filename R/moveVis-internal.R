@@ -334,68 +334,6 @@ repl_vals <- function(data, x, y){
   return(paths)
 }
 
-#' flow stats plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
-#' 
-#' @noRd
-.gg_flow <- function(m.df, path_legend, path_legend_title, path_size, val_seq){
-
-  ## stats plot function
-  gg.fun <- function(x, y, pl, plt, ps, vs){
-    
-    ## generate base plot
-    p <- ggplot(x, aes_string(x = "frame", y = "value")) + geom_path(aes_string(group = "id"), size = ps, show.legend = F, colour = x$colour) + 
-      coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(vs, na.rm = T), max(vs, na.rm = T))) +
-      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0), breaks = vs) + scale_x_continuous(expand = c(0,0))
-    
-    ## add legend
-    if(isTRUE(pl)){
-      l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name),
-                               colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
-      l.df$name <- factor(l.df$name, levels = l.df$name)
-      l.df <- rbind(l.df, l.df)
-      p <- p + geom_path(data = l.df, aes_string(x = "frame", y = "value", colour = "name", linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
-    }  
-    return(p)
-  }
-  
-  .lapply(1:max(m.df$frame), function(i, x = m.df, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq){
-    gg.fun(x = m.df[m.df$frame <= i,], y = m.df, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq)
-  })
-}
-
-
-#' hist stats plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw  coord_cartesian geom_bar
-#' @noRd
-.gg_hist <- function(l.hist, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type){
-  
-  ## stats plot function
-  gg.fun <- function(x, y, pl, plt, ps, vs, rt){
-    
-    ## generate base plot
-    if(rt == "gradient") p <- ggplot(x, aes_string(x = "value", y = "count")) + geom_path(aes_string(group = "name"), size = ps, show.legend = F, colour = x$colour)
-    if(rt == "discrete") p <- ggplot(x, aes_string(x = "value", y = "count", fill = "colour")) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
-    
-    p <- p + coord_cartesian(xlim = c(min(vs, na.rm = T), max(vs, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
-      theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0), breaks = vs)
-    
-    ## add legend
-    if(isTRUE(pl)){
-      l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = levels(y$name),
-                               colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
-      l.df$name <- factor(l.df$name, levels = l.df$name)
-      l.df <- rbind(l.df, l.df)
-      p <- p + geom_path(data = l.df, aes_string(x = "value", y = "count", colour = "name", linetype = NA), size = ps, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = plt)
-    }
-    return(p)
-  }
-  
-  .lapply(l.hist, function(x, y = all.hist, pl = path_legend, plt = path_legend_title, ps = path_size, vs = val_seq, rt = r_type){
-    gg.fun(x = x, y = y, pl = pl, plt = plt, ps = ps, vs = vs, rt = rt)
-  })
-}
-
 #' convert units
 #' @noRd 
 .convert_units <- function(unit){
@@ -700,7 +638,7 @@ repl_vals <- function(data, x, y){
 #' frame plotting function
 #' @importFrom ggplot2 geom_path aes_string theme scale_colour_manual theme_bw guides guide_legend  
 #' @noRd
-gg.fun <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant){
+gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant){
   
   ## scale plot to extent and set na.rm to TRUE to avoid warnings
   y$layers[[1]]$geom_params$na.rm <- T
@@ -783,6 +721,53 @@ gg.bmap <- function(r, r_type, maxpixels = 500000, alpha = 1, maxColorValue = NA
 }
 
 
+#' flow stats plot function
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
+#' 
+#' @noRd
+.gg_flow <- function(x, y, path_legend, path_legend_title, path_size, val_seq){
+  
+  ## generate base plot
+  p <- ggplot(x, aes_string(x = "frame", y = "value")) + geom_path(aes_string(group = "id"), size = path_size, show.legend = F, colour = x$colour) + 
+    coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T))) +
+    theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0), breaks = val_seq) + scale_x_continuous(expand = c(0,0))
+  
+  ## add legend
+  if(isTRUE(path_legend)){
+    l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name),
+                             colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
+    l.df$name <- factor(l.df$name, levels = l.df$name)
+    l.df <- rbind(l.df, l.df)
+    p <- p + geom_path(data = l.df, aes_string(x = "frame", y = "value", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title)
+  }  
+  return(p)
+}
+
+
+#' hist stats plot function
+#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw  coord_cartesian geom_bar
+#' @noRd
+## stats plot function
+.gg_hist <- function(x, y, path_legend, path_legend_title, path_size, val_seq, r_type){
+  
+  ## generate base plot
+  if(r_type == "gradient") p <- ggplot(x, aes_string(x = "value", y = "count")) + geom_path(aes_string(group = "name"), size = path_size, show.legend = F, colour = x$colour)
+  if(r_type == "discrete") p <- ggplot(x, aes_string(x = "value", y = "count", fill = "colour")) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
+  
+  p <- p + coord_cartesian(xlim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
+    theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0), breaks = val_seq)
+  
+  ## add legend
+  if(isTRUE(path_legend)){
+    l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = levels(y$name),
+                             colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
+    l.df$name <- factor(l.df$name, levels = l.df$name)
+    l.df <- rbind(l.df, l.df)
+    p <- p + geom_path(data = l.df, aes_string(x = "value", y = "count", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title)
+  }
+  return(p)
+}
+  
 #' print methods
 #' @noRd
 #' @export
@@ -795,7 +780,16 @@ print.moveVis <- function(frames) {
     cat(paste0("raster type:      ", frames$aesthetics$r_type, "\n"))
     cat(paste0("basemap:          ", if(frames$aesthetics$map_service != "custom") paste0("'", frames$aesthetics$map_type, "' from '", frames$aesthetics$map_type, "'") else "custom", "\n"))
     cat(paste0("names:            '", paste0(unique(frames$move_data$name), collapse = "', '"), "'\n"))
-    cat(paste0("additions:        ", if(!is.null(frames$additions)) "TRUE" else "FALSE", "\n"))
+    cat(paste0("added function:   ", length(frames$additions), "\n"))
+  }
+  
+  if(inherits(frames, "frames_graph")){
+    cat(paste0("Graph frames of class moveVis\n"))
+    cat(paste0("number of frames: ", as.character(max(frames$move_data$frame)), "\n"))
+    cat(paste0("temporal extent:  ", paste0(frames$move_data$time_chr[1], "' to '", frames$move_data$time_chr[nrow(frames$move_data)]), "\n"))
+    cat(paste0("raster type:      ", frames$aesthetics$r_type, "\n"))
+    cat(paste0("names:            '", paste0(unique(frames$move_data$name), collapse = "', '"), "'\n"))
+    cat(paste0("added function:   ", length(frames$additions), "\n"))
   }
 }
 
@@ -804,60 +798,6 @@ print.moveVis <- function(frames) {
 #' @export
 length.moveVis <- function(frames){
   max(frames$move_data$frame)
-}
-
-#' #' names methods
-#' #' @export
-#' names.moveVis <- function(frames){
-#'   unique(frames$move_data$name)
-#' }
-
-#' render methods
-#' @noRd
-#' @export
-"[[.moveVis" <- function(frames, ...) {
-  i <- list(...)[[1]]
-  
-  # check subscripts
-  if(i > max(frames$move_data$frame)) stop(paste0("Subscript out of bounds. Length of frames is ", max(frames$move_data$frame), "."), call. = FALSE)
-  
-  # plot frame on the fly
-  gg <- gg.fun(x = .df4gg(frames$move_data,
-                          i = i,
-                          tail_length = frames$aesthetics$tail_length,
-                          path_size = frames$aesthetics$path_size,
-                          tail_size = frames$aesthetics$tail_size,
-                          tail_colour = frames$aesthetics$tail_colour,
-                          trace_show = frames$aesthetics$trace_show,
-                          trace_colour = frames$aesthetics$trace_colour,
-                          path_fade = frames$aesthetics$path_fade),
-               y = gg.bmap(r = frames$raster_data[[if(length(frames$raster_data) > 1) i else 1]],
-                           r_type = frames$aesthetics$r_type,
-                           maxpixels = frames$aesthetics$maxpixels,
-                           alpha = frames$aesthetics$alpha,
-                           maxColorValue = frames$aesthetics$maxColorValue),
-               m_names = frames$move_data$name,
-               m_colour = frames$move_data$colour,
-               path_end = frames$aesthetics$path_end,
-               path_join = frames$aesthetics$path_join,
-               path_mitre = frames$aesthetics$path_mitre,
-               path_arrow = frames$aesthetics$path_arrow,
-               path_alpha = frames$aesthetics$path_alpha,
-               path_legend = frames$aesthetics$path_legend,
-               path_legend_title = frames$aesthetics$path_legend_title,
-               path_size = frames$aesthetics$path_size,
-               equidistant = frames$aesthetics$equidistant)
-  
-  # any additions?
-  if(!is.null(frames$additions)){
-    for(ix in 1:length(frames$additions)){
-      x <- frames$additions[[ix]]
-      if(length(x$arg) > 0) for(j in 1:length(x$arg)) assign(names(x$arg)[[j]], x$arg[[j]])
-      if(length(x$data) > 0) assign("data", x$data[[i]])
-      gg <- gg + eval(x$expr[[i]])
-    }
-  }
-  return(gg)
 }
 
 #' render methods
@@ -871,10 +811,20 @@ length.moveVis <- function(frames){
   i <- i[!bounds]
   sub <- apply(sapply(..., function(j) frames$move_data$frame == j), MARGIN = 1, any)
   frames$move_data <- frames$move_data[sub,]
-  if(length(frames$raster_data) > 1) frames$raster_data <- frames$rraster_data[sub,]
+  if(length(frames$raster_data) > 1) frames$raster_data <- frames$raster_data[sub]
   
   return(frames)
 }
+
+#' render methods
+#' @noRd
+#' @export
+"[[.moveVis" <- function(frames, ...) {
+  i <- list(...)[[1]]
+  engine <- getOption("moveVis.engine")
+  render_frame(frames, i, engine)
+}
+
 
 #' package attatching
 #' @noRd 
@@ -905,6 +855,7 @@ length.moveVis <- function(frames){
     options(moveVis.dir_frames = paste0(tempdir(), "/moveVis"))
     if(!dir.exists(getOption("moveVis.dir_frames"))) dir.create(getOption("moveVis.dir_frames"))
   }
+  if(is.null(getOption("moveVis.engine")))  options(moveVis.engine = "ggplot2")
   
   options(moveVis.map_api = list(osm = list(streets = "https://tile.openstreetmap.org/",
                                             streets_de = "http://a.tile.openstreetmap.de/tiles/osmde/",

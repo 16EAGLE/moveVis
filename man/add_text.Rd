@@ -16,7 +16,7 @@ add_text(
 )
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{labels}{character, text to be added to frames. Either a single character value or a character vector of same length as \code{frames}.}
 
