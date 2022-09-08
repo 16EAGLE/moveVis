@@ -102,10 +102,10 @@ render_frame <- function(frames, i = length(frames), engine = "ggplot2"){
     # any additions?
     if(!is.null(frames$additions)){
       for(ix in 1:length(frames$additions)){
-        x <- frames$additions[[ix]]
-        if(length(x$arg) > 0) for(j in 1:length(x$arg)) assign(names(x$arg)[[j]], x$arg[[j]])
-        if(length(x$data) > 0) assign("data", x$data[[i]])
-        gg <- gg + eval(x$expr[[i]])
+        .x <- frames$additions[[ix]]
+        if(length(.x[["arg"]]) > 0) for(j in 1:length(.x[["arg"]])) assign(names(.x[["arg"]])[[j]], .x[["arg"]][[j]])
+        if(length(.x[["data"]]) > 0) assign("data", .x[["data"]][[i]])
+        gg <- gg + eval(.x[["expr"]][[i]])
       }
     }
     return(gg)

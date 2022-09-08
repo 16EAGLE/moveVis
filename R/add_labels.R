@@ -45,7 +45,7 @@
 #' @export
 
 add_labels <- function(frames, title = waiver(), subtitle = waiver(), caption = waiver(), tag = waiver(),
-                     x = waiver(), y = waiver(), verbose = TRUE){
+                       x = waiver(), y = waiver(), verbose = TRUE){
 
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -56,7 +56,9 @@ add_labels <- function(frames, title = waiver(), subtitle = waiver(), caption = 
   if(all(waiver.which)) out("At least one label argument has to be defined.", type = 3)
   if(any(!sapply(waiver.args[!waiver.which], function(x) any(is.character(x), is.null(x))))) out("Label arguments must be of type character, NULL to remove a label or waiver() to keep an already set label.", type = 3)
   
-  add_gg(frames, gg = expr(list(labs(title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y),
-                           theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5)))),
-         title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y)
+  add_gg(frames, gg = expr(
+    list(labs(title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y),
+         theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5))
+    )
+  ),title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y)
 }
