@@ -39,10 +39,10 @@ add_scalebar(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
-This function adds a scalebar to the animation frames created with \code{\link{frames_spatial}}.
+This function adds a scalebar to frames created with \code{\link{frames_spatial}}.
 }
 \examples{
 library(moveVis)

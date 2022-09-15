@@ -1,6 +1,6 @@
 #' Add \code{ggplot2} function to frames
 #'
-#' This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}}.
+#' This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 #'
 #' @inheritParams add_labels
 #' @param gg \code{ggplot2} expressions (see details), either as
@@ -32,7 +32,7 @@
 #' If you supply \code{gg} as a list of expressions for each frame and \code{data} as a list of objects (e.g. data.frames) for each frame,
 #' each frame will be manipulated with the corresponding \code{ggplot2} function and the corresponding data. 
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #' 
 #' @examples

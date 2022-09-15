@@ -20,10 +20,10 @@ add_timestamps(frames, m = NULL, x = NULL, y = NULL, ..., verbose = TRUE)
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
-This function adds timestamps to animation frames created with \code{\link{frames_spatial}}.
+This function adds timestamps to frames created with \code{\link{frames_spatial}}.
 }
 \examples{
 library(moveVis)

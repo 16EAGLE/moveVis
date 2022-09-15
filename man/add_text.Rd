@@ -33,7 +33,7 @@ add_text(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
 This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.

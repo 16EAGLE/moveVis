@@ -1,12 +1,12 @@
 #' Add progress bar to frames
 #'
-#' This function adds a progress bar to animation frames created with \code{\link{frames_spatial}}.
+#' This function adds a progress bar to frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param colour character, progress bar colour.
 #' @param size numeric, progress bar line size..
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 geom_line aes_string ggplot_build expr

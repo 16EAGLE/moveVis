@@ -1,6 +1,6 @@
 #' Add timestamps to frames
 #'
-#' This function adds timestamps to animation frames created with \code{\link{frames_spatial}}.
+#' This function adds timestamps to frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_text
 #' @param m deprecated, times are natively stored in \code{moveVis frames_spatial} objects.
@@ -8,7 +8,7 @@
 #' @param y numeric, optional, position of timestamps on the y scale.
 #' @param ... optional, arguments passed to \code{\link{add_text}}, such as \code{colour}, \code{size}, \code{type}.
 #' 
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 ggplot_build

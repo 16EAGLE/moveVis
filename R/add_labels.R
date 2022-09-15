@@ -12,7 +12,7 @@
 #' @param y character, label of the y axis. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.
 #'
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 labs waiver theme element_text expr

@@ -1,6 +1,6 @@
 #' Add north arrow to frames
 #'
-#' This function adds a north arrow to the animation frames created with \code{\link{frames_spatial}}.
+#' This function adds a north arrow to frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param height numeric, height of the north arrow in a range from 0 to 1 as the proportion of the overall height of the frame map.
@@ -13,7 +13,7 @@
 #' @param label_margin numeric, margin between label and north arrow as a proportion of the size of the north arrow.
 #' @param label_size numeric, label font size.
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 geom_line geom_text aes_string expr

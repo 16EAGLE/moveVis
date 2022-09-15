@@ -33,7 +33,7 @@ add_colourscale(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
 This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.

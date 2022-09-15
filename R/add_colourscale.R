@@ -10,7 +10,7 @@
 #' @param na.show logical, whether to display NA values in discrete scaling. Ignored, if \code{type = "gradient"}.
 #' @param legend_title character, a legend title.
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 scale_fill_gradientn scale_fill_manual expr

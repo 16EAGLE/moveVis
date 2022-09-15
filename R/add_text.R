@@ -10,7 +10,7 @@
 #' @param size numeric, the text size(s). Either a single numeric value or a numeric vector of same length as \code{frames}.
 #' @param type character, either \code{"text"} to draw text or \code{"label"} to draw text inside a box.
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 annotate expr
