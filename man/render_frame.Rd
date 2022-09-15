@@ -30,7 +30,7 @@ r_times <- basemap_data[[2]]
 m <- align_move(m = move_data, res = 4, unit = "mins")
 
 # create frames
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, fade_raster = T)
+frames <- frames_spatial(m, r_list = r_list, r_times = r_times, fade_raster = TRUE)
 
 # viewing frames calling this function:
 render_frame(frames) # displays the last frame in 2D using ggplot2 (default)

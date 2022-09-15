@@ -8,6 +8,6 @@ test_that("join_frames", {
   expect_length(expect_is(join_frames(frames_lists = list(f1, f2), verbose = F), "moveVis"), 10)
   
   # false calls
-  expect_error(join_frames(frames_lists = list(f1[1:10], f2[1:20]), verbose = F)) # differing lengths
+  expect_error(join_frames(frames_lists = list(f1[1:10], f2[1:5]), verbose = F)) # differing lengths
   expect_error(join_frames(frames_lists = list(f1[1:10]), verbose = F)) # nothing to join
 })

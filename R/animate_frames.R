@@ -81,6 +81,10 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
     n.add <- round(end_pause*fps)
     
     # add frames
+    if(length(frames$raster_data) > 1){
+      frames$raster_data <- c(frames$raster_data, rep(frames$raster_data[max(frames$move_data$frame)], n.add))
+    }
+    
     frames$move_data <- rbind(frames$move_data,
           do.call(
             rbind, 
@@ -91,10 +95,8 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
             })
           )
     )
-    if(length(frames$raster_data) > 1){
-      frames$raster_data <- c(frames$raster_data, rep(frames$raster_data, n.add))
-    }
-    frames <- append(frames, rep(utils::tail(frames, n = 1), times = n.add))
+    
+    #frames <- append(frames, rep(utils::tail(frames, n = 1), times = n.add))
     out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add \u2248 ", toString(dseconds(end_pause)), " of pause at the end"))
   }
   .stats(n.frames = length(frames), fps)

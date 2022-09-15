@@ -109,7 +109,7 @@ align_move <- function(m, res = "minimum", unit = NA, spaceMethod = "greatcircle
   }
   
   # interpolate
-  m <- moveStack(mapply(x = m.indi, y = ts.t, function(x, y) interpolateTime(x, y, spaceMethod)))
+  m <- quiet(moveStack(mapply(x = m.indi, y = ts.t, function(x, y) interpolateTime(x, y, spaceMethod))))
   m[,c("x", "y")] <- m@coords
   m[,"time"] <- timestamps(m)
   return(m)
