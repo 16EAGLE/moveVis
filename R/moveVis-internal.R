@@ -266,6 +266,7 @@ repl_vals <- function(data, x, y){
 
 
 #' create paths data.frame for gg on the fly per frame
+#' @importFrom utils tail
 #' @noRd 
 .df4gg <- function(m.df, i, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
   
@@ -497,6 +498,7 @@ repl_vals <- function(data, x, y){
 
 #' create interpolated layer by frame position
 #' @importFrom raster clusterR overlay brick unstack stack
+#' @importFrom utils tail head
 #' @noRd
 .int2frames <- function(r_list, pos, frames, n.rlay, cl){
   
@@ -768,111 +770,103 @@ gg.bmap <- function(r, r_type, maxpixels = 500000, alpha = 1, maxColorValue = NA
   return(p)
 }
   
-#' print methods
-#' @noRd
+# print methods
 #' @export
-print.moveVis <- function(frames) {
-  if(inherits(frames, "frames_spatial")){
+print.moveVis <- function(x, ...) {
+  if(inherits(x, "frames_spatial")){
     cat(paste0("Spatial frames of class moveVis\n"))
-    cat(paste0("number of frames: ", as.character(length(frames)), "\n"))
-    cat(paste0("temporal extent:  ", paste0(frames$move_data$time_chr[1], "' to '", frames$move_data$time_chr[nrow(frames$move_data)]), "\n"))
-    cat(paste0("spatial extent:   ", paste0(mapply(x = names(frames$aesthetics$gg.ext), y = frames$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
-    cat(paste0("raster type:      ", frames$aesthetics$r_type, "\n"))
-    cat(paste0("basemap:          ", if(frames$aesthetics$map_service != "custom") paste0("'", frames$aesthetics$map_type, "' from '", frames$aesthetics$map_type, "'") else "custom", "\n"))
-    cat(paste0("names:            '", paste0(unique(frames$move_data$name), collapse = "', '"), "'\n"))
-    #cat(paste0("added function:   ", length(frames$additions), "\n"))
+    cat(paste0("number of frames: ", as.character(length(x)), "\n"))
+    cat(paste0("temporal extent:  ", paste0(x$move_data$time_chr[1], "' to '", x$move_data$time_chr[nrow(x$move_data)]), "\n"))
+    cat(paste0("spatial extent:   ", paste0(mapply(x = names(x$aesthetics$gg.ext), y = x$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
+    cat(paste0("raster type:      ", x$aesthetics$r_type, "\n"))
+    cat(paste0("basemap:          ", if(x$aesthetics$map_service != "custom") paste0("'", x$aesthetics$map_type, "' from '", x$aesthetics$map_type, "'") else "custom", "\n"))
+    cat(paste0("names:            '", paste0(unique(x$move_data$name), collapse = "', '"), "'\n"))
+    #cat(paste0("added function:   ", length(x$additions), "\n"))
   }
   
-  if(inherits(frames, "frames_graph")){
+  if(inherits(x, "frames_graph")){
     cat(paste0("Graph frames of class moveVis\n"))
-    cat(paste0("number of frames: ", as.character(length(frames)), "\n"))
-    cat(paste0("temporal extent:  ", paste0(frames$move_data$time_chr[1], "' to '", frames$move_data$time_chr[nrow(frames$move_data)]), "\n"))
-    cat(paste0("raster type:      ", frames$aesthetics$r_type, "\n"))
-    cat(paste0("names:            '", paste0(unique(frames$move_data$name), collapse = "', '"), "'\n"))
+    cat(paste0("number of frames: ", as.character(length(x)), "\n"))
+    cat(paste0("temporal extent:  ", paste0(x$move_data$time_chr[1], "' to '", x$move_data$time_chr[nrow(x$move_data)]), "\n"))
+    cat(paste0("raster type:      ", x$aesthetics$r_type, "\n"))
+    cat(paste0("names:            '", paste0(unique(x$move_data$name), collapse = "', '"), "'\n"))
     #cat(paste0("added function:   ", length(frames$additions), "\n"))
   }
   
-  if(inherits(frames, "frames_joined")){
+  if(inherits(x, "frames_joined")){
     cat(paste0("Joined frames of class moveVis\n"))
-    cat(paste0("number of frames: ", as.character(length(frames)), "\n"))
+    cat(paste0("number of frames: ", as.character(length(x)), "\n"))
   }
 }
 
-#' length methods
-#' @noRd
+# length methods
 #' @export
-length.moveVis <- function(frames){
-  if(inherits(frames, "frames_joined")){
-    length(frames$frames_lists[[1]])
+length.moveVis <- function(x){
+  if(inherits(x, "frames_joined")){
+    length(x$frames_lists[[1]])
   }else{
-    length(unique(frames$move_data$frame))
+    length(unique(x$move_data$frame))
   }
 }
 
-#' repmethods
-#' @noRd
-#' @export
-rep.moveVis <- function(frames, times){
-  lapply(1:times, function(x) frames)
-}
-
-#' c methods
-#' @noRd
+# c methods
 #' @export
 c.moveVis <- function(...){
   frames <- list(...)
-}
-
-#' tail methods
-#' @noRd
-#' @export
-tail.moveVis <- function(frames, n = 6L, ...){
-  frames[tail(1:length(frames), n, ...)]
-}
-
-#' head methods
-#' @noRd
-#' @export
-head.moveVis <- function(frames, n = 6L, ...){
-  frames[head(1:length(frames), n, ...)]
-}
-
-
-#' render methods
-#' @noRd
-#' @export
-"[.moveVis" <- function(frames, ...) {
-  i <- list(...)[[1]]
-  
-  bounds <- sapply(i, function(j) any(j < 1, j > length(frames)))
-  if(all(bounds)) stop(paste0("Subscript out of bounds. Length of frames is ", length(frames), "."), call. = FALSE)
-  if(any(bounds)) warning(paste0("Subscript extends beyond bounds and is thus truncated. Length of frames is ", length(frames), "."), call. = FALSE, immediate. = FALSE)
-  i <- i[!bounds]
-  
-  # seubsetting
-  .sub <- function(frames, i){
-    sub <- apply(sapply(i, function(j) frames$move_data$frame == j), MARGIN = 1, any)
-    
-    frames$move_data <- frames$move_data[sub,]
-    if(length(frames$raster_data) > 1) frames$raster_data <- frames$raster_data[sub]
-    return(frames)
-  }
-  
-  if(inherits(frames, "frames_joined")){
-    frames$frames_lists <- lapply(frames$frames_lists, function(x) x[i])
-  }else{
-    frames <- .sub(frames, i)
-  }  
   return(frames)
 }
 
-#' render methods
-#' @noRd
+# tail methods
+#' @importFrom utils tail
 #' @export
-"[[.moveVis" <- function(frames, ...) {
-  i <- list(...)[[1]]
+tail.moveVis <- function(x, n = 6L, ...){
+  x[utils::tail(1:length(x), n, ...)]
+}
+
+# head methods
+#' @importFrom utils head
+#' @export
+head.moveVis <- function(x, n = 6L, ...){
+  x[utils::head(1:length(x), n, ...)]
+}
+
+# head methods
+#' @importFrom utils head
+#' @export
+rev.moveVis <- function(x){
+  x[rev(1:length(x))]
+}
+
+# render methods
+#' @export
+"[.moveVis" <- function(x, i, ...) {
+  bounds <- sapply(i, function(j) any(j < 1, j > length(x)))
+  if(all(bounds)) stop(paste0("Subscript out of bounds. Length of frames is ", length(x), "."), call. = FALSE)
+  if(any(bounds)) warning(paste0("Subscript extends beyond bounds and is thus truncated. Length of frames is ", length(x), "."), call. = FALSE, immediate. = FALSE)
+  i <- i[!bounds]
+  
+  # seubsetting
+  .sub <- function(x, i){
+    sub <- apply(sapply(i, function(j) x$move_data$frame == j), MARGIN = 1, any)
+    
+    x$move_data <- x$move_data[sub,]
+    if(length(x$raster_data) > 1) x$raster_data <- x$raster_data[sub]
+    return(x)
+  }
+  
+  if(inherits(x, "frames_joined")){
+    x$frames_lists <- lapply(x$frames_lists, function(x) x[i])
+  }else{
+    x <- .sub(x, i)
+  }  
+  return(x)
+}
+
+# render methods
+#' @export
+"[[.moveVis" <- function(x, i, ...) {
   engine <- getOption("moveVis.engine")
-  render_frame(frames, i, engine)
+  render_frame(x, i, engine)
 }
 
 

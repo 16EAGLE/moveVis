@@ -21,6 +21,7 @@
 #' @importFrom gifski gifski
 #' @importFrom ggplot2 quo
 #' @importFrom lubridate dseconds
+#' @importFrom utils tail head
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
