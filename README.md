@@ -81,6 +81,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 * `animate_frames()` creates an animation from a list of frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
 
 #### Viewing movement tracks
+* `render_frame()` renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting `[[`.
 * `view_spatial()` displays movement tracks on an interactive `mapview` or `leaflet` map.
 
 #### Processing settings
