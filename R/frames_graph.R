@@ -119,11 +119,11 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   .stats(max(m.df$frame))
   
   ## create raster list
-  r_list <- .rFrames(r_list, r_times, m.df, .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
+  r_list <- .rFrames(r_list = r_list, r_times = r_times, m.df =  m.df, gg.ext = .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
   if(length(r_list) == 1){
-    m.df$value <- sapply(1:nrow(m.df), function(i) extract(r_list[[1]], m.df[i, c("x", "y")]), USE.NAMES = F)
+    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[1]], m.df[i, c("x", "y")]), USE.NAMES = F)
   } else{
-    m.df$value <- sapply(1:nrow(m.df), function(i) extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F) 
+    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F) 
   }
   
   ## create value sequence
@@ -181,6 +181,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
     type = paste0("ggplot (", graph_type, " graph)"),
     graph_type = graph_type,
     aesthetics = list(
+      path_size = path_size,
       path_legend = path_legend,
       path_legend_title = path_legend_title,
       val_seq = val_seq,

@@ -11,3 +11,4 @@ dev
 vignettes
 ^cran-comments\.md$
 ^appveyor\.yml$
+dev.r

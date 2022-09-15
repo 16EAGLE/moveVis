@@ -8,6 +8,8 @@
 #' 
 #' @export
 #' 
+#' @importFrom cowplot plot_grid
+#' 
 #' @examples
 #' 
 #' library(moveVis)
@@ -42,7 +44,7 @@ render_frame <- function(frames, i = length(frames), engine = "ggplot2"){
   
   # checking subscript
   if(length(i) > 1) out("Subscript must be of length 1.", type = 3)
-  if(i > max(frames$move_data$frame)) out(paste0("Subscript out of bounds. Length of frames is ", max(frames$move_data$frame), "."), type = 3)
+  if(i > length(frames)) out(paste0("Subscript out of bounds. Length of frames is ", length(frames), "."), type = 3)
   
   # make sure there always is a correct engine selected
   if(is.null(engine)){
@@ -97,6 +99,12 @@ render_frame <- function(frames, i = length(frames), engine = "ggplot2"){
                        val_seq = frames$aesthetics$val_seq,
                        r_type = frames$aesthetics$r_type)
       }
+    }
+    if(inherits(frames, "frames_joined")){
+      gg <- do.call(cowplot::plot_grid, c(
+        plotlist = lapply(1:length(frames$frames_lists), function(ii) frames$frames_lists[[ii]][[i]]), 
+        frames$cowplot_args)
+      )
     }
     
     # any additions?

@@ -1,6 +1,6 @@
 #' Animate frames
 #'
-#' \code{animate_frames} creates an animation from a list of frames computed with \code{\link{frames_spatial}}.
+#' \code{animate_frames} creates an animation from \code{moveVis} frames computed with \code{\link{frames_spatial}}, \code{\link{frames_graph}} or \code{\link{join_frames}}.
 #'
 #' @inheritParams add_gg
 #' @param out_file character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use \code{\link{suggest_formats}} to get a vector of suggested known file formats.
@@ -65,8 +65,7 @@
 animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700, res = 100, end_pause = 0, display = TRUE, overwrite = FALSE, verbose = TRUE, ...){
   
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
-  if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
+  if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be a moveVis frames* object. See e.g. frames_spatial()).", type = 3)
   
   if(!is.character(out_file)) out("Argument 'out_file' must be of type 'character'.", type = 3)
   of_split <- strsplit(out_file, "/")[[1]]
@@ -79,6 +78,21 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   out("Rendering animation...")
   if(end_pause > 0){
     n.add <- round(end_pause*fps)
+    
+    # add frames
+    frames$move_data <- rbind(frames$move_data,
+          do.call(
+            rbind, 
+            lapply(1:n.add, function(x){
+              nf <- frames$move_data[frames$move_data$frame == max(frames$move_data$frame),]
+              nf$frame <- nf$frame + 1
+              return(nf)
+            })
+          )
+    )
+    if(length(frames$raster_data) > 1){
+      frames$raster_data <- c(frames$raster_data, rep(frames$raster_data, n.add))
+    }
     frames <- append(frames, rep(utils::tail(frames, n = 1), times = n.add))
     out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add \u2248 ", toString(dseconds(end_pause)), " of pause at the end"))
   }
@@ -94,7 +108,7 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
     file <- file.path(frames_dir, "frame_%05d.png")
     grDevices::png(file, width = width, height = height, res = res)
     graphics::par(ask = FALSE)
-    .lapply(frames, function(x) quiet(print(x)), moveVis.n_cores = 1)
+    .lapply(1:length(frames), function(i) quiet(print(frames[[i]])), moveVis.n_cores = 1)
     grDevices::dev.off()
     frames_files <- list.files(frames_dir, full.names = TRUE)
     

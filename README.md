@@ -107,7 +107,7 @@ frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
   add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
   add_northarrow() %>% 
   add_scalebar() %>% 
-  add_timestamps(m, type = "label") %>% 
+  add_timestamps(type = "label") %>% 
   add_progress()
 
 frames[[100]] # preview one of the frames, e.g. the 100th frame

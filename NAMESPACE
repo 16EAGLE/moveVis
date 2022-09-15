@@ -2,8 +2,12 @@
 
 S3method("[",moveVis)
 S3method("[[",moveVis)
+S3method(c,moveVis)
+S3method(head,moveVis)
 S3method(length,moveVis)
 S3method(print,moveVis)
+S3method(rep,moveVis)
+S3method(tail,moveVis)
 export("%>%")
 export(add_colourscale)
 export(add_gg)

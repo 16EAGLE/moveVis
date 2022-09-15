@@ -1,14 +1,12 @@
-#' Join multiple frames lists into a single frames list
+#' Side-by-side join multiple frames
 #' 
-#' This function side-by-side joins the \code{ggplot2} objects of two or more frames lists of equal lengths into a single plot per frame using \code{\link{plot_grid}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
+#' This function side-by-side joins two or more \code{moveVis} frame objects of equal lengths into a single plot per frame using \code{\link{plot_grid}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
 #' 
 #' @inheritParams frames_spatial
-#' @param frames_lists list, a list of two or more frames lists that you want to combine. All frames lists contained in \code{frames_lists} must be of equal lengths. The contained \code{ggplot2} objects are passed frame-wise to the \code{plotlist} argument of \code{\link{plot_grid}}.
+#' @param frames_lists list, a list of two or more \code{moveVis} frame objects that you want to combine into onw. Must be of equal lengths. Frames are being passed to the \code{plotlist} argument of \code{\link{plot_grid}} and combined frame-by-frame.
 #' @param ... Further arguments, specifying the appearance of the joined \code{ggplot2} objects, passed to \code{\link{plot_grid}}. See \code{\link{plot_grid}} for further options.
 #'
-#' @return List of ggplot2 objects, each representing a single frame.
-#' 
-#' @importFrom cowplot plot_grid
+#' @return A frames object of class \code{moveVis}.
 #' 
 #' @examples
 #' \dontrun{
@@ -62,9 +60,14 @@ join_frames <- function(frames_lists, ..., verbose = T){
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(length(unique(sapply(frames_lists, length))) > 1) out("Frames lists provided through argument 'frames_lists' must be of equal lengths for joining their ggplot2 frames.", type = 3)
   if(length(frames_lists) <= 1) out("There must be at least 2 frames lists for joining their ggplot2 frames.", type = 3)
+
+  ## create joined frames  
+  frames <- list(
+    frames_lists = frames_lists,
+    cowplot_args = list(...)
+  )
+  attr(frames, "class") <- c("moveVis", "frames_joined")
   
-  out("Joining frames...")
-  .lapply(1:length(frames_lists[[1]]), function(i){
-    quiet(plot_grid(plotlist = lapply(frames_lists, "[[", i), ...))
-  })
+  
+  return(frames)
 }
