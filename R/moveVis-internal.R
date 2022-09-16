@@ -417,85 +417,6 @@ repl_vals <- function(data, x, y){
   })
 }
 
-#' get map
-#' @importFrom slippymath bbox_to_tile_grid compose_tile_grid
-#' @importFrom raster projectRaster extent extent<- resample extend merge
-#' @importFrom magick image_read image_write image_convert
-#' @importFrom curl curl_download
-#' @noRd 
-.getMap <- function(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs){
-  
-  if(inherits(gg.ext, "bbox")) gg.ext <- list(gg.ext)
-  
-  ## calculate needed slippy tiles using slippymath
-  r <- lapply(gg.ext, function(y){
-    gg.ext.ll <- st_bbox(st_transform(st_as_sfc(y), crs = st_crs(4326)))
-    tg <- bbox_to_tile_grid(gg.ext.ll, max_tiles = ceiling(map_res*20))
-    images <- .apply(tg$tiles, MARGIN = 1, function(x){
-      file <- paste0(map_dir, map_service, "_", map_type, "_", x[1], "_", x[2], ".png")
-      
-      retry <- list(do = TRUE, count = 0)
-      while(retry$do){
-        
-        ## download tiles
-        url <- paste0(getOption("moveVis.map_api")[[map_service]][[map_type]], tg$zoom, "/", 
-                      if(map_service == "esri") paste0(x[2], "/", x[1]) else paste0(x[1], "/", x[2]), ".png", 
-                      if(map_service == "mapbox") paste0("?access_token=", map_token) else NULL)
-        if(!file.exists(file)) curl_download(url = url, destfile = file) #utils::download.file(url = url, destfile = file, quiet = T) 
-        
-        # test if file can be loaded
-        catch <- try(image_read(file), silent = T)
-        if(inherits(catch, "try-error")){
-          unlink(file)
-          retry$count <- retry$count+1
-          if(retry$count < 10) retry$do <- TRUE else out(paste0("Base map download failed: ", catch), type = 3)
-        } else{
-          retry$do <- FALSE
-        }
-      }
-      
-      ## covnert imagery
-      image_write(image_convert(image_read(file), format = "PNG24"), file) # convert single channel png to multi channel png
-      return(file)
-    })
-    
-    ## composite imagery
-    r <- quiet(compose_tile_grid(tg, images))
-    crop(projectRaster(r, crs = m.crs), extent(y[1], y[3], y[2], y[4]), snap = "out")
-  })
-  
-  if(all(map_service == "mapbox", map_type == "terrain")){
-    r[[1]] <-  -10000 + ((r[[1]][[1]] * 256 * 256 + r[[1]][[2]] * 256 + r[[1]][[3]]) * 0.1)
-    #r_terr <- terrain(r, opt = c("slope", "aspect"))
-    #r_hs <- hillShade(r_terr$slope, r_terr$aspect)
-  }
-  
-  if(length(r) > 1){
-    
-    # extend over dateline
-    ext.both <- list(east = extent(r$east), west = extent(r$west))
-    rg <- c("east"= diff(c(ext.both$east@xmin, ext.both$east@xmax)), "west" = diff(c(ext.both$west@xmin, ext.both$west@xmax)))
-    
-    ext.both <- .expand_ext(ext.both, rg)
-    #ext.both <- .shift_ext(ext.both)
-    extent(r$east) <- ext.both$east
-    extent(r$west) <- ext.both$west
-    
-    # extend lower res raster, resample higher res raster and merge both
-    ext.combi <- .combine_ext(ext.both)
-    
-    r[[which.min(rg)]] <- extend(r[[which.min(rg)]], ext.combi)
-    r[[which.max(rg)]] <- resample(r[[which.max(rg)]], r[[which.min(rg)]])
-    r <- list(merge(r[[1]], r[[2]]))
-  }
-  
-  return(r)
-  #projectRaster produces hidden warnings:
-  # no non-missing arguments to max; returning -Inf
-  # no non-missing arguments to min; returning -Inf
-  # seems to be a bug
-}
-
 #' create interpolated layer by frame position
 #' @importFrom raster clusterR overlay brick unstack stack
 #' @importFrom utils tail head
@@ -863,10 +784,10 @@ rev.moveVis <- function(x){
 }
 
 # render methods
+#' @rdname render_frame
 #' @export
 "[[.moveVis" <- function(x, i, ...) {
-  engine <- getOption("moveVis.engine")
-  render_frame(x, i, engine)
+  render_frame(x, i)
 }
 
 
@@ -899,81 +820,4 @@ rev.moveVis <- function(x){
     options(moveVis.dir_frames = paste0(tempdir(), "/moveVis"))
     if(!dir.exists(getOption("moveVis.dir_frames"))) dir.create(getOption("moveVis.dir_frames"))
   }
-  if(is.null(getOption("moveVis.engine")))  options(moveVis.engine = "ggplot2")
-  
-  options(moveVis.map_api = list(osm = list(streets = "https://tile.openstreetmap.org/",
-                                            streets_de = "http://a.tile.openstreetmap.de/tiles/osmde/",
-                                            streets_fr = "https://a.tile.openstreetmap.fr/osmfr/",
-                                            humanitarian = "http://a.tile.openstreetmap.fr/hot/",
-                                            topographic = "https://a.tile.opentopomap.org/",
-                                            #cycle = "https://a.tile.thunderforest.com/cycle/",
-                                            #transport = "https://a.tile.thunderforest.com/transport/",
-                                            #transport_dark = "https://a.tile.thunderforest.com/transport-dark/",
-                                            #landscape = "https://a.tile.thunderforest.com/landscape/",
-                                            #outdoors = "https://a.tile.thunderforest.com/outdoors/",
-                                            roads = "https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/",
-                                            hydda = "https://a.tile.openstreetmap.se/hydda/full/",
-                                            hydda_base = "https://a.tile.openstreetmap.se/hydda/base/",
-                                            hike = "http://toolserver.org/tiles/hikebike/",
-                                            #hillshade = "http://c.tiles.wmflabs.org/hillshading/",
-                                            grayscale = "https://tiles.wmflabs.org/bw-mapnik/",
-                                            no_labels = "https://tiles.wmflabs.org/osm-no-labels/",
-                                            watercolor = "http://c.tile.stamen.com/watercolor/",
-                                            toner = "https://stamen-tiles-a.a.ssl.fastly.net/toner/",
-                                            toner_bg = "https://stamen-tiles-a.a.ssl.fastly.net/toner-background/",
-                                            toner_lite = "https://stamen-tiles-a.a.ssl.fastly.net/toner-lite/",
-                                            terrain = "http://tile.stamen.com/terrain/",
-                                            terrain_bg = "http://tile.stamen.com/terrain-background/",
-                                            mtb = "http://tile.mtbmap.cz/mtbmap_tiles/"),
-                                 carto = list(light = "https://a.basemaps.cartocdn.com/light_all/",
-                                              light_no_labels = "https://a.basemaps.cartocdn.com/light_nolabels/",
-                                              light_only_labels = "https://a.basemaps.cartocdn.com/light_only_labels/",
-                                              dark = "https://a.basemaps.cartocdn.com/dark_all/",
-                                              dark_no_labels = "https://a.basemaps.cartocdn.com/dark_nolabels/",
-                                              dark_only_labels = "https://a.basemaps.cartocdn.com/dark_only_labels/",
-                                              voyager = "https://a.basemaps.cartocdn.com/rastertiles/voyager/",
-                                              voyager_no_labels = "https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/",
-                                              voyager_only_labels = "https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/",
-                                              voyager_labels_under = "https://a.basemaps.cartocdn.com/rastertiles/voyager_labels_under/"),
-                                 mapbox = lapply(c(satellite = "mapbox.satellite",
-                                                   terrain = "mapbox.terrain-rgb",
-                                                   streets = "mapbox.streets",
-                                                   streets_basic = "mapbox.streets-basic",
-                                                   hybrid = "mapbox.streets-satellite",
-                                                   light = "mapbox.light",
-                                                   dark = "mapbox.dark",
-                                                   high_contrast = "mapbox.high-contrast",
-                                                   outdoors = "mapbox.outdoors",
-                                                   hike = "mapbox.run-bike-hike",
-                                                   wheatpaste = "mapbox.wheatpaste",
-                                                   pencil = "mapbox.pencil",
-                                                   comic = "mapbox.comic",
-                                                   pirates = "mapbox.pirates",
-                                                   emerald = "mapbox.emerald"), function(x) paste0("https://api.mapbox.com/v4/", x, "/")),
-                                 esri = c(natgeo_world_map = "https://services.arcgisonline.com/arcgis/rest/services/NatGeo_World_Map/MapServer/tile/",
-                                          usa_topo_maps = "https://services.arcgisonline.com/arcgis/rest/services/USA_Topo_Maps/MapServer/tile/",
-                                          world_imagery = "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/",
-                                          world_physical_map = "https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/",
-                                          world_shaded_relief = "https://services.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/",
-                                          world_street_map = "https://services.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/tile/",
-                                          world_terrain_base = "https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/tile/",
-                                          world_topo_map = "https://services.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/tile/",
-                                          world_dark_gray_base = "https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/",
-                                          world_dark_gray_reference = "https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/",
-                                          world_light_gray_base = "https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/",
-                                          world_light_gray_reference = "https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/",
-                                          world_hillshade_dark = "https://services.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade_Dark/MapServer/tile/",
-                                          world_hillshade = "https://services.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade/MapServer/tile/",
-                                          world_ocean_base = "https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/",
-                                          world_ocean_reference = "https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/",
-                                          antarctic_imagery = "https://services.arcgisonline.com/arcgis/rest/services/Polar/Antarctic_Imagery/MapServer/tile/",
-                                          arctic_imagery = "https://services.arcgisonline.com/arcgis/rest/services/Polar/Arctic_Imagery/MapServer/tile/",
-                                          arctic_ocean_base = "https://services.arcgisonline.com/arcgis/rest/services/Polar/Arctic_Ocean_Base/MapServer/tile/",
-                                          arctic_ocean_reference = "https://services.arcgisonline.com/arcgis/rest/services/Polar/Arctic_Ocean_Reference/MapServer/tile/",
-                                          world_boundaries_and_places_alternate = "https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/",
-                                          world_boundaries_and_places = "https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/",
-                                          world_reference_overlay = "https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Reference_Overlay/MapServer/tile/",
-                                          world_transportation = "https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Transportation/MapServer/tile/",
-                                          delorme_world_base_map = "https://services.arcgisonline.com/arcgis/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/",
-                                          world_navigation_charts = "https://services.arcgisonline.com/arcgis/rest/services/Specialty/World_Navigation_Charts/MapServer/tile/")))
 }

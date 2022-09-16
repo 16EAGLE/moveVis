@@ -52,9 +52,9 @@ frames_spatial(
 
 \item{crop_raster}{logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.}
 
-\item{map_service}{character, either \code{"osm"}, \code{"carto"} or \code{"mapbox"}. Default is \code{"osm"}.}
+\item{map_service}{character, a map service, e.g. \code{"osm"}. Use \code{\link{get_maptypes}} for a list of available map services and types..}
 
-\item{map_type}{character, a map type, e.g. \code{"streets"}. For a full list of available map types, see \code{\link{get_maptypes}}.}
+\item{map_type}{character, a map type, e.g. \code{"streets"}. Use \code{\link{get_maptypes}} for available map services and types.}
 
 \item{map_res}{numeric, resolution of base map in range from 0 to 1.}
 
@@ -115,7 +115,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 A frames object of class \code{moveVis}.
 }
 \description{
-\code{frames_spatial} creates frames from movement and map/raster data. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
+\code{frames_spatial} creates frames from movement and map/raster data. If no custom raster data is provided, a basemap is pulled from a map tile service using the \code{basemaps} package. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 }
 \details{
 If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
@@ -123,7 +123,12 @@ Colours could also be arranged to change through time or by behavioral segments,
 
 Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 
-The projection of \code{m} is treated as target projection. Default base maps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection of the base maps): \code{spTransform(m, crs("+init=epsg:3857"))}. The \code{ggplot2} coordinate system will be computed based on the projection of \code{m} using \code{coord_sf}. If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
+If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
+}
+\note{
+The use of the map services \code{"osm_thunderforest"} and \code{"mapbox"} require registration to obtain an API token/key which can be supplied to \code{map_token}. Register at \url{https://www.thunderforest.com/} and/or \url{https://www.mapbox.com/} to get a token.
+
+The projection of \code{m} is treated as target projection. Default basemaps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection for basemaps): \code{spTransform(m, crs("+init=epsg:3857"))}
 }
 \examples{
 library(moveVis)

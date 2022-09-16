@@ -1,6 +1,6 @@
 #' Create frames of spatial movement maps for animation
 #'
-#' \code{frames_spatial} creates frames from movement and map/raster data. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
+#' \code{frames_spatial} creates frames from movement and map/raster data. If no custom raster data is provided, a basemap is pulled from a map tile service using the \code{basemaps} package. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 #'
 #' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
 #' @param r_list list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
@@ -27,8 +27,8 @@
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
 #' @param equidistant logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.
 #' @param ext \code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).
-#' @param map_service character, either \code{"osm"}, \code{"carto"} or \code{"mapbox"}. Default is \code{"osm"}.
-#' @param map_type character, a map type, e.g. \code{"streets"}. For a full list of available map types, see \code{\link{get_maptypes}}.
+#' @param map_service character, a map service, e.g. \code{"osm"}. Use \code{\link{get_maptypes}} for a list of available map services and types..
+#' @param map_type character, a map type, e.g. \code{"streets"}. Use \code{\link{get_maptypes}} for available map services and types.
 #' @param map_res numeric, resolution of base map in range from 0 to 1.
 #' @param map_token character, mapbox authentification token for mapbox basemaps. Register at \url{https://www.mapbox.com/} to get a mapbox token. Mapbox is free of charge after registration for up to 50.000 map requests per month. Ignored, if \code{map_service = "osm"}.
 #' @param map_dir character, directory where downloaded basemap tiles can be stored. By default, a temporary directory is used. 
@@ -47,16 +47,23 @@
 #' 
 #' Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 #' 
-#' The projection of \code{m} is treated as target projection. Default base maps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection of the base maps): \code{spTransform(m, crs("+init=epsg:3857"))}. The \code{ggplot2} coordinate system will be computed based on the projection of \code{m} using \code{coord_sf}. If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
+#' If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
+#'
+#' @note 
+#' 
+#' The use of the map services \code{"osm_thunderforest"} and \code{"mapbox"} require registration to obtain an API token/key which can be supplied to \code{map_token}. Register at \url{https://www.thunderforest.com/} and/or \url{https://www.mapbox.com/} to get a token.
+#' 
+#' The projection of \code{m} is treated as target projection. Default basemaps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection for basemaps): \code{spTransform(m, crs("+init=epsg:3857"))}
 #'
 #' @return A frames object of class \code{moveVis}.
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
-#' @importFrom raster compareCRS nlayers
+#' @importFrom raster compareCRS nlayers crs projectRaster
 #' @importFrom sf st_crs
 #' @importFrom raster crs
 #' @importFrom move n.indiv moveStack
+#' @importFrom basemaps basemap_raster
 #' 
 #' @examples 
 #' library(moveVis)
@@ -213,7 +220,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
   .stats(n.frames = max(m.df$frame))
   
-  gg.ext <- .ext(m.df, m.crs, ext, margin_factor, equidistant, cross_dateline) # calcualte extent
+  gg.ext <- .ext(m.df, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
   
   ## shift coordinates crossing dateline
   if(isTRUE(cross_dateline)){
@@ -228,7 +235,11 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
-    r_list <- .getMap(gg.ext, map_service, map_type, map_token, map_dir, map_res, m.crs = crs(m))
+    r_list <- list(suppressWarnings(basemap_raster(
+      ext = gg.ext, map_service = map_service, map_type = map_type,
+      map_res = map_res, map_token = map_token, map_dir = map_dir, ...
+    )))
+    r_list <- lapply(r_list, function(r) projectRaster(r, crs = raster::crs(m)))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   } else{
     map_service <- "custom"

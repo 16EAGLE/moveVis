@@ -19,7 +19,7 @@ Imports:
   raster,
   sf,
   lwgeom,
-  slippymath,
+  basemaps,
   lubridate,
   curl,
   ggplot2,

@@ -4,6 +4,8 @@
 \name{reexports}
 \alias{reexports}
 \alias{\%>\%}
+\alias{get_maptypes}
+\alias{flush_cache}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -11,6 +13,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
+  \item{basemaps}{\code{\link[basemaps:cache]{flush_cache}}, \code{\link[basemaps]{get_maptypes}}}
+
   \item{magrittr}{\code{\link[magrittr:pipe]{\%>\%}}}
 }}
 
