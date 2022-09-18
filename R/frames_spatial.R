@@ -237,9 +237,9 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     out("Retrieving and compositing basemap imagery...")
     r_list <- list(suppressWarnings(basemap_raster(
       ext = gg.ext, map_service = map_service, map_type = map_type,
-      map_res = map_res, map_token = map_token, map_dir = map_dir, ...
+      map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose,
+      custom_crs =  raster::crs(m), ...
     )))
-    r_list <- lapply(r_list, function(r) projectRaster(r, crs = raster::crs(m)))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   } else{
     map_service <- "custom"
@@ -248,10 +248,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   # calculate frames extents and coord labes
   if(isTRUE(cross_dateline)){
-    # calculate extent shifted across dateline
-    gg.ext <- .combine_ext(.expand_ext(list(extent(gg.ext$east[[1]], gg.ext$east[[3]], gg.ext$east[[2]], gg.ext$east[[4]]),
-                                            extent(gg.ext$west[[1]], gg.ext$west[[3]], gg.ext$west[[2]], gg.ext$west[[4]])), rg))
-    gg.ext <- st_bbox(c(xmin = gg.ext@xmin, xmax = gg.ext@xmax, ymin = gg.ext@ymin, ymax = gg.ext@ymax), crs = m.crs)
+    gg.ext <- st_bbox(extent(r_list[[1]]), crs = m.crs)
     
     # use coord_equal for dateline crossingngs in EPSG:4326 only
     m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
