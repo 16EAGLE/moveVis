@@ -335,18 +335,6 @@ repl_vals <- function(data, x, y){
   return(paths)
 }
 
-#' convert units
-#' @noRd 
-.convert_units <- function(unit){
-  unit.c <- c("secs" = "%S", "mins" = "%M", "hours" = "%H", "days" = "%d")
-  sub <- match(unit, unit.c)
-  if(is.na(sub)){
-    sub <- match(unit, names(unit.c))
-    if(is.na(sub)) out(paste0("Unit '", unit, "' is not supported."), type = 3) else unit.c[sub]
-  }
-  return(unit.c[sub])
-}
-
 #' detect time gaps
 #' @noRd 
 .time_conform <- function(m){
@@ -380,41 +368,6 @@ repl_vals <- function(data, x, y){
   # })
   # ts.dl <- lapply(ts.digits, function(x) length(unique(diff(x))))
   # sapply(ts.dl, function(x) x > 1)
-}
-
-#' combine two extents into one
-#' @noRd 
-.combine_ext <- function(ext.both){
-  ext.combi <- ext.both[[1]]
-  ext.combi@xmin <- min(c(ext.both[[1]]@xmin, ext.both[[2]]@xmin))
-  ext.combi@xmax <- max(c(ext.both[[1]]@xmax, ext.both[[2]]@xmax))
-  return(ext.combi)
-}
-
-#' expand two extents by the one with larger x range
-#' @noRd 
-.expand_ext <- function(ext.both, rg){
-  if(which.min(rg) == 1){
-    ext.both[[which.min(rg)]]@xmin <- -180+ext.both[[which.min(rg)]]@xmin-180
-    ext.both[[which.min(rg)]]@xmax <- -180+ext.both[[which.min(rg)]]@xmax-180
-  } else{
-    ext.both[[which.max(rg)]]@xmin <- 180+ext.both[[which.max(rg)]]@xmin+180
-    ext.both[[which.max(rg)]]@xmax <- 180+ext.both[[which.max(rg)]]@xmax+180
-  }
-  return(ext.both)
-}
-
-#' shift two extents by 180 lon degrees
-#' @noRd 
-.shift_ext <- function(ext.both){
-  
-  shift <- function(x) if(x >= 0) x-180 else x +180
-  
-  lapply(ext.both, function(x){
-    x@xmin <- shift(x@xmin)
-    x@xmax <- shift(x@xmax)
-    return(x)
-  })
 }
 
 #' create interpolated layer by frame position
@@ -593,56 +546,6 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   if(isTRUE(equidistant)) p <- p + theme(aspect.ratio = 1)
   return(p)
 }
-
-#' create base maps
-#' @importFrom ggplot2 ggplot aes_string scale_fill_identity geom_raster geom_tile
-#' @importFrom raster aggregate ncell
-#' @noRd 
-gg.bmap <- function(r, r_type, maxpixels = 500000, alpha = 1, maxColorValue = NA){
-  # aggregate raster if too large
-  if(maxpixels < ncell(r)) r <- aggregate(r, fact = ceiling(ncell(r)/maxpixels))
-  
-  # transform into data.frame
-  df <- data.frame(raster::as.data.frame(r, xy = T))
-  colnames(df) <- c("x", "y", paste0("val", 1:(ncol(df)-2)))
-  
-  # factor if discrete to show categrocial legend
-  df$fill <- df$val1
-  if(r_type == "discrete") df$fill <- as.factor(df$fill)
-  
-  # transform to RGB colours
-  if(r_type == "RGB"){
-    if(is.na(maxColorValue)) maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
-    
-    if(maxColorValue < max(c(df$val1, df$val2, df$val3), na.rm = T)){
-      out("maxColorValue < maximum raster value. maxColorValue is set to maximum raster value.", type = 2)
-      maxColorValue <- max(c(df$val1, df$val2, df$val3), na.rm = T)
-    }
-    
-    # remove NAs
-    na.sel <- is.na(df$val1) & is.na(df$val2) & is.na(df$val3)
-    if(any(na.sel)) df <- df[!na.sel,]
-    
-    df$fill <- grDevices::rgb(red = df$val1, green = df$val2, blue = df$val3, maxColorValue = maxColorValue)
-  } else{
-    
-    # remove NAs
-    na.sel <- is.na(df$val1)
-    if(any(na.sel)) df <- df[!na.sel,]
-  }
-  gg <- ggplot(df)
-  
-  # if NA gaps are there, use geom_tile, otherwise make it fast using geom_raster
-  if(any(na.sel)){
-    gg <- gg + geom_tile(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
-  } else{
-    gg <- gg + geom_raster(aes_string(x = "x", y = "y", fill = "fill"), alpha = alpha)
-  }
-  
-  if(r_type == "RGB") gg <- gg + scale_fill_identity() 
-  return(gg)
-}
-
 
 #' flow stats plot function
 #' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
