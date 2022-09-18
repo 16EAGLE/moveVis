@@ -10,11 +10,13 @@
 render_frame(frames, i = length(frames))
 }
 \arguments{
-\item{i}{numeric, index number of the frame to be rendered. Per default, the last frame is rendered.}
+\item{x}{frames as an object of class moveVis.}
 
-\item{...}{additional (non-iterated) objects that should be visible to \code{gg}.}
+\item{i}{numeric, index number of the frame to be rendered.}
 
-\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
+\item{...}{additional arguments, currently not used.}
+
+\item{frames}{frames as an object of class moveVis.}
 }
 \description{
 This function renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting \code{[[]]}.

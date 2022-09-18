@@ -2,13 +2,15 @@
 #' 
 #' This function renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting \code{[[]]}.
 #' 
-#' @inheritParams settings
-#' @inheritParams add_gg
-#' @param i numeric, index number of the frame to be rendered. Per default, the last frame is rendered.
+#' @param frames frames as an object of class moveVis.
+#' @param x frames as an object of class moveVis.
+#' @param i numeric, index number of the frame to be rendered.
+#' @param ... additional arguments, currently not used.
 #' 
 #' @export
 #' 
 #' @importFrom cowplot plot_grid
+#' @importFrom basemaps gg_raster
 #' 
 #' @examples
 #' 
@@ -56,7 +58,7 @@ render_frame <- function(frames, i = length(frames)){
           trace_show = frames$aesthetics$trace_show,
           trace_colour = frames$aesthetics$trace_colour,
           path_fade = frames$aesthetics$path_fade),
-        y = basemaps:::gg.bmap(
+        y = gg_raster(
           r = frames$raster_data[[if(length(frames$raster_data) > 1) i else 1]],
           r_type = frames$aesthetics$r_type,
           maxpixels = frames$aesthetics$maxpixels,
