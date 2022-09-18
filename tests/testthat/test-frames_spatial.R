@@ -104,7 +104,7 @@ test_that("frames_spatial (different extent/proj settings)", {
     # transform using sf
     m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(p))
     m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
-    m <- df2move(m_tf, proj = p, x = "X", y = "Y", time = "time", track_id = "id")
+    m <- quiet(df2move(m_tf, proj = p, x = "X", y = "Y", time = "time", track_id = "id")) # warnings are exected sometimes
     
     frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "moveVis"), 188)
     expect_is(frames[[1]], "ggplot")
