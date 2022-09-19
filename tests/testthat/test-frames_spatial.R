@@ -121,7 +121,7 @@ test_that("frames_spatial (cross_dateline)", {
   
   frames <- expect_length(expect_is(frames_spatial(m.shifted, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "moveVis"), 188)
-  frames <- expect_warning(frames_spatial(m.shifted.repro, verbose = F, cross_dateline = T))
-  frames <- expect_error(frames_spatial(m.shifted, r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F, cross_dateline = T))
+  frames <- expect_warning(frames_spatial(m= m.shifted.repro, verbose = F, cross_dateline = T))
+  frames <- expect_error(frames_spatial(m = m.shifted, r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F, cross_dateline = T))
   
 })

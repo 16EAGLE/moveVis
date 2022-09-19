@@ -158,8 +158,13 @@ repl_vals <- function(data, x, y){
     x.devi <- ((ax.diff[1]*margin_factor)-ax.diff[1])
     y.devi <- ((ax.diff[2]*margin_factor)-ax.diff[2])
     ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs(4326))
+    
+    if(ext.ll.sq["xmin"] < -180) ext.ll.sq["xmin"] <- -180
+    if(ext.ll.sq["xmax"] > 180) ext.ll.sq["xmax"] <- 180
+    if(ext.ll.sq["ymin"] < -90) ext.ll.sq["ymin"] <- -90
+    if(ext.ll.sq["ymax"] > 90) ext.ll.sq["ymax"] <- 90
   }
-  return(st_bbox(st_transform(st_as_sfc(ext.ll.sq), st_crs(ext))))
+  return(st_bbox(st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
 }
 
 #' generate extent
@@ -206,7 +211,7 @@ repl_vals <- function(data, x, y){
     
     # equidistant currently not supported for cross_dateline
     if(isTRUE(equidistant)){
-      gg.ext <- .equidistant(gg.ext, margin_factor = margin_factor)
+      gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor)
     }else{
       gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = m.crs)
     }
