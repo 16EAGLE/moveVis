@@ -64,6 +64,15 @@ repl_vals <- function(data, x, y){
   }
 }
 
+#' st_transform but quiet wihtou GDLA-version-dependent warning
+#'
+#' @importFrom sf st_transform
+#' @keywords internal
+#' @noRd
+.st_transform <- function(...){
+  return(quiet(sf::st_transform(...)))
+}
+
 #' verbose lapply
 #'
 #' @importFrom pbapply pblapply
@@ -127,12 +136,12 @@ repl_vals <- function(data, x, y){
 }
 
 #' square it
-#' @importFrom sf st_bbox st_transform st_as_sfc st_crs st_distance st_sfc st_point
+#' @importFrom sf st_bbox st_as_sfc st_crs st_distance st_sfc st_point
 #' @noRd 
 .equidistant <- function(ext, margin_factor = 1){
   
   # lat lon extent
-  ext.ll <- st_bbox(st_transform(st_as_sfc(ext), st_crs(4326)))
+  ext.ll <- st_bbox(.st_transform(st_as_sfc(ext), st_crs(4326)))
   
   # calculate corner coordinates
   corn <- list(c(ext.ll[1], ext.ll[2]), c(ext.ll[1], ext.ll[4]), c(ext.ll[3], ext.ll[2]), c(ext.ll[3], ext.ll[4]))
@@ -164,7 +173,7 @@ repl_vals <- function(data, x, y){
     if(ext.ll.sq["ymin"] < -90) ext.ll.sq["ymin"] <- -90
     if(ext.ll.sq["ymax"] > 90) ext.ll.sq["ymax"] <- 90
   }
-  return(st_bbox(st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
+  return(st_bbox(.st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
 }
 
 #' generate extent
