@@ -16,6 +16,9 @@
 #' @details To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 #' equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
 #'
+#' If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
+#' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
+#'
 #' @return An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 #' 
 #' @author Jakob Schwalb-Willmann
@@ -72,7 +75,7 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
-frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_legend = TRUE, path_legend_title = "Names", 
+frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 
                          val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T){
 
   ## check input arguments
@@ -93,6 +96,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
   
   if(!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)
+  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   if(!is.logical(return_data)) out("Argument 'return_data' must be of type 'logical'.", type = 3)
@@ -115,7 +119,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   
   ## create data.frame from m with frame time and colour
   out("Processing movement data...")
-  m.df <- .m2df(m) 
+  m.df <- .m2df(m, path_colours = path_colours) 
   .stats(max(m.df$frame))
   
   ## create raster list

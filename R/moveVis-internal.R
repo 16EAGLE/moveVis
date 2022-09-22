@@ -102,6 +102,14 @@ repl_vals <- function(data, x, y){
   if(isTRUE(verbose)) pbapply(X, MARGIN, FUN, ...) else apply(X, MARGIN, FUN, ...)
 }
 
+
+#' moveVis path standard colours
+#' @importFrom grDevices rainbow
+#' @noRd 
+.standard_colours <- function(n){
+  grDevices::rainbow(n)
+}
+
 #' split movement by tail length
 #' @importFrom move n.indiv timestamps trackId 
 #' @noRd 
@@ -116,16 +124,13 @@ repl_vals <- function(data, x, y){
   
   ## handle colours, either provided as a field in m or argument or computed randomly
   m.info <- methods::as(m, "data.frame")
+  
+  # path colours
   if(all(!is.character(path_colours), !all(is.na(m.info$colour)))){
-    
-    ## get colours from column
     m.df$colour <- as.character(m.info$colour)
   } else{
     if(!is.character(path_colours)){
-      
-      path_colours <- c("red", "green", "blue", "yellow", "darkgreen", "orange", "deepskyblue", "darkorange", "deeppink", "navy")
-      path_colours <- c(path_colours, sample(grDevices::colours()[-sapply(path_colours, match, table = grDevices::colours())]))
-      #path_colours <- sample(rep(path_colours, ceiling(n.indiv(m) / length(path_colours))))
+      path_colours <- .standard_colours(n.indiv(m))
     }
     m.df$colour <- repl_vals(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
   }
