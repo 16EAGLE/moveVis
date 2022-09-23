@@ -22,7 +22,6 @@ test_that("frames_spatial (default maps)", {
   expect_error(frames_spatial(m.aligned, equidistant = "abc", verbose = F)) # false path_legend
 })
 
-
 test_that("frames_spatial (raster, gradient)", {
   # correct calls
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", verbose = F), "moveVis"), 188)
