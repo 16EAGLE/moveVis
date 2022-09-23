@@ -110,14 +110,31 @@ repl_vals <- function(data, x, y){
   grDevices::rainbow(n)
 }
 
-#' split movement by tail length
+#' returns sf data.frame from move object for internal use
 #' @importFrom move n.indiv timestamps trackId 
+#' @importFrom sf st_transform st_as_sf st_crs st_coordinates
 #' @noRd 
-.m2df <- function(m, path_colours = NA){
-  
+.m2df <- function(m, path_colours = NA, return_latlon = FALSE){
+
   ## create data.frame from m with frame time and colour
-  m.df <- cbind(as.data.frame(m@coords), id = repl_vals(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m)),
-        time = timestamps(m), time_chr = as.character(timestamps(m)), name = as.character(trackId(m)))
+  m.df <- cbind(
+    as.data.frame(m@coords), 
+    id = repl_vals(as.character(trackId(m)), unique(as.character(trackId(m))), 1:n.indiv(m)),
+    time = timestamps(m), 
+    time_chr = as.character(timestamps(m)), 
+    name = as.character(trackId(m))
+  )
+  
+  # transform if requested
+  if(isTRUE(return_latlon)){
+    m.df <- st_transform(st_as_sf(m.df, coords=1:2, crs = st_crs(m), remove = T), st_crs(4326))
+    m.df <- cbind(st_coordinates(m.df), data.frame(
+      id = m.df$id,
+      time = m.df$time,
+      time_chr = m.df$time_chr,
+      name = m.df$name
+    ))
+  }
   colnames(m.df)[1:2] <- c("x", "y")
   
   m.df$frame <- sapply(m.df$time, function(x) which(sort(unique(m.df$time)) == x))
@@ -141,7 +158,7 @@ repl_vals <- function(data, x, y){
 }
 
 #' square it
-#' @importFrom sf st_bbox st_as_sfc st_crs st_distance st_sfc st_point
+#' @importFrom sf st_bbox st_as_sfc st_crs st_sfc st_point st_distance
 #' @noRd 
 .equidistant <- function(ext, margin_factor = 1){
   
@@ -181,27 +198,28 @@ repl_vals <- function(data, x, y){
   return(st_bbox(.st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
 }
 
-#' generate extent
-#' @importFrom sf st_bbox st_intersects st_as_sfc
+#' generate extent, return as latlon
+#' @importFrom sf st_as_sf st_transform st_crs st_bbox st_as_sfc st_intersects st_coordinates
 #' @noRd 
-.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = FALSE){
+.ext <- function(m.df, m.crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = FALSE, return_latlon = FALSE){
+  # this works only with EPSG 4326 for cross_dateline stuff.
+  m.df <- st_as_sf(m.df, coords=c("x", "y"), crs = m.crs, remove = F)
+  m.df <- st_transform(m.df, st_crs(4326))
   
   ## calcualte ext
-  m.ext <- st_bbox(c(xmin = min(m.df$x, na.rm = T), xmax = max(m.df$x, na.rm = T), ymin = min(m.df$y, na.rm = T), ymax = max(m.df$y, na.rm = T)), crs = m.crs)
+  gg.ext <- st_bbox(m.df)
+  
   if(!is.null(ext)){
+    ext <- st_bbox(st_transform(st_as_sfc(st_bbox(ext, crs = m.crs)), st_crs(4326)))
     
-    # user extent
-    gg.ext <- st_bbox(c(xmin = ext[1], xmax = ext[2], ymin = ext[3], ymax = ext[4]), crs = m.crs)
-    if(!quiet(st_intersects(st_as_sfc(gg.ext), st_as_sfc(m.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
+    if(!quiet(st_intersects(st_as_sfc(ext), st_as_sfc(gg.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
     margin_factor <- 1 # no margin since user extent set
-  } else{
-    gg.ext <- m.ext
   }
   
   xy.diff <- if(isTRUE(cross_dateline)){
-    c(abs(abs(max(m.df$x[m.df$x < 0])) - min(m.df$x[m.df$x > 0])), gg.ext[4]-gg.ext[2])/2
+    xy <- st_coordinates(m.df)
+    c(abs(abs(max(xy[xy[,1] < 0, 1])) - min(xy[xy[,1] > 0,1])), gg.ext[4]-gg.ext[2])/2
   }else (gg.ext[3:4] - gg.ext[1:2])/2
-  
   
   # squared equidistant extent or not
   if(isTRUE(cross_dateline)){
@@ -211,8 +229,8 @@ repl_vals <- function(data, x, y){
     
     # cut extents and add margins to x components
     gg.ext$west[[1]] <- -180 #xmin
-    gg.ext$west[[3]] <- max(m.df$x[m.df$x < 0]) + xy.diff[1]*(-1+margin_factor) #xmax
-    gg.ext$east[[1]] <- min(m.df$x[m.df$x > 0]) - xy.diff[1]*(-1+margin_factor) #xmin
+    gg.ext$west[[3]] <- max(xy[xy[,1] < 0,1]) + xy.diff[1]*(-1+margin_factor) #xmax
+    gg.ext$east[[1]] <- min(xy[xy[,1] > 0,1]) - xy.diff[1]*(-1+margin_factor) #xmin
     gg.ext$east[[3]] <- 180 #xmax
     
     # add margins to y components
@@ -227,15 +245,24 @@ repl_vals <- function(data, x, y){
     if(isTRUE(equidistant)){
       gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor)
     }else{
-      gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = m.crs)
+      gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = st_crs(m.df))
     }
     
     # cut by longlat maximums
-    if(isTRUE(m.crs$epsg == 4326)){
+    if(isTRUE(st_crs(m.df) == st_crs(4326))){
       if(gg.ext[1] < -180) gg.ext[1] <- -180
       if(gg.ext[3] > 180) gg.ext[3] <- 180
       if(gg.ext[2] < -90) gg.ext[2] <- -90
       if(gg.ext[4] > 90) gg.ext[4] <- 90
+    }
+  }
+  
+  if(isFALSE(return_latlon)){
+    transform_ext <- function(y) st_bbox(st_transform(st_as_sfc(y), m.crs))
+    if(inherits(gg.ext, "list")){
+      gg.ext <- lapply(gg.ext, transform_ext)
+    } else{
+      gg.ext <- transform_ext(gg.ext)
     }
   }
   return(gg.ext)
@@ -515,9 +542,9 @@ repl_vals <- function(data, x, y){
           frames <- if(i == 2) (badges[i-1]):badges[i] else (badges[i-1]+1):badges[i]
           r <- .int2frames(r_list, pos = pos.df$frame, frames = frames, n.rlay = n.rlay, cl = cl)
           y <- paste0(getOption("moveVis.dir_frames"), "/moveVis_frame_", frames, ".tif")
-          catch <- sapply(1:length(r), function(j) writeRaster(r[[j]], filename = y[[j]], datatype = dataType(r_list[[1]]), overwrite = T))
+          catch <- sapply(1:length(r), function(j) quiet(writeRaster(r[[j]], filename = y[[j]], datatype = dataType(r_list[[1]]), overwrite = T)))
           return(y)
-        }, USE.NAMES = F))
+        }, simplify = F, USE.NAMES = F))
         
         # link to files
         r_list <- lapply(files, brick)
@@ -709,7 +736,7 @@ rev.moveVis <- function(x){
 #' @rdname render_frame
 #' @export
 "[[.moveVis" <- function(x, i, ...) {
-  render_frame(x, i)
+  quiet(render_frame(x, i))
 }
 
 

@@ -10,6 +10,8 @@ New S3 class and methods to represent frames, lazy plotting,
 * added documentation search using `DocSearch` to web page
 * Argument `digit` of `align_move()` is deprecated, since digits are now calculated automatically.
 * Multiple improvements to `align_move()`, including printing of the detected resolution to which data are aligned.
+* Added `path_colours` to `frames_graph()` to be able to colour paths equal to paths in `frames_spatial()`
+* Added `basemaps` as dependency for downloading and caching basemaps, removed native basemap retrieval and plotting functions
 
 **Deprecations:**
 
@@ -19,6 +21,9 @@ New S3 class and methods to represent frames, lazy plotting,
 
 * Bug that caused `align_move()` to break with an unspecific error message when at least one trajectory of `m` covered a time range shorter than the requested temporal resolution. The function now warns the user when a temporal resolution is selected that cannot be applied to at least one trajectory and excludes the trajectory/trajectories in question from the returned object.
 * Bug that caused `frames_spatial()` to interrupt with an error when trying to interpolate `r_list` with `fade_raster=T`
+* Fixed bug in adding margin to user `ext` in `frames_spatial()`
+* Fixed bug with paths crossing end of grid (aka dateline) when `cross_dateline=TRUE` in `frames_spatial()`
+
 
 <br>
 

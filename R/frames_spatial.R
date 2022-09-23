@@ -59,9 +59,8 @@
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
-#' @importFrom raster compareCRS nlayers crs projectRaster
-#' @importFrom sf st_crs
-#' @importFrom raster crs
+#' @importFrom raster compareCRS nlayers crs
+#' @importFrom sf st_crs st_bbox
 #' @importFrom move n.indiv moveStack
 #' @importFrom basemaps basemap_raster
 #' 
@@ -203,13 +202,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
   
-  m.crs <- quiet(st_crs(m))
-  if(all(m.crs != st_crs(4326), isTRUE(cross_dateline), na.rm = T)){ # quiet due to +init warnings
-    out("Argument 'cross_dateline' is ignored, since the coordinate reference system of 'm' is not geographical (long/lat).", type = 2)
-    cross_dateline <- FALSE
-  }
   if(all(isTRUE(cross_dateline), !is.null(r_list))) out("Argument 'cross_dateline' only works with default base maps. Arguments 'r_list' and 'r_times' cannot be used, if cross_dateline = TRUE.\nTip: Reproject 'm' to another CRS that better suits the region if you want to use 'r_list' with tracks crossing the dateline.", type = 3)
-  if(isTRUE(cross_dateline)) equidistant <- FALSE
   
   ## check m time conformities
   out("Checking temporal alignment...")
@@ -217,10 +210,17 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   ## preprocess movement data
   out("Processing movement data...")
-  m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
+  m.crs <- st_crs(m)
+  if(isTRUE(cross_dateline)){
+    equidistant <- FALSE
+    if(m.crs != st_crs(4326)) out("Since arugment 'cross_dateline' is TRUE, 'm' will be transformed to Geographic Coordinates (EPSG 4326, Lat/Lon WGS84)", type = 2)
+    m.crs <- st_crs(4326) 
+  }
+  m.df <- .m2df(m, path_colours = path_colours, return_latlon = cross_dateline) # create data.frame from m with frame time and colour
   .stats(n.frames = max(m.df$frame))
   
   gg.ext <- .ext(m.df, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
+  
   
   ## shift coordinates crossing dateline
   if(isTRUE(cross_dateline)){
@@ -238,7 +238,8 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     r_list <- list(suppressWarnings(basemap_raster(
       ext = gg.ext, map_service = map_service, map_type = map_type,
       map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose,
-      custom_crs =  raster::crs(m), ...
+      custom_crs = as.character(m.crs$wkt)
+      #custom_crs =  as.character(raster::crs(m)), ...
     )))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   } else{
