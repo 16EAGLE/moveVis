@@ -230,7 +230,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     } else{
       m.df$x[m.df$x >= 0] <- -180+m.df$x[m.df$x >= 0]-180
     }
-  }  
+  }
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
@@ -238,7 +238,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     r_list <- list(suppressWarnings(basemap_raster(
       ext = gg.ext, map_service = map_service, map_type = map_type,
       map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose,
-      custom_crs = as.character(m.crs$wkt)
+      custom_crs = as.character(m.crs$wkt), ...
       #custom_crs =  as.character(raster::crs(m)), ...
     )))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
