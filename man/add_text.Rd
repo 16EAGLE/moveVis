@@ -16,7 +16,7 @@ add_text(
 )
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{labels}{character, text to be added to frames. Either a single character value or a character vector of same length as \code{frames}.}
 
@@ -33,7 +33,7 @@ add_text(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
 This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.

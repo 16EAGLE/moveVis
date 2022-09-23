@@ -59,8 +59,8 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 #### Creating frames
 
 * `get_maptypes()` returns a character vector of available map types that can be used with `frames_spatial()`. `moveVis` supports OpenStreetMap and Mapbox basemap imagery. Alternatively, you can provide custom imagery to `frames_spatial()`.
-* `frames_spatial()` creates a list of `ggplot2` maps displaying movement. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using `animate_frames()`.
-* `frames_graph()` creates a list of `ggplot2` graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using `animate_frames()`.
+* `frames_spatial()` creates `moveVis` frames spatio-temporally displaying movement.  Frames can be individually plotted using `ggplot2`, modified individually or as a whole using `add*()` functions, or animated using `animate_frames()`.
+* `frames_graph()` creates `moveVis` frames displaying movement-environment interaction graphs. Frames can be individually plotted using `ggplot2`, modified individually or as a whole using `add*()` functions, or animated using `animate_frames()`.
 
 #### Adapting frames
 
@@ -72,15 +72,16 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 * `add_timestamps()` adds timestamps to animation frames created with `frames_spatial()` or `frames_graph()`.
 * `add_text()` adds static or dynamically changing text to the animation frames created with `frames_spatial()` or `frames_graph()`.
 * `add_colourscale()` adjusts the colour scales of the animation frames created with `frames_spatial()` and custom map imagery using the `r_list` argument.
-* `join_frames()` side-by-side joins the `ggplot2` objects of two or more frames lists of equal lengths into a single list of `ggplot2` objects per frame using `cowplot::plot_grid`. This is useful if you want to side-by-side combine spatial frames returned by `frames_spatial()` with graph frames returned by `frames_graph()`.
-* `get_frametimes()` extracts the timestamps associated with each frame of a list of frames created using `frames_spatial()` or `frames_graph()` and returns them as a vector.
+* `join_frames()` side-by-side joins two or more `moveVis` frame sequences of equal lengths into a single plot per frame using `cowplot::plot_grid`. This is useful if you want to side-by-side combine spatial frames returned by `frames_spatial()` with graph frames returned by `frames_graph()`.
+* `get_frametimes()` extracts the timestamps associated with each frame from a `moveVis` object created using `frames_spatial()` or `frames_graph()` and returns them as a vector.
 
 #### Animating frames (as GIF or video)
 
 * `suggest_formats()` returns a selection of suggested file formats that can be used with `out_file` of `animate_frames()` on your system.
-* `animate_frames()` creates an animation from a list of frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
+* `animate_frames()` creates an animation from `moveVis` frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
 
 #### Viewing movement tracks
+* `render_frame()` renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting `[[`.
 * `view_spatial()` displays movement tracks on an interactive `mapview` or `leaflet` map.
 
 #### Processing settings
@@ -89,7 +90,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 ## Get started
 
-The following example shows how to make a simple animation using a default base map by first aligning your movement data to a uniform time scale, creating a list of `ggplot2` frames and turning these frames into an animated `GIF`:
+The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using `ggplot2` or `add*()` functions and turning these frames into an animated `GIF`:
 
 ```R
 library(moveVis)
@@ -107,7 +108,7 @@ frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
   add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
   add_northarrow() %>% 
   add_scalebar() %>% 
-  add_timestamps(m, type = "label") %>% 
+  add_timestamps(type = "label") %>% 
   add_progress()
 
 frames[[100]] # preview one of the frames, e.g. the 100th frame

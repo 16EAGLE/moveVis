@@ -1,8 +1,4 @@
 ## env vars
-map_token = Sys.getenv("moveVis_map_token")
-if(map_token != "") run_mapbox <- TRUE else run_mapbox <- FALSE
-test_maps = as.logical(Sys.getenv("moveVis_test_maps"))
-
 n_cores <- as.numeric(Sys.getenv("moveVis_n_cores"))
 if(!is.na(n_cores)) if(n_cores > 1) use_multicore(n_cores)
 
@@ -43,7 +39,7 @@ df <- do.call(rbind, mapply(x = names(l.df), y = l.df, function(x, y){
 df$x <- df$x+171.06
 df$x[df$x > 180] <- df$x[df$x > 180]-360
 
-m.shifted <- df2move(df, proj = "+proj=longlat +datum=WGS84 +no_defs", "x", "y", "time", "id")
+m.shifted <- df2move(df, proj = raster::crs("+init=epsg:4326"), x = "x", y = "y", time = "time", track_id = "id")
 
 # transform using sf
 df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs(3995))

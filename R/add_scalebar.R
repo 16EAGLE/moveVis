@@ -1,6 +1,6 @@
 #' Add scalebar to frames
 #'
-#' This function adds a scalebar to the animation frames created with \code{\link{frames_spatial}}.
+#' This function adds a scalebar to frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param distance numeric, optional. Distance displayed by the scalebar (in either km or miles defined by argument \code{units}) By default, the displayed distance is calculated automatically.
@@ -12,7 +12,7 @@
 #' @param label_margin numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height).
 #' @param units character, either "km" for kilometers or "miles" for miles.
 #'
-#' @return List of frames.
+#' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
 #' @importFrom ggplot2 geom_polygon geom_text aes_string expr
@@ -52,8 +52,7 @@ add_scalebar <- function(frames, distance = NULL, height = 0.015, position = "bo
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "list")) out("Argument 'frames' needs to be a list of ggplot objects. See frames_spatial()).", type = 3)
-  if(!all(sapply(frames, function(x) inherits(x, "ggplot")))) out("At least one element of argument 'frames' is not a ggplot object.", type = 3)
+  if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
   if(!is.character(position)) out("Argument 'position' needs to be of type 'character'.", type = 3)
   if(isFALSE(units == "km" | units == "miles")) out("Argument 'units' must either be 'km' or 'miles'.", type = 3)
   

@@ -7,7 +7,7 @@
 add_gg(frames, gg, data = NULL, ..., verbose = T)
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{gg}{\code{ggplot2} expressions (see details), either as
 \itemize{
@@ -26,10 +26,10 @@ add_gg(frames, gg, data = NULL, ..., verbose = T)
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
-This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}}.
+This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 }
 \details{
 Agrument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link{expr}}) to avoid their evaluation

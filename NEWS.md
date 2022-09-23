@@ -1,19 +1,29 @@
 ***
 
-## moveVis 0.10.5-1
-Development version.
+## moveVis 0.10.6
+New S3 class and methods to represent frames, lazy plotting, 
 
 **New features:**
 
-* `frames_spatial()` now supports Mapbox terrain base maps. Just set `map_service = "mapbox"` and `map_type = "terrain"` (and `map_token` to your mapbox token) to create frames with a terrain DEM base map. Colours can be changed using `add_colourscale`.
-* New ESRI base map types have been added, now supporting the ESRI map server REST API. Call `get_maptypes()` for an overview. New map types include `natgeo_world_map`, `usa_topo_maps`, `world_imagery`, `world_physical_map`, `world_shaded_relief`, `world_street_map`, `world_terrain_base`, `world_topo_map`, `world_dark_gray_base`, `world_dark_gray_reference`, `world_light_gray_base`, `world_light_gray_reference`, `world_hillshade_dark`, `world_hillshade`, `world_ocean_base`, `world_ocean_reference`, `antarctic_imagery`, `arctic_imagery`, `arctic_ocean_base`, `arctic_ocean_reference`, `world_boundaries_and_places_alternate`, `world_boundaries_and_places`, `world_reference_overlay`, `world_transportation`, `delorme_world_base_map` and `world_navigation_charts`. 
+* Frames are now represented by a new native `moveVis` S3 class that is outputted by all `frames_*()` functions such as `frames_spatial()`. The class comes with native printing and indexing methods. Frames can be easily subsetted (`[`), plotted (`[[`) and checked for length (`length()`). The default print method displays a summary of the created frames.
+* With the native `moveVis` class, frames are now rendered lazy when plotted and not being hold in memory. As data duplication has been reduced to the minimum, this change should reduces memory use of `frames_spatial()`. All functions work with the new class. This change mostly effects how things work under the hood and does not alter the user interface.
 * added documentation search using `DocSearch` to web page
 * Argument `digit` of `align_move()` is deprecated, since digits are now calculated automatically.
 * Multiple improvements to `align_move()`, including printing of the detected resolution to which data are aligned.
+* Added `path_colours` to `frames_graph()` to be able to colour paths equal to paths in `frames_spatial()`
+* Added `basemaps` as dependency for downloading and caching basemaps, removed native basemap retrieval and plotting functions
+
+**Deprecations:**
+
+* Argument `m` of `add_timestamps()` has been deprecated since the new `moveVis` class contains all necessary data to obtain frame times. Thus, it is not needed anymore and therefore ignored if still being used.
 
 **Bug fixes:**
 
 * Bug that caused `align_move()` to break with an unspecific error message when at least one trajectory of `m` covered a time range shorter than the requested temporal resolution. The function now warns the user when a temporal resolution is selected that cannot be applied to at least one trajectory and excludes the trajectory/trajectories in question from the returned object.
+* Bug that caused `frames_spatial()` to interrupt with an error when trying to interpolate `r_list` with `fade_raster=T`
+* Fixed bug in adding margin to user `ext` in `frames_spatial()`
+* Fixed bug with paths crossing end of grid (aka dateline) when `cross_dateline=TRUE` in `frames_spatial()`
+
 
 <br>
 

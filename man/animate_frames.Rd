@@ -19,7 +19,7 @@ animate_frames(
 )
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{out_file}{character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use \code{\link{suggest_formats}} to get a vector of suggested known file formats.}
 
@@ -45,7 +45,7 @@ animate_frames(
 None or the default image/video viewer displaying the animation
 }
 \description{
-\code{animate_frames} creates an animation from a list of frames computed with \code{\link{frames_spatial}}.
+\code{animate_frames} creates an animation from \code{moveVis} frames computed with \code{\link{frames_spatial}}, \code{\link{frames_graph}} or \code{\link{join_frames}}.
 }
 \details{
 An appropriate render function is selected depending on the file extension in \code{out_file}: For \code{.gif} files, \code{gifski::save_gif} is used, for any other (video) format, \code{av::av_capture_graphics} is used.

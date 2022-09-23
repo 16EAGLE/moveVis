@@ -14,6 +14,7 @@ frames_graph(
   return_data = FALSE,
   graph_type = "flow",
   path_size = 1,
+  path_colours = NA,
   path_legend = TRUE,
   path_legend_title = "Names",
   val_min = NULL,
@@ -25,7 +26,7 @@ frames_graph(
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
 
-\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element referrs to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
+\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
 
 \item{r_times}{list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
 
@@ -45,6 +46,8 @@ frames_graph(
 
 \item{path_size}{numeric, size of each path.}
 
+\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.}
+
 \item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
 
 \item{path_legend_title}{character, path legend title. Default is \code{"Names"}.}
@@ -58,7 +61,7 @@ frames_graph(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of ggplot2 objects, each representing a single frame. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
+An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 }
 \description{
 \code{frames_graph} creates a list of \code{ggplot2} graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
@@ -66,6 +69,9 @@ List of ggplot2 objects, each representing a single frame. If \code{return_data}
 \details{
 To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
+
+If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
+Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
 }
 \examples{
 library(moveVis)
@@ -110,7 +116,7 @@ frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradi
 # see all add_ functions on how to customize your frames created with frames_spatial
 # or frames_graph
 
-# see ?animate_frames on how to animate your list of frames
+# see ?animate_frames on how to animate frames
 }
 }
 \seealso{

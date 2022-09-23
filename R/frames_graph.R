@@ -16,7 +16,10 @@
 #' @details To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 #' equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
 #'
-#' @return List of ggplot2 objects, each representing a single frame. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
+#' If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
+#' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
+#'
+#' @return An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
@@ -67,12 +70,12 @@
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph
 #' 
-#' # see ?animate_frames on how to animate your list of frames
+#' # see ?animate_frames on how to animate frames
 #' }
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
-frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_legend = TRUE, path_legend_title = "Names", 
+frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 
                          val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T){
 
   ## check input arguments
@@ -93,6 +96,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
   
   if(!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)
+  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   if(!is.logical(return_data)) out("Argument 'return_data' must be of type 'logical'.", type = 3)
@@ -115,15 +119,15 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   
   ## create data.frame from m with frame time and colour
   out("Processing movement data...")
-  m.df <- .m2df(m) 
+  m.df <- .m2df(m, path_colours = path_colours) 
   .stats(max(m.df$frame))
   
   ## create raster list
-  r_list <- .rFrames(r_list, r_times, m.df, .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
+  r_list <- .rFrames(r_list = r_list, r_times = r_times, m.df =  m.df, gg.ext = .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
   if(length(r_list) == 1){
-    m.df$value <- sapply(1:nrow(m.df), function(i) extract(r_list[[1]], m.df[i, c("x", "y")]), USE.NAMES = F)
+    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[1]], m.df[i, c("x", "y")]), USE.NAMES = F)
   } else{
-    m.df$value <- sapply(1:nrow(m.df), function(i) extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F) 
+    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F) 
   }
   
   ## create value sequence
@@ -139,9 +143,10 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
     
     ## create frames
     out("Creating frames...")
-    if(graph_type == "flow"){
-      frames <- .gg_flow(m.df, path_legend, path_legend_title, path_size, val_seq)
-    }
+    # if(graph_type == "flow"){
+    #   #frames <- .gg_flow(m.df, path_legend, path_legend_title, path_size, val_seq)
+    # }
+    hist_data <- NULL
     if(graph_type == "hist"){
       
       dummy <- do.call(rbind, lapply(unique(m.df$id), function(id){
@@ -151,7 +156,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       
       ## Calculating time-cumulative value histogram per individual and timestep
       #out("Calculating histogram...")
-      l.hist <- lapply(1:max(m.df$frame), function(i, d = dummy){
+      hist_data <- lapply(1:max(m.df$frame), function(i, d = dummy){
         x <- m.df[unlist(lapply(1:i, function(x) which(m.df$frame == x))),]
         
         x <- do.call(rbind, lapply(unique(x$id), function(id){
@@ -168,16 +173,26 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       })
       
       ## fusing histograms for plot scaling
-      all.hist <- do.call(rbind, l.hist)
-      frames <- .gg_hist(l.hist, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
+      # all.hist <- do.call(rbind, hist_data)
+      #frames <- .gg_hist(hist_data, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
     }
   }
   
-  ## add time attribute per frame
-  frames <- mapply(x = frames, y = unique(m.df$time), function(x, y){
-    attr(x, "time") <- y
-    return(x)
-  }, SIMPLIFY = F)
+  # create frames object
+  frames <- list(
+    move_data = m.df,
+    hist_data = hist_data,
+    type = paste0("ggplot (", graph_type, " graph)"),
+    graph_type = graph_type,
+    aesthetics = list(
+      path_size = path_size,
+      path_legend = path_legend,
+      path_legend_title = path_legend_title,
+      val_seq = val_seq,
+      r_type = r_type),
+    additions = NULL
+  )
+  attr(frames, "class") <- c("moveVis", "frames_graph")
   
   return(frames)
 }

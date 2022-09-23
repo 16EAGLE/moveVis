@@ -2,22 +2,22 @@
 % Please edit documentation in R/join_frames.R
 \name{join_frames}
 \alias{join_frames}
-\title{Join multiple frames lists into a single frames list}
+\title{Side-by-side join multiple frames}
 \usage{
 join_frames(frames_lists, ..., verbose = T)
 }
 \arguments{
-\item{frames_lists}{list, a list of two or more frames lists that you want to combine. All frames lists contained in \code{frames_lists} must be of equal lengths. The contained \code{ggplot2} objects are passed frame-wise to the \code{plotlist} argument of \code{\link{plot_grid}}.}
+\item{frames_lists}{list, a list of two or more \code{moveVis} frame objects that you want to combine into onw. Must be of equal lengths. Frames are being passed to the \code{plotlist} argument of \code{\link{plot_grid}} and combined frame-by-frame.}
 
 \item{...}{Further arguments, specifying the appearance of the joined \code{ggplot2} objects, passed to \code{\link{plot_grid}}. See \code{\link{plot_grid}} for further options.}
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of ggplot2 objects, each representing a single frame.
+A frames object of class \code{moveVis}.
 }
 \description{
-This function side-by-side joins the \code{ggplot2} objects of two or more frames lists of equal lengths into a single plot per frame using \code{\link{plot_grid}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
+This function side-by-side joins two or more \code{moveVis} frame objects of equal lengths into a single plot per frame using \code{\link{plot_grid}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
 }
 \examples{
 \dontrun{

@@ -16,7 +16,7 @@ add_colourscale(
 )
 }
 \arguments{
-\item{frames}{list of \code{ggplot2} objects, crated with \code{\link{frames_spatial}}.}
+\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).}
 
@@ -33,7 +33,7 @@ add_colourscale(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-List of frames.
+A frames object of class \code{moveVis}.
 }
 \description{
 This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.

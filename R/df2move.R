@@ -61,7 +61,7 @@ df2move <- function(df, proj, x, y, time, track_id = NULL, data = NULL, ...){
         move(x = dfx[,x], y = dfx[,y], time = dfx[,time], proj = crs$proj4string, animal = dfx[, track_id], data = data[id,], ...)
       }
     })
-    if(length(m.split) == 1) m.split[[1]] else moveStack(m.split)
+    if(length(m.split) == 1) m.split[[1]] else quiet(moveStack(m.split))
   } else{
     
     # make move for one individual
