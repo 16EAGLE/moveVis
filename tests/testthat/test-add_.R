@@ -1,7 +1,7 @@
 skip_on_cran()
 context("add_ functions")
 frames <- frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", verbose = F)
-frames_nocrs <- frames_spatial(m = m.shifted, verbose = T, cross_dateline = T)
+frames_nocrs <- frames_spatial(m = m.shifted, verbose = F, cross_dateline = T)
 
 #if("add_" %in% which_tests){
 test_that("add_colourscale", {

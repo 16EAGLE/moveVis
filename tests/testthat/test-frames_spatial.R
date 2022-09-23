@@ -22,23 +22,6 @@ test_that("frames_spatial (default maps)", {
   expect_error(frames_spatial(m.aligned, equidistant = "abc", verbose = F)) # false path_legend
 })
 
-if(isTRUE(test_maps)){
-  if(isTRUE(run_mapbox)) test_services <- names(get_maptypes()) else test_services <- grep("mapbox", names(get_maptypes()), value = T, invert = T)
-  test_that("frames_spatial (test all map types)", {
-  
-    frames_types <- lapply(test_services, function(service) lapply(get_maptypes(service), function(x, s = service){
-      #tryCatch({
-      cat(paste0(" ", s, ": ", x, "\n"))
-      frames <- frames_spatial(m.aligned, map_service = s, map_type = x, map_token = Sys.getenv("moveVis_map_token"),
-                               map_dir = test_dir, verbose = F)
-      expect_is(frames, "list")
-      expect_length(frames, 188)
-      expect_is(frames[[1]], "ggplot")
-      return(frames[[100]])
-      #})
-    }))
-  })
-}
 
 test_that("frames_spatial (raster, gradient)", {
   # correct calls
