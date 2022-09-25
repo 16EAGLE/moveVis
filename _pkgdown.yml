@@ -12,11 +12,11 @@ template:
 home:
   links:
   - text: Browse source code
-    href: http://github.com/16eagle/moveVis
+    href: https://github.com/16eagle/moveVis
   - text: Read our accompanying MEE paper
     href: https://doi.org/10.1111/2041-210X.13374
   - text: Find out more about our work
-    href: http://remote-sensing.org
+    href: https://remote-sensing.org
 
 navbar:
   #type: inverse
@@ -34,19 +34,19 @@ navbar:
     - text: "Other packages"
       menu:
       -  text: "getSpatialData"
-         href: http://jxsw.de/getSpatialData
+         href: https://jxsw.de/getSpatialData
       -  text: "RStoolbox"
-         href: http://www.github.com/bleutner/RStoolbox
+         href: https://www.github.com/bleutner/RStoolbox
       -  text: "rsMove"
-         href: http://www.github.com/RRemelgado/rsmove
+         href: https://www.github.com/RRemelgado/rsmove
 
   right:
     - icon: fa-twitter fa-lg
-      href: http://www.twitter.com/schwalbwillmann
+      href: https://www.twitter.com/schwalbwillmann
     - icon: fa-github fa-lg
-      href: http://www.github.com/16eagle
+      href: https://www.github.com/16eagle
     - icon: fa-globe fa-lg
-      href: http://jakob.schwalb-willmann.de
+      href: https://jakob.schwalb-willmann.de
 
 reference:
 - title: Data preparation
