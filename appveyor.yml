@@ -24,6 +24,7 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
+  - R -e 'devtools::install_github("16eagle/basemaps")'
 
 test_script:
   - travis-tool.sh run_tests

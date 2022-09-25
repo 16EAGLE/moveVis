@@ -13,6 +13,7 @@ before_install:
 
 install:
   - R -e 'devtools::install_deps(dep = T)'
+  - R -e 'devtools::install_github("16eagle/basemaps")'
 
 script:
   - R CMD build .

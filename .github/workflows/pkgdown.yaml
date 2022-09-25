@@ -35,6 +35,7 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
+          remotes::install_github("16eagle/basemaps")
           install.packages("pkgdown", type = "binary")
         shell: Rscript {0}
 
