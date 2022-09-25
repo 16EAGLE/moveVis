@@ -62,7 +62,7 @@ reference:
   - frames_spatial
   - frames_graph
 - title: Frames adaption
-  desc: Working with frames before animating them to adjust their layout and appearance
+  desc: Worke with frames before animating them to adjust their layout and appearance
   contents:
   - add_gg
   - add_labels
@@ -88,6 +88,10 @@ reference:
   contents:
   - use_multicore
   - use_disk
+- title: Methods
+  desc: Methods for objects of class moveVis
+  contents:
+  - ends_with(".moveVis")
 - title: Other help pages
   contents:
   - move_data
@@ -95,6 +99,7 @@ reference:
   - df
   - moveVis-package
   - '%>%'
+  - deprecated
 
 articles:
 - title: Examples

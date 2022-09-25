@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://movevis.org/404.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/articles/example-1.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/articles/example-2.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/articles/example-3.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/articles/example-7.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/authors.html</loc>
+  </url>
+  <url>
     <loc>https://movevis.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/reference/Extract.html</loc>
   </url>
   <url>
     <loc>https://movevis.org/reference/add_colourscale.html</loc>
@@ -37,6 +67,9 @@
     <loc>https://movevis.org/reference/basemap_data.html</loc>
   </url>
   <url>
+    <loc>https://movevis.org/reference/c.html</loc>
+  </url>
+  <url>
     <loc>https://movevis.org/reference/deprecated.html</loc>
   </url>
   <url>
@@ -52,10 +85,16 @@
     <loc>https://movevis.org/reference/get_frametimes.html</loc>
   </url>
   <url>
-    <loc>https://movevis.org/reference/get_maptypes.html</loc>
+    <loc>https://movevis.org/reference/head.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/reference/index.html</loc>
   </url>
   <url>
     <loc>https://movevis.org/reference/join_frames.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/reference/length.html</loc>
   </url>
   <url>
     <loc>https://movevis.org/reference/moveVis-package.html</loc>
@@ -64,7 +103,16 @@
     <loc>https://movevis.org/reference/move_data.html</loc>
   </url>
   <url>
+    <loc>https://movevis.org/reference/print.html</loc>
+  </url>
+  <url>
     <loc>https://movevis.org/reference/reexports.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/reference/render_frame.html</loc>
+  </url>
+  <url>
+    <loc>https://movevis.org/reference/rev.html</loc>
   </url>
   <url>
     <loc>https://movevis.org/reference/settings.html</loc>
@@ -80,17 +128,5 @@
   </url>
   <url>
     <loc>https://movevis.org/reference/whitestork_data.html</loc>
-  </url>
-  <url>
-    <loc>https://movevis.org/articles/example-1.html</loc>
-  </url>
-  <url>
-    <loc>https://movevis.org/articles/example-2.html</loc>
-  </url>
-  <url>
-    <loc>https://movevis.org/articles/example-3.html</loc>
-  </url>
-  <url>
-    <loc>https://movevis.org/articles/example-7.html</loc>
   </url>
 </urlset>

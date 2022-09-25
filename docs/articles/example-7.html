@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.6</span>
       </span>
     </div>
 
@@ -65,39 +67,39 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Other packages
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="http://jxsw.de/getSpatialData">getSpatialData</a>
+      <a href="http://jxsw.de/getSpatialData" class="external-link">getSpatialData</a>
     </li>
     <li>
-      <a href="http://www.github.com/bleutner/RStoolbox">RStoolbox</a>
+      <a href="http://www.github.com/bleutner/RStoolbox" class="external-link">RStoolbox</a>
     </li>
     <li>
-      <a href="http://www.github.com/RRemelgado/rsmove">rsMove</a>
+      <a href="http://www.github.com/RRemelgado/rsmove" class="external-link">rsMove</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://www.twitter.com/schwalbwillmann">
+  <a href="http://www.twitter.com/schwalbwillmann" class="external-link">
     <span class="fa fa-twitter fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="http://www.github.com/16eagle">
+  <a href="http://www.github.com/16eagle" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="http://jakob.schwalb-willmann.de">
+  <a href="http://jakob.schwalb-willmann.de" class="external-link">
     <span class="fa fa-globe fa-lg"></span>
      
   </a>
@@ -131,21 +133,30 @@
 
     
     
-<p>With the simple <code><a href="../reference/view_spatial.html">view_spatial()</a></code> wrapper, movement tracks can be displayed on an interactive map using the very handy <code>mapview</code> or <code>leaflet</code> packages. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by <code><a href="../reference/align_move.html">align_move()</a></code>.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># in case, mapview or leaflet is not installed:</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"leaflet"</span>, <span class="st">"mapview"</span>))
-
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">moveVis</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">move</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"move_data"</span>)
-
-<span class="co"># return a mapview map</span>
-<span class="fu"><a href="../reference/view_spatial.html">view_spatial</a></span>(<span class="no">move_data</span>)</pre></body></html></div>
-<p>An interactive map is returned. If you use RStudio, it will be displayed on the RStudio viewer pane:</p>
+<p>With the simple <code><a href="../reference/view_spatial.html">view_spatial()</a></code> wrapper, movement tracks
+can be displayed on an interactive map using the very handy
+<code>mapview</code> or <code>leaflet</code> packages. This may be
+helpful if you want to explore data before animating them or check the
+effect of applying correction methods as done by
+<code><a href="../reference/align_move.html">align_move()</a></code>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># in case, mapview or leaflet is not installed:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leaflet"</span>, <span class="st">"mapview"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://movevis.org" class="external-link">moveVis</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span><span class="op">)</span></span>
+<span> </span>
+<span><span class="co"># return a mapview map</span></span>
+<span><span class="fu"><a href="../reference/view_spatial.html">view_spatial</a></span><span class="op">(</span><span class="va">move_data</span><span class="op">)</span></span></code></pre></div>
+<p>An interactive map is returned. If you use RStudio, it will be
+displayed on the RStudio viewer pane:</p>
 <br><p align="center">
 <img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8.png"></p>
 <p><br></p>
-<p>When hovering a point with the cursor, the timestamps of that point is displayed. Thanks to <code>mapview</code>, you may click on a point to open a pop-up box containing the point’s attributes:</p>
+<p>When hovering a point with the cursor, the timestamps of that point
+is displayed. Thanks to <code>mapview</code>, you may click on a point
+to open a pop-up box containing the point’s attributes:</p>
 <br><p align="center">
 <img width="600" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example8_02.png"></p>
 <p><br></p>
@@ -160,11 +171,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jakob Schwalb-Willmann.</p>
+  <p></p>
+<p>Developed by Jakob Schwalb-Willmann, Annika Ludwig.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
