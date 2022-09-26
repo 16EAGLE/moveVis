@@ -13,5 +13,5 @@
 A \code{moveVis} frames object.
 }
 \description{
-Method for reversing the order of frames in an \code{moveVis} frames object.
+Method for reversing the order of frames in a \code{moveVis} frames object.
 }

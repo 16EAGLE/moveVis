@@ -20,5 +20,5 @@
 A \code{moveVis} frames object.
 }
 \description{
-Method for returning \code{n} first or last frames of a \code{moveVis} frames objects.
+Method for returning \code{n} last or first frames of a \code{moveVis} frames objects.
 }

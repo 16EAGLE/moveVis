@@ -1,4 +1,4 @@
-# moveVis <a href="http://movevis.org"><img align="right" src="man/figures/logo.png" /></a>
+# moveVis <a href="https://movevis.org"><img align="right" src="man/figures/logo.png" /></a>
 
 [![CRAN version](https://www.r-pkg.org/badges/version/moveVis)](https://CRAN.R-project.org/package=moveVis)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/moveVis?color=brightgreen)](https://CRAN.R-project.org/package=moveVis)
@@ -9,7 +9,7 @@
 
 ## Introduction
 
-<a href="http://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="http://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files. 
+<a href="https://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="https://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files. 
 
 A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access paper</a> accompanying `moveVis` has been published in *Methods in Ecology and Evolution*.
 
@@ -25,7 +25,7 @@ A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access pa
 
 With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
 
-The latest stable version of <a href="http://movevis.org">`moveVis`</a> can be installed from CRAN:
+The latest stable version of <a href="https://movevis.org">`moveVis`</a> can be installed from CRAN:
 
 ```r
 install.packages("moveVis")
@@ -37,7 +37,7 @@ The development version can be installed from GitHub:
 devtools::install_github("16EAGLE/moveVis")
 ```
 
-Code written for <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="http://movevis.org">`moveVis`</a> version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
+Code written for <a href="https://movevis.org">`moveVis`</a> version <=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="https://movevis.org">`moveVis`</a> version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
 
 ```r
 setwd("your/download/directory")
@@ -47,7 +47,7 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 
 ## Function overview
 
-<a href="http://movevis.org">`moveVis`</a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
+<a href="https://movevis.org">`moveVis`</a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
 
 #### Preparing movement tracks
 
@@ -80,12 +80,25 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 * `animate_frames()` creates an animation from `moveVis` frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
 
 #### Viewing movement tracks
+
 * `render_frame()` renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting `[[`.
 * `view_spatial()` displays movement tracks on an interactive `mapview` or `leaflet` map.
 
+#### Methods
+
+* `[` extracts individual frames or a sequence of frames from a `moveVis` frames object.
+* `[[` renders an individual frame.
+* `c` combines multiple `moveVis` frames objects.
+* `tail()` and `head()` return `n` last or first frames of a `moveVis` frames object.
+* `length()` return length of `moveVis` frames, i.e. number of frames.
+* `print()` shows basic information about a `moveVis` frames object, i.e. number of frames, extent and more.
+* `rev()` reverses the order of a `moveVis` frames object.
+
 #### Processing settings
+
 * `use_multicore()` enables multi-core usage for computational expensive processing steps.
 * `use_disk()` enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
+
 
 ## Get started
 
@@ -122,13 +135,13 @@ animate_frames(frames, out_file = "moveVis.gif")
 
 You can find code examples on how to use `moveVis` here:
 
-<a href = "http://movevis.org/articles/example-1.html">Example 1: Creating a simple movement animation</a>
+<a href = "https://movevis.org/articles/example-1.html">Example 1: Creating a simple movement animation</a>
 
-<a href = "http://movevis.org/articles/example-2.html">Example 2: Customizing frames</a>
+<a href = "https://movevis.org/articles/example-2.html">Example 2: Customizing frames</a>
 
-<a href = "http://movevis.org/articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
+<a href = "https://movevis.org/articles/example-3.html">Example 3: Using a mapbox satellite base map</a>
 
-<a href = "http://movevis.org/articles/example-7.html">Example 4: View movement tracks</a>
+<a href = "https://movevis.org/articles/example-7.html">Example 4: View movement tracks</a>
 
 <a href = "https://besjournals.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2F2041-210X.13374&file=mee313374-sup-0001-AppendixS1.docx">Real-data example using White Storks (*Ciconia ciconia*) migration movement data [.docx]</a>
 
@@ -154,9 +167,9 @@ These commented `moveVis` code snippets, addressing specific issues or questions
 
 ## Further resources
 
-Detailed code examples explaining how to use specific functions are provided at the <a href="http://movevis.org/reference/index.html">function help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:
+Detailed code examples explaining how to use specific functions are provided at the <a href="https://movevis.org/reference/index.html">function help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:
 
-<a target="_blank" href = "http://animove.org/wp-content/uploads/2019/04/Daniel_Palacios_animate_moveVis.html">Animating animal tracks from multiple years over a common year with moveVis: An example with Blue Whale Argos tracks on Movebank</a> by <a target="_blank" href="https://twitter.com/danielequs">Daniel M. Palacios</a>, <a target="_blank" href = "https://mmi.oregonstate.edu/">Marine Mammal Institute</a>, Oregon State University
+<a target="_blank" href = "https://animove.org/wp-content/uploads/2019/04/Daniel_Palacios_animate_moveVis.html">Animating animal tracks from multiple years over a common year with moveVis: An example with Blue Whale Argos tracks on Movebank</a> by <a target="_blank" href="https://twitter.com/danielequs">Daniel M. Palacios</a>, <a target="_blank" href = "https://mmi.oregonstate.edu/">Marine Mammal Institute</a>, Oregon State University
 
 <a target="_blank" href = "https://chirpscholekster.nl/downloads/movevis_example_code.R">Reproducible example of how to combine animal tracking data, tidal water height data and a heightmap to visualize animal movement with moveVis</a> by <a target="_blank" href="https://twitter.com/hjvdkolk">Henk-Jan van der Kolk</a>, <a target="_blank" href = "https://nioo.knaw.nl/en">The Netherlands Institute of Ecology (NIOO-KNAW)</a>
 

@@ -17,5 +17,5 @@
 A \code{moveVis} frames object.
 }
 \description{
-Method for extracting individual frames or a sequence of frames from an \code{moveVis} frames object.
+Method for extracting individual frames or a sequence of frames from a \code{moveVis} frames object.
 }

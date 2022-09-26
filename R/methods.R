@@ -87,7 +87,7 @@ tail.moveVis <- function(x, n = 6L, ...){
 
 #' Return first or last frames of an moveVis frames object
 #' 
-#' Method for returning \code{n} first or last frames of a \code{moveVis} frames objects.
+#' Method for returning \code{n} last or first frames of a \code{moveVis} frames objects.
 #' 
 #' @inheritParams print.moveVis
 #' @param n an integer of length up to \code{length(x)}.
@@ -104,7 +104,7 @@ head.moveVis <- function(x, n = 6L, ...){
 
 #' Reverse moveVis frames
 #' 
-#' Method for reversing the order of frames in an \code{moveVis} frames object.
+#' Method for reversing the order of frames in a \code{moveVis} frames object.
 #' 
 #' @inheritParams print.moveVis
 #' 
@@ -119,7 +119,7 @@ rev.moveVis <- function(x){
 
 #' Extract moveVis frames
 #' 
-#' Method for extracting individual frames or a sequence of frames from an \code{moveVis} frames object.
+#' Method for extracting individual frames or a sequence of frames from a \code{moveVis} frames object.
 #' 
 #' @inheritParams print.moveVis
 #' @param i numeric, index number or sequence of index numbers of the frame(s) to be extracted.
