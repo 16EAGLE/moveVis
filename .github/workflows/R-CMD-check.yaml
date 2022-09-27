@@ -60,6 +60,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get -y install libproj-dev libudunits2-dev libgeos-dev libgdal-dev cargo libavformat-dev libavcodec-dev libavfilter-dev libavdevice-dev libmagick++-dev
+          export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
           while read -r cmd
           do
             eval sudo $cmd
