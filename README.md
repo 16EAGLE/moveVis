@@ -44,6 +44,38 @@ setwd("your/download/directory")
 install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 ```
 
+## Get started
+
+The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using `ggplot2` or `add*()` functions and turning these frames into an animated `GIF`:
+
+```R
+library(moveVis)
+library(move)
+
+data("move_data", package = "moveVis") # move class object
+# if your tracks are present as data.frames, see df2move() for conversion
+
+# align move_data to a uniform time scale
+m <- align_move(move_data, res = 4, unit = "mins")
+
+# create spatial frames with a OpenStreetMap watercolour map
+frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
+                         map_service = "osm", map_type = "watercolor", alpha = 0.5) %>% 
+  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow() %>% 
+  add_scalebar() %>% 
+  add_timestamps(type = "label") %>% 
+  add_progress()
+
+frames[[100]] # preview one of the frames, e.g. the 100th frame
+
+# animate frames
+animate_frames(frames, out_file = "moveVis.gif")
+```
+
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
+
+
 
 ## Function overview
 
@@ -99,37 +131,6 @@ install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 * `use_multicore()` enables multi-core usage for computational expensive processing steps.
 * `use_disk()` enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
 
-
-## Get started
-
-The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using `ggplot2` or `add*()` functions and turning these frames into an animated `GIF`:
-
-```R
-library(moveVis)
-library(move)
-
-data("move_data", package = "moveVis") # move class object
-# if your tracks are present as data.frames, see df2move() for conversion
-
-# align move_data to a uniform time scale
-m <- align_move(move_data, res = 4, unit = "mins")
-
-# create spatial frames with a OpenStreetMap watercolour map
-frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
-                         map_service = "osm", map_type = "watercolor", alpha = 0.5) %>% 
-  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
-  add_northarrow() %>% 
-  add_scalebar() %>% 
-  add_timestamps(type = "label") %>% 
-  add_progress()
-
-frames[[100]] # preview one of the frames, e.g. the 100th frame
-
-# animate frames
-animate_frames(frames, out_file = "moveVis.gif")
-```
-
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 
 ## Examples
 
@@ -189,15 +190,15 @@ Things and features that should be added in future versions of `moveVis` (feel f
 * follow individual mode
 * 3D animations, e.g. for including altitude data
 
+
 ## Related packages
 
-The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
+Other R packages that might interest you:
 
+ * <a target="_blank" href="http://jxsw.de/basemaps">basemaps</a>, a package to download and cache spatial basemaps from open sources such as *OpenStreetMap*, *Stamen*, *Thunderforest*, *Carto*, *Mapbox* and others,
  * <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,
  * <a target="_blank" href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,
  * <a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.
-
-For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a target="_blank" href="http://remote-sensing.eu/">here</a>.
 
 
 ## Acknowledgements
