@@ -57,7 +57,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Install system dependencies (release)
-        if: (matrix.os == 'ubuntu-20.04' && matrix.r == 'release')
+        if: (matrix.config.os == 'ubuntu-20.04' && matrix.config.r == 'release')
         run: |
           sudo apt-get -y install libproj-dev libudunits2-dev libgeos-dev libgdal-dev cargo libavformat-dev libavcodec-dev libavfilter-dev libavdevice-dev libmagick++-dev
           while read -r cmd
@@ -66,7 +66,7 @@ jobs:
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
       
       - name: Install system dependencies (devel)
-        if: (matrix.os == 'ubuntu-20.04' && matrix.r == 'devel')
+        if: (matrix.config.os == 'ubuntu-20.04' && matrix.config.r == 'devel')
         run: |
           sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
           sudo apt-get -q update
