@@ -204,6 +204,7 @@ For other news on the work at at the Department of Remote Sensing of the Univers
           
 This initiative was part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/">Opt4Environment</a> project and had been funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
 
+
 <p align="justify">
 <div>
     <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="29%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
