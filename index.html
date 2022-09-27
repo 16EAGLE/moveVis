@@ -153,6 +153,35 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"moveVis-0.9.9.tar.gz"</span>, repos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
+</h2>
+<p>The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using <code>ggplot2</code> or <code>add*()</code> functions and turning these frames into an animated <code>GIF</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://movevis.org" class="external-link">moveVis</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, package <span class="op">=</span> <span class="st">"moveVis"</span><span class="op">)</span> <span class="co"># move class object</span></span>
+<span><span class="co"># if your tracks are present as data.frames, see df2move() for conversion</span></span>
+<span></span>
+<span><span class="co"># align move_data to a uniform time scale</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create spatial frames with a OpenStreetMap watercolour map</span></span>
+<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">m</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
+<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/add_labels.html">add_labels</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># add some customizations, such as axis labels</span></span>
+<span>  <span class="fu"><a href="reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/add_timestamps.html">add_timestamps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/add_progress.html">add_progress</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># preview one of the frames, e.g. the 100th frame</span></span>
+<span></span>
+<span><span class="co"># animate frames</span></span>
+<span><span class="fu"><a href="reference/animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="st">"moveVis.gif"</span><span class="op">)</span></span></code></pre></div>
+<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
+</div>
+<div class="section level2">
 <h2 id="function-overview">Function overview<a class="anchor" aria-label="anchor" href="#function-overview"></a>
 </h2>
 <p><a href="https://movevis.org"><code>moveVis</code></a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:</p>
@@ -258,35 +287,6 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
-</h2>
-<p>The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using <code>ggplot2</code> or <code>add*()</code> functions and turning these frames into an animated <code>GIF</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://movevis.org" class="external-link">moveVis</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, package <span class="op">=</span> <span class="st">"moveVis"</span><span class="op">)</span> <span class="co"># move class object</span></span>
-<span><span class="co"># if your tracks are present as data.frames, see df2move() for conversion</span></span>
-<span></span>
-<span><span class="co"># align move_data to a uniform time scale</span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># create spatial frames with a OpenStreetMap watercolour map</span></span>
-<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">m</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/add_labels.html">add_labels</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># add some customizations, such as axis labels</span></span>
-<span>  <span class="fu"><a href="reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/add_timestamps.html">add_timestamps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/add_progress.html">add_progress</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># preview one of the frames, e.g. the 100th frame</span></span>
-<span></span>
-<span><span class="co"># animate frames</span></span>
-<span><span class="fu"><a href="reference/animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="st">"moveVis.gif"</span><span class="op">)</span></span></code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
-</div>
-<div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
 <p>You can find code examples on how to use <code>moveVis</code> here:</p>
@@ -325,29 +325,36 @@
 <h2 id="features-to-be-added">Features to be added<a class="anchor" aria-label="anchor" href="#features-to-be-added"></a>
 </h2>
 <p>Things and features that should be added in future versions of <code>moveVis</code> (feel free to contribute to this list using a pull request):</p>
-<p><strong>Near future:</strong></p>
 <ul>
 <li>follow population mode</li>
 <li>follow individual mode</li>
+<li>3D animations, e.g. for including altitude data</li>
 </ul>
-<p><strong>Some day:</strong></p>
-<ul><li>3D animations, e.g. for including altitude data</li></ul>
 </div>
 <div class="section level2">
 <h2 id="related-packages">Related packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
 </h2>
-<p>The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you: * <a target="_blank" href="http://jxsw.de/getSpatialData" class="external-link">getSpatialData</a>, a package to query, preview and download satellite data, * <a target="_blank" href="http://bleutner.github.io/RStoolbox/" class="external-link">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs, * <a target="_blank" href="https://github.com/RRemelgado/rsMove/" class="external-link">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.</p>
-<p>For other news on the work at at the Department of Remote Sensing of the University of Würzburg, click <a target="_blank" href="http://remote-sensing.eu/" class="external-link">here</a>.</p>
+<p>Other R packages that might interest you:</p>
+<ul>
+<li>
+<a target="_blank" href="http://jxsw.de/basemaps" class="external-link">basemaps</a>, a package to download and cache spatial basemaps from open sources such as <em>OpenStreetMap</em>, <em>Stamen</em>, <em>Thunderforest</em>, <em>Carto</em>, <em>Mapbox</em> and others,</li>
+<li>
+<a target="_blank" href="http://jxsw.de/getSpatialData" class="external-link">getSpatialData</a>, a package to query, preview and download satellite data,</li>
+<li>
+<a target="_blank" href="http://bleutner.github.io/RStoolbox/" class="external-link">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,</li>
+<li>
+<a target="_blank" href="https://github.com/RRemelgado/rsMove/" class="external-link">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
-<p>This initiative is part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/" class="external-link">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.</p>
+<p>This initiative was part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/" class="external-link">Opt4Environment</a> project and had been funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.</p>
 <p align="justify"></p>
-<div><div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="op">&lt;</span>a href=<span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"26%"</span> src=<span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="er">&lt;</span>a href=<span class="st">"http://www.dlr.de/eoc/en/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"17%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="st"> </span><span class="er">&lt;</span>a href=<span class="st">"https://www.bmu.de/en/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"30%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="er">&lt;</span>a href=<span class="st">"https://www.ab.mpg.de/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"20%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/en/c/c9/Max-Planck-Gesellschaft.svg"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span></code></pre></div></div>
+<div><div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="op">&lt;</span>a href=<span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"29%"</span> src=<span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="er">&lt;</span>a href=<span class="st">"http://www.dlr.de/eoc/en/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"16%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="st"> </span><span class="er">&lt;</span>a href=<span class="st">"https://www.bmu.de/en/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"29%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="er">&lt;</span>a href=<span class="st">"https://www.ab.mpg.de/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"16%"</span> src=<span class="st">"https://www.mpg.de/assets/og-logo-8216b4912130f3257762760810a4027c063e0a4b09512fc955727997f9da6ea3.jpg"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span></code></pre></div></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
