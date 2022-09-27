@@ -94,7 +94,7 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.10.6" id="movevis-0106">moveVis 0.10.6<a class="anchor" aria-label="anchor" href="#movevis-0106"></a></h2>
-<p>New S3 class and methods to represent frames, lazy plotting,</p>
+<p>New S3 class and methods to represent frames, lazy plotting, improvements.</p>
 <p><strong>New features:</strong></p>
 <ul><li>Frames are now represented by a new native <code>moveVis</code> S3 class that is outputted by all <code>frames_*()</code> functions such as <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>. The class comes with native printing and indexing methods. Frames can be easily subsetted (<code>[</code>), plotted (<code>[[</code>) and checked for length (<code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code>). The default print method displays a summary of the created frames.</li>
 <li>With the native <code>moveVis</code> class, frames are now rendered lazy when plotted and not being hold in memory. As data duplication has been reduced to the minimum, this change should reduces memory use of <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>. All functions work with the new class. This change mostly effects how things work under the hood and does not alter the user interface.</li>
