@@ -1,7 +1,7 @@
 ***
 
 ## moveVis 0.10.6
-New S3 class and methods to represent frames, lazy plotting, 
+New S3 class and methods to represent frames, lazy plotting, improvements.
 
 **New features:**
 
