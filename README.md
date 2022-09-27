@@ -185,18 +185,14 @@ Blog post: Featured article in <a target="_blank" href = "https://methodsblog.co
 
 Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
 
-**Near future:**
-
 * follow population mode
 * follow individual mode
-
-**Some day:**
-
 * 3D animations, e.g. for including altitude data
 
 ## Related packages
 
 The Department of Remote Sensing of the University of Würzburg has developed other R packages that might interest you:
+
  * <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,
  * <a target="_blank" href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,
  * <a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.
@@ -206,14 +202,14 @@ For other news on the work at at the Department of Remote Sensing of the Univers
 
 ## Acknowledgements
           
-This initiative is part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/">Opt4Environment</a> project and was funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
+This initiative was part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/">Opt4Environment</a> project and had been funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.
 
 <p align="justify">
 <div>
-    <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="26%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
-    <a href="http://www.dlr.de/eoc/en/"><img width="17%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
-     <a href="https://www.bmu.de/en/"><img width="30%" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"></a>
-    <a href="https://www.ab.mpg.de/"><img width="20%" src="https://upload.wikimedia.org/wikipedia/en/c/c9/Max-Planck-Gesellschaft.svg"></a>
+    <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="29%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
+    <a href="http://www.dlr.de/eoc/en/"><img width="16%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
+     <a href="https://www.bmu.de/en/"><img width="29%" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"></a>
+    <a href="https://www.ab.mpg.de/"><img width="16%" src="https://www.mpg.de/assets/og-logo-8216b4912130f3257762760810a4027c063e0a4b09512fc955727997f9da6ea3.jpg"></a>
 </div>
 </p>
 
