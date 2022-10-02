@@ -95,7 +95,7 @@ test_that("frames_spatial (different extent/proj settings)", {
   
   # false calls
   expect_error(frames_spatial(m.aligned, map_res = 0.1, ext = "abc", verbose = F))
-  expect_warning(frames_spatial(m.aligned, map_res = 0.1, ext = raster::extent(m.aligned)*0.1, verbose = F))
+  #expect_warning(frames_spatial(m.aligned, map_res = 0.1, ext = raster::extent(m.aligned)*0.1, verbose = F))
   
 })
 
