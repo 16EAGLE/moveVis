@@ -104,6 +104,7 @@
 <li>Added <code>path_colours</code> to <code><a href="../reference/frames_graph.html">frames_graph()</a></code> to be able to colour paths equal to paths in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>
 </li>
 <li>Added <code>basemaps</code> as dependency for downloading and caching basemaps, removed native basemap retrieval and plotting functions</li>
+<li>Added <code>trace_size</code> as argument to <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> to manually control trace size instead of having to use the same size as <code>tail_size</code>, e.g. in cases where a tail is not used (i.e. when <code>tail_length=0</code>)</li>
 </ul><p><strong>Deprecations:</strong></p>
 <ul><li>Argument <code>m</code> of <code><a href="../reference/add_timestamps.html">add_timestamps()</a></code> has been deprecated since the new <code>moveVis</code> class contains all necessary data to obtain frame times. Thus, it is not needed anymore and therefore ignored if still being used.</li></ul><p><strong>Bug fixes:</strong></p>
 <ul><li>Bug that caused <code><a href="../reference/align_move.html">align_move()</a></code> to break with an unspecific error message when at least one trajectory of <code>m</code> covered a time range shorter than the requested temporal resolution. The function now warns the user when a temporal resolution is selected that cannot be applied to at least one trajectory and excludes the trajectory/trajectories in question from the returned object.</li>
@@ -113,6 +114,7 @@
 </li>
 <li>Fixed bug with paths crossing end of grid (aka dateline) when <code>cross_dateline=TRUE</code> in <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>
 </li>
+<li>Fixing bug causing no path to be displayed at all when <code>tail_length=0</code> (now correctly showing points without tails)</li>
 </ul><p><br></p>
 <hr></div>
     <div class="section level2">

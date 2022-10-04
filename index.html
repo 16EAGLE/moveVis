@@ -157,7 +157,7 @@
 </h2>
 <p>The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using <code>ggplot2</code> or <code>add*()</code> functions and turning these frames into an animated <code>GIF</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://movevis.org" class="external-link">moveVis</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, package <span class="op">=</span> <span class="st">"moveVis"</span><span class="op">)</span> <span class="co"># move class object</span></span>
@@ -168,7 +168,7 @@
 <span></span>
 <span><span class="co"># create spatial frames with a OpenStreetMap watercolour map</span></span>
 <span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">m</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                         map_service <span class="op">=</span> <span class="st">"osm_stamen"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/add_labels.html">add_labels</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># add some customizations, such as axis labels</span></span>
 <span>  <span class="fu"><a href="reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -314,7 +314,7 @@
 <p>Detailed code examples explaining how to use specific functions are provided at the <a href="https://movevis.org/reference/index.html">function help pages</a>. User contributions such as code examples or tutorials are very welcome and are linked below as soon as they have been spotted somewhere on the web:</p>
 <p><a target="_blank" href="https://animove.org/wp-content/uploads/2019/04/Daniel_Palacios_animate_moveVis.html" class="external-link">Animating animal tracks from multiple years over a common year with moveVis: An example with Blue Whale Argos tracks on Movebank</a> by <a target="_blank" href="https://twitter.com/danielequs" class="external-link">Daniel M. Palacios</a>, <a target="_blank" href="https://mmi.oregonstate.edu/" class="external-link">Marine Mammal Institute</a>, Oregon State University</p>
 <p><a target="_blank" href="https://chirpscholekster.nl/downloads/movevis_example_code.R" class="external-link">Reproducible example of how to combine animal tracking data, tidal water height data and a heightmap to visualize animal movement with moveVis</a> by <a target="_blank" href="https://twitter.com/hjvdkolk" class="external-link">Henk-Jan van der Kolk</a>, <a target="_blank" href="https://nioo.knaw.nl/en" class="external-link">The Netherlands Institute of Ecology (NIOO-KNAW)</a></p>
-<p><a target="_blank" href="http://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate" class="external-link">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230" class="external-link">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href="https://www.movebank.org/" class="external-link">Movebank</a></p>
+<p><a target="_blank" href="https://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate" class="external-link">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230" class="external-link">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href="https://www.movebank.org/" class="external-link">Movebank</a></p>
 </div>
 <div class="section level2">
 <h2 id="mentions">Mentions<a class="anchor" aria-label="anchor" href="#mentions"></a>
@@ -370,7 +370,7 @@
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=moveVis" class="external-link">View on CRAN</a></li>
-<li><a href="http://www.github.com/16eagle/moveVis/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://www.github.com/16eagle/moveVis/issues" class="external-link">Report a bug</a></li>
 <li><a href="https://github.com/16eagle/moveVis" class="external-link">Browse source code</a></li>
 <li><a href="https://doi.org/10.1111/2041-210X.13374" class="external-link">Read our accompanying MEE paper</a></li>
 <li><a href="https://remote-sensing.org" class="external-link">Find out more about our work</a></li>
