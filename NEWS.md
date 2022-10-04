@@ -1,21 +1,5 @@
 ***
 
-## moveVis 0.10.7
-Improvements.
-
-**New features:**
-
-* Added `trace_size` as argument to `frames_spatial()` to manually control trace size instead of having to use the same size as `tail_size`, e.g. in cases where a tail is not used (i.e. when `tail_length=0`)
-
-
-**Bug fixes:**
-
-* Fixing bug causing no path to be displayed at all when `tail_length=0` (now correctly showing points without tails)
-
-<br>
-
-***
-
 ## moveVis 0.10.6
 New S3 class and methods to represent frames, lazy plotting, improvements.
 
@@ -28,6 +12,7 @@ New S3 class and methods to represent frames, lazy plotting, improvements.
 * Multiple improvements to `align_move()`, including printing of the detected resolution to which data are aligned.
 * Added `path_colours` to `frames_graph()` to be able to colour paths equal to paths in `frames_spatial()`
 * Added `basemaps` as dependency for downloading and caching basemaps, removed native basemap retrieval and plotting functions
+* Added `trace_size` as argument to `frames_spatial()` to manually control trace size instead of having to use the same size as `tail_size`, e.g. in cases where a tail is not used (i.e. when `tail_length=0`)
 
 **Deprecations:**
 
@@ -39,6 +24,8 @@ New S3 class and methods to represent frames, lazy plotting, improvements.
 * Bug that caused `frames_spatial()` to interrupt with an error when trying to interpolate `r_list` with `fade_raster=T`
 * Fixed bug in adding margin to user `ext` in `frames_spatial()`
 * Fixed bug with paths crossing end of grid (aka dateline) when `cross_dateline=TRUE` in `frames_spatial()`
+* Fixing bug causing no path to be displayed at all when `tail_length=0` (now correctly showing points without tails)
+
 
 <br>
 
