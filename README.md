@@ -4,7 +4,7 @@
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/moveVis?color=brightgreen)](https://CRAN.R-project.org/package=moveVis)
 [![CRAN checks](https://cranchecks.info/badges/summary/moveVis)](https://cran.r-project.org/web/checks/check_results_moveVis.html)
 [![R-CMD-check](https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg)](https://github.com/16EAGLE/moveVis/actions)
-[![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://codecov.io/gh/16EAGLE/moveVis)
+[![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://app.codecov.io/gh/16EAGLE/moveVis)
 [![Package dependencies](https://tinyverse.netlify.com/badge/moveVis)](https://CRAN.R-project.org/package=moveVis)
 
 ## Introduction
@@ -174,7 +174,7 @@ Detailed code examples explaining how to use specific functions are provided at 
 
 <a target="_blank" href = "https://chirpscholekster.nl/downloads/movevis_example_code.R">Reproducible example of how to combine animal tracking data, tidal water height data and a heightmap to visualize animal movement with moveVis</a> by <a target="_blank" href="https://twitter.com/hjvdkolk">Henk-Jan van der Kolk</a>, <a target="_blank" href = "https://nioo.knaw.nl/en">The Netherlands Institute of Ecology (NIOO-KNAW)</a>
 
-<a target="_blank" href = "http://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href = "https://www.movebank.org/">Movebank</a>
+<a target="_blank" href = "https://movebankworkshopraleighnc.netlify.com/2019outputfiles/envdatavizanimate">How to build animated tracking maps using tracking data in Movebank and environmental covariates in track and raster annotations from EnvDATA with moveVis</a> by <a target="_blank" href="https://www.ab.mpg.de/person/98230">Sarah C. Davidson</a>, Data Curator at <a target="_blank" href = "https://www.movebank.org/">Movebank</a>
 
 
 ## Mentions

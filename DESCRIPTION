@@ -29,9 +29,9 @@ Imports:
   magrittr,
   methods,
   stats
-BugReports: http://www.github.com/16eagle/moveVis/issues
+BugReports: https://www.github.com/16eagle/moveVis/issues
 SystemRequirements: ImageMagick, FFmpeg, libav
-URL: http://movevis.org
+URL: https://movevis.org
 Suggests:
   parallel,
   mapview,
