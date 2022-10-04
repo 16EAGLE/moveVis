@@ -1,10 +1,10 @@
 Package: moveVis
 Type: Package
 Title: Movement Data Visualization
-Version: 0.10.6
+Version: 0.10.7
 Depends:
   R (>= 3.5.0)
-Date: 2022-09-27
+Date: 2022-10-04
 Authors@R: c(
   person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
          role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2665-1509")),
