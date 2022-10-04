@@ -24,7 +24,7 @@ view_spatial(
 
 \item{stroke}{logical, whether to draw stroke around circles.}
 
-\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.}
+\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.}
 
 \item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
 

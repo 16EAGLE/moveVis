@@ -114,7 +114,7 @@ repl_vals <- function(data, x, y){
 #' @importFrom move n.indiv timestamps trackId 
 #' @importFrom sf st_transform st_as_sf st_crs st_coordinates
 #' @noRd 
-.m2df <- function(m, path_colours = NA, return_latlon = FALSE){
+.m2df <- function(m, path_colours = NA, tail_colour = NA, trace_colour = NA, return_latlon = FALSE){
 
   ## create data.frame from m with frame time and colour
   m.df <- cbind(
@@ -151,6 +151,7 @@ repl_vals <- function(data, x, y){
     }
     m.df$colour <- repl_vals(m.df$id, unique(m.df$id), path_colours[1:n.indiv(m)])
   }
+  
   
   m.df <- m.df[order(m.df$frame),]
   m.df$name <- factor(as.character(m.df$name), levels = unique(as.character(m.df$name)))
@@ -314,7 +315,7 @@ repl_vals <- function(data, x, y){
 #' create paths data.frame for gg on the fly per frame
 #' @importFrom utils tail
 #' @noRd 
-.df4gg <- function(m.df, i, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_colour = "grey", path_fade = F){
+.df4gg <- function(m.df, i, tail_length = 0, path_size = 1, tail_size = 1, tail_colour = "white", trace_show = F, trace_size = tail_size, trace_colour = "grey", path_fade = F){
   
   # calc range
   i.range <- seq(i-tail_length, i)
@@ -366,11 +367,11 @@ repl_vals <- function(data, x, y){
   }))
   
   paths$trace <- FALSE
-  if(all(isTRUE(trace_show) & i > tail_size)){
+  if(all(isTRUE(trace_show))){ # & i > tail_size)){ # isn't rather path_length meant here?
     
     paths.trace <- m.df[!is.na(match(m.df$frame,1:(min(i.range)))),]
-    paths.trace$colour <- paths.trace$tail_colour <-  trace_colour
-    paths.trace$tail_size <- tail_size
+    paths.trace$colour <- paths.trace$tail_colour <- trace_colour
+    paths.trace$tail_size <- trace_size
     paths.trace$trace <- TRUE
     
     # join trace, reorder by frame and group by id
@@ -558,9 +559,9 @@ repl_vals <- function(data, x, y){
 }
 
 #' frame plotting function
-#' @importFrom ggplot2 geom_path aes_string theme scale_colour_manual theme_bw guides guide_legend  
+#' @importFrom ggplot2 geom_path aes_string theme scale_colour_manual theme_bw guides guide_legend geom_point 
 #' @noRd
-gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant){
+gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant, tail_length){
   
   ## scale plot to extent and set na.rm to TRUE to avoid warnings
   y$layers[[1]]$geom_params$na.rm <- T
@@ -575,9 +576,14 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   } else p <- y
   
   ## base plot
-  p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
-                     linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T) + 
-    theme_bw() + x$coord[[1]] + x$scalex[[1]] + x$scaley[[1]]
+  if(tail_length == 0){
+    p <- p + geom_point(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, 
+                   colour = x_path$tail_colour, alpha = path_alpha, na.rm = T)
+  }else{
+    p <- p + geom_path(data = x_path, aes_string(x = "x", y = "y", group = "id"), size = x_path$tail_size, lineend = path_end, linejoin = path_join,
+                       linemitre = path_mitre, arrow = path_arrow, colour = x_path$tail_colour, alpha = path_alpha, na.rm = T)
+  }
+  p <- p+ theme_bw() + x$coord[[1]] + x$scalex[[1]] + x$scaley[[1]]
   
   ## add legend?
   if(isTRUE(path_legend)){

@@ -13,7 +13,7 @@
 #' @param path_join character, either \code{"round"}, \code{"mitre"} or \code{"bevel"}, indicating the path join style.
 #' @param path_mitre numeric, path mitre limit (number greater than 1).
 #' @param path_arrow arrow, path arrow specification, as created by grid::arrow().
-#' @param path_colours character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.
+#' @param path_colours character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.
 #' @param path_alpha numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.
 #' @param path_fade logical, whether paths should be faded towards the last frame or not. Useful, if \code{trace_show = TRUE} and you want to hold the last frame using \code{end_pause} in \code{\link{animate_frames}}.
 #' @param path_legend logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.
@@ -22,6 +22,7 @@
 #' @param tail_size numeric, size of the last tail element. Default is 1.
 #' @param tail_colour character, colour of the last tail element, to which the path colour is faded. Default is "white".
 #' @param trace_show logical, whether to show the trace of the complete path or not.
+#' @param trace_size numeric, size of the trace. Default is same as \code{tail_size}.
 #' @param trace_colour character, colour of the trace. Default is "white". It is recommended to define the same colours for both \code{trace_colour} and  \code{tail_colour} to enforce an uninterrupted colour transition form the tail to the trace.
 #' @param cross_dateline logical, whether tracks are crossing the dateline (longitude 180/-180) or not. If \code{TRUE}, frames are expanded towards the side of the dateline that is smaller in space. Applies only if the CRS of \code{m} is not projected (geographical, lon/lat). If \code{FALSE} (default), frames are clipped at the minimum and maximum longitudes and tracks cannot cross.
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
@@ -158,7 +159,7 @@
 
 frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
                            margin_factor = 1.1, equidistant = NULL, ext = NULL, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
-                           path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
+                           path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
   
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -186,7 +187,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
       if(!dir.exists(map_dir)) out("The directory defined with 'map_dir' does not exist.", type = 3)
     }
   }
-  num.args <- c(margin_factor = margin_factor, tail_length = tail_length, tail_size = tail_size, path_size = path_size, path_mitre = path_mitre)
+  num.args <- c(margin_factor = margin_factor, tail_length = tail_length, tail_size = tail_size, path_size = path_size, path_mitre = path_mitre, trace_size = trace_size)
   catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
   char.args <- c(path_end = path_end, path_join = path_join, path_legend_title = path_legend_title)
   catch <- sapply(1:length(char.args), function(i) if(!is.character(char.args[[i]])) out(paste0("Argument '", names(char.args)[[i]], "' must be of type 'numeric'."), type = 3))
@@ -285,6 +286,7 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
       tail_size = tail_size,
       tail_colour = tail_colour,
       trace_show = trace_show,
+      trace_size = trace_size,
       trace_colour = trace_colour,
       path_fade = path_fade,
       gg.ext = gg.ext,

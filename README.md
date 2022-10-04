@@ -60,7 +60,7 @@ m <- align_move(move_data, res = 4, unit = "mins")
 
 # create spatial frames with a OpenStreetMap watercolour map
 frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
-                         map_service = "osm", map_type = "watercolor", alpha = 0.5) %>% 
+                         map_service = "osm_stamen", map_type = "watercolor", alpha = 0.5) %>% 
   add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
   add_northarrow() %>% 
   add_scalebar() %>% 

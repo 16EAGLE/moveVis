@@ -49,13 +49,14 @@ render_frame <- function(frames, i = length(frames)){
     if(inherits(frames, "frames_spatial")){
       gg <- gg.spatial(
         x = .df4gg(
-          frames$move_data,
+          m.df = frames$move_data,
           i = i,
           tail_length = frames$aesthetics$tail_length,
           path_size = frames$aesthetics$path_size,
           tail_size = frames$aesthetics$tail_size,
           tail_colour = frames$aesthetics$tail_colour,
           trace_show = frames$aesthetics$trace_show,
+          trace_size = frames$aesthetics$trace_size,
           trace_colour = frames$aesthetics$trace_colour,
           path_fade = frames$aesthetics$path_fade),
         y = gg_raster(
@@ -75,7 +76,8 @@ render_frame <- function(frames, i = length(frames)){
         path_legend = frames$aesthetics$path_legend,
         path_legend_title = frames$aesthetics$path_legend_title,
         path_size = frames$aesthetics$path_size,
-        equidistant = frames$aesthetics$equidistant
+        equidistant = frames$aesthetics$equidistant,
+        tail_length = frames$aesthetics$tail_length
       )
     }
     if(inherits(frames, "frames_graph")){

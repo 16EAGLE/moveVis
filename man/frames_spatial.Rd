@@ -33,6 +33,7 @@ frames_spatial(
   tail_size = 1,
   tail_colour = "white",
   trace_show = FALSE,
+  trace_size = tail_size,
   trace_colour = "white",
   cross_dateline = FALSE,
   ...,
@@ -80,7 +81,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{path_arrow}{arrow, path arrow specification, as created by grid::arrow().}
 
-\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected randomly per individual track.}
+\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.}
 
 \item{path_alpha}{numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.}
 
@@ -97,6 +98,8 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 \item{tail_colour}{character, colour of the last tail element, to which the path colour is faded. Default is "white".}
 
 \item{trace_show}{logical, whether to show the trace of the complete path or not.}
+
+\item{trace_size}{numeric, size of the trace. Default is same as \code{tail_size}.}
 
 \item{trace_colour}{character, colour of the trace. Default is "white". It is recommended to define the same colours for both \code{trace_colour} and  \code{tail_colour} to enforce an uninterrupted colour transition form the tail to the trace.}
 

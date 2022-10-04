@@ -32,8 +32,10 @@ test_that("frames_spatial (raster, gradient)", {
   expect_is(frames[[1]], "ggplot") # single raster
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # path arrow
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", trace_show = T, verbose = F), "moveVis"), 188)
-  expect_is(frames[[1]], "ggplot") # show trace
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", trace_show = T,  trace_size = 4, trace_colour = "black", verbose = F), "moveVis"), 188)
+  expect_is(frames[[1]], "ggplot") # trace_ arguments
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", tail_length = 25, tail_size = 3, tail_colour = "black", verbose = F), "moveVis"), 188)
+  expect_is(frames[[1]], "ggplot") # tail_ arguments
   
   
   # false calls

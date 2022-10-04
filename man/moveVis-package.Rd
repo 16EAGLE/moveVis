@@ -42,8 +42,8 @@ The majority of this functions can be used with the forward pipe operater \code{
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://movevis.org}
-  \item Report bugs at \url{http://www.github.com/16eagle/moveVis/issues}
+  \item \url{https://movevis.org}
+  \item Report bugs at \url{https://www.github.com/16eagle/moveVis/issues}
 }
 
 }
