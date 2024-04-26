@@ -12,7 +12,7 @@
 #' @param val_min numeric, minimum value of the value axis. If undefined, the minimum is collected automatically.
 #' @param val_max numeric, maximum value of the value axis. If undefined, the maximum is collected automatically.
 #' @param val_by numeric, increment of the value axis sequence. Default is 0.1. If \code{graph_type = "discrete"}, this value should be an integer of 1 or greater.
-#' 
+#'
 #' @details To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 #' equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
 #'
@@ -20,164 +20,174 @@
 #' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
 #'
 #' @return An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
-#' 
+#'
 #' @author Jakob Schwalb-Willmann
-#' 
+#'
 #' @importFrom raster compareCRS nlayers minValue maxValue extract
-#' @importFrom sf st_crs 
+#' @importFrom sf st_crs
 #' @importFrom move n.indiv
-#' 
+#'
 #' @examples
 #' library(moveVis)
 #' library(move)
 #' library(ggplot2)
-#' 
+#'
 #' data("move_data", "basemap_data")
 #' # align movement
 #' m <- align_move(move_data, res = 4, unit = "mins")
-#' 
+#'
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
-#' 
+#'
 #' \dontrun{
 #' # use the same inputs to create a non-spatial graph, e.g. a flow graph:
-#' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                           fade_raster = TRUE, graph_type = "flow")
+#' frames.gr <- frames_graph(m,
+#'   r_list = r_list, r_times = r_times, r_type = "gradient",
+#'   fade_raster = TRUE, graph_type = "flow"
+#' )
 #' # take a look
 #' frames.gr[[100]]
-#' 
+#'
 #' # make a histogram graph:
-#' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                           fade_raster = TRUE, graph_type = "hist")
+#' frames.gr <- frames_graph(m,
+#'   r_list = r_list, r_times = r_times, r_type = "gradient",
+#'   fade_raster = TRUE, graph_type = "hist"
+#' )
 #' # change the value interval:
-#' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                           fade_raster = TRUE, graph_type = "hist", val_by = 0.01)
-#'                           
+#' frames.gr <- frames_graph(m,
+#'   r_list = r_list, r_times = r_times, r_type = "gradient",
+#'   fade_raster = TRUE, graph_type = "hist", val_by = 0.01
+#' )
+#'
 #' frames.gr[[100]]
 #' # manipulate the labels, since now they are very dense:
 #' # just replace the current scale
-#' frames.gr <- add_gg(frames.gr, expr(scale_x_continuous(breaks=seq(0,1,0.1),
-#'                                     labels=seq(0,1,0.1), expand = c(0,0))))
+#' frames.gr <- add_gg(frames.gr, expr(scale_x_continuous(
+#'   breaks = seq(0, 1, 0.1),
+#'   labels = seq(0, 1, 0.1), expand = c(0, 0)
+#' )))
 #' frames.gr[[100]]
-#' 
+#'
 #' # the same can be done for discrete data, histogram will then be shown as bin plots
-#' 
+#'
 #' # to make your own graphs, use frames_graph to return data instead of frames
-#' frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                         fade_raster = TRUE, return_data = TRUE)
-#' 
-#' # then simply animate the frames using animate_frames 
+#' frames.gr <- frames_graph(m,
+#'   r_list = r_list, r_times = r_times, r_type = "gradient",
+#'   fade_raster = TRUE, return_data = TRUE
+#' )
+#'
+#' # then simply animate the frames using animate_frames
 #' # see all add_ functions on how to customize your frames created with frames_spatial
 #' # or frames_graph
-#' 
+#'
 #' # see ?animate_frames on how to animate frames
 #' }
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
-frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 
-                         val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T){
-
+frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names",
+                         val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T) {
   ## check input arguments
-  if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
-  
+  if (inherits(verbose, "logical")) options(moveVis.verbose = verbose)
+  if (all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
+
   ## check m time conformities
   .time_conform(m)
-  
-  if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
-  if(is.character(r_type)){
-    if(!any(r_type == c("gradient", "discrete"))) out("Argument 'r_type' must be either 'gradient' or 'discrete'.", type = 3)
-  } else{ out("Argument 'r_type' must be of type 'character'.", type = 3)}
-  if(!inherits(r_list[[1]], "RasterLayer")) out("Argument 'r_list' must contain single-layer 'RasterLayer' objects. Multi-layer 'RasterStack' objects are not supported by this function.", type = 3)
-  if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
-  if(length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
-  if(!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
-  if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
-  
-  if(!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)
-  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
-  if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
-  if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
-  if(!is.logical(return_data)) out("Argument 'return_data' must be of type 'logical'.", type = 3)
-  
+
+  if (all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
+  if (is.character(r_type)) {
+    if (!any(r_type == c("gradient", "discrete"))) out("Argument 'r_type' must be either 'gradient' or 'discrete'.", type = 3)
+  } else {
+    out("Argument 'r_type' must be of type 'character'.", type = 3)
+  }
+  if (!inherits(r_list[[1]], "RasterLayer")) out("Argument 'r_list' must contain single-layer 'RasterLayer' objects. Multi-layer 'RasterStack' objects are not supported by this function.", type = 3)
+  if (any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
+  if (length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
+  if (!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
+  if (!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
+
+  if (!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)
+  if (is.character(path_colours)) if (length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
+  if (!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
+  if (!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
+  if (!is.logical(return_data)) out("Argument 'return_data' must be of type 'logical'.", type = 3)
+
   ## check graph_type and hist arguments
-  if(!is.character(graph_type)){
+  if (!is.character(graph_type)) {
     out("Argument 'graph_type' must be of type character.", type = 3)
-  } else{
-    if(!any(graph_type == c("flow", "hist"))) out("Argument 'graph_type' must be either 'flow' or 'hist'.", type = 3)
+  } else {
+    if (!any(graph_type == c("flow", "hist"))) out("Argument 'graph_type' must be either 'flow' or 'hist'.", type = 3)
   }
-  if(graph_type == "hist"){
-    if(!is.null(val_min)) if(!is.numeric(val_min)) out("Argument 'val_min' must be of type 'numeric', if defined.", type = 3)
-    if(!is.null(val_max)) if(!is.numeric(val_max)) out("Argument 'val_max' must be of type 'numeric', if defined.", type = 3)
-    if(!is.numeric(val_by)) out("Argument 'val_by' must be of type 'numeric'.", type = 3)
+  if (graph_type == "hist") {
+    if (!is.null(val_min)) if (!is.numeric(val_min)) out("Argument 'val_min' must be of type 'numeric', if defined.", type = 3)
+    if (!is.null(val_max)) if (!is.numeric(val_max)) out("Argument 'val_max' must be of type 'numeric', if defined.", type = 3)
+    if (!is.numeric(val_by)) out("Argument 'val_by' must be of type 'numeric'.", type = 3)
   }
-  
+
   ## warnings
-  if(r_type == "discrete" & fade_raster == T) out("Argument 'fade_raster' is TRUE, while argument 'r_type' is set to 'discrete'. Interpolating discrete values will destroy discrete classes!", type = 2)
-  if(r_type == "discrete" & !val_by%%1==0) out("Argument 'val_by' is fractional, while argument 'r_type' is set to 'discrete'. You may want to set 'val_by' to 1 or another integer for discrete classes.", type = 2)
-  
+  if (r_type == "discrete" & fade_raster == T) out("Argument 'fade_raster' is TRUE, while argument 'r_type' is set to 'discrete'. Interpolating discrete values will destroy discrete classes!", type = 2)
+  if (r_type == "discrete" & !val_by %% 1 == 0) out("Argument 'val_by' is fractional, while argument 'r_type' is set to 'discrete'. You may want to set 'val_by' to 1 or another integer for discrete classes.", type = 2)
+
   ## create data.frame from m with frame time and colour
   out("Processing movement data...")
-  m.df <- .m2df(m, path_colours = path_colours) 
+  m.df <- .m2df(m, path_colours = path_colours)
   .stats(max(m.df$frame))
-  
+
   ## create raster list
-  r_list <- .rFrames(r_list = r_list, r_times = r_times, m.df =  m.df, gg.ext = .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
-  if(length(r_list) == 1){
+  r_list <- .rFrames(r_list = r_list, r_times = r_times, m.df = m.df, gg.ext = .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
+  if (length(r_list) == 1) {
     m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[1]], m.df[i, c("x", "y")]), USE.NAMES = F)
-  } else{
-    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F) 
+  } else {
+    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[m.df[i, ]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F)
   }
-  
+
   ## create value sequence
-  if(is.null(val_min)) val_min <- floor(min(sapply(r_list, minValue), na.rm = T))
-  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list, maxValue), na.rm = T))
+  if (is.null(val_min)) val_min <- floor(min(sapply(r_list, minValue), na.rm = T))
+  if (is.null(val_max)) val_max <- ceiling(max(sapply(r_list, maxValue), na.rm = T))
   val_digits <- nchar(strsplit(as.character(val_by), "[.]")[[1]][2])
-  if(is.na(val_digits)) val_digits <- 0
+  if (is.na(val_digits)) val_digits <- 0
   val_seq <- seq(val_min, val_max, by = val_by)
-  
-  if(isTRUE(return_data)){
+
+  if (isTRUE(return_data)) {
     return(m.df)
-  } else{
-    
+  } else {
     ## create frames
     out("Creating frames...")
     # if(graph_type == "flow"){
     #   #frames <- .gg_flow(m.df, path_legend, path_legend_title, path_size, val_seq)
     # }
     hist_data <- NULL
-    if(graph_type == "hist"){
-      
-      dummy <- do.call(rbind, lapply(unique(m.df$id), function(id){
-        cbind.data.frame(count = 0, value = val_seq, id = id, name = unique(m.df[m.df$id == id,]$name),
-                         colour = unique(m.df[m.df$id == id,]$colour))
+    if (graph_type == "hist") {
+      dummy <- do.call(rbind, lapply(unique(m.df$id), function(id) {
+        cbind.data.frame(
+          count = 0, value = val_seq, id = id, name = unique(m.df[m.df$id == id, ]$name),
+          colour = unique(m.df[m.df$id == id, ]$colour)
+        )
       }))
-      
+
       ## Calculating time-cumulative value histogram per individual and timestep
-      #out("Calculating histogram...")
-      hist_data <- lapply(1:max(m.df$frame), function(i, d = dummy){
-        x <- m.df[unlist(lapply(1:i, function(x) which(m.df$frame == x))),]
-        
-        x <- do.call(rbind, lapply(unique(x$id), function(id){
-          y <- x[x$id == id,]
+      # out("Calculating histogram...")
+      hist_data <- lapply(1:max(m.df$frame), function(i, d = dummy) {
+        x <- m.df[unlist(lapply(1:i, function(x) which(m.df$frame == x))), ]
+
+        x <- do.call(rbind, lapply(unique(x$id), function(id) {
+          y <- x[x$id == id, ]
           z <- table(round(y$value, digits = val_digits))
-          
-          d.id <- d[d$id == id,]
+
+          d.id <- d[d$id == id, ]
           d.id[match(names(z), as.character(d.id$value)), 1] <- z
-          
-          #d <- cbind(d, id = unique(y$id), name = unique(y$name), colour = unique(y$colour))
+
+          # d <- cbind(d, id = unique(y$id), name = unique(y$name), colour = unique(y$colour))
           return(d.id)
         }))
-
       })
-      
+
       ## fusing histograms for plot scaling
       # all.hist <- do.call(rbind, hist_data)
-      #frames <- .gg_hist(hist_data, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
+      # frames <- .gg_hist(hist_data, all.hist, path_legend, path_legend_title, path_size, val_seq, r_type)
     }
   }
-  
+
   # create frames object
   frames <- list(
     move_data = m.df,
@@ -189,11 +199,11 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
       path_legend = path_legend,
       path_legend_title = path_legend_title,
       val_seq = val_seq,
-      r_type = r_type),
+      r_type = r_type
+    ),
     additions = NULL
   )
   attr(frames, "class") <- c("moveVis", "frames_graph")
-  
+
   return(frames)
 }
-
