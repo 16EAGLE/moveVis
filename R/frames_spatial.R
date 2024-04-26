@@ -179,8 +179,8 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
 
   if (!is.null(r_list)) {
     if (all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
-    if (any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
-    if (length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
+    if (any(!sapply(r_list, terra::same.crs, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
+    if (length(unique(sapply(r_list, terra::nlyr))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
     if (!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
     if (!isTRUE(r_type %in% c("gradient", "discrete", "RGB"))) out("Argument 'r_type' must eihter be 'gradient', 'discrete' or 'RGB'.", type = 3)
     if (!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)

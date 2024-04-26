@@ -512,7 +512,7 @@ repl_vals <- function(data, x, y) {
   } else {
     n <- length(r_list)
   }
-  n.rlay <- nlayers(r_list[[1]])
+  n.rlay <- terra::nlyr(r_list[[1]])
 
   # if(n.rlay > 1) r_list <- lapply(1:n.rlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list) #FRIDAY
 

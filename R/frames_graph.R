@@ -101,8 +101,8 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
     out("Argument 'r_type' must be of type 'character'.", type = 3)
   }
   if (!inherits(r_list[[1]], "RasterLayer")) out("Argument 'r_list' must contain single-layer 'RasterLayer' objects. Multi-layer 'RasterStack' objects are not supported by this function.", type = 3)
-  if (any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
-  if (length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
+  if (any(!sapply(r_list, terra::same.crs, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
+  if (length(unique(sapply(r_list, terra::nlyr))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
   if (!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
   if (!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
 
