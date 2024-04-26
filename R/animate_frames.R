@@ -4,7 +4,7 @@
 #'
 #' @inheritParams add_gg
 #' @param out_file character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use \code{\link{suggest_formats}} to get a vector of suggested known file formats.
-#' @param fps numeric, the number of frames to be displayed per second. Default is 2.
+#' @param fps numeric, the number of frames to be displayed per second. Default is 25.
 #' @param width numeric, width of the output animation in pixels.
 #' @param height numeric, height of the output animation in pixels.
 #' @param res numeric, resolution of the output animation in ppi.
