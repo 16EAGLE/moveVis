@@ -214,6 +214,8 @@ repl_vals <- function(data, x, y){
     ext <- st_bbox(st_transform(st_as_sfc(st_bbox(ext, crs = m.crs)), st_crs(4326)))
     
     if(!quiet(st_intersects(st_as_sfc(ext), st_as_sfc(gg.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
+
+    gg.ext <- ext
     margin_factor <- 1 # no margin since user extent set
   }
   
