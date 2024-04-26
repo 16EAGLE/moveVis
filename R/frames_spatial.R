@@ -256,6 +256,9 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   } else {
     map_service <- "custom"
     map_type <- "custom"
+    if (terra::nlyr(r_list[[1]]) == 3) {
+      r_type <- "RGB"
+    }
   }
 
   # calculate frames extents and coord labes
