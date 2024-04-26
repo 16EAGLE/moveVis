@@ -507,7 +507,7 @@ repl_vals <- function(data, x, y){
   #if(n.rlay > 1) r_list <- lapply(1:n.rlay, function(i) lapply(r_list, "[[", i)) else r_list <- list(r_list) #FRIDAY
   
   if(isTRUE(crop_raster)){
-    r_list <- lapply(r_list, crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out")
+    r_list <- lapply(r_list, terra::crop, y = extent(gg.ext[1], gg.ext[3], gg.ext[2], gg.ext[4]), snap = "out")
   }
   
   if(n > 1){
