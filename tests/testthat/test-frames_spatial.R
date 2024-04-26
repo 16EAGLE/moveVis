@@ -83,7 +83,7 @@ test_that("frames_spatial (different extent/proj settings)", {
   expect_is(frames[[1]], "ggplot")
 
   # other projections
-  frames <- lapply(c("+init=epsg:32632", "+init=epsg:3857"), function(p) {
+  frames <- lapply(c("EPSG:32632", "EPSG:3857"), function(p) {
     # transform using sf
     m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(p))
     m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
