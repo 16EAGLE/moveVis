@@ -17,48 +17,52 @@
 #'
 #' @importFrom ggplot2 labs waiver theme element_text expr
 #'
-#' @examples 
+#' @examples
 #' library(moveVis)
 #' library(move)
-#' 
+#'
 #' data("move_data", "basemap_data")
 #' m <- align_move(move_data, res = 4, unit = "mins")
-#' 
+#'
 #' # create spatial frames using a custom NDVI base layer
 #' r_list <- basemap_data[[1]]
 #' r_times <- basemap_data[[2]]
-#' 
+#'
 #' \dontrun{
-#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                          fade_raster = TRUE)
-#' 
+#' frames <- frames_spatial(m,
+#'   r_list = r_list, r_times = r_times, r_type = "gradient",
+#'   fade_raster = TRUE
+#' )
+#'
 #' # add labels to frames:
-#' frames <- add_labels(frames, title = "Example animation using moveVis::add_labels()", 
-#'                      subtitle = "Adding a subtitle to frames created using frames_spatial()",
-#'                      caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
-#'                      x = "Longitude", y = "Latitude")
+#' frames <- add_labels(frames,
+#'   title = "Example animation using moveVis::add_labels()",
+#'   subtitle = "Adding a subtitle to frames created using frames_spatial()",
+#'   caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
+#'   x = "Longitude", y = "Latitude"
+#' )
 #' # have a look at one frame
 #' frames[[100]]
 #' }
-#' 
+#'
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
 add_labels <- function(frames, title = waiver(), subtitle = waiver(), caption = waiver(), tag = waiver(),
-                       x = waiver(), y = waiver(), verbose = TRUE){
-
+                       x = waiver(), y = waiver(), verbose = TRUE) {
   ## checks
-  if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
-  
+  if (inherits(verbose, "logical")) options(moveVis.verbose = verbose)
+  if (!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
+
   waiver.args <- list(title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y)
   waiver.which <- sapply(waiver.args, function(x) inherits(x, "waiver"))
-  if(all(waiver.which)) out("At least one label argument has to be defined.", type = 3)
-  if(any(!sapply(waiver.args[!waiver.which], function(x) any(is.character(x), is.null(x))))) out("Label arguments must be of type character, NULL to remove a label or waiver() to keep an already set label.", type = 3)
-  
+  if (all(waiver.which)) out("At least one label argument has to be defined.", type = 3)
+  if (any(!sapply(waiver.args[!waiver.which], function(x) any(is.character(x), is.null(x))))) out("Label arguments must be of type character, NULL to remove a label or waiver() to keep an already set label.", type = 3)
+
   add_gg(frames, gg = expr(
-    list(labs(title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y),
-         theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5))
+    list(
+      labs(title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y),
+      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5))
     )
-  ),title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y)
+  ), title = title, subtitle = subtitle, caption = caption, tag = tag, x = x, y = y)
 }

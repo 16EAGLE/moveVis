@@ -4,7 +4,7 @@
 #' The \code{moveVis} package is closely connected to the \code{move} package and builds up on \code{ggplot2} grammar of graphics.
 #'
 #' @details The package includes the following functions, sorted by the order they would be applied to create an animation from movement data:
-#' 
+#'
 #' \itemize{
 #'    \item \code{\link{df2move}} converts a \code{data.frame} into a \code{move} or \code{moveStack} object. This is useful if you do not usually work with the \code{move} classes and your tracks are present as \code{data.frames}.
 #'    \item \code{\link{align_move}} aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.
@@ -26,11 +26,11 @@
 #'    \item \code{\link{suggest_formats}} returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
 #'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 #'    \item \code{\link{view_spatial}} displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
-#'    \item \code{\link{use_multicore}} enables multi-core usage for computational expensive processing steps. 
+#'    \item \code{\link{use_multicore}} enables multi-core usage for computational expensive processing steps.
 #'    \item \code{\link{use_disk}} enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
 #' }
-#' 
+#'
 #' The majority of this functions can be used with the forward pipe operater \code{\%>\%}, which is re-exported by \code{moveVis}.
-#' 
+#'
 #' @author Jakob Schwalb-Willmann. Maintainer: Jakob Schwalb-Willmann, moveVis@schwalb-willmann.de
 "_PACKAGE"
