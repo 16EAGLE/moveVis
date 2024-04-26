@@ -233,8 +233,6 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
 
   gg.ext <- .ext(m.df, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
 
-  print(gg.ext)
-
   ## shift coordinates crossing dateline
   if (isTRUE(cross_dateline)) {
     rg <- c("pos" = diff(range(m.df$x[m.df$x >= 0])), "neg" = diff(range(m.df$x[m.df$x < 0])))
