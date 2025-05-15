@@ -1,116 +1,177 @@
 #' Align movement data
 #'
 #' This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
-#' This prepares the provided movement data to be interpretable by \code{\link{frames_spatial}}, which necessitates a uniform time scale and
-#' a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times.
+#' This prepares the provided movement data to be usable by \code{\link{frames_spatial}}, which requires a uniform time scale and
+#' a consistent, unique temporal resolution for all tracks.
 #' 
 #' @inheritParams frames_spatial
-#' @param m \code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).
+#' @param m \code{move2} object, which is allowed to contain irregular timestamps and diverging temporal resolutions.
 #' @param res either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:
+#' @param start_end_time \code{NULL} (default) or a list with the same length as number of tracks in \code{m}, with each element consisting of two \code{POSIXct} times: one start and one end time for alignment. If \code{NULL}, the start and end times of each track are retrieved from \code{m} and used for alignment.
 #' \itemize{
 #'   \item \code{"minimum"} to use the smallest temporal resolution of \code{m} (default)
 #'   \item \code{"maximum"} to use the largest temporal resolution of \code{m}
 #'   \item \code{"mean"} to use the rounded average temporal resolution of \code{m}
+#'   \item \code{"median"} to use the rounded median temporal resolution of \code{m}
 #' }
-#' @param unit character, temporal unit of \code{res}. Either \code{"secs"}, \code{"mins"}, \code{"hours"}, \code{"days"}. No effect, if \code{res} is not defined.
-#' @param spaceMethod character, either \code{"euclidean"}, \code{"greatcircle"} or \code{"rhumbline"}, indicating the interpolation function to be used to interpolate locations of \code{m} to the aligned time scale. Interpolation is performed using \code{move::interpolateTime}.
-#' @param ... deprecated arguments including \code{digit}.
+#' @param ... deprecated arguments, including \code{digit}, \code{unit}, \code{spaceMethod}.
 #'
-#' @return Aligned \code{move} or \code{moveStack}, ready to be used with \code{\link{frames_spatial}}-
+#' @return \code{move2} object, with aligned positions at uniform temporal scale computed from \code{m}, ready to be used by \code{\link{frames_spatial}}.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom move timestamps timeLag interpolateTime moveStack move split namesIndiv
-#' @importFrom lubridate second<- minute<- hour<- day<- 
-#'
-#' @seealso \code{\link{df2move}} \code{\link{frames_spatial}} \code{\link{frames_graph}}
+#' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}}
 #' 
 #' @examples
 #' library(moveVis)
-#' library(move)
+#' library(move2)
+#' library(lubridate)
 #' data("move_data")
 #' 
 #' # the tracks in move_data have irregular timestamps and sampling rates.
-#' # print unique timestamps and timeLag
-#' unique(timestamps(move_data))
-#' unique(unlist(timeLag(move_data, units = "secs")))
+#' # print unique timestamps and time lags
+#' unique(mt_time(move_data))
+#' unique(mt_time_lags(move_data, units = "s"))
 #' 
-#' # use align_move to correct move_data to a uniform time scale and lag using interpolation.
-#' # resolution of 4 minutes:
-#' m <- align_move(m = move_data, res = 4, unit = "mins")
-#' unique(unlist(timeLag(m, units = "mins")))
+#' # use align_move to interpolate move_data to a uniform time scale and lag.
+#' # e.g. setting a resolution of 4 minutes:
+#' m <- align_move(m = move_data, res = units::set_units(4, "min"))
+#' # check the result: records with attribute interpolate == TRUE have been added
+#' # all trajectories are now aligend to a uniform 4-minute resolution:
+#' unique(mt_time_lags(m, units = "min"))
 #' 
-#' # resolution of 1 hour:
-#' m <- align_move(move_data, res = 1, unit = "hours")
-#' unique(unlist(timeLag(m, units = "hours")))
+#' # same with resolution of 1 hour:
+#' m <- align_move(move_data, res = units::set_units(1, "hour"))
+#' unique(mt_time_lags(m, units = "hour"))
 #' 
 #' # resolution of 15 seconds:
-#' m <- align_move(move_data, res = 15, unit = "secs")
-#' unique(unlist(timeLag(m, units = "secs")))
+#' m <- align_move(move_data, res = units::set_units(15, "sec"))
+#' unique(mt_time_lags(m, units = "sec"))
 #' 
+#' # you can set the start/end times if needed:
+#' # first, let us retrieve the start and end time per track:
+#' start_end_time <- lapply(split(move_data, mt_track_id(move_data)), function(m){
+#'    range(mt_time(m), na.rm = T)
+#' })
+#' start_end_time
+#' # I want the start time to be at 00 minutes and 00 seconds for the first track:
+#' start_end_time[[1]] <- round(start_end_time[[1]])
+#' 
+#' m <- align_move(
+#'    move_data, res = units::set_units(4, "min"), 
+#'    start_end_time = start_end_time
+#' )
+#' mt_time(m[m$track == unique(mt_track_id(m))[1],])
+#' 
+#' @importFrom move2 mt_track_id mt_track_id mt_n_tracks mt_time_lags mt_time mt_track_id_column mt_time_column mt_as_move2 mt_set_track_data mt_track_data
+#' @importFrom sf st_coordinates st_sf st_as_sf st_sfc st_linestring st_crs st_geometry st_line_interpolate st_is_longlat sf_use_s2
+#' @importFrom units as_units ud_are_convertible deparse_unit set_units
 #' @export
 
-align_move <- function(m, res = "minimum", unit = NA, spaceMethod = "greatcircle", ..., verbose = TRUE){
-  
-  # deprecated arguments
-  extras <- list(...)
-  if("digit" %in% names(extras)) out("Argument 'digit' is deprecated. See ?align_move for details.", type = 2)
-  
-  ## check m and spaceMethod
+align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE){
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(!inherits(m, c("Move", "MoveStack"))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
-  m.length <- if(inherits(m, "MoveStack")) sapply(split(m), length) else length(m)
-  if(any(m.length < 2)) out(paste0("Individual track(s) ", paste0(which(m.length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations only. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
-  ## check resolution and define resolution
-  if(is.na(unit)) unit_ <- "secs" else unit_ <- unit
-  if(all(!c(inherits(res, "numeric"), inherits(res, "character")))) out("Argument 'res' must either be numeric or one of c('min', 'max', 'mean').", type = 3)
-  if(any(res == "min", res == "minimum")) res <- min(unique(unlist(timeLag(m, unit_))))
-  if(any(res == "max", res == "maximum")) res <- max(unique(unlist(timeLag(m, unit_))))
-  if(res == "mean") res <- round(mean(unique(unlist(timeLag(m, unit_)))))
-  res <- as.difftime(res, units = unit_)
+  # check inputs
+  .check_move2(m)
+  m_tracks <- split(m, mt_track_id(m))
+  m_length <- if(mt_n_tracks(m) > 1) sapply(split(m, mt_track_id(m)), nrow) else nrow(m)
+  if(any(m_length < 2)) out(paste0("Individual track(s) ", paste0(which(m.length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
-  # recalc unit
-  if(is.na(unit)){
-    if(all(res >= 60, res < 3600)) unit <- "mins"
-    if(all(res >= 3600, res < 86400)) unit <- "hours"
-    if(res >= 86400) unit <- "days"
-    res <- `units<-`(res, unit)
+  # check resolution and define resolution
+  if(all(!c(inherits(res, "units"), inherits(res, "character")))) out("Argument 'res' must either be a 'units' object or one of c('min', 'max', 'mean', 'median').", type = 3)
+  if(inherits(res, "units")){
+    time_unit <- as_units("s")
+    is_time_unit <- ud_are_convertible(deparse_unit(res), deparse_unit(time_unit))
+    if(!is_time_unit){
+      out(paste0("If argument 'res' is a 'units' object, a time unit must be used (such as seconds, minutes or hours). The provided unit '", units::deparse_unit(res), " cannot be used."), type = 3)
+    }
+  } else{
+    if(any(res == "min", res == "minimum")){
+      res <- min(mt_time_lags(m), na.rm = T)
+    } else if(any(res == "max", res == "maximum")){
+      res <- max(mt_time_lags(m), na.rm = T)
+    } else if(res == "mean"){
+      res <- round(mean(mt_time_lags(m), na.rm = T))
+    } else if(res == "median"){
+      res <- round(median(mt_time_lags(m), na.rm = T))
+    }
   }
   out(paste0("Temporal resolution of ",  round(as.numeric(res), digits = 2), " [", units(res), "] is used to align trajectories."))
   
-  # calculate time shoulders and full target timestamps
-  ts <- timestamps(m)
-  ts.shoulder <- list(min(ts), max(ts))
-  if(unit != "secs"){
-    set.fun <- list("mins" = `second<-`, "hours" = `minute<-`, "days" = `hour<-`)
-    set.fun <- set.fun[1:match(unit, names(set.fun))]
-    ts.shoulder <- lapply(ts.shoulder, function(x){
-      for(i in 1:length(set.fun)) x <- set.fun[[i]](x, value = 0)
-      return(x)
-    })
+  if(is.null(start_end_time)){
+    start_end_time <- range(mt_time(m), na.rm = T)
+  } else{
+    if(!all(length(start_end_time) == 2, inherits(start_end_time, "POSIXt"))) out("Argument 'start_end_time' must consist of two POSIXct times (one start time and one end time for alignment), if defined.", type = 3)
   }
-  ts.target <- seq.POSIXt(ts.shoulder[[1]], ts.shoulder[[2]], by = res)
   
-  # calculate new timestamps per trajectory
-  m.indi <- if(inherits(m, "MoveStack")) split(m) else list(m)
-  ts.m <- lapply(m.indi, timestamps)
-  ts.t <- lapply(ts.m, function(x) ts.target[ts.target >= min(x) & ts.target <= max(x)])
+  # move2 to points per track
+  m$interpolated <- FALSE
+  m_sf_points <- lapply(m_tracks, function(.m){
+    class(.m) <- setdiff(class(.m), "move2")
+    return(.m)
+  })
+  
+  # points per track to single linestring per track (linear)
+  coords <- lapply(m_sf_points, function(.m) st_coordinates(.m))
+  m_sf_lines <- lapply(coords, function(x) st_sf(geometry = st_sfc(st_linestring(x), crs = st_crs(m))))
+  
+  # calculate target times for aligning, calculate normalized distance
+  times_target <- seq.POSIXt(start_end_time[1], start_end_time[2], by = set_units(res, "s"))
+  times_target <- lapply(m_tracks, function(x){
+    ts <- mt_time(x)
+    times_target[which.minpos(times_target - min(ts)):which.minpos(max(ts) - times_target)]
+  })
   
   # check whether resolution fits data
-  i.finer <- which(sapply(ts.t, function(x) length(x) == 0))
-  if(length(i.finer) > 0){
-    if(length(i.finer) == length(m.indi)){
-      out("The temporal coverage of all trajectories of 'm' is shorter than the specified resolution. You may want to choose a finer resolution.", type = 3)
-    } else{
-      out(paste0("The full temporal coverage of at least one trajectory is shorter than the specified resolution. You may want to choose a finer resolution.\nTrajectories that are excluded: '", paste0(namesIndiv(m)[i.finer], collapse = "', '"), "'"), type = 2)
-    }
-    m.indi <- m.indi[-i.finer]
-    ts.t <- ts.t[-i.finer]
+  if(any(sapply(times_target, length) == 2)){
+    out(paste0("Trajectory alignment using the chosen temporal resolution of ",  round(as.numeric(res), digits = 2), " [", units(res), "] results in only two positions for at least one track in 'm'. You may want to choose a finer resolution."), type = 2)
+  }
+  if(any(sapply(times_target, length) < 2)){
+    out(paste0("The chosen temporal resolution of ",  round(as.numeric(res), digits = 2), " [", units(res), "] is to coarse for the provided data. You may want to choose a finer resolution."), type = 3)
   }
   
-  # interpolate
-  m <- quiet(moveStack(mapply(x = m.indi, y = ts.t, function(x, y) interpolateTime(x, y, spaceMethod))))
-  m[,c("x", "y")] <- m@coords
-  m[,"time"] <- timestamps(m)
-  return(m)
+  # interpolate points on linestring by normalized distance (future: make use of ctmm?)
+  nd <- lapply(1:length(m_tracks), function(i) as.numeric(difftime(times_target[[i]], min(mt_time(m_tracks[[i]])), units = "secs")) / as.numeric(diff(range(mt_time(m_tracks[[i]])), units = "s")))
+  
+  if(all(st_is_longlat(m), sf_use_s2())){
+    m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_as_sf(s2::s2_interpolate_normalized(st_geometry(.m), .nd)), SIMPLIFY = T)
+  } else{
+    m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_line_interpolate(st_geometry(.m), .nd), SIMPLIFY = T)
+  }
+  
+  # assemble sf object
+  m_aligned <- lapply(1:length(m_tracks), function(i) st_sf(
+    interpolated = c(rep(FALSE, nrow(m_tracks[[i]])), rep(TRUE, length(m_aligned[[i]]))),
+    track = names(m_tracks)[i],
+    timestamp = c(mt_time(m_tracks[[i]]), times_target[[i]]),
+    geometry = c(st_geometry(m_tracks[[i]]), m_aligned[[i]])
+  ))
+  m_aligned <- do.call(rbind, m_aligned)
+  colnames(m_aligned) <- c("interpolated", mt_track_id_column(m), mt_time_column(m), attr(m, "sf_column"))
+  
+  # add attributes from user move2 object
+  names_attr <- names(m)[!(names(m) %in% names(m_aligned))]
+  df_attr <- data.frame(matrix(NA, nrow(m_aligned), length(names_attr)))
+  colnames(df_attr) <- names_attr
+  m_aligned <- cbind(m_aligned, df_attr)
+  m_aligned <- m_aligned[,match(colnames(m), colnames(m_aligned))]
+  
+  # add aligned data to original data
+  m_sf <- m
+  class(m_sf) <- setdiff(class(m_sf), "move2")
+  m_aligned <- rbind(m_sf, m_aligned)
+  
+  # coerce sf to move2
+  m_aligned <- mt_as_move2(m_aligned, time_column = mt_time_column(m), track_id_column = mt_track_id_column(m))
+  mt_track_id(m_aligned) <- as.factor(mt_track_id(m_aligned))
+  m_aligned <- mt_set_track_data(m_aligned, mt_track_data(m))
+  
+  # reorder by time
+  m_aligned <- m_aligned[order(m_aligned$timestamp),]
+  m_aligned <- m_aligned[order(mt_track_id(m_aligned)),]
+  
+  # for now, we just return the aligned data
+  m_aligned <- m_aligned[m_aligned$interpolated,]
+  m_aligned$interpolated <- NULL
+  
+  return(m_aligned)
 }

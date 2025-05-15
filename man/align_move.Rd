@@ -4,67 +4,75 @@
 \alias{align_move}
 \title{Align movement data}
 \usage{
-align_move(
-  m,
-  res = "minimum",
-  unit = NA,
-  spaceMethod = "greatcircle",
-  ...,
-  verbose = TRUE
-)
+align_move(m, res = "minimum", start_end_times = NULL, ..., verbose = TRUE)
 }
 \arguments{
-\item{m}{\code{move} or \code{moveStack}, which is allowed to contain irregular timestamps and diverging temporal resolutions to be aligned (see \code{\link{df2move}} to convert a \code{data.frame} to a \code{move} object).}
+\item{m}{\code{move2} object, which is allowed to contain irregular timestamps and diverging temporal resolutions.}
 
-\item{res}{either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:
+\item{res}{either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:}
+
+\item{start_end_times}{\code{NULL} (default) or a list with the same length as number of tracks in \code{m}, with each element consisting of two \code{POSIXct} times: one start and one end time for alignment. If \code{NULL}, the start and end times of each track are retrieved from \code{m} and used for alignment.
 \itemize{
   \item \code{"minimum"} to use the smallest temporal resolution of \code{m} (default)
   \item \code{"maximum"} to use the largest temporal resolution of \code{m}
   \item \code{"mean"} to use the rounded average temporal resolution of \code{m}
+  \item \code{"median"} to use the rounded median temporal resolution of \code{m}
 }}
 
-\item{unit}{character, temporal unit of \code{res}. Either \code{"secs"}, \code{"mins"}, \code{"hours"}, \code{"days"}. No effect, if \code{res} is not defined.}
-
-\item{spaceMethod}{character, either \code{"euclidean"}, \code{"greatcircle"} or \code{"rhumbline"}, indicating the interpolation function to be used to interpolate locations of \code{m} to the aligned time scale. Interpolation is performed using \code{move::interpolateTime}.}
-
-\item{...}{deprecated arguments including \code{digit}.}
-
-\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
+\item{...}{deprecated arguments, including \code{digit}, \code{unit}, \code{spaceMethod}.}
 }
 \value{
-Aligned \code{move} or \code{moveStack}, ready to be used with \code{\link{frames_spatial}}-
+\code{move2} object, with aligned positions at uniform temporal scale computed from \code{m}, ready to be used by \code{\link{frames_spatial}}.
 }
 \description{
 This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
-This prepares the provided movement data to be interpretable by \code{\link{frames_spatial}}, which necessitates a uniform time scale and
-a consistent, unique temporal resolution for all moving individuals to turn recording times into frame times.
+This prepares the provided movement data to be usable by \code{\link{frames_spatial}}, which requires a uniform time scale and
+a consistent, unique temporal resolution for all tracks.
 }
 \examples{
 library(moveVis)
-library(move)
+library(move2)
+library(lubridate)
 data("move_data")
 
 # the tracks in move_data have irregular timestamps and sampling rates.
-# print unique timestamps and timeLag
-unique(timestamps(move_data))
-unique(unlist(timeLag(move_data, units = "secs")))
+# print unique timestamps and time lags
+unique(mt_time(move_data))
+unique(mt_time_lags(move_data, units = "s"))
 
-# use align_move to correct move_data to a uniform time scale and lag using interpolation.
-# resolution of 4 minutes:
-m <- align_move(m = move_data, res = 4, unit = "mins")
-unique(unlist(timeLag(m, units = "mins")))
+# use align_move to interpolate move_data to a uniform time scale and lag.
+# e.g. setting a resolution of 4 minutes:
+m <- align_move(m = move_data, res = units::set_units(4, "min"))
+# check the result: records with attribute interpolate == TRUE have been added
+# all trajectories are now aligend to a uniform 4-minute resolution:
+unique(mt_time_lags(m, units = "min"))
 
-# resolution of 1 hour:
-m <- align_move(move_data, res = 1, unit = "hours")
-unique(unlist(timeLag(m, units = "hours")))
+# same with resolution of 1 hour:
+m <- align_move(move_data, res = units::set_units(1, "hour"))
+unique(mt_time_lags(m, units = "hour"))
 
 # resolution of 15 seconds:
-m <- align_move(move_data, res = 15, unit = "secs")
-unique(unlist(timeLag(m, units = "secs")))
+m <- align_move(move_data, res = units::set_units(15, "sec"))
+unique(mt_time_lags(m, units = "sec"))
+
+# you can set the start/end times if needed:
+# first, let us retrieve the start and end time per track:
+start_end_times <- lapply(split(move_data, mt_track_id(move_data)), function(m){
+   range(mt_time(m), na.rm = T)
+})
+start_end_times
+# I want the start time to be at 00 minutes and 00 seconds for the first track:
+start_end_times[[1]] <- round(start_end_times[[1]])
+
+m <- align_move(
+   move_data, res = units::set_units(4, "min"), 
+   start_end_times = start_end_times
+)
+mt_time(m[m$track == unique(mt_track_id(m))[1],])
 
 }
 \seealso{
-\code{\link{df2move}} \code{\link{frames_spatial}} \code{\link{frames_graph}}
+\code{\link{frames_spatial}} \code{\link{frames_graph}}
 }
 \author{
 Jakob Schwalb-Willmann
