@@ -3,8 +3,7 @@
 #' \code{frames_spatial} creates frames from movement and map/raster data. If no custom raster data is provided, a basemap is pulled from a map tile service using the \code{basemaps} package. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 #'
 #' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
-#' @param r_list list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).
-#' @param r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.
+#' @param r \code{terra} object, either a \code{SpatRaster} or a \code{SpatRasterDataset}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue). r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.
 #' @param r_type character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.
 #' @param fade_raster logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.
 #' @param crop_raster logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.
@@ -28,6 +27,7 @@
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
 #' @param equidistant logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.
 #' @param ext \code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).
+#' @param crs \code{sf crs} object. This is the projection that is used for visualzing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.
 #' @param map_service character, a map service, e.g. \code{"osm"}. Use \code{\link{get_maptypes}} for a list of available map services and types..
 #' @param map_type character, a map type, e.g. \code{"streets"}. Use \code{\link{get_maptypes}} for available map services and types.
 #' @param map_res numeric, resolution of base map in range from 0 to 1.
@@ -60,10 +60,6 @@
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
-#' @importFrom raster compareCRS nlayers crs
-#' @importFrom sf st_crs st_bbox
-#' @importFrom move n.indiv moveStack
-#' @importFrom basemaps basemap_raster
 #' 
 #' @examples 
 #' library(moveVis)
@@ -155,26 +151,47 @@
 #' # see ?animate_frames on how to animate a frames
 #' }
 #' @seealso \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
+#' 
+#' @importFrom basemaps get_maptypes basemap_terra
+#' @importFrom sf st_crs st_transform st_coordinates st_geometry<- st_geometry st_as_sf st_bbox
+#' @importFrom move2 mt_time mt_n_tracks mt_track_id
+#' @importFrom terra time project sds    
 #' @export
 
-frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
-                           margin_factor = 1.1, equidistant = NULL, ext = NULL, path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
-                           path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
+frames_spatial <- function(
+    m, r = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
+    margin_factor = 1.1, equidistant = NULL, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
+    path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
   
-  ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
-  if(inherits(m, "Move")) m <- moveStack(m)
+  extras <- list(...)
   
-  if(!is.null(r_list)){
-    if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
-    if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
-    if(length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
-    if(!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
+  # check input arguments
+  .check_move2(m)
+  if(st_crs(m) != crs) m <- st_transform(m, crs = crs)
+  
+  if(!is.null(extras$r_list)) out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects.", type = 3)
+  if(!is.null(r)){
+    if(inherits(r, "SpatRaster")){
+      r_list <- list(r)
+      r_times <- list(time(r))
+    }
+    if(inherits(r, "SpatRasterDataset")){
+      r_list <- lapply(r, function(x) x)
+      r_times <- time(r)
+    }
+    if(!inherits(r, c("SpatRaster", "SpatRasterDataset"))) out("Argument 'r' must be a terra raster object of class SpatRaster or SpatRasterDataset.", type = 3)
+    #if(any(!sapply(r_list, function(.r) st_crs(crs(.r)) == st_crs(m))))  out("Coordinate reference systems of 'm' and 'r' differ.", type = 3)
+    if(st_crs(terra::crs(r)) != crs) r_list <- lapply(r_list, project, crs$wkt)
+    
+    if(length(unique(sapply(r_list, nlyr))) > 1) out("Number of layers per raster object in 'r' differ.", type = 3)
+    if(!all(sapply(r_times, inherits, "POSIXct"))) out("Times of r must be of class 'POSIXct' (see ?terra::time).", type = 3)
+    
     if(!isTRUE(r_type %in% c("gradient", "discrete", "RGB"))) out("Argument 'r_type' must eihter be 'gradient', 'discrete' or 'RGB'.", type = 3)
     if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
     if(!is.logical(crop_raster)) out("Argument 'crop_raster' has to be either TRUE or FALSE.", type = 3)
   } else{
+    r_list <- r_times <- NULL
     if(isFALSE(tolower(map_service) %in% names(get_maptypes()))) out(paste0("Argument 'map_service' must be ", paste0(names(moveVis::get_maptypes()), collapse = ", ")))
     if(isFALSE(tolower(map_type) %in% get_maptypes(map_service))) out("The defined map type is not supported for the selected service. Use get_maptypes() to get all available map types.", type = 3)
     if(!is.numeric(map_res)) out("Argument 'map_res' must be 'numeric'.", type = 3)
@@ -191,21 +208,15 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   catch <- sapply(1:length(num.args), function(i) if(!is.numeric(num.args[[i]])) out(paste0("Argument '", names(num.args)[[i]], "' must be of type 'numeric'."), type = 3))
   char.args <- c(path_end = path_end, path_join = path_join, path_legend_title = path_legend_title)
   catch <- sapply(1:length(char.args), function(i) if(!is.character(char.args[[i]])) out(paste0("Argument '", names(char.args)[[i]], "' must be of type 'numeric'."), type = 3))
-  extras <- list(...)
   
-  #if(!is.null(ext)){
-  #  if(!inherits(ext, "Extent")) out("Argument 'ext' must be of type 'Extent' (see raster::extent), if defined.", type = 3)
-  #  if(isTRUE(ext < extent(m))) out("The frame extent defined using argument 'ext' is smaller than extent(m). Be aware that movements outside of 'ext' will be clipped.", type = 2)
-  #}
   if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
-  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
+  if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
-  
   if(all(isTRUE(cross_dateline), !is.null(r_list))) out("Argument 'cross_dateline' only works with default base maps. Arguments 'r_list' and 'r_times' cannot be used, if cross_dateline = TRUE.\nTip: Reproject 'm' to another CRS that better suits the region if you want to use 'r_list' with tracks crossing the dateline.", type = 3)
   
-  ## check m time conformities
+  # check m time conformities
   out("Checking temporal alignment...")
   .time_conform(m)
   
@@ -217,26 +228,44 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
     if(m.crs != st_crs(4326)) out("Since arugment 'cross_dateline' is TRUE, 'm' will be transformed to Geographic Coordinates (EPSG 4326, Lat/Lon WGS84)", type = 2)
     m.crs <- st_crs(4326) 
   }
-  m.df <- .m2df(m, path_colours = path_colours, return_latlon = cross_dateline) # create data.frame from m with frame time and colour
-  .stats(n.frames = max(m.df$frame))
+  if(isTRUE(cross_dateline)) m <- st_transform(m, st_crs(4326))
   
-  gg.ext <- .ext(m.df, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
+  # add some info to m
+  m$time_chr <- as.character(mt_time(m))
+  m$time <- mt_time(m)
+  m$frame <- sapply(mt_time(m), function(x) which(sort(unique(mt_time(m))) == x))
   
+  # path colours
+  if(any(is.na(path_colours))){
+    path_colours <- .standard_colours(mt_n_tracks(m))
+  }
+  if(is.null(m$colour)){
+    m$colour <- repl_vals(as.character(mt_track_id(m)), unique(as.character(mt_track_id(m))), path_colours[1:mt_n_tracks(m)])
+  }
+  m <- m[order(m$frame),]
+  m$name <- mt_track_id(m)
   
-  ## shift coordinates crossing dateline
+  # print stats
+  .stats(n.frames = max(m$frame))
+  
+  gg.ext <- .ext(m, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
+  
+  # shift coordinates crossing dateline
   if(isTRUE(cross_dateline)){
-    rg <- c("pos" = diff(range(m.df$x[m.df$x >= 0])), "neg" = diff(range(m.df$x[m.df$x < 0])))
+    coords <- st_coordinates(m)
+    rg <- c("pos" = diff(range(coords[,1][coords[,1] >= 0])), "neg" = diff(range(coords[,1][coords[,1] < 0])))
     if(which.max(rg) == 1){
-      m.df$x[m.df$x < 0] <- 180+m.df$x[m.df$x < 0]+180
+      coords[,1][coords[,1] < 0] <- 180+coords[,1][coords[,1] < 0]+180
     } else{
-      m.df$x[m.df$x >= 0] <- -180+m.df$x[m.df$x >= 0]-180
+      coords[,1][coords[,1] >= 0] <- -180+coords[,1][coords[,1] >= 0]-180
     }
+    st_geometry(m) <- st_geometry(st_as_sf(as.data.frame(coords), coords = c("X", "Y"), crs = st_crs(m)))
   }
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     out("Retrieving and compositing basemap imagery...")
-    r_list <- list(suppressWarnings(basemap_raster(
+    r_list <- list(suppressWarnings(basemap_terra(
       ext = gg.ext, map_service = map_service, map_type = map_type,
       map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose,
       custom_crs = as.character(m.crs$wkt), ...
@@ -250,28 +279,33 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
   
   # calculate frames extents and coord labes
   if(isTRUE(cross_dateline)){
-    gg.ext <- st_bbox(extent(r_list[[1]]), crs = m.crs)
+    gg.ext <- st_bbox(ext(r_list[[1]]), crs = m.crs)
     
     # use coord_equal for dateline crossingngs in EPSG:4326 only
-    m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+    m$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
                                          expand = F, clip = "on"))
-    m.df$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels))
-    m.df$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
+    m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels))
+    m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
   } else{
     
     # use coord_sf for all other cases
-    m.df$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+    m$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
                                          expand = F, crs = st_crs(m), datum = st_crs(m), clip = "on"))
-    m.df$scaley <- m.df$scalex <- NULL
+    m$scaley <- m$scalex <- NULL
   }
   
   out("Assigning raster maps to frames...")
-  r_list <- .rFrames(r_list, r_times, m.df, gg.ext, fade_raster, crop_raster = crop_raster)
+  n_r <- length(r_list)
+  r_list <- .rFrames(r_list, r_times, m, gg.ext, fade_raster, crop_raster = crop_raster)
+  
+  r <- sds(r_list)
+  time(r) <- mapply(x = as.list(sort(unique(mt_time(m)))), y = lapply(r_list, nlyr), function(x, y) rep(x, y), SIMPLIFY = F)
   
   # create frames object
   frames <- list(
-    move_data = m.df,
-    raster_data = r_list,
+    m = m,
+    r = r,
+    crs = crs,
     aesthetics = c(list(
       equidistant = equidistant,
       path_size = path_size,
@@ -292,7 +326,9 @@ frames_spatial <- function(m, r_list = NULL, r_times = NULL, r_type = "gradient"
       gg.ext = gg.ext,
       map_service = map_service,
       map_type = map_type,
-      r_type = r_type),
+      r_type = r_type,
+      fade_raster = fade_raster,
+      n_r = n_r),
       maxpixels = if(!is.null(extras$maxpixels)) extras$maxpixels else 500000,
       alpha = if(!is.null(extras$alpha)) extras$alpha else 1,
       maxColorValue = if(!is.null(extras$maxColorValue)) extras$maxColorValue else NA),
