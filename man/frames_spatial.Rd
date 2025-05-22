@@ -6,8 +6,7 @@
 \usage{
 frames_spatial(
   m,
-  r_list = NULL,
-  r_times = NULL,
+  r = NULL,
   r_type = "gradient",
   fade_raster = FALSE,
   crop_raster = TRUE,
@@ -19,6 +18,7 @@ frames_spatial(
   margin_factor = 1.1,
   equidistant = NULL,
   ext = NULL,
+  crs = if (is.null(r)) st_crs(3857) else st_crs(terra::crs(r)),
   path_size = 3,
   path_end = "round",
   path_join = "round",
@@ -43,9 +43,7 @@ frames_spatial(
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
 
-\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
-
-\item{r_times}{list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
+\item{r}{\code{terra} object, either a \code{SpatRaster} or a \code{SpatRasterDataset}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue). r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
 
 \item{r_type}{character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
 
@@ -70,6 +68,8 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 \item{equidistant}{logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.}
 
 \item{ext}{\code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).}
+
+\item{crs}{\code{sf crs} object. This is the projection that is used for visualzing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.}
 
 \item{path_size}{numeric, size of each path.}
 

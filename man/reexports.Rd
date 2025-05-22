@@ -13,7 +13,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{basemaps}{\code{\link[basemaps:cache]{flush_cache}}, \code{\link[basemaps]{get_maptypes}}}
+  \item{basemaps}{\code{\link[basemaps:cache]{flush_cache}}, \code{\link[basemaps:maptypes]{get_maptypes}}}
 
   \item{magrittr}{\code{\link[magrittr:pipe]{\%>\%}}}
 }}

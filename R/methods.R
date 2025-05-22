@@ -11,23 +11,25 @@
 #' @rdname print
 #' @export
 print.moveVis <- function(x, ...) {
+  crs_params <- sf:::crs_parameters(st_crs(x$m))
   if(inherits(x, "frames_spatial")){
-    cat(paste0("Spatial frames of class moveVis\n"))
-    cat(paste0("number of frames: ", as.character(length(x)), "\n"))
-    cat(paste0("temporal extent:  ", paste0(x$move_data$time_chr[1], "' to '", x$move_data$time_chr[nrow(x$move_data)]), "\n"))
-    cat(paste0("spatial extent:   ", paste0(mapply(x = names(x$aesthetics$gg.ext), y = x$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
-    cat(paste0("raster type:      ", x$aesthetics$r_type, "\n"))
-    cat(paste0("basemap:          ", if(x$aesthetics$map_service != "custom") paste0("'", x$aesthetics$map_type, "' from '", x$aesthetics$map_service, "'") else "custom", "\n"))
-    cat(paste0("names:            '", paste0(unique(x$move_data$name), collapse = "', '"), "'\n"))
-    #cat(paste0("added function:   ", length(x$additions), "\n"))
+    cat(paste0("moveVis frames (spatial) "))
+    .stats(n.frames = max(x$m$frame), lead_text = ", ", return_char = F)
+    cat(paste0("Temporal extent: ", paste0(min(x$m$time), " to ", max(x$m$time), "\n")))
+    cat(paste0("Spatial extent:  ", paste0(mapply(x = names(x$aesthetics$gg.ext), y = x$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
+    if(crs_params$IsGeographic) cat(paste0("Geodetic CRS:    ", crs_params$Name, "\n")) else{
+      cat(paste0("Projected CRS:   ", crs_params$Name, "\n"))
+    }
+    cat(paste0("Basemap:         ", if(x$aesthetics$map_service != "custom") paste0("'", x$aesthetics$map_type, "' from '", x$aesthetics$map_service, "'") else paste0("SpatRaster*: ", x$aesthetics$n_r, " user-supplied raster(s)", if(x$aesthetics$fade_raster) ", interpolated" else ", not interpolated"), "\n"))
+    cat(paste0("Names:           '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
   }
   
   if(inherits(x, "frames_graph")){
     cat(paste0("Graph frames of class moveVis\n"))
     cat(paste0("number of frames: ", as.character(length(x)), "\n"))
-    cat(paste0("temporal extent:  ", paste0(x$move_data$time_chr[1], "' to '", x$move_data$time_chr[nrow(x$move_data)]), "\n"))
+    cat(paste0("temporal extent:  ", paste0(x$m$time_chr[1], "' to '", x$m$time_chr[nrow(x$m)]), "\n"))
     cat(paste0("raster type:      ", x$aesthetics$r_type, "\n"))
-    cat(paste0("names:            '", paste0(unique(x$move_data$name), collapse = "', '"), "'\n"))
+    cat(paste0("names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
     #cat(paste0("added function:   ", length(frames$additions), "\n"))
   }
   
@@ -36,7 +38,7 @@ print.moveVis <- function(x, ...) {
     cat(paste0("number of frames: ", as.character(length(x)), "\n"))
     cat(paste0("temporal extent:  -"))
     cat(paste0("raster type:      -"))
-    cat(paste0("names:            '", paste0(unique(x$move_data$name), collapse = "', '"), "'\n"))
+    cat(paste0("names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
   }
 }
 
@@ -55,7 +57,7 @@ length.moveVis <- function(x){
   if(inherits(x, "frames_joined")){
     length(x$frames_lists[[1]])
   }else{
-    length(unique(x$move_data$frame))
+    max(x$m$frame)
   }
 }
 
@@ -135,12 +137,13 @@ rev.moveVis <- function(x){
   if(any(bounds)) warning(paste0("Subscript extends beyond bounds and is thus truncated. Length of frames is ", length(x), "."), call. = FALSE, immediate. = FALSE)
   i <- i[!bounds]
   
-  # seubsetting
+  # subsetting
   .sub <- function(x, i){
-    sub <- apply(sapply(i, function(j) x$move_data$frame == j), MARGIN = 1, any)
+    sub <- apply(sapply(i, function(j) x$m$frame == j), MARGIN = 1, any)
     
-    x$move_data <- x$move_data[sub,]
-    if(length(x$raster_data) > 1) x$raster_data <- x$raster_data[sub]
+    x$m <- x$m[sub,]
+    if(length(x$r) > 1) x$r <- x$r[which(sub)]
+    if(inherits(x$r, "SpatRaster")) x$r <- terra::sds(x$r)
     return(x)
   }
   

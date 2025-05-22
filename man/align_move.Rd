@@ -4,14 +4,14 @@
 \alias{align_move}
 \title{Align movement data}
 \usage{
-align_move(m, res = "minimum", start_end_times = NULL, ..., verbose = TRUE)
+align_move(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE)
 }
 \arguments{
 \item{m}{\code{move2} object, which is allowed to contain irregular timestamps and diverging temporal resolutions.}
 
 \item{res}{either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:}
 
-\item{start_end_times}{\code{NULL} (default) or a list with the same length as number of tracks in \code{m}, with each element consisting of two \code{POSIXct} times: one start and one end time for alignment. If \code{NULL}, the start and end times of each track are retrieved from \code{m} and used for alignment.
+\item{start_end_time}{\code{NULL} (default) or a list with the same length as number of tracks in \code{m}, with each element consisting of two \code{POSIXct} times: one start and one end time for alignment. If \code{NULL}, the start and end times of each track are retrieved from \code{m} and used for alignment.
 \itemize{
   \item \code{"minimum"} to use the smallest temporal resolution of \code{m} (default)
   \item \code{"maximum"} to use the largest temporal resolution of \code{m}
@@ -20,6 +20,8 @@ align_move(m, res = "minimum", start_end_times = NULL, ..., verbose = TRUE)
 }}
 
 \item{...}{deprecated arguments, including \code{digit}, \code{unit}, \code{spaceMethod}.}
+
+\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
 \code{move2} object, with aligned positions at uniform temporal scale computed from \code{m}, ready to be used by \code{\link{frames_spatial}}.
@@ -57,16 +59,16 @@ unique(mt_time_lags(m, units = "sec"))
 
 # you can set the start/end times if needed:
 # first, let us retrieve the start and end time per track:
-start_end_times <- lapply(split(move_data, mt_track_id(move_data)), function(m){
+start_end_time <- lapply(split(move_data, mt_track_id(move_data)), function(m){
    range(mt_time(m), na.rm = T)
 })
-start_end_times
+start_end_time
 # I want the start time to be at 00 minutes and 00 seconds for the first track:
-start_end_times[[1]] <- round(start_end_times[[1]])
+start_end_time[[1]] <- round(start_end_time[[1]])
 
 m <- align_move(
    move_data, res = units::set_units(4, "min"), 
-   start_end_times = start_end_times
+   start_end_time = start_end_time
 )
 mt_time(m[m$track == unique(mt_track_id(m))[1],])
 

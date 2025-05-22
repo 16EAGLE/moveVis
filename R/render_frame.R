@@ -49,7 +49,7 @@ render_frame <- function(frames, i = length(frames)){
     if(inherits(frames, "frames_spatial")){
       gg <- gg.spatial(
         x = .df4gg(
-          m.df = frames$move_data,
+          m = frames$m,
           i = i,
           tail_length = frames$aesthetics$tail_length,
           path_size = frames$aesthetics$path_size,
@@ -60,14 +60,14 @@ render_frame <- function(frames, i = length(frames)){
           trace_colour = frames$aesthetics$trace_colour,
           path_fade = frames$aesthetics$path_fade),
         y = gg_raster(
-          r = frames$raster_data[[if(length(frames$raster_data) > 1) i else 1]],
+          r = frames$r[[if(length(frames$r) > 1) i else 1]],
           r_type = frames$aesthetics$r_type,
           maxpixels = frames$aesthetics$maxpixels,
           alpha = frames$aesthetics$alpha,
           maxColorValue = frames$aesthetics$maxColorValue,
           add_coord = FALSE),
-        m_names = frames$move_data$name,
-        m_colour = frames$move_data$colour,
+        m_names = frames$m$name,
+        m_colour = frames$m$colour,
         path_end = frames$aesthetics$path_end,
         path_join = frames$aesthetics$path_join,
         path_mitre = frames$aesthetics$path_mitre,
@@ -83,8 +83,8 @@ render_frame <- function(frames, i = length(frames)){
     if(inherits(frames, "frames_graph")){
       if(frames$graph_type == "flow"){
         gg <- .gg_flow(
-          x = frames$move_data[frames$move_data$frame <= i,],
-          y = frames$move_data,
+          x = frames$m[frames$m$frame <= i,],
+          y = frames$m,
           path_legend = frames$aesthetics$path_legend,
           path_legend_title = frames$aesthetics$path_legend_title,
           path_size = frames$aesthetics$path_size,
