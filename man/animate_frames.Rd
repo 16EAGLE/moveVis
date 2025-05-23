@@ -19,8 +19,6 @@ animate_frames(
 )
 }
 \arguments{
-\item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
-
 \item{out_file}{character, the output file path, e.g. "/dir/to/file.mov". The file extension must correspond to a file format known by the available renderers of the running system. Use \code{\link{suggest_formats}} to get a vector of suggested known file formats.}
 
 \item{fps}{numeric, the number of frames to be displayed per second. Default is 2.}
@@ -37,8 +35,6 @@ animate_frames(
 
 \item{overwrite}{logical, wether to overwrite an existing file, if \code{out_file} is already present.}
 
-\item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
-
 \item{...}{additional arguments to be passed to the render function.}
 }
 \value{
@@ -54,9 +50,9 @@ An appropriate render function is selected depending on the file extension in \c
 library(moveVis)
 library(move)
 
-data("move_data", "basemap_data")
+data("m", "basemap_data")
 # align movement
-m <- align_move(move_data, res = 4, unit = "mins")
+m <- align_move(m, res = 4, unit = "mins")
 
 # create spatial frames with frames_spatial:
 r_list <- basemap_data[[1]]

@@ -29,9 +29,9 @@
 #' library(moveVis)
 #' library(move)
 #' 
-#' data("move_data", "basemap_data")
+#' data("m", "basemap_data")
 #' # align movement
-#' m <- align_move(move_data, res = 4, unit = "mins")
+#' m <- align_move(m, res = 4, unit = "mins")
 #' 
 #' # create spatial frames with frames_spatial:
 #' r_list <- basemap_data[[1]]
@@ -77,23 +77,25 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   
   out_ext <- tolower(utils::tail(unlist(strsplit(out_file, "[.]")), n=1))
   out("Rendering animation...")
+  class(frames$m) <- class(frames$m) %>% setdiff("move2")
   if(end_pause > 0){
     n.add <- round(end_pause*fps)
     
     # add frames
-    if(length(frames$raster_data) > 1){
-      frames$raster_data <- c(frames$raster_data, rep(frames$raster_data[max(frames$move_data$frame)], n.add))
+    if(length(frames$r) > 1){
+      frames$r <- c(frames$r, rep(frames$r[max(frames$m$frame)], n.add))
     }
     
-    frames$move_data <- rbind(frames$move_data,
-          do.call(
-            rbind, 
-            lapply(1:n.add, function(x){
-              nf <- frames$move_data[frames$move_data$frame == max(frames$move_data$frame),]
-              nf$frame <- nf$frame + 1
-              return(nf)
-            })
-          )
+    frames$m <- rbind(
+      frames$m,
+      do.call(
+        rbind, 
+        lapply(1:n.add, function(x){
+          nf <- frames$m[frames$m$frame == max(frames$m$frame),]
+          nf$frame <- nf$frame + 1
+          return(nf)
+        })
+      )
     )
     
     #frames <- append(frames, rep(utils::tail(frames, n = 1), times = n.add))
@@ -111,7 +113,9 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
     file <- file.path(frames_dir, "frame_%05d.png")
     grDevices::png(file, width = width, height = height, res = res)
     graphics::par(ask = FALSE)
-    .lapply(1:length(frames), function(i) quiet(print(frames[[i]])), moveVis.n_cores = 1)
+    .lapply(1:length(frames), function(i){
+      quiet(print(frames[[i]]))
+    }, moveVis.n_cores = 1)
     grDevices::dev.off()
     frames_files <- list.files(frames_dir, full.names = TRUE)
     

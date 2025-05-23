@@ -524,8 +524,9 @@ repl_vals <- function(data, x, y){
 }
 
 #' frame plotting function
-#' @importFrom ggplot2 aes theme scale_colour_manual theme_bw guides guide_legend scale_colour_identity scale_linewidth scale_linetype
+#' @importFrom ggplot2 aes theme geom_sf scale_colour_manual theme_bw guides guide_legend scale_colour_identity scale_linewidth scale_linetype
 #' @importFrom sf st_coordinates st_drop_geometry st_linestring st_sf st_sfc st_crs
+#' @importFrom ggnewscale new_scale_colour
 #' @noRd
 gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant, tail_length){
   
@@ -534,6 +535,10 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
     sub <- x$name == .name
     if(any(sub)){
       .x <- x[sub,]
+      if(length(which(sub)) == 1){
+        .x <- rbind(.x, .x)
+      }
+      
       .x_coords <- st_coordinates(.x)
       .x_cols <- st_drop_geometry(.x)
       
@@ -554,10 +559,10 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   
   # plot
   p <- y + geom_sf(data = x_lines,
-    aes(colour = tail_colour, linewidth = tail_size),
+    aes(colour = tail_colour), linewidth = x_lines$tail_size,
     lineend = path_end, linejoin = path_join, linemitre = path_mitre, arrow = path_arrow,
     alpha = path_alpha, na.rm = T
-  ) + scale_colour_identity() + scale_linewidth(guide = "none")
+  ) + scale_colour_identity()
    
   # # points
   # ggplot(x) + geom_sf(aes(colour = tail_colour, size = tail_size)) + 

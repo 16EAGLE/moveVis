@@ -14,7 +14,7 @@ print.moveVis <- function(x, ...) {
   crs_params <- sf:::crs_parameters(st_crs(x$m))
   if(inherits(x, "frames_spatial")){
     cat(paste0("moveVis frames (spatial) "))
-    .stats(n.frames = max(x$m$frame), lead_text = ", ", return_char = F)
+    .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F)
     cat(paste0("Temporal extent: ", paste0(min(x$m$time), " to ", max(x$m$time), "\n")))
     cat(paste0("Spatial extent:  ", paste0(mapply(x = names(x$aesthetics$gg.ext), y = x$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
     if(crs_params$IsGeographic) cat(paste0("Geodetic CRS:    ", crs_params$Name, "\n")) else{
