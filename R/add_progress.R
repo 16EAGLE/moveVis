@@ -4,12 +4,13 @@
 #'
 #' @inheritParams add_labels
 #' @param colour character, progress bar colour.
-#' @param size numeric, progress bar line size..
+#' @param size numeric, progress bar line size (line width).
+#' @param y_nudge numeric, amount of vertical distance to move the progress bar (default: top of plot area).
 #'
 #' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'
-#' @importFrom ggplot2 geom_line aes_string ggplot_build expr
+#' @importFrom ggplot2 geom_line aes_string ggplot_build expr position_nudge
 #'
 #' @examples 
 #' library(moveVis)
@@ -38,7 +39,7 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 
-add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){
+add_progress <- function(frames, colour = "grey", size = 1.8, y_nudge = 0, verbose = TRUE){
   
   ## checks
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -49,11 +50,15 @@ add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){
   
   gg.xy <- ggplot_build(frames[[1]])$data[[1]]
   
-  data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(
-    x, x.min = min(gg.xy$xmin), y = (max(gg.xy$ymax) - (((max(gg.xy$ymax)-min(gg.xy$ymax))/100)*3.5))){
+  data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(x, x.min = min(gg.xy$xmin), y = max(gg.xy$ymax)){
     cbind.data.frame(x = c(x.min, x), y = c(y, y))
   })
+  # data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(
+  #   x, x.min = min(gg.xy$xmin), y = (max(gg.xy$ymax) - (((max(gg.xy$ymax)-min(gg.xy$ymax))/100)*3.5))){
+  #   cbind.data.frame(x = c(x.min, x), y = c(y, y))
+  # })
   
-  add_gg(frames, gg = expr(geom_line(aes(x = x, y = y), data = data, colour = colour, linewidth = size)),
-         data = data, colour = colour, linewidth = size)
+  add_gg(frames, gg = expr(
+    geom_line(aes(x = x, y = y), data = data, colour = colour, linewidth = size, position = position_nudge(x = 0, y = y_nudge))),
+    data = data, colour = colour, size = size, y_nudge = y_nudge)
 }

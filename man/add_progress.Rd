@@ -4,14 +4,16 @@
 \alias{add_progress}
 \title{Add progress bar to frames}
 \usage{
-add_progress(frames, colour = "grey", size = 1.8, verbose = TRUE)
+add_progress(frames, colour = "grey", size = 1.8, y_nudge = 0, verbose = TRUE)
 }
 \arguments{
 \item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
 \item{colour}{character, progress bar colour.}
 
-\item{size}{numeric, progress bar line size..}
+\item{size}{numeric, progress bar line size (line width).}
+
+\item{y_nudge}{numeric, amount of vertical distance to move the progress bar (default: top of plot area).}
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }

@@ -672,3 +672,13 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 #' which is minimum positive value
 #' @noRd
 which.minpos <- function(x) min(which(min(x[x > 0]) == x))
+
+#' map values in x from from to to
+#' @noRd
+mapvalues <- function(x, from, to) {
+  lookup <- setNames(to, from)
+  matched <- x %in% from
+  result <- x
+  result[matched] <- lookup[as.character(x[matched])]
+  return(result)
+}

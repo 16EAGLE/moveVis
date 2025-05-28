@@ -2,6 +2,7 @@
 % Please edit documentation in R/deprecated.R
 \name{deprecated}
 \alias{deprecated}
+\alias{subset_move}
 \alias{animate_move}
 \alias{animate_raster}
 \alias{animate_stats}
@@ -9,6 +10,8 @@
 \alias{get_libraries}
 \title{Deprecated functions}
 \usage{
+subset_move(...)
+
 animate_move(...)
 
 animate_raster(...)
@@ -23,7 +26,7 @@ get_libraries(...)
 \item{...}{deprecated arguments.}
 }
 \description{
-Several functions are deprecated due to a rewrite of moveVis with version 0.10.
+Several functions have been deprecated due to a rewrite of moveVis with version 0.10.
 }
 \details{
 The new version of moveVis makes it much easier to animate movement data and multi-temporal imagery (see \code{?moveVis}). You gain more control about the preprocessing of your movement data as well as the visual customization of each animation frame through a more consequent link of \code{moveVis} to \code{gpplot2}.

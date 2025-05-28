@@ -296,14 +296,14 @@ frames_spatial <- function(
     
     # use coord_equal for dateline crossingngs in EPSG:4326 only
     m$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                         expand = F, clip = "on"))
+                                         expand = F, clip = "off"))
     m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels))
     m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
   } else{
     
     # use coord_sf for all other cases
     m$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                         expand = F, crs = st_crs(m), datum = st_crs(m), clip = "on"))
+                                         expand = F, crs = st_crs(m), datum = st_crs(m), clip = "off"))
     m$scaley <- m$scalex <- NULL
   }
   
