@@ -22,6 +22,7 @@
 #' @importFrom ggplot2 quo
 #' @importFrom lubridate dseconds
 #' @importFrom utils tail head
+#' @importFrom terra sds
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
@@ -83,20 +84,18 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
     
     # add frames
     if(length(frames$r) > 1){
-      frames$r <- c(frames$r, rep(frames$r[max(frames$m$frame)], n.add))
+      frames$r <- c(frames$r, sds(rep(list(frames$r[max(frames$m$frame)]), n.add)))
     }
     
-    frames$m <- rbind(
-      frames$m,
-      do.call(
-        rbind, 
-        lapply(1:n.add, function(x){
-          nf <- frames$m[frames$m$frame == max(frames$m$frame),]
-          nf$frame <- nf$frame + 1
-          return(nf)
-        })
-      )
+    m_add <- do.call(
+      rbind, 
+      lapply(1:n.add, function(x){
+        nf <- frames$m[frames$m$frame == max(frames$m$frame),]
+        return(nf)
+      })
     )
+    m_add$frame <- (length(frames)+1):(length(frames) + n.add)
+    frames$m <- rbind(frames$m, m_add)
     
     #frames <- append(frames, rep(utils::tail(frames, n = 1), times = n.add))
     out(paste0("Number of frames: ", toString(length(frames)-n.add), " + ", toString(n.add), " to add \u2248 ", toString(dseconds(end_pause)), " of pause at the end"))

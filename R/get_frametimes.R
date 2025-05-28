@@ -25,5 +25,5 @@
 
 get_frametimes <- function(frames){
   if(!inherits(frames, "moveVis")) out("Argument 'frames' needs to be of class 'moveVis'. See frames_spatial()).", type = 3)
-  return(unique(frames$move_data$time))
+  return(unique(frames$m$time))
 }

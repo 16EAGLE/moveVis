@@ -4,16 +4,23 @@
 \alias{add_timestamps}
 \title{Add timestamps to frames}
 \usage{
-add_timestamps(frames, m = NULL, x = NULL, y = NULL, ..., verbose = TRUE)
+add_timestamps(
+  frames,
+  x = NULL,
+  y = NULL,
+  format = "\%Y-\%m-\%d \%H:\%M:\%S",
+  ...,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
-\item{m}{deprecated, times are natively stored in \code{moveVis frames_spatial} objects.}
-
 \item{x}{numeric, optional, position of timestamps on the x scale. By default, timestamps will be displayed in the top center.}
 
 \item{y}{numeric, optional, position of timestamps on the y scale.}
+
+\item{format}{character, optional, format of timestamps to be displayed in, passed to \code{\link{strftime}}).}
 
 \item{...}{optional, arguments passed to \code{\link{add_text}}, such as \code{colour}, \code{size}, \code{type}.}
 

@@ -49,10 +49,11 @@ add_progress <- function(frames, colour = "grey", size = 1.8, verbose = TRUE){
   
   gg.xy <- ggplot_build(frames[[1]])$data[[1]]
   
-  data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(x, x.min = min(gg.xy$xmin), y = max(gg.xy$ymax)){
+  data <- lapply(seq(min(gg.xy$xmin), max(gg.xy$xmax), length.out = length(frames)), function(
+    x, x.min = min(gg.xy$xmin), y = (max(gg.xy$ymax) - (((max(gg.xy$ymax)-min(gg.xy$ymax))/100)*3.5))){
     cbind.data.frame(x = c(x.min, x), y = c(y, y))
   })
   
-  add_gg(frames, gg = expr(geom_line(aes_string(x = "x", y = "y"), data = data, colour = colour, size = size)),
-         data = data, colour = colour, size = size)
+  add_gg(frames, gg = expr(geom_line(aes(x = x, y = y), data = data, colour = colour, linewidth = size)),
+         data = data, colour = colour, linewidth = size)
 }

@@ -310,8 +310,8 @@ frames_spatial <- function(
   out("Assigning raster maps to frames...")
   n_r <- length(r_list)
   r_list <- .rFrames(r_list, r_times, m, gg.ext, fade_raster, crop_raster = crop_raster)
-  
   r <- sds(r_list)
+  
   if(map_type == "custom"){
     time(r) <- mapply(x = as.list(sort(unique(mt_time(m)))), y = lapply(r_list, nlyr), function(x, y) rep(x, y), SIMPLIFY = F)
   } else{

@@ -518,7 +518,7 @@ repl_vals <- function(data, x, y){
       r_list <- r_list[pos.df$pos_r]
     }
   } else{
-    r_list <- rep(r_list, max(m$frame))
+    r_list <- r_list #rep(r_list, max(m$frame))
   }
   return(r_list)
 }
