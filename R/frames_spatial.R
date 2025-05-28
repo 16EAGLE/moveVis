@@ -217,11 +217,10 @@ frames_spatial <- function(
   if(all(isTRUE(cross_dateline), !is.null(r_list))) out("Argument 'cross_dateline' only works with default base maps. Arguments 'r_list' and 'r_times' cannot be used, if cross_dateline = TRUE.\nTip: Reproject 'm' to another CRS that better suits the region if you want to use 'r_list' with tracks crossing the dateline.", type = 3)
   
   # check m time conformities
-  out("Checking temporal alignment...")
+  out("Processing input data...")
   .time_conform(m)
   
   ## preprocess movement data
-  out("Processing movement data...")
   m.crs <- st_crs(m)
   if(isTRUE(cross_dateline)){
     equidistant <- FALSE
@@ -247,6 +246,11 @@ frames_spatial <- function(
   
   # print stats
   .stats(n.frames = max(m$frame))
+  crs_params <- sf:::crs_parameters(st_crs(m))
+  if(crs_params$IsGeographic){
+    out(paste0("CRS (geodetic): '", crs_params$Name, "'"))} else{
+      out(paste0("CRS (projected): '", crs_params$Name, "'"))
+    }
   
   gg.ext <- .ext(m, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
   
@@ -264,13 +268,22 @@ frames_spatial <- function(
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
-    out("Retrieving and compositing basemap imagery...")
+    # out("Retrieving and compositing basemap imagery...")
     r_list <- list(suppressWarnings(basemap_terra(
       ext = gg.ext, map_service = map_service, map_type = map_type,
-      map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose,
-      custom_crs = as.character(m.crs$wkt), ...
+      map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose, ...
+      #custom_crs = as.character(m.crs$wkt), ...
       #custom_crs =  as.character(raster::crs(m)), ...
     )))
+    if(crs != st_crs(3857)){
+      r_list[[1]] <- project(r_list[[1]], crs$wkt)
+      
+      # correct scale
+      r_list[[1]] <- rast(lapply(r_list[[1]], function(x){
+        x[x > 255] <- 255
+        return(x)
+      }))
+    }
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   } else{
     map_service <- "custom"
@@ -299,7 +312,11 @@ frames_spatial <- function(
   r_list <- .rFrames(r_list, r_times, m, gg.ext, fade_raster, crop_raster = crop_raster)
   
   r <- sds(r_list)
-  time(r) <- mapply(x = as.list(sort(unique(mt_time(m)))), y = lapply(r_list, nlyr), function(x, y) rep(x, y), SIMPLIFY = F)
+  if(map_type == "custom"){
+    time(r) <- mapply(x = as.list(sort(unique(mt_time(m)))), y = lapply(r_list, nlyr), function(x, y) rep(x, y), SIMPLIFY = F)
+  } else{
+    time(r) <- list(rep(floor(length(sort(unique(mt_time(m))))/2), nlyr(r_list[[1]])))
+  }
   
   # create frames object
   frames <- list(
