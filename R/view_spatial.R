@@ -59,7 +59,7 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = 
   ## preprocess movement data
   if(!is.character(path_colours)){
     path_colours <- .standard_colours(mt_n_tracks(m))
-    if(!is.null(m$colour)) m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
+    if(is.null(m$colour)) m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
   } else{
     m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
   }
