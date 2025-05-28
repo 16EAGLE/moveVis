@@ -34,9 +34,12 @@
 #' 
 #' }
 #' @seealso \code{\link{frames_spatial}}
+#' 
+#' @importFrom move2 mt_n_tracks mt_track_id mt_track_id_column
+#' @importFrom sf st_coordinates
 #' @export
 
-view_spatial <- function(m, render_as = "mapview", time_labels = TRUE,  stroke = TRUE, path_colours = NA, path_legend = TRUE,
+view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = TRUE, path_colours = NA, path_legend = TRUE,
                          path_legend_title = "Names", verbose = TRUE){
   
   ## dependency check
@@ -46,38 +49,52 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE,  stroke =
 
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
-  if(inherits(m, "Move")) m <- moveStack(m)
+  if(all(!inherits(m, "move2"))) out("Argument 'm' must be of class 'move2'.", type = 3)
   
-  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
+  if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(!is.logical(time_labels)) out("Argument 'time_labels' must be of type 'logical'.", type = 3)
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   
   ## preprocess movement data
-  m.df <- .m2df(m, path_colours = path_colours) # create data.frame from m with frame time and colour
-  m.df$frame <- m.df$time <- NULL
+  if(!is.character(path_colours)){
+    path_colours <- .standard_colours(mt_n_tracks(m))
+    if(!is.null(m$colour)) m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
+  } else{
+    m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
+  }
+  m$frame <- m$time <- NULL
   
   ## render as mapview object
   if(render_as == "mapview"){
     if(length(grep("mapview", rownames(utils::installed.packages()))) == 0) out("'mapview' has to be installed to use this function. Use install.packages('mapview').", type = 3)
-    map <- mapview::mapview(m.df, map.types = "OpenStreetMap", xcol = "x", ycol = "y", zcol = "name", legend = path_legend,
-                     crs = st_crs(m)$proj4string, grid = F, layer.name = path_legend_title, col.regions = unique(m.df$colour),
-                     label = if(isTRUE(time_labels)) m.df$time_chr else NULL, stroke = stroke)
+    
+    # compose
+    map <- mapview::mapview(
+      m, map.types = "OpenStreetMap", xcol = "x", ycol = "y", zcol = mt_track_id_column(m), legend = path_legend,
+      crs = st_crs(m)$proj4string, grid = F, layer.name = path_legend_title,
+      col.regions = unique(m$colour),
+      label = if(isTRUE(time_labels)) mt_time(m) else NULL, stroke = stroke
+    )
   }
   
   ## render as leaflet object
   if(render_as == "leaflet"){
     if(length(grep("leaflet", rownames(utils::installed.packages()))) == 0) out("'leaflet' has to be installed to use this function. Use install.packages('leaflet').", type = 3)
     
-    m.split <- split(m.df, m.df$name)
-    map <- leaflet::addTiles(map = leaflet::leaflet(m.df))
-    for(i in 1:length(m.split)) map <- leaflet::addCircleMarkers(map = map, lng = m.split[[i]]$x, lat = m.split[[i]]$y,
-                                                                 radius = 5.5, color = "black", stroke = stroke, fillColor = m.split[[i]]$colour, fillOpacity = 0.6, weight = 2, opacity = 1,
-                                                                 label = if(isTRUE(time_labels)) m.split[[i]]$time_chr else NULL)
-    map <- leaflet::addScaleBar(map = leaflet::addLegend(map = map, colors = unique(m.df$colour),
-                                                         labels = unique(m.df$name), opacity = 1, title = path_legend_title), position = "bottomleft")
-      
+    # compose
+    m.split <- split(m, mt_track_id(m))
+    map <- leaflet::addTiles(map = leaflet::leaflet(m))
+    for(i in 1:length(m.split)) map <- leaflet::addCircleMarkers(
+      map = map, lng = st_coordinates(m.split[[i]])[,1], 
+      lat = st_coordinates(m.split[[i]])[,2],
+      radius = 5.5, color = "black", stroke = stroke, fillColor = m.split[[i]]$colour, fillOpacity = 0.6, weight = 2, opacity = 1, 
+      label = if(isTRUE(time_labels)) as.character(mt_time(m.split[[i]])) else NULL)
+    map <- leaflet::addScaleBar(map = leaflet::addLegend(
+      map = map, colors = unique(m$colour),
+      labels = as.character(unique(mt_track_id(m))), opacity = 1, title = path_legend_title), position = "bottomleft"
+    )
+    
   }
   return(map)
 }
