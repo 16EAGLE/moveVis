@@ -4,6 +4,7 @@ development:
   mode: release
 
 template:
+  bootstrap: 5
   params:
     docsearch:
       api_key: a482704aa04a35b75610bde292d047b8
