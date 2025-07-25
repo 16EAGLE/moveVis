@@ -24,11 +24,11 @@ test_that("frames_spatial (default maps)", {
 
 test_that("frames_spatial (raster, gradient)", {
   # correct calls
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", verbose = F), "moveVis"), 188)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r = r_grad, r_type = "gradient", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # move stack
-  frames <- expect_length(expect_is(frames_spatial(m.aligned[[1]], r_grad, r_times, r_type = "gradient", verbose = F), "moveVis"), 143)
+  frames <- expect_length(expect_is(frames_spatial(split(m.aligned, mt_track_id(m.aligned))[[1]], r = r_grad, r_type = "gradient", verbose = F), "moveVis"), 143)
   expect_is(frames[[1]], "ggplot") # single move
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad[[5]], r_times[[5]], r_type = "gradient", verbose = F), "moveVis"), 188)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r = r_grad[[5]],  r_type = "gradient", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # single raster
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # path arrow

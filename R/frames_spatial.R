@@ -170,19 +170,30 @@ frames_spatial <- function(
   .check_move2(m)
   if(st_crs(m) != crs) m <- st_transform(m, crs = crs)
   
-  if(!is.null(extras$r_list)) out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects.", type = 3)
-  if(!is.null(r)){
-    if(inherits(r, "SpatRaster")){
-      r_list <- list(r)
-      r_times <- list(time(r))
+  if(any(!is.null(r), !is.nul(r_list))){
+    if(!is.null(extras$r_list)){
+      out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects and associated times. See ?moveVis::frames_spatial for help.", type = 2)
+      r_list <- extras$r_list
+      crs_r <- st_crs(terra::crs(r_list[[1]]))
     }
-    if(inherits(r, "SpatRasterDataset")){
-      r_list <- lapply(r, function(x) x)
-      r_times <- time(r)
+    if(!is.null(extras$r_times)){
+      out("Argument 'r_times' is deprecated. Use 'r' instead to supply raster objects and associated times. See ?moveVis::frames_spatial for help.", type = 2)
+      r_times <- extras$r_times
     }
-    if(!inherits(r, c("SpatRaster", "SpatRasterDataset"))) out("Argument 'r' must be a terra raster object of class SpatRaster or SpatRasterDataset.", type = 3)
+    if(!is.null(r)){
+      if(inherits(r, "SpatRaster")){
+        r_list <- list(r)
+        r_times <- list(time(r))
+      }
+      if(inherits(r, "SpatRasterDataset")){
+        r_list <- lapply(r, function(x) x)
+        r_times <- time(r)
+      }
+      if(!inherits(r, c("SpatRaster", "SpatRasterDataset"))) out("Argument 'r' must be a terra raster object of class SpatRaster or SpatRasterDataset.", type = 3)
+      crs_r <- st_crs(terra::crs(r))
+    }
     #if(any(!sapply(r_list, function(.r) st_crs(crs(.r)) == st_crs(m))))  out("Coordinate reference systems of 'm' and 'r' differ.", type = 3)
-    if(st_crs(terra::crs(r)) != crs) r_list <- lapply(r_list, project, crs$wkt)
+    if(crs_r != crs) r_list <- lapply(r_list, project, crs$wkt)
     
     if(length(unique(sapply(r_list, nlyr))) > 1) out("Number of layers per raster object in 'r' differ.", type = 3)
     if(!all(sapply(r_times, inherits, "POSIXct"))) out("Times of r must be of class 'POSIXct' (see ?terra::time).", type = 3)

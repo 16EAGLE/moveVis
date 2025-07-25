@@ -5,7 +5,6 @@ if(!is.na(n_cores)) if(n_cores > 1) use_multicore(n_cores)
 check_mapview <- any(grepl("mapview", installed.packages()[,1]))
 check_leaflet <- any(grepl("leaflet", installed.packages()[,1]))
 
-
 ## which tests to run
 # which_tests = Sys.getenv("moveVis_which_tests")
 # if(which_tests != ""){
@@ -24,32 +23,33 @@ if(test_dir != ""){
 cat("Test directory: ", test_dir, "\n")
 
 data("move_data", package = "moveVis", envir = environment())
-data("basemap_data", package = "moveVis", envir = environment())
+basemap_data <- readRDS(example_data())
 
 ## movement
 m <- move_data
-m.aligned <- align_move(m, res = 4, unit = "mins", verbose = F)
+m.aligned <- align_move(move_data, res = units::set_units(4, "min"))
 
 # shift across dateline
-l.df <- lapply(move::split(m.aligned), as.data.frame)
+l.df <- lapply(split(m, mt_track_id(m)), function(x){
+  as.data.frame(cbind(x, sf::st_coordinates(x)))
+})
 df <- do.call(rbind, mapply(x = names(l.df), y = l.df, function(x, y){
   y$id = x
   return(y)
 }, SIMPLIFY = F))
-df$x <- df$x+171.06
-df$x[df$x > 180] <- df$x[df$x > 180]-360
+df$X <- df$X+171.06
+df$X[df$X > 180] <- df$X[df$X > 180]-360
+df$geometry <- NULL
 
-m.shifted <- df2move(df, proj = raster::crs("+init=epsg:4326"), x = "x", y = "y", time = "time", track_id = "id")
+m.shifted <- mt_as_move2(df, coords = c("X", "Y"), time_column = "timestamp", track_id_column = "track", crs = st_crs(m))
 
 # transform using sf
-df <- sf::st_transform(sf::st_as_sf(m.shifted), sf::st_crs(3995))
-df <- cbind.data.frame(sf::st_coordinates(df), time = df$time, id = move::trackId(m.shifted))
-m.shifted.repro <- df2move(df = df, proj = 3995, x = "X", y = "Y", time = "time", track_id = "id")
+m.shifted.repro <- sf::st_transform(m.shifted, sf::st_crs(3995))
 
 ## base map
-r_grad <- basemap_data[[1]]
-r_disc <- lapply(r_grad, function(x){
-  y <- raster::setValues(x, round(raster::getValues(x)*10))
-  return(y)
-})
-r_times <- basemap_data[[2]]
+r_grad <- basemap_data
+r_disc <- terra::sds(lapply(r_grad, function(x){
+  terra::values(x) <- round(terra::values(x)*10)
+  return(x)
+}))
+r_times <- terra::time(basemap_data)

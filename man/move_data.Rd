@@ -5,13 +5,13 @@
 \alias{move_data}
 \title{Example simulated movement tracks}
 \format{
-\code{Move} object, as used by the \code{move} package.
+\code{move2} object, as used by the \code{move2} package.
 }
 \usage{
 data(move_data)
 }
 \description{
-This dataset contains a \code{Move} object, representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
+This dataset contains a \code{move2} object, representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
 }
 \details{
 This object is used by some \code{moveVis} examples and unit tests.

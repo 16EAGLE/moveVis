@@ -8,6 +8,7 @@ join_frames(
   frames_list,
   guides = "collect",
   design = NULL,
+  render_all_legends = FALSE,
   ...,
   frames_lists = NULL,
   verbose = T
@@ -19,6 +20,8 @@ join_frames(
 \item{guides}{character, controls how to treat the scales/legends of both frames. See \code{\link{wrap_plots}} for details. Defaults to 'collect'.}
 
 \item{design}{character, controls how frames are arranged. See \code{\link{wrap_plots}} for details. By default, frames are joined sidy-by-side horizontally.}
+
+\item{render_all_legends}{logical, whether legends should be preserved (\code{TRUE}) or only the legend of the first frames object should be rendered (\code{FALSE}, default).}
 
 \item{...}{Further arguments, specifying the appearance of the joined \code{ggplot2} objects, passed to \code{\link{wrap_plots}}. See \code{\link{wrap_plots}} for further options.}
 

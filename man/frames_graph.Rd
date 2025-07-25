@@ -6,8 +6,7 @@
 \usage{
 frames_graph(
   m,
-  r_list,
-  r_times,
+  r,
   r_type = "gradient",
   fade_raster = FALSE,
   crop_raster = TRUE,
@@ -20,15 +19,14 @@ frames_graph(
   val_min = NULL,
   val_max = NULL,
   val_by = 0.1,
+  ...,
   verbose = T
 )
 }
 \arguments{
 \item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
 
-\item{r_list}{list of \code{raster} or \code{rasterStack}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue).}
-
-\item{r_times}{list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
+\item{r}{\code{terra} object, either a \code{SpatRaster} or a \code{SpatRasterDataset}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue). r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
 
 \item{r_type}{character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
 
@@ -57,6 +55,8 @@ frames_graph(
 \item{val_max}{numeric, maximum value of the value axis. If undefined, the maximum is collected automatically.}
 
 \item{val_by}{numeric, increment of the value axis sequence. Default is 0.1. If \code{graph_type = "discrete"}, this value should be an integer of 1 or greater.}
+
+\item{...}{additional arguments, currently unused.}
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }

@@ -1,5 +1,15 @@
 ***
 
+## moveVis 1.0.0
+Updating moveVis the age of move2 for representing trajectory data and terra for representing raster data.
+
+**Changes:**
+* `align_move` now expects a units object for representing the target time resolution (see `?moveVis::align_move`).
+
+**Deprecations:**
+* *tba*
+
+
 ## moveVis 0.10.6
 New S3 class and methods to represent frames, lazy plotting, improvements.
 
