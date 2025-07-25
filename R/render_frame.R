@@ -9,7 +9,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom cowplot plot_grid
+#' @importFrom patchwork wrap_plots
 #' @importFrom basemaps gg_raster
 #' 
 #' @examples
@@ -104,12 +104,19 @@ render_frame <- function(frames, i = length(frames)){
       }
     }
     if(inherits(frames, "frames_joined")){
-      gg <- do.call(cowplot::plot_grid, c(
-        plotlist = lapply(1:length(frames$frames_lists), function(ii) frames$frames_lists[[ii]][[i]]), 
-        frames$cowplot_args)
+      .plots <- lapply(1:length(frames$frames_list), function(ii){
+        if(!frames$render_all_legends){
+          if(ii != 1) frames$frames_list[[ii]]$aesthetics$path_legend <- FALSE
+        }
+        frames$frames_list[[ii]][[i]]
+      })
+      
+      gg <- wrap_plots(
+        lapply(.plots, function(.x) .x), guides = frames$wrap_plots_guides, frames$wrap_plots_design, 
+        frames$wrap_plot_args
       )
     }
-    
+      
     # any additions?
     if(!is.null(frames$additions)){
       for(ix in 1:length(frames$additions)){

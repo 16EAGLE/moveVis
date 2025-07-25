@@ -25,20 +25,20 @@ print.moveVis <- function(x, ...) {
   }
   
   if(inherits(x, "frames_graph")){
-    cat(paste0("Graph frames of class moveVis\n"))
-    cat(paste0("number of frames: ", as.character(length(x)), "\n"))
-    cat(paste0("temporal extent:  ", paste0(x$m$time_chr[1], "' to '", x$m$time_chr[nrow(x$m)]), "\n"))
-    cat(paste0("raster type:      ", x$aesthetics$r_type, "\n"))
-    cat(paste0("names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
+    cat(paste0("moveVis frames (graph)"))
+    .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F)
+    cat(paste0("Temporal extent:  ", paste0(min(x$m$time), " to ", max(x$m$time), "\n")))
+    cat(paste0("Raster type:      ", x$aesthetics$r_type, "\n"))
+    cat(paste0("Names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
     #cat(paste0("added function:   ", length(frames$additions), "\n"))
   }
   
   if(inherits(x, "frames_joined")){
-    cat(paste0("Joined frames of class moveVis\n"))
-    cat(paste0("number of frames: ", as.character(length(x)), "\n"))
-    cat(paste0("temporal extent:  -"))
-    cat(paste0("raster type:      -"))
-    cat(paste0("names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
+    cat(paste0("moveVis frames (joined)"))
+    .stats(n.frames = length(unique(x$frames_list[[1]]$m$frame)), lead_text = ", ", return_char = F)
+    cat(paste0("Temporal extent:  ", paste0(min(x$frames_list[[1]]$m$time), " to ", max(x$frames_list[[1]]$m$time), "\n")))
+    cat(paste0("Raster type:      ", x$frames_list[[1]]$aesthetics$r_type, "\n"))
+    cat(paste0("Names:            '", paste0(unique(x$frames_list[[1]]$m$name), collapse = "', '"), "'\n"))
   }
 }
 
@@ -55,7 +55,7 @@ print.moveVis <- function(x, ...) {
 #' @export
 length.moveVis <- function(x){
   if(inherits(x, "frames_joined")){
-    length(x$frames_lists[[1]])
+    length(x$frames_list[[1]])
   }else{
     max(x$m$frame)
   }
@@ -148,7 +148,7 @@ rev.moveVis <- function(x){
   }
   
   if(inherits(x, "frames_joined")){
-    x$frames_lists <- lapply(x$frames_lists, function(x) x[i])
+    x$frames_list <- lapply(x$frames_list, function(x) x[i])
   }else{
     x <- .sub(x, i)
   }  
