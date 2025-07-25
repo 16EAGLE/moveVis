@@ -3,6 +3,7 @@
 \name{deprecated}
 \alias{deprecated}
 \alias{subset_move}
+\alias{df2move}
 \alias{animate_move}
 \alias{animate_raster}
 \alias{animate_stats}
@@ -11,6 +12,8 @@
 \title{Deprecated functions}
 \usage{
 subset_move(...)
+
+df2move(...)
 
 animate_move(...)
 
@@ -26,13 +29,10 @@ get_libraries(...)
 \item{...}{deprecated arguments.}
 }
 \description{
-Several functions have been deprecated due to a rewrite of moveVis with version 0.10.
-}
-\details{
-The new version of moveVis makes it much easier to animate movement data and multi-temporal imagery (see \code{?moveVis}). You gain more control about the preprocessing of your movement data as well as the visual customization of each animation frame through a more consequent link of \code{moveVis} to \code{gpplot2}.
+Several functions have been deprecated over the development cycles of moveVis.
 }
 \note{
-To install the old version of moveVis (0.9.9), see \url{https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9}.
+To install older versions of moveVis, see \url{https://github.com/16EAGLE/moveVis/releases/} or visit the CRAN archive.
 }
 \seealso{
 \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}

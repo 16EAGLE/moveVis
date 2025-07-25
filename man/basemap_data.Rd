@@ -3,27 +3,26 @@
 \docType{data}
 \name{basemap_data}
 \alias{basemap_data}
-\title{Example manipulated NDVI data}
+\alias{example_data}
+\title{Example NDVI data}
 \format{
-List containing two lists of equal lengths: a list of \code{raster} objects and a list of \code{POSIXct} times.
+\code{SpatRasterDataset}, consisting of NDVI layers and acquisition times as \code{POSIXct} objects.
 }
 \source{
-MODIS (MOD13Q1 NDVI)
+Simulated based on MODIS (MOD13Q1 NDVI)
 }
 \usage{
-data(basemap_data)
+example_data(file = "basemap_data.rds")
 }
 \description{
-This dataset contains two lists of equal lenghts:
-\itemize{
-   \item a list of ten single-layer \code{raster} objects, representing NDVI images covering the Lake of Constance area.
-   \item a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...
-}
+This dataset is a SpatRasterDataset, representing simulated NDVI images covering the Lake of Constance area, 
+as well as invented dates and times that simulate acquisition times.
 }
 \details{
-This object is used by some \code{moveVis} examples and unit tests.
+This object is used by some \code{moveVis} examples and unit tests. Use \code{readRDS(example_data())} to retrieve the SpatRasterDataset. 
+
+Times can be retrieved using \code{terra::time(readRDS(example_data()))}
 }
 \note{
 All data contained should only be used for testing \code{moveVis} and are not suitable to be used for analysis or interpretation.
 }
-\keyword{datasets}

@@ -1,18 +1,21 @@
 #' Deprecated functions
 #'
-#' Several functions have been deprecated due to a rewrite of moveVis with version 0.10.
+#' Several functions have been deprecated over the development cycles of moveVis.
 #' 
 #' @param ... deprecated arguments.
 #' 
-#' @details The new version of moveVis makes it much easier to animate movement data and multi-temporal imagery (see \code{?moveVis}). You gain more control about the preprocessing of your movement data as well as the visual customization of each animation frame through a more consequent link of \code{moveVis} to \code{gpplot2}.
-#'
-#' @note To install the old version of moveVis (0.9.9), see \url{https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9}.
+#' @note To install older versions of moveVis, see \url{https://github.com/16EAGLE/moveVis/releases/} or visit the CRAN archive.
 #' 
 #' @name deprecated
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
 subset_move <- function(...) out("subset_move() has been deprecated when updating moveVis to support move2. Use move2 indexing to subset movement data.", type = 3)
+
+#' @rdname deprecated
+#' @export
+
+df2move <- function(...) out("df2move() has been deprecated when updating moveVis to support move2. Use move2 indexing to subset movement data.", type = 3)
 
 #' @rdname deprecated
 #' @export

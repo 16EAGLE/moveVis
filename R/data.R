@@ -1,11 +1,11 @@
 #' Example simulated movement tracks
 #'
-#' This dataset contains a \code{Move} object, representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
+#' This dataset contains a \code{move2} object, representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany. Individual names are made up for demonstration purposes.
 #' 
 #' @details This object is used by some \code{moveVis} examples and unit tests.
 #' @note All data contained should only be used for testing \code{moveVis} and are not suitable to be used for analysis or interpretation.
 #'
-#' @format \code{Move} object, as used by the \code{move} package.
+#' @format \code{move2} object, as used by the \code{move2} package.
 #' @usage data(move_data)
 #' @docType data
 #' 
@@ -41,21 +41,22 @@
 #' @usage NULL
 "m"
 
-#' Example manipulated NDVI data
+#' Example NDVI data
+#'
+#' This dataset is a SpatRasterDataset, representing simulated NDVI images covering the Lake of Constance area, 
+#' as well as invented dates and times that simulate acquisition times.
+#'
+#' @details This object is used by some \code{moveVis} examples and unit tests. Use \code{readRDS(example_data())} to retrieve the SpatRasterDataset. 
 #' 
-#' This dataset contains two lists of equal lenghts:
-#' \itemize{
-#'    \item a list of ten single-layer \code{raster} objects, representing NDVI images covering the Lake of Constance area.
-#'    \item a list of made-up times that simulate acquisition times with a temporal resolution, remote sensing scientiest would dream of...
-#' }
+#' Times can be retrieved using \code{terra::time(readRDS(example_data()))}
 #' 
-#' @details This object is used by some \code{moveVis} examples and unit tests.
 #' @note All data contained should only be used for testing \code{moveVis} and are not suitable to be used for analysis or interpretation.
 #'
-#' 
-#' @format List containing two lists of equal lengths: a list of \code{raster} objects and a list of \code{POSIXct} times.
-#' @source MODIS (MOD13Q1 NDVI)
-#' @usage data(basemap_data)
+#' @format \code{SpatRasterDataset}, consisting of NDVI layers and acquisition times as \code{POSIXct} objects.
+#' @source Simulated based on MODIS (MOD13Q1 NDVI)
+#' @name basemap_data
 #' @docType data
-#' 
-"basemap_data"
+#' @export
+example_data <- function(file = "basemap_data.rds"){
+  if(file == "basemap_data.rds") system.file("extdata", file, package = "moveVis", mustWork = TRUE)
+}
