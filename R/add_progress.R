@@ -37,6 +37,8 @@
 #' }
 #' 
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
+#' 
+#' @importFrom rlang .data
 #' @export
 
 add_progress <- function(frames, colour = "grey", size = 1.8, y_nudge = 0, verbose = TRUE){
@@ -59,6 +61,6 @@ add_progress <- function(frames, colour = "grey", size = 1.8, y_nudge = 0, verbo
   # })
   
   add_gg(frames, gg = expr(
-    geom_line(aes(x = x, y = y), data = data, colour = colour, linewidth = size, position = position_nudge(x = 0, y = y_nudge))),
+    geom_line(aes(x = .data$x, y = .data$y), data = data, colour = colour, linewidth = size, position = position_nudge(x = 0, y = y_nudge))),
     data = data, colour = colour, size = size, y_nudge = y_nudge)
 }

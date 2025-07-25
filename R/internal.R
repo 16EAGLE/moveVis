@@ -674,6 +674,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 which.minpos <- function(x) min(which(min(x[x > 0]) == x))
 
 #' map values in x from from to to
+#' @importFrom stats setNames
 #' @noRd
 .mapvalues <- function(x, from, to) {
   lookup <- setNames(to, from)

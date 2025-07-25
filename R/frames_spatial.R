@@ -170,7 +170,7 @@ frames_spatial <- function(
   .check_move2(m)
   if(st_crs(m) != crs) m <- st_transform(m, crs = crs)
   
-  if(any(!is.null(r), !is.nul(r_list))){
+  if(any(!is.null(r), !is.null(extras$r_list))){
     if(!is.null(extras$r_list)){
       out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects and associated times. See ?moveVis::frames_spatial for help.", type = 2)
       r_list <- extras$r_list
