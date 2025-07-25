@@ -57,13 +57,7 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = 
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   
   ## preprocess movement data
-  if(!is.character(path_colours)){
-    path_colours <- .standard_colours(mt_n_tracks(m))
-    if(is.null(m$colour)) m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
-  } else{
-    m$colour <- mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
-  }
-  m$frame <- m$time <- NULL
+  m <- .add_m_attributes(m, path_colours = path_colours)
   
   ## render as mapview object
   if(render_as == "mapview"){
