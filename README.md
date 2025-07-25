@@ -7,6 +7,8 @@
 [![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://app.codecov.io/gh/16EAGLE/moveVis)
 [![Package dependencies](https://tinyverse.netlify.com/badge/moveVis)](https://CRAN.R-project.org/package=moveVis)
 
+*Note: `moveVis` is currently updated to support `move2` with the aim to eventually return to CRAN this year. The moveVis version hosted on GitHub is provided as is, as it is work in progress. Unit tests are partially non-functioning, docuemntation may be not yet up-to-date, and there could be bugs that are about to get fixed.*
+
 ## Introduction
 
 <a href="https://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="https://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files. 
