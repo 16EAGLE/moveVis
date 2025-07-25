@@ -12,6 +12,7 @@
 #' @param val_min numeric, minimum value of the value axis. If undefined, the minimum is collected automatically.
 #' @param val_max numeric, maximum value of the value axis. If undefined, the maximum is collected automatically.
 #' @param val_by numeric, increment of the value axis sequence. Default is 0.1. If \code{graph_type = "discrete"}, this value should be an integer of 1 or greater.
+#' @param ... additional arguments, currently unused.
 #' 
 #' @details To later on side-by-side join spatial frames created using \code{\link{frames_spatial}} with frames created with \code{\link{frames_graph}} for animation,
 #' equal inputs must have been used for both function calls for each of the arguments \code{m}, \code{r_list}, \code{r_times} and \code{fade_raster}.
@@ -23,9 +24,9 @@
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 
-#' @importFrom raster compareCRS nlayers minValue maxValue extract
+#' @importFrom terra extract vect
 #' @importFrom sf st_crs 
-#' @importFrom move n.indiv
+#' @importFrom move2 mt_n_tracks
 #' 
 #' @examples
 #' library(moveVis)
@@ -75,28 +76,43 @@
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' @export
 
-frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 
-                         val_min = NULL, val_max = NULL, val_by = 0.1, verbose = T){
+frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 
+                         val_min = NULL, val_max = NULL, val_by = 0.1, ..., verbose = T){
 
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
-  if(all(!c(inherits(m, "MoveStack"), inherits(m, "Move")))) out("Argument 'm' must be of class 'Move' or 'MoveStack'.", type = 3)
+  extras <- list(...)
+  if(!inherits(m, "move2")) out("Argument 'm' must be of class 'move2'.", type = 3)
   
   ## check m time conformities
+  out("Processing input data...")
   .time_conform(m)
   
-  if(all(!is.list(r_list), inherits(r_list, "Raster"))) r_list <- list(r_list)
+  if(!is.null(extras$r_list)) out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects.", type = 3)
+  if(inherits(r, "SpatRaster")){
+    r_list <- list(r)
+    r_times <- list(time(r))
+  }
+  if(inherits(r, "SpatRasterDataset")){
+    r_list <- lapply(r, function(x) x)
+    r_times <- time(r)
+  }
+  if(!inherits(r, c("SpatRaster", "SpatRasterDataset"))) out("Argument 'r' must be a terra raster object of class SpatRaster or SpatRasterDataset.", type = 3)
+  
   if(is.character(r_type)){
     if(!any(r_type == c("gradient", "discrete"))) out("Argument 'r_type' must be either 'gradient' or 'discrete'.", type = 3)
   } else{ out("Argument 'r_type' must be of type 'character'.", type = 3)}
-  if(!inherits(r_list[[1]], "RasterLayer")) out("Argument 'r_list' must contain single-layer 'RasterLayer' objects. Multi-layer 'RasterStack' objects are not supported by this function.", type = 3)
-  if(any(!sapply(r_list, compareCRS, y = m))) out("Projections of 'm' and 'r_list' differ.", type = 3)
-  if(length(unique(sapply(r_list, nlayers))) > 1) out("Number of layers per raster object in list 'r' differ.", type = 3)
-  if(!inherits(r_times, "POSIXct")) out("Argument 'r_times' must be of type 'POSIXct' if 'r_list' is defined.", type = 3)
+  
+  if(length(unique(sapply(r_list, nlyr))) > 1) out("Number of layers per raster object in 'r' differ.", type = 3)
+  if(!all(sapply(r_times, inherits, "POSIXct"))) out("Times of r must be of class 'POSIXct' (see ?terra::time).", type = 3)
+  
+  if(nlyr(r_list[[1]]) != 1) out("frames_graph is expecting single-layer 'SpatRaster' objects per time steps. Multi-layer 'SpatRaster' objects are not supported by this function.", type = 3)
+  if(length(unique(sapply(r_list, nlyr))) > 1) out("Number of layers per 'SpatRaster' object in differ.", type = 3)
+  if(!all(sapply(r_times, inherits, "POSIXct"))) out("Raster times  must be of class 'POSIXct' (see ?terra::time).", type = 3)
   if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
   
   if(!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)
-  if(is.character(path_colours)) if(length(path_colours) != n.indiv(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
+  if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   if(!is.logical(return_data)) out("Argument 'return_data' must be of type 'logical'.", type = 3)
@@ -118,56 +134,58 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   if(r_type == "discrete" & !val_by%%1==0) out("Argument 'val_by' is fractional, while argument 'r_type' is set to 'discrete'. You may want to set 'val_by' to 1 or another integer for discrete classes.", type = 2)
   
   ## create data.frame from m with frame time and colour
-  out("Processing movement data...")
-  m.df <- .m2df(m, path_colours = path_colours) 
-  .stats(max(m.df$frame))
+  m <- .add_m_attributes(m, path_colours = path_colours)
+  .stats(max(m$frame))
   
   ## create raster list
-  r_list <- .rFrames(r_list = r_list, r_times = r_times, m.df =  m.df, gg.ext = .ext(m.df, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
+  out("Extracting raster values per frame...")
+  r_list <- .rFrames(r_list = r_list, r_times = r_times, m =  m, gg.ext = .ext(m, st_crs(m)), fade_raster = fade_raster, crop_raster = crop_raster)
+  m$value <- NA
   if(length(r_list) == 1){
-    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[1]], m.df[i, c("x", "y")]), USE.NAMES = F)
+    m$value <- terra::extract(r_list[[1]], terra::vect(m))[,2]
   } else{
-    m.df$value <- sapply(1:nrow(m.df), function(i) raster::extract(r_list[[m.df[i,]$frame]], m.df[i, c("x", "y")]), USE.NAMES = F) 
+    for(i in unique(m$frame)){
+      m$value[m$frame == i] <- terra::extract(r_list[[i]], terra::vect(m[m$frame == i,]))[,2]
+    }
   }
   
   ## create value sequence
-  if(is.null(val_min)) val_min <- floor(min(sapply(r_list, minValue), na.rm = T))
-  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list, maxValue), na.rm = T))
+  if(is.null(val_min)) val_min <- floor(min(sapply(r_list, function(x) minmax(x)[1,]), na.rm = T))
+  if(is.null(val_max)) val_max <- ceiling(max(sapply(r_list, function(x) minmax(x)[2,]), na.rm = T))
   val_digits <- nchar(strsplit(as.character(val_by), "[.]")[[1]][2])
   if(is.na(val_digits)) val_digits <- 0
   val_seq <- seq(val_min, val_max, by = val_by)
   
   if(isTRUE(return_data)){
-    return(m.df)
+    return(m)
   } else{
     
-    ## create frames
-    out("Creating frames...")
+    
     # if(graph_type == "flow"){
-    #   #frames <- .gg_flow(m.df, path_legend, path_legend_title, path_size, val_seq)
+    #   #frames <- .gg_flow(m, path_legend, path_legend_title, path_size, val_seq)
     # }
     hist_data <- NULL
     if(graph_type == "hist"){
       
-      dummy <- do.call(rbind, lapply(unique(m.df$id), function(id){
-        cbind.data.frame(count = 0, value = val_seq, id = id, name = unique(m.df[m.df$id == id,]$name),
-                         colour = unique(m.df[m.df$id == id,]$colour))
+      dummy <- do.call(rbind, lapply(as.character(unique(mt_track_id(m))), function(name){
+        cbind.data.frame(count = 0, value = val_seq, name = name,
+                         colour = unique(m[m$name == name,]$colour))
       }))
       
       ## Calculating time-cumulative value histogram per individual and timestep
       #out("Calculating histogram...")
-      hist_data <- lapply(1:max(m.df$frame), function(i, d = dummy){
-        x <- m.df[unlist(lapply(1:i, function(x) which(m.df$frame == x))),]
+      hist_data <- lapply(1:max(m$frame), function(i, d = dummy){
+        x <- m[unlist(lapply(1:i, function(x) which(m$frame == x))),]
         
-        x <- do.call(rbind, lapply(unique(x$id), function(id){
-          y <- x[x$id == id,]
+        x <- do.call(rbind, lapply(unique(x$name), function(name){
+          y <- x[x$name == name,]
           z <- table(round(y$value, digits = val_digits))
           
-          d.id <- d[d$id == id,]
-          d.id[match(names(z), as.character(d.id$value)), 1] <- z
+          d.name <- d[d$name == name,]
+          d.name[match(names(z), as.character(d.name$value)), 1] <- z
           
           #d <- cbind(d, id = unique(y$id), name = unique(y$name), colour = unique(y$colour))
-          return(d.id)
+          return(d.name)
         }))
 
       })
@@ -180,7 +198,7 @@ frames_graph <- function(m, r_list, r_times, r_type = "gradient", fade_raster = 
   
   # create frames object
   frames <- list(
-    move_data = m.df,
+    m = m,
     hist_data = hist_data,
     type = paste0("ggplot (", graph_type, " graph)"),
     graph_type = graph_type,

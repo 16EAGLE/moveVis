@@ -571,7 +571,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   # add legend?
   if(isTRUE(path_legend)){
     p <- quiet(p + new_scale_colour() +
-      geom_sf(data = x_lines_legend, aes(colour = name, linetype = NA), size = path_size, na.rm = TRUE) + 
+      geom_sf(data = x_lines_legend, aes(colour = name, linetype = NA), linewidth = path_size, na.rm = TRUE) + 
       scale_linetype(guide = "none") +
       scale_colour_manual(
         values = unique(m_colour),
@@ -585,13 +585,13 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 }
 
 #' flow stats plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
+#' @importFrom ggplot2 ggplot geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
 #' 
 #' @noRd
 .gg_flow <- function(x, y, path_legend, path_legend_title, path_size, val_seq){
   
   ## generate base plot
-  p <- ggplot(x, aes_string(x = "frame", y = "value")) + geom_path(aes_string(group = "name"), size = path_size, show.legend = F, colour = x$colour) + 
+  p <- ggplot(x, aes(x = frame, y = value)) + geom_path(aes(group = name), linewidth = path_size, show.legend = F, colour = x$colour) + 
     coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T))) +
     theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0), breaks = val_seq) + scale_x_continuous(expand = c(0,0))
   
@@ -601,32 +601,32 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
                              colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
     l.df$name <- factor(l.df$name, levels = l.df$name)
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes_string(x = "frame", y = "value", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title)
+    p <- p + geom_path(data = l.df, aes(x = frame, y = value, colour = name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA)
   }  
   return(p)
 }
 
 
 #' hist stats plot function
-#' @importFrom ggplot2 ggplot geom_path aes_string theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw  coord_cartesian geom_bar
+#' @importFrom ggplot2 ggplot geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw  coord_cartesian geom_bar
 #' @noRd
 ## stats plot function
 .gg_hist <- function(x, y, path_legend, path_legend_title, path_size, val_seq, r_type){
   
   ## generate base plot
-  if(r_type == "gradient") p <- ggplot(x, aes_string(x = "value", y = "count")) + geom_path(aes_string(group = "name"), size = path_size, show.legend = F, colour = x$colour)
-  if(r_type == "discrete") p <- ggplot(x, aes_string(x = "value", y = "count", fill = "colour")) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
+  if(r_type == "gradient") p <- ggplot(x, aes(x = value, y = count)) + geom_path(aes(group = "name"), linewidth = path_size, show.legend = F, colour = x$colour)
+  if(r_type == "discrete") p <- ggplot(x, aes(x = value, y = count, fill = colour)) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
   
   p <- p + coord_cartesian(xlim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
     theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0), breaks = val_seq)
   
   ## add legend
   if(isTRUE(path_legend)){
-    l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = levels(y$name),
+    l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = unique(y$name),
                              colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
     l.df$name <- factor(l.df$name, levels = l.df$name)
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes_string(x = "value", y = "count", colour = "name", linetype = NA), size = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title)
+    p <- p + geom_path(data = l.df, aes(x = value, y = count, colour = name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA
   }
   return(p)
 }
@@ -639,7 +639,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
     "Do you need help with moveVis? Have a look at the docs on our web page: http://movevis.org/",
     "Find out about new features added to moveVis at http://movevis.org/news/index.html",
     "Find example code and code snippets at http://movevis.org/index.html#examples",
-    "Find a collection of moveVis animations created by other users on Twitter: https://twitter.com/schwalbwillmann",
+    #"Find a collection of moveVis animations created by other users on Twitter: https://twitter.com/schwalbwillmann",
     "Are you missing a feature or did you find a bug? Please open an issue at https://github.com/16eagle/movevis/issues",
     "Read our accompanying open-access paper published in 'Methods in Ecology and Evolution': https://doi.org/10.1111/2041-210X.13374"
   )
@@ -675,10 +675,31 @@ which.minpos <- function(x) min(which(min(x[x > 0]) == x))
 
 #' map values in x from from to to
 #' @noRd
-mapvalues <- function(x, from, to) {
+.mapvalues <- function(x, from, to) {
   lookup <- setNames(to, from)
   matched <- x %in% from
   result <- x
   result[matched] <- lookup[as.character(x[matched])]
   return(result)
+}
+
+#' add attributes needed by moveVis functions to m
+#' @importFrom move2 mt_time mt_track_id
+#' @noRd
+.add_m_attributes <- function(m, path_colours){
+  if(!is.character(path_colours)){
+    path_colours <- .standard_colours(mt_n_tracks(m))
+    if(is.null(m$colour)) m$colour <- .mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
+  } else{
+    m$colour <- .mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
+  }
+  
+  # add some info to m
+  m$time_chr <- as.character(mt_time(m))
+  m$time <- mt_time(m)
+  m$frame <- sapply(mt_time(m), function(x) which(sort(unique(mt_time(m))) == x))
+  
+  m <- m[order(m$frame),]
+  m$name <- mt_track_id(m)
+  return(m)
 }

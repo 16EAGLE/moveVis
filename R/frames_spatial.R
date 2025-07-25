@@ -229,20 +229,14 @@ frames_spatial <- function(
   }
   if(isTRUE(cross_dateline)) m <- st_transform(m, st_crs(4326))
   
-  # add some info to m
-  m$time_chr <- as.character(mt_time(m))
-  m$time <- mt_time(m)
-  m$frame <- sapply(mt_time(m), function(x) which(sort(unique(mt_time(m))) == x))
-  
   # path colours
-  if(any(is.na(path_colours))){
-    path_colours <- .standard_colours(mt_n_tracks(m))
-  }
-  if(is.null(m$colour)){
-    m$colour <- repl_vals(as.character(mt_track_id(m)), unique(as.character(mt_track_id(m))), path_colours[1:mt_n_tracks(m)])
-  }
-  m <- m[order(m$frame),]
-  m$name <- mt_track_id(m)
+  # if(any(is.na(path_colours))){
+  #   path_colours <- .standard_colours(mt_n_tracks(m))
+  # }
+  # if(is.null(m$colour)){
+  #   m$colour <- repl_vals(as.character(mt_track_id(m)), unique(as.character(mt_track_id(m))), path_colours[1:mt_n_tracks(m)])
+  # }
+  m <- .add_m_attributes(m, path_colours = path_colours)
   
   # print stats
   .stats(n.frames = max(m$frame))

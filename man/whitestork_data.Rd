@@ -12,7 +12,7 @@
    \item \code{m} is a \code{moveStack} object
 }
 
-An object of class \code{MoveStack} with 155173 rows and 3 columns.
+An object of class \code{move2} (inherits from \code{sf}, \code{data.frame}) with 155173 rows and 3 columns.
 }
 \usage{
 data(whitestork_data)
