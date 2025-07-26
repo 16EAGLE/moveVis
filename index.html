@@ -4,138 +4,85 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Movement Data Visualization • moveVis</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><!-- docsearch --><script src="docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
-<link href="docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Movement Data Visualization">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Movement Data Visualization">
+<meta name="description" content="Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.">
 <meta property="og:description" content="Tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations.">
 <meta property="og:image" content="https://movevis.org/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
-    
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">moveVis</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.6</span>
-      </span>
-    </div>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="index.html#get-started">Get Started</a>
-</li>
-<li>
-  <a href="index.html#examples">Examples</a>
-</li>
-<li>
-  <a href="news/index.html">News</a>
-</li>
-<li>
-  <a href="reference/index.html">Functions</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Other packages
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="https://jxsw.de/getSpatialData" class="external-link">getSpatialData</a>
-    </li>
-    <li>
-      <a href="https://www.github.com/bleutner/RStoolbox" class="external-link">RStoolbox</a>
-    </li>
-    <li>
-      <a href="https://www.github.com/RRemelgado/rsmove" class="external-link">rsMove</a>
-    </li>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
+    <a class="navbar-brand me-2" href="index.html">moveVis</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="active nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home fa-lg"></span></a></li>
+<li class="nav-item"><a class="nav-link" href="index.html#get-started">Get Started</a></li>
+<li class="nav-item"><a class="nav-link" href="index.html#examples">Examples</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Functions</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-other-packages" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Other packages</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-other-packages">
+<li><a class="external-link dropdown-item" href="https://jxsw.de/getSpatialData">getSpatialData</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.github.com/bleutner/RStoolbox">RStoolbox</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.github.com/RRemelgado/rsmove">rsMove</a></li>
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://www.twitter.com/schwalbwillmann" class="external-link">
-    <span class="fa fa-twitter fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="https://www.github.com/16eagle" class="external-link">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="https://jakob.schwalb-willmann.de" class="external-link">
-    <span class="fa fa-globe fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-twitter fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://www.github.com/16eagle"><span class="fa fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://jakob.schwalb-willmann.de"><span class="fa fa-globe fa-lg"></span></a></li>
       </ul>
-<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
-        <div class="form-group">
-          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
-      </form>
-      
-    </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="movevis-">moveVis <a href="https://movevis.org"><img align="right" src="reference/figures/logo.png"></a>
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="movevis-">moveVis 
 <a class="anchor" aria-label="anchor" href="#movevis-"></a>
-</h1></div>
-
+</h1>
+</div>
+<p><a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://www.r-pkg.org/badges/version/moveVis" alt="CRAN version"></a> <a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/moveVis?color=brightgreen" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/web/checks/check_results_moveVis.html" class="external-link"><img src="https://cranchecks.info/badges/summary/moveVis" alt="CRAN checks"></a> <a href="https://github.com/16EAGLE/moveVis/actions" class="external-link"><img src="https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/16EAGLE/moveVis" class="external-link"><img src="https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg" alt="Coverage"></a> <a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://tinyverse.netlify.com/badge/moveVis" alt="Package dependencies"></a></p>
+<p><em>Note: <code>moveVis</code> is currently updated to support <code>move2</code> with the aim to eventually return to CRAN this year. The moveVis version hosted on GitHub is provided as is, as it is work in progress. Unit tests are partially non-functioning, docuemntation may be not yet up-to-date, and there could be bugs that are about to get fixed.</em></p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p><a href="https://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move" class="external-link"><code>move</code></a> and <a href="https://github.com/rspatial/raster" class="external-link"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2" class="external-link"><code>ggplot2</code></a> frames that can be further customized. <a href="https://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski" class="external-link"><code>gifski</code></a> (wrapping the <a href="https://gif.ski" class="external-link">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av" class="external-link"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/" class="external-link">FFmpeg</a>) to render frames into animated GIF or video files.</p>
 <p>A <a href="https://doi.org/10.1111/2041-210X.13374" class="external-link">peer-reviewed open-access paper</a> accompanying <code>moveVis</code> has been published in <em>Methods in Ecology and Evolution</em>.</p>
-<br><p align="center"><img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
-<p align="center"><sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
-<br><br><p align="center"><img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p>
-<p align="center"><sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
+<br><p align="center">
+<img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
+<p align="center">
+<sub>Figure 1: Example movement tracks nearby Lake of Constance on top of a OSM watercolor and a mapbox satellite base map</sub></p>
+<br><br><p align="center">
+<img width="95%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp2.gif"></p>
+<p align="center">
+<sub>Figure 2: Example movement tracks nearby Lake of Constance and a gradient base layer faded over time</sub></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -179,7 +126,8 @@
 <span></span>
 <span><span class="co"># animate frames</span></span>
 <span><span class="fu"><a href="reference/animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="st">"moveVis.gif"</span><span class="op">)</span></span></code></pre></div>
-<p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
+<p align="center">
+<img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 </div>
 <div class="section level2">
 <h2 id="function-overview">Function overview<a class="anchor" aria-label="anchor" href="#function-overview"></a>
@@ -190,11 +138,11 @@
 </h4>
 <ul>
 <li>
-<code><a href="reference/df2move.html">df2move()</a></code> converts a <code>data.frame</code> into a <code>move</code> or <code>moveStack</code> object. This is useful if you do not usually work with the <code>move</code> classes and your tracks are present as <code>data.frames</code>.</li>
+<code><a href="reference/deprecated.html">df2move()</a></code> converts a <code>data.frame</code> into a <code>move</code> or <code>moveStack</code> object. This is useful if you do not usually work with the <code>move</code> classes and your tracks are present as <code>data.frames</code>.</li>
 <li>
 <code><a href="reference/align_move.html">align_move()</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</li>
 <li>
-<code><a href="reference/subset_move.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.</li>
+<code><a href="reference/deprecated.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -230,7 +178,7 @@
 <li>
 <code><a href="reference/add_colourscale.html">add_colourscale()</a></code> adjusts the colour scales of the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> and custom map imagery using the <code>r_list</code> argument.</li>
 <li>
-<code><a href="reference/join_frames.html">join_frames()</a></code> side-by-side joins two or more <code>moveVis</code> frame sequences of equal lengths into a single plot per frame using <code><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">cowplot::plot_grid</a></code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> with graph frames returned by <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/join_frames.html">join_frames()</a></code> side-by-side joins two or more <code>moveVis</code> frame sequences of equal lengths into a single plot per frame using <code>cowplot::plot_grid</code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> with graph frames returned by <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
 <code><a href="reference/get_frametimes.html">get_frametimes()</a></code> extracts the timestamps associated with each frame from a <code>moveVis</code> object created using <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code> and returns them as a vector.</li>
 </ul>
@@ -350,11 +298,15 @@
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
 <p>This initiative was part of the <a target="_blank" href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/research/completed-projects/opt4environment/" class="external-link">Opt4Environment</a> project and had been funded by the German Aerospace Center (DLR) on behalf of the Federal Ministry for Economic Affairs and Energy (BMWi) with the research grant <b>50 EE 1403</b>.</p>
-<p align="justify"></p>
-<div><div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="op">&lt;</span>a href=<span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"29%"</span> src=<span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="er">&lt;</span>a href=<span class="st">"http://www.dlr.de/eoc/en/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"16%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="st"> </span><span class="er">&lt;</span>a href=<span class="st">"https://www.bmu.de/en/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"29%"</span> src=<span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="er">&lt;</span>a href=<span class="st">"https://www.ab.mpg.de/"</span><span class="op">&gt;</span><span class="er">&lt;</span>img width=<span class="st">"16%"</span> src=<span class="st">"https://www.mpg.de/assets/og-logo-8216b4912130f3257762760810a4027c063e0a4b09512fc955727997f9da6ea3.jpg"</span><span class="op">&gt;</span><span class="er">&lt;/</span>a<span class="op">&gt;</span></span></code></pre></div></div>
+<p align="justify">
+</p>
+<div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"http://www.dlr.de/eoc/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a> <span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.bmu.de/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://www.mpg.de/assets/og-logo-8216b4912130f3257762760810a4027c063e0a4b09512fc955727997f9da6ea3.jpg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span></code></pre></div>
+</div>
+
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
@@ -363,10 +315,7 @@
 <p>Schwalb-Willmann, J.; Remelgado, R.; Safi, K.; Wegmann, M. (2020). moveVis: Animating movement trajectories in synchronicity with static or temporally dynamic environmental data in R. <em>Methods Ecol Evol</em>. 2020; 11: 664–669. <a href="https://doi.org/10.1111/2041-210X.13374" class="external-link uri">https://doi.org/10.1111/2041-210X.13374</a></p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=moveVis" class="external-link">View on CRAN</a></li>
@@ -395,45 +344,31 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Jakob Schwalb-Willmann <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-2665-1509" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Annika Ludwig <br><small class="roles"> Author, contributor </small>  </li>
+<li>Jakob Schwalb-Willmann <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-2665-1509" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Annika Ludwig <br><small class="roles"> Author, contributor </small>   </li>
 </ul>
 </div>
 
 
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Jakob Schwalb-Willmann, Annika Ludwig.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Jakob Schwalb-Willmann, Annika Ludwig.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
-  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
-  docsearch({
-    
-    
-    apiKey: 'a482704aa04a35b75610bde292d047b8',
-    indexName: 'movevis',
-    inputSelector: 'input#search-input.form-control',
-    transformData: function(hits) {
-      return hits.map(function (hit) {
-        hit.url = updateHitURL(hit);
-        return hit;
-      });
-    }
-  });
-</script>
-</body>
+
+
+
+
+  </body>
 </html>
