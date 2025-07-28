@@ -84,8 +84,8 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Argument <code>gg</code> expects <code>ggplot2</code> functions handed over as expressions (see <code><a href="https://rlang.r-lib.org/reference/expr.html" class="external-link">rlang::expr</a></code>) to avoid their evaluation
-before they are called for the correct frame. Simply wrap your <code>ggplot2</code> function into <code><a href="https://rlang.r-lib.org/reference/expr.html" class="external-link">expr()</a></code> and supply it to
+    <p>Argument <code>gg</code> expects <code>ggplot2</code> functions handed over as expressions (see <code><a href="https://rlang.r-lib.org/reference/expr.html" class="external-link">expr</a></code>) to avoid their evaluation
+before they are called for the correct frame. Simply wrap your <code>ggplot2</code> function into <code><a href="https://rlang.r-lib.org/reference/expr.html" class="external-link">expr</a></code> and supply it to
 <code>gg</code>. To add multiple <code>ggplot2</code> functions to be applied on every frame, supply an expression containing a list of
 <code>ggplot2</code> functions (e.g. <code>expr(list(geom_label(...), geom_text(...)))</code>). This expression would be added to all frames.
 To add specific <code>ggplot2</code> functions per frame, supply a list of expressions of the same length as frames. Each expression may

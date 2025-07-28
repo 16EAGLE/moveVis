@@ -72,27 +72,27 @@
 
 
 <dl><dt id="arg-m">m<a class="anchor" aria-label="anchor" href="#arg-m"></a></dt>
-<dd><p><code>move</code> or <code>moveStack</code> of uniform time scale and time lag, e.g. prepared with <code><a href="align_move.html">align_move</a></code> (recommended). May contain a column named <code>colour</code> to control path colours (see <code>details</code>).</p></dd>
+<dd><p><code>move2</code> object of uniform time scale and time lag as returned by <code><a href="align_move.html">align_move</a></code>. Can contain a column named <code>colour</code> to control path colours (see details below).</p></dd>
 
 
 <dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
-<dd><p><code>terra</code> object, either a <code>SpatRaster</code> or a <code>SpatRasterDataset</code>. Each list element refers to the times given in <code>r_times</code>. Use single-layer <code>raster</code> objects for gradient or discrete data (see <code>r_type</code>). Use a  <code>rasterStack</code> containing three bands for RGB imagery (in the order red, green, blue). r_times list of <code>POSIXct</code> times. Each list element represents the time of the corresponding element in <code>r_list</code>. Must be of same length as <code>r_list</code>.</p></dd>
+<dd><p><code>terra</code> object, either a <code>SpatRaster</code> (mono-temporal) or a <code>SpatRasterDataset</code> (multi-temporal). In case of the latter, times of `r` must be defined as 'POSIXct' (see <code><a href="https://rspatial.github.io/terra/reference/time.html" class="external-link">time</a></code> and details below).</p></dd>
 
 
 <dt id="arg-r-type">r_type<a class="anchor" aria-label="anchor" href="#arg-r-type"></a></dt>
-<dd><p>character, either <code>"gradient"</code> or <code>"discrete"</code>. Ignored, if <code>r_list</code> contains <code>rasterStacks</code> of three bands, which are treated as RGB.</p></dd>
+<dd><p>character, either <code>"gradient"</code> or <code>"discrete"</code>. Ignored, if <code>r</code> contains three bands, which are treated as RGB.</p></dd>
 
 
 <dt id="arg-fade-raster">fade_raster<a class="anchor" aria-label="anchor" href="#arg-fade-raster"></a></dt>
-<dd><p>logical, if <code>TRUE</code>, <code>r_list</code> is interpolated over time based on <code>r_times</code>. If <code>FALSE</code>, <code>r_list</code> elements are assigned to those frames closest to the equivalent times in <code>r_times</code>.</p></dd>
+<dd><p>logical, if <code>TRUE</code>, <code>r</code> is interpolated over time. If <code>FALSE</code>, <code>r</code> elements are assigned to those frames closest to the equivalent times of <code>r</code>.</p></dd>
 
 
 <dt id="arg-crop-raster">crop_raster<a class="anchor" aria-label="anchor" href="#arg-crop-raster"></a></dt>
-<dd><p>logical, whether to crop rasters in <code>r_list</code> to plot extent before plotting or not.</p></dd>
+<dd><p>logical, whether to crop rasters in <code>r</code> to frame extents before plotting or not.</p></dd>
 
 
 <dt id="arg-return-data">return_data<a class="anchor" aria-label="anchor" href="#arg-return-data"></a></dt>
-<dd><p>logical, if <code>TRUE</code>, instead of a list of frames, a <code>data.frame</code> containing the values extracted from <code>r_list</code> per individual, location and time is returned. This <code>data.frame</code> can be used to create your own multi- or monotemporal <code>ggplot2</code> movement-environemnt interaction graphs.</p></dd>
+<dd><p>logical, if <code>TRUE</code>, instead of a list of frames, a <code>data.frame</code> containing the values extracted from <code>r_list</code> per individual, location and time is returned. This <code>data.frame</code> can be used to create your own multi- or mono-temporal <code>ggplot2</code> movement-environemnt interaction graphs.</p></dd>
 
 
 <dt id="arg-graph-type">graph_type<a class="anchor" aria-label="anchor" href="#arg-graph-type"></a></dt>
