@@ -14,6 +14,9 @@ Simulated based on MODIS (MOD13Q1 NDVI)
 \usage{
 example_data(file = "basemap_data.rds")
 }
+\arguments{
+\item{file}{character, file name of the example dataset.}
+}
 \description{
 This dataset is a SpatRasterDataset, representing simulated NDVI images covering the Lake of Constance area, 
 as well as invented dates and times that simulate acquisition times.

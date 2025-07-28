@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_text.R
 \name{add_text}
 \alias{add_text}
-\title{Add static or dynamic text to frames}
+\title{Add text to frames}
 \usage{
 add_text(
   frames,
@@ -36,7 +36,7 @@ add_text(
 A frames object of class \code{moveVis}.
 }
 \description{
-This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.
+This function adds text to frames created with \code{\link{frames_spatial}}.
 }
 \examples{
 library(moveVis)

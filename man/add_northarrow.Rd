@@ -47,6 +47,9 @@ A frames object of class \code{moveVis}.
 \description{
 This function adds a north arrow to frames created with \code{\link{frames_spatial}}.
 }
+\details{
+For adding more sophisticated map features, I recommend using \code{ggspatial}.
+}
 \examples{
 library(moveVis)
 library(move)

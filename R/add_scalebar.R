@@ -12,6 +12,8 @@
 #' @param label_margin numeric, distance of the labels to the scalebar as a proportion of the height of the scalebar (e.g. if set to 2, the labels will be positioned with a distance to the scalebar of twice the scalebar height).
 #' @param units character, either "km" for kilometers or "miles" for miles.
 #'
+#' @details For adding more sophisticated map features, I recommend using \code{ggspatial}.
+#' 
 #' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'

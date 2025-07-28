@@ -2,11 +2,11 @@
 #'
 #' \code{frames_spatial} creates frames from movement and map/raster data. If no custom raster data is provided, a basemap is pulled from a map tile service using the \code{basemaps} package. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 #'
-#' @param m \code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).
-#' @param r \code{terra} object, either a \code{SpatRaster} or a \code{SpatRasterDataset}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue). r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.
-#' @param r_type character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.
-#' @param fade_raster logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.
-#' @param crop_raster logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.
+#' @param m \code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}. Can contain a column named \code{colour} to control path colours (see details below).
+#' @param r \code{terra} object, either a \code{SpatRaster} (mono-temporal) or a \code{SpatRasterDataset} (multi-temporal). In case of the latter, times of `r` must be defined as 'POSIXct' (see \code{\link[terra]{time}} and details below).
+#' @param r_type character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r} contains three bands, which are treated as RGB.
+#' @param fade_raster logical, if \code{TRUE}, \code{r} is interpolated over time. If \code{FALSE}, \code{r} elements are assigned to those frames closest to the equivalent times of \code{r}.
+#' @param crop_raster logical, whether to crop rasters in \code{r} to frame extents before plotting or not.
 #' @param path_size numeric, size of each path.
 #' @param path_end character, either \code{"round"}, \code{"butt"} or \code{"square"}, indicating the path end style.
 #' @param path_join character, either \code{"round"}, \code{"mitre"} or \code{"bevel"}, indicating the path join style.

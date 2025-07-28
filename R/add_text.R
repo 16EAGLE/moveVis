@@ -1,6 +1,6 @@
-#' Add static or dynamic text to frames
+#' Add text to frames
 #'
-#' This function adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}}.
+#' This function adds text to frames created with \code{\link{frames_spatial}}.
 #'
 #' @inheritParams add_labels
 #' @param labels character, text to be added to frames. Either a single character value or a character vector of same length as \code{frames}.

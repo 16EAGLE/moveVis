@@ -1,15 +1,17 @@
 #' Add scale to frames
 #'
-#' This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
+#' This function adjusts the colour scales of frames created with \code{\link{frames_spatial}} and custom map imagery using \code{ggplot2}.
 #'
 #' @inheritParams add_labels
-#' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).
-#' @param colours character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Optioanlly, the vector can be named to associate map values with colours and define the scale limits, e.g. \code{c("-1" = "red", "0" = "blue", "1" = "green")}
+#' @param type character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the definition of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).
+#' @param colours character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Optionally, the vector can be named to associate map values with colours and define the scale limits, e.g. \code{c("-1" = "red", "0" = "blue", "1" = "green")}
 #' @param labels character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.
 #' @param na.colour character, colour to use for missing values.
 #' @param na.show logical, whether to display NA values in discrete scaling. Ignored, if \code{type = "gradient"}.
 #' @param legend_title character, a legend title.
 #'
+#' @details Instead of using this function, you can use \code{\link{add_gg}} to apply any \code{ggplot2} on \code{moveVis} frames yourself.
+#' 
 #' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann
 #'

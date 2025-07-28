@@ -1,13 +1,16 @@
 ***
 
 ## moveVis 1.0.0
-Updating moveVis the age of move2 for representing trajectory data and terra for representing raster data.
+Updating `moveVis` to support `move2` for representing trajectory data and `terra` for representing raster data.
 
 **Changes:**
-* `align_move` now expects a units object for representing the target time resolution (see `?moveVis::align_move`).
+
+* Argument `res` of `align_move` now expects a units object for representing the target time resolution (see `?moveVis::align_move`).
+* `frames_spatial` now expects `terra` `SpatRasterDataset` for multi-temporal raster data via the `r` argument. See `?moveVis::frames_spatial` for details.
 
 **Deprecations:**
-* *tba*
+
+* Arguments `r_list` and `r_times` of `frames_spatial` are deprecated. Use argument `r` instead and supply a `terra` `SpatRasterDataset` to bundle multiple multi-layered rasters of a time series. See `?moveVis::frames_spatial` for details.
 
 
 ## moveVis 0.10.6

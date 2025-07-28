@@ -3,7 +3,7 @@
 #' \code{frames_graph} creates a list of \code{ggplot2} graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returned list of frames can be animated using \code{\link{animate_frames}}.
 #'
 #' @inheritParams frames_spatial
-#' @param return_data logical, if \code{TRUE}, instead of a list of frames, a \code{data.frame} containing the values extracted from \code{r_list} per individual, location and time is returned. This \code{data.frame} can be used to create your own multi- or monotemporal \code{ggplot2} movement-environemnt interaction graphs.
+#' @param return_data logical, if \code{TRUE}, instead of a list of frames, a \code{data.frame} containing the values extracted from \code{r_list} per individual, location and time is returned. This \code{data.frame} can be used to create your own multi- or mono-temporal \code{ggplot2} movement-environemnt interaction graphs.
 #' @param graph_type character, defines the type of multi-temporal graph that should be drawn as frames. Currently supported graphs are:
 #' \itemize{
 #'    \item \code{"flow"}, a time flow graph with frame time on the x axis and values of the visited cell at x on the y axis per individual track

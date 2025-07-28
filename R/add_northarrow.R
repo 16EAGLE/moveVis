@@ -12,6 +12,8 @@
 #' @param label_text character, text below the north arrow.
 #' @param label_margin numeric, margin between label and north arrow as a proportion of the size of the north arrow.
 #' @param label_size numeric, label font size.
+#' 
+#' @details For adding more sophisticated map features, I recommend \code{ggspatial}.
 #'
 #' @return A frames object of class \code{moveVis}.
 #' @author Jakob Schwalb-Willmann

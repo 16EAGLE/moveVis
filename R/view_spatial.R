@@ -3,15 +3,15 @@
 #' \code{view_spatial} is a simple wrapper that displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
 #'
 #' @inheritParams frames_spatial
-#' @param m \code{move} or \code{moveStack}. May contain a column named \code{colour} to control path colours (see \code{details}).
+#' @param m \code{move2} object. Can contain a column named \code{colour} to control path colours (see \code{details}).
 #' @param render_as character, either \code{'mapview'} to return a \code{mapview} map or \code{'leaflet'} to return a \code{leaflet} map. 
-#' @param time_labels logical, wether to display timestamps for each track fix when hovering it with the mouse cursor.
+#' @param time_labels logical, whether to display timestamps for each track fix when hovering it with the mouse cursor.
 #' @param stroke logical, whether to draw stroke around circles.
 #' 
 #' @details If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
 #' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
 #' 
-#' @return An interatcive \code{mapview} or \code{leaflet} map.
+#' @return An interactive \code{mapview} or \code{leaflet} map.
 #' 
 #' @author Jakob Schwalb-Willmann
 #' 

@@ -36,7 +36,7 @@ add_labels(
 A frames object of class \code{moveVis}.
 }
 \description{
-This function adds character labels such as title or axis labels to animation frames created with \code{\link{frames_spatial}}.
+This function adds character labels such as titles or axis labels to frames created with \code{\link{frames_spatial}}.
 }
 \examples{
 library(moveVis)

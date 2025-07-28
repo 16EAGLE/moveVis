@@ -2,19 +2,19 @@
 #'
 #' This function aligns movement data to a uniform time scale with a uniform temporal resolution throughout the complete movement sequence. 
 #' This prepares the provided movement data to be usable by \code{\link{frames_spatial}}, which requires a uniform time scale and
-#' a consistent, unique temporal resolution for all tracks.
+#' a consistent, unique temporal resolution for all supplied trajectories.
 #' 
 #' @inheritParams frames_spatial
 #' @param m \code{move2} object, which is allowed to contain irregular timestamps and diverging temporal resolutions.
-#' @param res either numeric, representing the temporal resolution, to which \code{m} should be aligned to (see argument \code{unit}), or character:
-#' @param start_end_time \code{NULL} (default) or a list with the same length as number of tracks in \code{m}, with each element consisting of two \code{POSIXct} times: one start and one end time for alignment. If \code{NULL}, the start and end times of each track are retrieved from \code{m} and used for alignment.
+#' @param res either  a \code{units} object representing the temporal resolution \code{m} should be aligned to, or a character being one of 'min', 'max', 'mean' or 'median' to indicate how the target resolution should be derived from \code{m}.
+#' @param start_end_time \code{NULL} (default) or a vector of two POSIXct times (one start time and one end time for alignment). If \code{NULL}, the start and end time are retrieved from \code{m} and used for alignment.
 #' \itemize{
 #'   \item \code{"minimum"} to use the smallest temporal resolution of \code{m} (default)
 #'   \item \code{"maximum"} to use the largest temporal resolution of \code{m}
 #'   \item \code{"mean"} to use the rounded average temporal resolution of \code{m}
 #'   \item \code{"median"} to use the rounded median temporal resolution of \code{m}
 #' }
-#' @param ... deprecated arguments, including \code{digit}, \code{unit}, \code{spaceMethod}.
+#' @param ... deprecated arguments, including \code{digit}, \code{unit} and \code{spaceMethod}.
 #'
 #' @return \code{move2} object, with aligned positions at uniform temporal scale computed from \code{m}, ready to be used by \code{\link{frames_spatial}}.
 #' @author Jakob Schwalb-Willmann
@@ -69,6 +69,11 @@
 
 align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE){
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
+  
+  extras <- list(...)
+  if(!is.null(extras$digit)) out("Argument 'digit' is deprecated. See ?moveVis::align_move for details.", type = 2)
+  if(!is.null(extras$unit)) out("Argument 'unit' is deprecated. See ?moveVis::align_move for details.", type = 2)
+  if(!is.null(extras$spaceMethod)) out("Argument 'spaceMethod' is deprecated. See ?moveVis::align_move for details.", type = 2)
   
   # check inputs
   .check_move2(m)

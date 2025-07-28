@@ -18,9 +18,9 @@ add_colourscale(
 \arguments{
 \item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
-\item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the defintion of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).}
+\item{type}{character, either \code{"gradient"} or \code{"discrete"}. Must be equal to the definition of argument \code{r_type} with which \code{frames} have been created (see \code{\link{frames_spatial}}).}
 
-\item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Optioanlly, the vector can be named to associate map values with colours and define the scale limits, e.g. \code{c("-1" = "red", "0" = "blue", "1" = "green")}}
+\item{colours}{character, a vector of colours. If \code{type = "discrete"}, number of colours must be equal to the number of classes contained in the raster imagery with which \code{frames} have been created. Optionally, the vector can be named to associate map values with colours and define the scale limits, e.g. \code{c("-1" = "red", "0" = "blue", "1" = "green")}}
 
 \item{labels}{character, a vector of labels with the same length as \code{colours}. Ignored, if \code{type = "gradient"}.}
 
@@ -36,7 +36,10 @@ add_colourscale(
 A frames object of class \code{moveVis}.
 }
 \description{
-This function adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
+This function adjusts the colour scales of frames created with \code{\link{frames_spatial}} and custom map imagery using \code{ggplot2}.
+}
+\details{
+Instead of using this function, you can use \code{\link{add_gg}} to apply any \code{ggplot2} on \code{moveVis} frames yourself.
 }
 \examples{
 library(moveVis)

@@ -1,6 +1,6 @@
 #' Add \code{ggplot2} function to frames
 #'
-#' This function adds \code{ggplot2} functions (e.g. to add layers, change scales etc.) to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#' This function applies \code{ggplot2} functions (e.g. to add layers, change scales etc.) to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 #'
 #' @inheritParams add_labels
 #' @param gg \code{ggplot2} expressions (see details), either as
@@ -16,8 +16,8 @@
 #' @param ... additional (non-iterated) objects that should be visible to \code{gg}.
 #'
 #' @details 
-#' Agrument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link{expr}}) to avoid their evaluation
-#' before thex are called for the correct frame. Simply wrap your \code{ggplot2} function into \code{expr()} and supply it to 
+#' Argument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link[rlang]{expr}}) to avoid their evaluation
+#' before they are called for the correct frame. Simply wrap your \code{ggplot2} function into \code{\link[rlang]{expr}} and supply it to 
 #' \code{gg}. To add multiple \code{ggplot2} functions to be applied on every frame, supply an expression containing a list of 
 #' \code{ggplot2} functions (e.g. \code{expr(list(geom_label(...), geom_text(...)))}). This expression would be added to all frames. 
 #' To add specific \code{ggplot2} functions per frame, supply a list of expressions of the same length as frames. Each expression may
@@ -120,7 +120,7 @@ add_gg <- function(frames, gg, data = NULL, ..., verbose = T){
   } else{
     if(length(gg) != length(frames)) gg <- rep(list(gg), length(frames))
   }
-  if(!is.call(gg[[1]])) out("Argument 'gg' must be an expression or a list of expressions (see ?moveVis::add_gg and ?ggplot2::expr).", type = 3)
+  if(!is.call(gg[[1]])) out("Argument 'gg' must be an expression or a list of expressions (see ?moveVis::add_gg and ?rlang::expr).", type = 3)
   
   if(is.null(frames$additions)) frames$additions <- list(list(expr = gg, data = data, arg = list(...))) else{
     frames$additions <- c(frames$additions, list(list(expr = gg, data = data, arg = list(...))))

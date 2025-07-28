@@ -46,6 +46,7 @@
 #' This dataset is a SpatRasterDataset, representing simulated NDVI images covering the Lake of Constance area, 
 #' as well as invented dates and times that simulate acquisition times.
 #'
+#' @param file character, file name of the example dataset.
 #' @details This object is used by some \code{moveVis} examples and unit tests. Use \code{readRDS(example_data())} to retrieve the SpatRasterDataset. 
 #' 
 #' Times can be retrieved using \code{terra::time(readRDS(example_data()))}
