@@ -7,7 +7,7 @@
 [![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://app.codecov.io/gh/16EAGLE/moveVis)
 [![Package dependencies](https://tinyverse.netlify.com/badge/moveVis)](https://CRAN.R-project.org/package=moveVis)
 
-*Note: `moveVis` is currently being for representing trajectory data and `terra` for representing raster data. The package version currently hosted on GitHub is provided "as is". It is work in progress and subject to changes. Unit tests are partially non-functioning, documentation may be not yet up-to-date, and there are bugs that are not yet fixed.*
+*Note: `moveVis` is currently being updated  to support `move2` for representing trajectory data and `terra` for representing raster data. The package version currently hosted on GitHub is provided "as is". It is work in progress and subject to changes. Unit tests are partially non-functioning, documentation may be not yet up-to-date, and there are bugs that are not yet fixed.*
 
 ## Introduction
 
