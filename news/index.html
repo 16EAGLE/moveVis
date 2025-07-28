@@ -42,10 +42,14 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="movevis-100">moveVis 1.0.0<a class="anchor" aria-label="anchor" href="#movevis-100"></a></h2>
-<p>Updating moveVis the age of move2 for representing trajectory data and terra for representing raster data.</p>
-<p><strong>Changes:</strong> * <code>align_move</code> now expects a units object for representing the target time resolution (see <code><a href="../reference/align_move.html">?moveVis::align_move</a></code>).</p>
-<p><strong>Deprecations:</strong> * <em>tba</em></p>
-</div>
+<p>Updating <code>moveVis</code> to support <code>move2</code> for representing trajectory data and <code>terra</code> for representing raster data.</p>
+<p><strong>Changes:</strong></p>
+<ul><li>Argument <code>res</code> of <code>align_move</code> now expects a units object for representing the target time resolution (see <code><a href="../reference/align_move.html">?moveVis::align_move</a></code>).</li>
+<li>
+<code>frames_spatial</code> now expects <code>terra</code> <code>SpatRasterDataset</code> for multi-temporal raster data via the <code>r</code> argument. See <code><a href="../reference/frames_spatial.html">?moveVis::frames_spatial</a></code> for details.</li>
+</ul><p><strong>Deprecations:</strong></p>
+<ul><li>Arguments <code>r_list</code> and <code>r_times</code> of <code>frames_spatial</code> are deprecated. Use argument <code>r</code> instead and supply a <code>terra</code> <code>SpatRasterDataset</code> to bundle multiple multi-layered rasters of a time series. See <code><a href="../reference/frames_spatial.html">?moveVis::frames_spatial</a></code> for details.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.6" id="movevis-0106">moveVis 0.10.6<a class="anchor" aria-label="anchor" href="#movevis-0106"></a></h2>
 <p>New S3 class and methods to represent frames, lazy plotting, improvements.</p>
