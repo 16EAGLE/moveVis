@@ -18,17 +18,17 @@ add_labels(
 \arguments{
 \item{frames}{an object of class \code{moveVis} created with \code{\link{frames_spatial}}.}
 
-\item{title}{character, frame title. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
+\item{title}{character, frame title. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{\link[ggplot2]{waiver}}), an existing title of \code{frames} is kept.}
 
-\item{subtitle}{character, frame subtitle. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
+\item{subtitle}{character, frame subtitle. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{\link[ggplot2]{waiver}}), an existing title of \code{frames} is kept.}
 
-\item{caption}{character, frame caption. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
+\item{caption}{character, frame caption. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{\link[ggplot2]{waiver}}), an existing title of \code{frames} is kept.}
 
-\item{tag}{character, frame tag. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
+\item{tag}{character, frame tag. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{\link[ggplot2]{waiver}}), an existing title of \code{frames} is kept.}
 
-\item{x}{character, label of the x axis. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
+\item{x}{character, label of the x axis. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{\link[ggplot2]{waiver}}), an existing title of \code{frames} is kept.}
 
-\item{y}{character, label of the y axis. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{ggplot2::waiver()}), an existing title of \code{frames} is kept.}
+\item{y}{character, label of the y axis. If \code{NULL}, an existing title of \code{frames} is removed. If \code{waiver()} (default, see \code{\link[ggplot2]{waiver}}), an existing title of \code{frames} is kept.}
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }

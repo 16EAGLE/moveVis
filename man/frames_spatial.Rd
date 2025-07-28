@@ -41,15 +41,15 @@ frames_spatial(
 )
 }
 \arguments{
-\item{m}{\code{move} or \code{moveStack} of uniform time scale and time lag, e.g. prepared with \code{\link{align_move}} (recommended). May contain a column named \code{colour} to control path colours (see \code{details}).}
+\item{m}{\code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}. Can contain a column named \code{colour} to control path colours (see details below).}
 
-\item{r}{\code{terra} object, either a \code{SpatRaster} or a \code{SpatRasterDataset}. Each list element refers to the times given in \code{r_times}. Use single-layer \code{raster} objects for gradient or discrete data (see \code{r_type}). Use a  \code{rasterStack} containing three bands for RGB imagery (in the order red, green, blue). r_times list of \code{POSIXct} times. Each list element represents the time of the corresponding element in \code{r_list}. Must be of same length as \code{r_list}.}
+\item{r}{\code{terra} object, either a \code{SpatRaster} (mono-temporal) or a \code{SpatRasterDataset} (multi-temporal). In case of the latter, times of `r` must be defined as 'POSIXct' (see \code{\link[terra]{time}} and details below).}
 
-\item{r_type}{character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r_list} contains \code{rasterStacks} of three bands, which are treated as RGB.}
+\item{r_type}{character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r} contains three bands, which are treated as RGB.}
 
-\item{fade_raster}{logical, if \code{TRUE}, \code{r_list} is interpolated over time based on \code{r_times}. If \code{FALSE}, \code{r_list} elements are assigned to those frames closest to the equivalent times in \code{r_times}.}
+\item{fade_raster}{logical, if \code{TRUE}, \code{r} is interpolated over time. If \code{FALSE}, \code{r} elements are assigned to those frames closest to the equivalent times of \code{r}.}
 
-\item{crop_raster}{logical, whether to crop rasters in \code{r_list} to plot extent before plotting or not.}
+\item{crop_raster}{logical, whether to crop rasters in \code{r} to frame extents before plotting or not.}
 
 \item{map_service}{character, a map service, e.g. \code{"osm"}. Use \code{\link{get_maptypes}} for a list of available map services and types..}
 

@@ -32,8 +32,8 @@ A frames object of class \code{moveVis}.
 This function applies \code{ggplot2} functions (e.g. to add layers, change scales etc.) to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
 }
 \details{
-Argument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link{rlang::expr}}) to avoid their evaluation
-before they are called for the correct frame. Simply wrap your \code{ggplot2} function into \code{expr()} and supply it to 
+Argument \code{gg} expects \code{ggplot2} functions handed over as expressions (see \code{\link[rlang]{expr}}) to avoid their evaluation
+before they are called for the correct frame. Simply wrap your \code{ggplot2} function into \code{\link[rlang]{expr}} and supply it to 
 \code{gg}. To add multiple \code{ggplot2} functions to be applied on every frame, supply an expression containing a list of 
 \code{ggplot2} functions (e.g. \code{expr(list(geom_label(...), geom_text(...)))}). This expression would be added to all frames. 
 To add specific \code{ggplot2} functions per frame, supply a list of expressions of the same length as frames. Each expression may

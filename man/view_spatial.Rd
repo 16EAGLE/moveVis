@@ -16,11 +16,11 @@ view_spatial(
 )
 }
 \arguments{
-\item{m}{\code{move} or \code{moveStack}. May contain a column named \code{colour} to control path colours (see \code{details}).}
+\item{m}{\code{move2} object. Can contain a column named \code{colour} to control path colours (see \code{details}).}
 
 \item{render_as}{character, either \code{'mapview'} to return a \code{mapview} map or \code{'leaflet'} to return a \code{leaflet} map.}
 
-\item{time_labels}{logical, wether to display timestamps for each track fix when hovering it with the mouse cursor.}
+\item{time_labels}{logical, whether to display timestamps for each track fix when hovering it with the mouse cursor.}
 
 \item{stroke}{logical, whether to draw stroke around circles.}
 
@@ -33,7 +33,7 @@ view_spatial(
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}
 }
 \value{
-An interatcive \code{mapview} or \code{leaflet} map.
+An interactive \code{mapview} or \code{leaflet} map.
 }
 \description{
 \code{view_spatial} is a simple wrapper that displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
