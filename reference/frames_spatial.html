@@ -139,7 +139,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 
 <dt id="arg-ext">ext<a class="anchor" aria-label="anchor" href="#arg-ext"></a></dt>
-<dd><p><code>sf bbox</code> or <code>sp extent</code> in same CRS as <code>m</code>, optional. If set, frames are cropped to this extent. If not set, a squared extent around <code>m</code>, optional with a margin set by <code>margin_factor</code>, is used (default).</p></dd>
+<dd><p><code>sf bbox</code> in same CRS as <code>m</code>, optional. If set, frames are cropped to this extent. If not set, the extent is computed from <code>m</code>, optionally with a margin set by <code>margin_factor</code>.</p></dd>
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
@@ -253,95 +253,217 @@ Colours could also be arranged to change through time or by behavioral segments,
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(move):</span> there is no package called ‘move’</span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move2/" class="external-link">move2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> terra 1.8.60</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example using multi-temporal raster data as basemap</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># align movement</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Argument 'unit' is deprecated. See ?moveVis::align_move for details.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Argument 'res' must either be a 'units' object or one of c('min', 'max', 'mean', 'median').</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># with osm watercolor base map</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># take a look at one of the frames, e.g. the 100th</span></span></span>
-<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># make base map a bit transparent</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># take a look</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># use a larger margin around extent</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
-<span class="r-in"><span>                         margin_factor <span class="op">=</span> <span class="fl">1.8</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># use a extent object as your AOI</span></span></span>
-<span class="r-in"><span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fu">extent</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ext</span><span class="op">@</span><span class="va">xmin</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">@</span><span class="va">xmin</span> <span class="op">-</span> <span class="op">(</span><span class="va">ext</span><span class="op">@</span><span class="va">xmin</span><span class="op">*</span><span class="fl">0.003</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ext</span><span class="op">@</span><span class="va">xmax</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">@</span><span class="va">xmax</span> <span class="op">+</span> <span class="op">(</span><span class="va">ext</span><span class="op">@</span><span class="va">xmax</span><span class="op">*</span><span class="fl">0.003</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
-<span class="r-in"><span>                         ext <span class="op">=</span> <span class="va">ext</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># alter path appearance (make it longer and bigger)</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
-<span class="r-in"><span>                         path_size <span class="op">=</span> <span class="fl">4</span>, tail_length <span class="op">=</span> <span class="fl">29</span><span class="op">)</span></span></span>
-<span class="r-in"><span>                         </span></span>
-<span class="r-in"><span><span class="co"># adjust path colours manually</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
-<span class="r-in"><span>                         path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># or do it directly within your moveStack, e.g. like:</span></span></span>
-<span class="r-in"><span><span class="va">m.list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="co"># split m into list by individual</span></span></span>
-<span class="r-in"><span><span class="va">m.list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">m.list</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"purple"</span>, <span class="st">"darkgreen"</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">x</span><span class="op">$</span><span class="va">colour</span> <span class="op">&lt;-</span> <span class="va">y</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span><span class="op">)</span> <span class="co"># add colour per individual</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">moveStack</span><span class="op">(</span><span class="va">m.list</span><span class="op">)</span> <span class="co"># putting it back together into a moveStack</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># this way, you do not have to assign colours per individual track</span></span></span>
-<span class="r-in"><span><span class="co"># instead, you could assign colours by segment, age, speed or other variables</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"min"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Temporal resolution of 4 [min] is used to align trajectories.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get available map types</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/basemaps/man/get_maptypes.html" class="external-link">get_maptypes</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $osm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "streets"     "streets_de"  "topographic"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $osm_stamen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "toner"      "toner_bg"   "terrain"    "terrain_bg" "watercolor"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $osm_stadia</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "alidade_smooth"      "alidade_smooth_dark" "outdoors"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "osm_bright"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $osm_thunderforest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "cycle"          "transport"      "landscape"      "outdoors"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "transport_dark" "spinal"         "pioneer"        "mobile_atlas"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "neighbourhood"  "atlas"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $carto</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "light"                "light_no_labels"      "light_only_labels"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "dark"                 "dark_no_labels"       "dark_only_labels"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "voyager"              "voyager_no_labels"    "voyager_only_labels" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "voyager_labels_under"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mapbox</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "streets"   "outdoors"  "light"     "dark"      "satellite" "hybrid"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "terrain"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $esri</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "natgeo_world_map"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "usa_topo_maps"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "world_imagery"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "world_physical_map"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "world_shaded_relief"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "world_street_map"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "world_terrain_base"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "world_topo_map"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "world_dark_gray_base"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "world_dark_gray_reference"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "world_light_gray_base"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "world_light_gray_reference"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "world_hillshade_dark"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "world_hillshade"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "world_ocean_base"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "world_ocean_reference"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "antarctic_imagery"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18] "arctic_imagery"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "arctic_ocean_base"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20] "arctic_ocean_reference"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "world_boundaries_and_places_alternate"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "world_boundaries_and_places"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "world_reference_overlay"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24] "world_transportation"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "delorme_world_base_map"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "world_navigation_charts"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $maptiler</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "aquarelle" "backdrop"  "basic"     "bright"    "dataviz"   "landscape"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ocean"     "outdoor"   "satellite" "streets"   "toner"     "topo"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "winter"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)</span></span></span>
-<span class="r-in"><span><span class="co"># frames &lt;- frames_spatial(m, map_service = "mapbox",</span></span></span>
-<span class="r-in"><span><span class="co">#                          map_token = "your_token_from_your_mapbox_account",</span></span></span>
-<span class="r-in"><span><span class="co">#                          map_type = "satellite")</span></span></span>
+<span class="r-in"><span><span class="co"># with osm topographic base map</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>,</span></span>
+<span class="r-in"><span>  alpha <span class="op">=</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># take a look at one of the frames, e.g. the 100th</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory</span></span></span>
-<span class="r-in"><span><span class="co"># to save all base maps offline so that you do not have to query the servers each time</span></span></span>
-<span class="r-in"><span><span class="co"># frames &lt;- frames_spatial(m, map_service = "mapbox",</span></span></span>
-<span class="r-in"><span><span class="co">#                          map_token = "your_token_from_your_mapbox_account",</span></span></span>
-<span class="r-in"><span><span class="co">#                          map_type = "satellite",</span></span></span>
-<span class="r-in"><span><span class="co">#                          map_dir = "your/map_directory/")                         </span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="va">frames</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_northarrow.html">add_northarrow</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"bottomleft"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_scalebar.html">add_scalebar</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"black"</span>, position <span class="op">=</span> <span class="st">"bottomright"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_progress.html">add_progress</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_timestamps.html">add_timestamps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># use your own custom base maps</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"basemap_data"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">r_list</span> <span class="op">&lt;-</span> <span class="va">basemap_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">r_times</span> <span class="op">&lt;-</span> <span class="va">basemap_data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co"># animate frames as GIF</span></span></span>
+<span class="r-in"><span><span class="va">out_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gif"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="va">out_file</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">out_file</span><span class="op">)</span> <span class="co"># view animation</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># using gradient data (e.g. NDVI)</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, r_list <span class="op">=</span> <span class="va">r_list</span>, r_times <span class="op">=</span> <span class="va">r_times</span>, r_type <span class="op">=</span> <span class="st">"gradient"</span>,</span></span>
-<span class="r-in"><span>                         fade_raster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># use a larger margin around extent</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  margin_factor <span class="op">=</span> <span class="fl">1.8</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># take a look</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># using discrete data (e.g. classifications)</span></span></span>
-<span class="r-in"><span><span class="co"># let's make up some classification data with 10 classes</span></span></span>
-<span class="r-in"><span><span class="va">r_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">r_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/setValues.html" class="external-link">setValues</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getValues.html" class="external-link">getValues</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span><span class="va">m</span>, r_list <span class="op">=</span> <span class="va">r_list</span>, r_times <span class="op">=</span> <span class="va">r_times</span>, r_type <span class="op">=</span> <span class="st">"discrete"</span>,</span></span>
-<span class="r-in"><span>                         fade_raster <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># use a extent object as your AOI</span></span></span>
+<span class="r-in"><span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">move_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ext</span><span class="op">[[</span><span class="st">"xmin"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">[[</span><span class="st">"xmin"</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="op">(</span><span class="va">ext</span><span class="op">[[</span><span class="st">"xmin"</span><span class="op">]</span><span class="op">]</span><span class="op">*</span><span class="fl">0.03</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ext</span><span class="op">[[</span><span class="st">"xmax"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">[[</span><span class="st">"xmax"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="va">ext</span><span class="op">[[</span><span class="st">"xmax"</span><span class="op">]</span><span class="op">]</span><span class="op">*</span><span class="fl">0.03</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># then simply animate the frames using animate_frames</span></span></span>
-<span class="r-in"><span><span class="co"># see ?add_colourscale to learn how to change colours of custom base maps</span></span></span>
-<span class="r-in"><span><span class="co"># see all add_ functions on how to customize your frames created with frames_spatial</span></span></span>
-<span class="r-in"><span><span class="co"># or frames_graph</span></span></span>
-<span class="r-in"><span><span class="co"># see ?animate_frames on how to animate a frames</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  ext <span class="op">=</span> <span class="va">ext</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># alter path appearance (make it longer and bigger)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  path_size <span class="op">=</span> <span class="fl">4</span>, tail_length <span class="op">=</span> <span class="fl">29</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># adjust path colours manually</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="st">"purple"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">colour</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_track_id.html" class="external-link">mt_track_id</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_track_id.html" class="external-link">mt_track_id</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"purple"</span>, <span class="st">"darkgreen"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="co"># create frames from custom (multi-temporal) basemaps</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="basemap_data.html">example_data</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"basemap_data.rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># timestamps of each raster are stored in the SpatRasterDataset:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/time.html" class="external-link">time</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 07:00:00 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 08:20:23 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 09:44:48 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 11:09:12 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 12:33:37 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 13:54:01 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 15:18:25 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 16:42:50 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 18:07:15 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2018-05-15 19:31:39 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create frames</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">frames_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, r <span class="op">=</span> <span class="va">r</span>, r_type <span class="op">=</span> <span class="st">"gradient"</span>, </span></span>
+<span class="r-in"><span>  fade_raster <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing input data...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Approximated animation duration: ≈ 7.52s at 25 fps using 188 frames</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS (geodetic): 'WGS 84'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Assigning raster maps to frames...</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># customize</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="va">frames</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_colourscale.html">add_colourscale</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    type <span class="op">=</span> <span class="st">"gradient"</span>, colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"white"</span>, <span class="st">"darkgreen"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    legend_title <span class="op">=</span> <span class="st">"NDVI"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_northarrow.html">add_northarrow</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"bottomleft"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_scalebar.html">add_scalebar</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"white"</span>, position <span class="op">=</span> <span class="st">"bottomright"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_progress.html">add_progress</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_timestamps.html">add_timestamps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="co"># render a single frame</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-plt img"><img src="frames_spatial-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># check available animation file formats</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="suggest_formats.html">suggest_formats</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "gif"  "mov"  "mp4"  "flv"  "avi"  "mpeg" "3gp"  "ogg" </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># animate frames as GIF</span></span></span>
+<span class="r-in"><span><span class="va">out_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gif"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="va">out_file</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">out_file</span><span class="op">)</span> <span class="co"># view animation</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># animate frames as mov</span></span></span>
+<span class="r-in"><span><span class="va">out_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".mov"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="va">out_file</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">out_file</span><span class="op">)</span> <span class="co"># view animation</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
