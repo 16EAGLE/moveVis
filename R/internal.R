@@ -157,17 +157,19 @@ repl_vals <- function(data, x, y){
 #' @noRd 
 .ext <- function(m, m.crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = FALSE, return_latlon = FALSE){
   # this works only with EPSG 4326 for cross_dateline stuff.
-  m <- st_as_sf(m, coords=c("x", "y"), crs = m.crs, remove = F)
-  m <- st_transform(m, st_crs(4326))
+  m_ll <- st_as_sf(m, coords=c("x", "y"), crs = m.crs, remove = F)
+  m_ll <- st_transform(m_ll, st_crs(4326))
   
-  ## calcualte ext
-  gg.ext <- st_bbox(m)
+  ## calculate ext
+  gg.ext <- st_bbox(m_ll)
   
   if(!is.null(ext)){
-    ext <- st_bbox(st_transform(st_as_sfc(st_bbox(ext, crs = m.crs)), st_crs(4326)))
+    ext <- st_bbox(st_transform(ext, st_crs(m_ll)))
+    #ext <- st_bbox(st_transform(st_as_sfc(st_bbox(ext, crs = m.crs)), st_crs(4326)))
     
     if(!quiet(st_intersects(st_as_sfc(ext), st_as_sfc(gg.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
     margin_factor <- 1 # no margin since user extent set
+    gg.ext <- ext
   }
   
   xy.diff <- if(isTRUE(cross_dateline)){
@@ -199,7 +201,7 @@ repl_vals <- function(data, x, y){
     if(isTRUE(equidistant)){
       gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor)
     }else{
-      gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = st_crs(m))
+      gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = st_crs(gg.ext))
     }
     
     # cut by longlat maximums

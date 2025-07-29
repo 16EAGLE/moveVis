@@ -67,7 +67,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{equidistant}{logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.}
 
-\item{ext}{\code{sf bbox} or \code{sp extent} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, a squared extent around \code{m}, optional with a margin set by \code{margin_factor}, is used (default).}
+\item{ext}{\code{sf bbox} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, the extent is computed from \code{m}, optionally with a margin set by \code{margin_factor}.}
 
 \item{crs}{\code{sf crs} object. This is the projection that is used for visualzing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.}
 
@@ -135,92 +135,121 @@ The projection of \code{m} is treated as target projection. Default basemaps acc
 }
 \examples{
 library(moveVis)
-library(move)
-library(ggplot2)
+library(move2)
+library(terra)
 
+# Example using multi-temporal raster data as basemap
 data("move_data")
+
 # align movement
-m <- align_move(move_data, res = 4, unit = "mins")
-
-\dontrun{
-# with osm watercolor base map
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
-# take a look at one of the frames, e.g. the 100th
-frames[[100]]
-
-# make base map a bit transparent
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5)
-frames[[100]] # take a look
-
-# use a larger margin around extent
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
-                         margin_factor = 1.8)
-
-# use a extent object as your AOI
-ext <- extent(m)
-ext@xmin <- ext@xmin - (ext@xmin*0.003)
-ext@xmax <- ext@xmax + (ext@xmax*0.003)
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
-                         ext = ext)
-
-# alter path appearance (make it longer and bigger)
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
-                         path_size = 4, tail_length = 29)
-                         
-# adjust path colours manually
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5,
-                         path_colours = c("black", "blue", "purple"))
-
-# or do it directly within your moveStack, e.g. like:
-m.list <- split(m) # split m into list by individual
-m.list <- mapply(x = m.list, y = c("orange", "purple", "darkgreen"), function(x, y){
-  x$colour <- y
-  return(x)
-}) # add colour per individual
-m <- moveStack(m.list) # putting it back together into a moveStack
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor", alpha = 0.5)
-# this way, you do not have to assign colours per individual track
-# instead, you could assign colours by segment, age, speed or other variables
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
 # get available map types
 get_maptypes()
 
-# use mapbox to get a satellite or other map types (register to on mapbox.com to get a token)
-# frames <- frames_spatial(m, map_service = "mapbox",
-#                          map_token = "your_token_from_your_mapbox_account",
-#                          map_type = "satellite")
+# with osm topographic base map
+\dontrun{
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic",
+  alpha = 0.5
+)
+# take a look at one of the frames, e.g. the 100th
+frames[[100]]
 
-# if you make a lot of calls to frames_spatial during mutliple sessions, use a map directory
-# to save all base maps offline so that you do not have to query the servers each time
-# frames <- frames_spatial(m, map_service = "mapbox",
-#                          map_token = "your_token_from_your_mapbox_account",
-#                          map_type = "satellite",
-#                          map_dir = "your/map_directory/")                         
+frames <- frames \%>\% 
+  add_northarrow(position = "bottomleft") \%>\% 
+  add_scalebar(colour = "black", position = "bottomright") \%>\% 
+  add_progress() \%>\% 
+  add_timestamps(type = "label")
+  
+frames[[100]]
 
-# use your own custom base maps
-data("basemap_data")
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
+# animate frames as GIF
+out_file <- tempfile(fileext = ".gif")
+animate_frames(frames, out_file = out_file)
+browseURL(out_file) # view animation
 
-# using gradient data (e.g. NDVI)
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                         fade_raster = TRUE)
+# use a larger margin around extent
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+  margin_factor = 1.8
+)
+frames[[100]] # take a look
 
-# using discrete data (e.g. classifications)
-# let's make up some classification data with 10 classes
-r_list <- lapply(r_list, function(x){
-  y <- raster::setValues(x, round(raster::getValues(x)*10))
-  return(y)
-})
-# turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discrete",
-                         fade_raster = FALSE)
+# use a extent object as your AOI
+ext <- sf::st_bbox(move_data)
+ext[["xmin"]] <- ext[["xmin"]] - (ext[["xmin"]]*0.03)
+ext[["xmax"]] <- ext[["xmax"]] + (ext[["xmax"]]*0.03)
 
-# then simply animate the frames using animate_frames
-# see ?add_colourscale to learn how to change colours of custom base maps
-# see all add_ functions on how to customize your frames created with frames_spatial
-# or frames_graph
-# see ?animate_frames on how to animate a frames
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+  ext = ext
+)
+frames[[100]]
+
+# alter path appearance (make it longer and bigger)
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+  path_size = 4, tail_length = 29
+)
+frames[[100]]
+
+# adjust path colours manually
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+  path_colours = c("black", "blue", "purple")
+)
+frames[[100]]
+
+m$colour <- plyr::mapvalues(
+  as.character(mt_track_id(m)), 
+  unique(mt_track_id(m)), c("orange", "purple", "darkgreen")
+)
+
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5
+)
+frames[[100]]
+
+}
+# create frames from custom (multi-temporal) basemaps
+r <- readRDS(example_data(file = "basemap_data.rds"))
+
+# timestamps of each raster are stored in the SpatRasterDataset:
+time(r)
+
+# create frames
+frames <- frames_spatial(
+  m, r = r, r_type = "gradient", 
+  fade_raster = TRUE
+)
+
+# customize
+frames <- frames \%>\% 
+  add_colourscale(
+    type = "gradient", colours = c("orange", "white", "darkgreen"),
+    legend_title = "NDVI") \%>\% 
+  add_northarrow(position = "bottomleft") \%>\% 
+  add_scalebar(colour = "white", position = "bottomright") \%>\% 
+  add_progress() \%>\% 
+  add_timestamps(type = "label")
+  
+# render a single frame
+frames[[100]]
+
+# check available animation file formats
+suggest_formats()
+
+\dontrun{
+# animate frames as GIF
+out_file <- tempfile(fileext = ".gif")
+animate_frames(frames, out_file = out_file)
+browseURL(out_file) # view animation
+
+# animate frames as mov
+out_file <- tempfile(fileext = ".mov")
+animate_frames(frames, out_file = out_file)
+browseURL(out_file) # view animation
 }
 }
 \seealso{
