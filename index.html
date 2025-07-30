@@ -45,14 +45,14 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-other-packages" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Other packages</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-other-packages">
-<li><a class="external-link dropdown-item" href="https://jxsw.de/getSpatialData">getSpatialData</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.github.com/bleutner/RStoolbox">RStoolbox</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.github.com/RRemelgado/rsmove">rsMove</a></li>
+<li><a class="external-link dropdown-item" href="https://jakob.schwalb-willmann.de/basemaps">basemaps</a></li>
+    <li><a class="external-link dropdown-item" href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></li>
+    <li><a class="external-link dropdown-item" href="https://jakob.schwalb-willmann.de/getSpatialData/">getSpatialData</a></li>
   </ul>
 </li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-twitter fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-bluesky fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://www.github.com/16eagle"><span class="fa fa-github fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://jakob.schwalb-willmann.de"><span class="fa fa-globe fa-lg"></span></a></li>
       </ul>
@@ -87,35 +87,30 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed.</p>
-<p>The latest stable version of <a href="https://movevis.org"><code>moveVis</code></a> can be installed from CRAN:</p>
+<p>Install the latest stable relasae of <code>moveVis</code> from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"moveVis"</span><span class="op">)</span></span></code></pre></div>
-<p>The development version can be installed from GitHub:</p>
+<p>Install the latest development version of <code>moveVis</code> from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"16EAGLE/moveVis"</span><span class="op">)</span></span></code></pre></div>
-<p>Code written for <a href="https://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="https://movevis.org"><code>moveVis</code></a> version &lt;=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9" class="external-link">here</a> and installed manually:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"your/download/directory"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"moveVis-0.9.9.tar.gz"</span>, repos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
 <p>The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using <code>ggplot2</code> or <code>add*()</code> functions and turning these frames into an animated <code>GIF</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move2/" class="external-link">move2</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, package <span class="op">=</span> <span class="st">"moveVis"</span><span class="op">)</span> <span class="co"># move class object</span></span>
-<span><span class="co"># if your tracks are present as data.frames, see df2move() for conversion</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, package <span class="op">=</span> <span class="st">"moveVis"</span><span class="op">)</span> <span class="co"># move2 class object</span></span>
 <span></span>
 <span><span class="co"># align move_data to a uniform time scale</span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"min"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create spatial frames with a OpenStreetMap watercolour map</span></span>
-<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">m</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm_stamen"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="co"># create spatial frames with an OpenStreetMap basemap</span></span>
+<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span></span>
+<span>  <span class="va">m</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"cyan"</span>, <span class="st">"purple"</span><span class="op">)</span>,</span>
+<span>  map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/add_labels.html">add_labels</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># add some customizations, such as axis labels</span></span>
 <span>  <span class="fu"><a href="reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -138,11 +133,7 @@
 </h4>
 <ul>
 <li>
-<code><a href="reference/deprecated.html">df2move()</a></code> converts a <code>data.frame</code> into a <code>move</code> or <code>moveStack</code> object. This is useful if you do not usually work with the <code>move</code> classes and your tracks are present as <code>data.frames</code>.</li>
-<li>
 <code><a href="reference/align_move.html">align_move()</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</li>
-<li>
-<code><a href="reference/deprecated.html">subset_move()</a></code> subsets a <code>move</code> or <code>moveStack</code> by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -233,6 +224,18 @@
 <code><a href="reference/settings.html">use_disk()</a></code> enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.</li>
 </ul>
 </div>
+<div class="section level4">
+<h4 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
+</h4>
+<ul>
+<li>
+<code>data("move_data")</code> returns a <code>move2</code> object representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany.</li>
+<li>
+<code>data("whitestork_data")</code> returns a <code>data.frame</code> and a <code>move2</code> object, both representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.</li>
+<li>
+<code>readRDS(example_data(file = "basemap_data.rds"))</code> returns a <code>SpatRasterDataset</code>, representing simulated NDVI images covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.</li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -270,28 +273,16 @@
 <p>Blog post: Featured article in <a target="_blank" href="https://methodsblog.com/2020/05/05/issue-11-5-our-may-issue-is-now-online/" class="external-link">Issue 11.5: Our May issue is now online!</a> by <a target="_blank" href="https://besjournals.onlinelibrary.wiley.com/journal/2041210x" class="external-link">Methods in Ecology and Evolution</a></p>
 </div>
 <div class="section level2">
-<h2 id="features-to-be-added">Features to be added<a class="anchor" aria-label="anchor" href="#features-to-be-added"></a>
-</h2>
-<p>Things and features that should be added in future versions of <code>moveVis</code> (feel free to contribute to this list using a pull request):</p>
-<ul>
-<li>follow population mode</li>
-<li>follow individual mode</li>
-<li>3D animations, e.g. for including altitude data</li>
-</ul>
-</div>
-<div class="section level2">
 <h2 id="related-packages">Related packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
 </h2>
 <p>Other R packages that might interest you:</p>
 <ul>
 <li>
-<a target="_blank" href="http://jxsw.de/basemaps" class="external-link">basemaps</a>, a package to download and cache spatial basemaps from open sources such as <em>OpenStreetMap</em>, <em>Stamen</em>, <em>Thunderforest</em>, <em>Carto</em>, <em>Mapbox</em> and others,</li>
+<a target="_blank" href="http://jakob.schwalb-willmann.de/basemaps" class="external-link">basemaps</a>, a package to download and cache spatial basemaps from open sources such as <em>OpenStreetMap</em>, <em>Stamen</em>, <em>Thunderforest</em>, <em>Carto</em>, <em>Mapbox</em> and others,</li>
 <li>
-<a target="_blank" href="http://jxsw.de/getSpatialData" class="external-link">getSpatialData</a>, a package to query, preview and download satellite data,</li>
+<a target="_blank" href="https://jakob.schwalb-willmann.de/getSpatialData/" class="external-link">getSpatialData</a>, a package to query, preview and download satellite data,</li>
 <li>
 <a target="_blank" href="http://bleutner.github.io/RStoolbox/" class="external-link">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,</li>
-<li>
-<a target="_blank" href="https://github.com/RRemelgado/rsMove/" class="external-link">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -301,10 +292,10 @@
 <p align="justify">
 </p>
 <div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"http://www.dlr.de/eoc/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a> <span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.bmu.de/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://www.mpg.de/assets/og-logo-8216b4912130f3257762760810a4027c063e0a4b09512fc955727997f9da6ea3.jpg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="sc">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"http://www.dlr.de/eoc/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a> <span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.bmu.de/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/assets/og-logo-281c44f14f2114ed3fe50e666618ff96341055a2f8ce31aa0fd70471a30ca9ed.jpg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span></code></pre></div>
 </div>
 
 </div>

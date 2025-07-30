@@ -22,11 +22,11 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-other-packages" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Other packages</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-other-packages"><li><a class="external-link dropdown-item" href="https://jxsw.de/getSpatialData">getSpatialData</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.github.com/bleutner/RStoolbox">RStoolbox</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.github.com/RRemelgado/rsmove">rsMove</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-other-packages"><li><a class="external-link dropdown-item" href="https://jakob.schwalb-willmann.de/basemaps">basemaps</a></li>
+    <li><a class="external-link dropdown-item" href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></li>
+    <li><a class="external-link dropdown-item" href="https://jakob.schwalb-willmann.de/getSpatialData/">getSpatialData</a></li>
   </ul></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-twitter fa-lg"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-bluesky fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://www.github.com/16eagle"><span class="fa fa-github fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://jakob.schwalb-willmann.de"><span class="fa fa-globe fa-lg"></span></a></li>
       </ul></div>
@@ -115,47 +115,49 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(move):</span> there is no package called ‘move’</span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move2/" class="external-link">move2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> terra 1.8.60</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, <span class="st">"basemap_data"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>data set ‘basemap_data’ not found</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span>, package <span class="op">=</span> <span class="st">"moveVis"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="basemap_data.html">example_data</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"basemap_data.rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># align movement</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Argument 'unit' is deprecated. See ?moveVis::align_move for details.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Argument 'res' must either be a 'units' object or one of c('min', 'max', 'mean', 'median').</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># create spatial frames with frames_spatial:</span></span></span>
-<span class="r-in"><span><span class="va">r_list</span> <span class="op">&lt;-</span> <span class="va">basemap_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'basemap_data' not found</span>
-<span class="r-in"><span><span class="va">r_times</span> <span class="op">&lt;-</span> <span class="va">basemap_data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'basemap_data' not found</span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"min"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Temporal resolution of 4 [min] is used to align trajectories.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">m</span>, r_list <span class="op">=</span> <span class="va">r_list</span>, r_times <span class="op">=</span> <span class="va">r_times</span>, r_type <span class="op">=</span> <span class="st">"gradient"</span>,</span></span>
-<span class="r-in"><span>                         fade_raster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># create spatial frames with frames_spatial:</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="frames_spatial.html">frames_spatial</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, <span class="va">r</span>, r_type <span class="op">=</span> <span class="st">"gradient"</span>, fade_raster <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># take a look at one of the frames</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># default blue is boring, let's change the colour scale of all frames</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">add_colourscale</span><span class="op">(</span><span class="va">frames</span>, type <span class="op">=</span> <span class="st">"gradient"</span>, colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"white"</span>, <span class="st">"darkgreen"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                          legend_title <span class="op">=</span> <span class="st">"NDVI"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># change the colour scale of all frames</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">add_colourscale</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">frames</span>, type <span class="op">=</span> <span class="st">"gradient"</span>, colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"white"</span>, <span class="st">"darkgreen"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  legend_title <span class="op">=</span> <span class="st">"NDVI"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># let's make up some classification data with 10 classes</span></span></span>
-<span class="r-in"><span><span class="va">r_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">r_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/setValues.html" class="external-link">setValues</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getValues.html" class="external-link">getValues</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/sds.html" class="external-link">sds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">r</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span></span></span>
+<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">m</span>, r_list <span class="op">=</span> <span class="va">r_list</span>, r_times <span class="op">=</span> <span class="va">r_times</span>, r_type <span class="op">=</span> <span class="st">"discrete"</span>,</span></span>
-<span class="r-in"><span>                         fade_raster <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="frames_spatial.html">frames_spatial</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">m</span>, <span class="va">r</span>, r_type <span class="op">=</span> <span class="st">"discrete"</span>,</span></span>
+<span class="r-in"><span>  fade_raster <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="co"># now, let's assign a colour per class value to frames</span></span></span>
 <span class="r-in"><span><span class="va">colFUN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html" class="external-link">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"lightgreen"</span>, <span class="st">"darkgreen"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu">colFUN</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">add_colourscale</span><span class="op">(</span><span class="va">frames</span>, type <span class="op">=</span> <span class="st">"discrete"</span>, colours <span class="op">=</span> <span class="va">cols</span>, legend_title <span class="op">=</span> <span class="st">"Classes"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu">add_colourscale</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">frames</span>, type <span class="op">=</span> <span class="st">"discrete"</span>, colours <span class="op">=</span> <span class="va">cols</span>, legend_title <span class="op">=</span> <span class="st">"Classes"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
