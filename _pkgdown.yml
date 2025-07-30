@@ -42,7 +42,7 @@ navbar:
          href: https://jakob.schwalb-willmann.de/getSpatialData/
 
   right:
-    - icon: fa-bluesky fa-lg
+    - icon: fa-brands fa-bluesky fa-lg
       href: https://www.twitter.com/schwalbwillmann
     - icon: fa-github fa-lg
       href: https://www.github.com/16eagle
