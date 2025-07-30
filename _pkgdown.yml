@@ -34,15 +34,15 @@ navbar:
       href: reference/index.html
     - text: "Other packages"
       menu:
-      -  text: "getSpatialData"
-         href: https://jxsw.de/getSpatialData
+      -  text: "basemaps"
+         href: https://jakob.schwalb-willmann.de/basemaps
       -  text: "RStoolbox"
-         href: https://www.github.com/bleutner/RStoolbox
-      -  text: "rsMove"
-         href: https://www.github.com/RRemelgado/rsmove
+         href: https://bleutner.github.io/RStoolbox/
+      -  text: "getSpatialData"
+         href: https://jakob.schwalb-willmann.de/getSpatialData/
 
   right:
-    - icon: fa-twitter fa-lg
+    - icon: fa-bluesky fa-lg
       href: https://www.twitter.com/schwalbwillmann
     - icon: fa-github fa-lg
       href: https://www.github.com/16eagle
@@ -53,9 +53,7 @@ reference:
 - title: Data preparation
   desc:  Prepare movement data for animation
   contents:
-  - df2move
   - align_move
-  - subset_move
 - title: Frames creation
   desc:  Create spatial frames or graph frames from movement data.
   contents: 
@@ -93,11 +91,13 @@ reference:
   desc: Methods for objects of class moveVis
   contents:
   - ends_with(".moveVis")
-- title: Other help pages
+- title: Example data
   contents:
   - move_data
-  - basemap_data
-  - df
+  - whitestork_data
+  - example_data
+- title: Other help pages
+  contents:
   - moveVis-package
   - '%>%'
   - deprecated
