@@ -529,6 +529,7 @@ repl_vals <- function(data, x, y){
 #' @importFrom ggplot2 aes theme geom_sf scale_colour_manual theme_bw guides guide_legend scale_colour_identity scale_linewidth scale_linetype
 #' @importFrom sf st_coordinates st_drop_geometry st_linestring st_sf st_sfc st_crs
 #' @importFrom ggnewscale new_scale_colour
+#' @importFrom rlang .data
 #' @noRd
 gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant, tail_length){
   
@@ -561,7 +562,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   
   # plot
   p <- y + geom_sf(data = x_lines,
-    aes(colour = tail_colour), linewidth = x_lines$tail_size,
+    aes(colour = .data$tail_colour), linewidth = x_lines$tail_size,
     lineend = path_end, linejoin = path_join, linemitre = path_mitre, arrow = path_arrow,
     alpha = path_alpha, na.rm = T
   ) + scale_colour_identity()
@@ -573,7 +574,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   # add legend?
   if(isTRUE(path_legend)){
     p <- quiet(p + new_scale_colour() +
-      geom_sf(data = x_lines_legend, aes(colour = name, linetype = NA), linewidth = path_size, na.rm = TRUE) + 
+      geom_sf(data = x_lines_legend, aes(colour = .data$name, linetype = NA), linewidth = path_size, na.rm = TRUE) + 
       scale_linetype(guide = "none") +
       scale_colour_manual(
         values = unique(m_colour),
@@ -588,12 +589,12 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 
 #' flow stats plot function
 #' @importFrom ggplot2 ggplot geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
-#' 
+#' @importFrom rlang .data
 #' @noRd
 .gg_flow <- function(x, y, path_legend, path_legend_title, path_size, val_seq){
   
   ## generate base plot
-  p <- ggplot(x, aes(x = frame, y = value)) + geom_path(aes(group = name), linewidth = path_size, show.legend = F, colour = x$colour) + 
+  p <- ggplot(x, aes(x = .data$frame, y = .data$value)) + geom_path(aes(group = .data$name), linewidth = path_size, show.legend = F, colour = x$colour) + 
     coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T))) +
     theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0), breaks = val_seq) + scale_x_continuous(expand = c(0,0))
   
@@ -603,7 +604,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
                              colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
     l.df$name <- factor(l.df$name, levels = l.df$name)
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes(x = frame, y = value, colour = name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA)
+    p <- p + geom_path(data = l.df, aes(x = .data$frame, y = .data$value, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA)
   }  
   return(p)
 }
@@ -611,13 +612,15 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 
 #' hist stats plot function
 #' @importFrom ggplot2 ggplot geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw  coord_cartesian geom_bar
+#' @importFrom rlang .data
+#'
 #' @noRd
 ## stats plot function
 .gg_hist <- function(x, y, path_legend, path_legend_title, path_size, val_seq, r_type){
   
   ## generate base plot
-  if(r_type == "gradient") p <- ggplot(x, aes(x = value, y = count)) + geom_path(aes(group = "name"), linewidth = path_size, show.legend = F, colour = x$colour)
-  if(r_type == "discrete") p <- ggplot(x, aes(x = value, y = count, fill = colour)) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
+  if(r_type == "gradient") p <- ggplot(x, aes(x = .data$value, y = .data$count)) + geom_path(aes(group = "name"), linewidth = path_size, show.legend = F, colour = x$colour)
+  if(r_type == "discrete") p <- ggplot(x, aes(x = .data$value, y = .data$count, fill = .data$colour)) + geom_bar(stat = "identity", position = "dodge") + scale_fill_identity()
   
   p <- p + coord_cartesian(xlim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
     theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0), breaks = val_seq)
@@ -628,7 +631,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
                              colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
     l.df$name <- factor(l.df$name, levels = l.df$name)
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes(x = value, y = count, colour = name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA
+    p <- p + geom_path(data = l.df, aes(x = .data$value, y = .data$count, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA
   }
   return(p)
 }

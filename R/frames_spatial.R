@@ -185,7 +185,7 @@
 #' @importFrom basemaps get_maptypes basemap_terra
 #' @importFrom sf st_crs st_transform st_coordinates st_geometry<- st_geometry st_as_sf st_bbox
 #' @importFrom move2 mt_time mt_n_tracks mt_track_id
-#' @importFrom terra time project sds    
+#' @importFrom terra time time<- project sds
 #' @export
 
 frames_spatial <- function(

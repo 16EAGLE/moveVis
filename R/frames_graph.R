@@ -23,11 +23,7 @@
 #' @return An object of class \code{moveVis}. If \code{return_data} is \code{TRUE}, a \code{data.frame} is returned (see \code{return_data}).
 #' 
 #' @author Jakob Schwalb-Willmann
-#' 
-#' @importFrom terra extract vect
-#' @importFrom sf st_crs 
-#' @importFrom move2 mt_n_tracks
-#' 
+#'  
 #' @examples
 #' library(moveVis)
 #' library(move)
@@ -74,6 +70,12 @@
 #' # see ?animate_frames on how to animate frames
 #' }
 #' @seealso \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}
+#'
+#' @importFrom terra extract vect minmax
+#' @importFrom sf st_crs 
+#' @importFrom move2 mt_n_tracks
+#' 
+#' 
 #' @export
 
 frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 

@@ -62,9 +62,11 @@
 #' )
 #' mt_time(m[m$track == unique(mt_track_id(m))[1],])
 #' 
-#' @importFrom move2 mt_track_id mt_track_id mt_n_tracks mt_time_lags mt_time mt_track_id_column mt_time_column mt_as_move2 mt_set_track_data mt_track_data
+#' @importFrom move2 mt_track_id mt_track_id<- mt_track_id mt_n_tracks mt_time_lags mt_time mt_track_id_column mt_time_column mt_as_move2 mt_set_track_data mt_track_data
 #' @importFrom sf st_coordinates st_sf st_as_sf st_sfc st_linestring st_crs st_geometry st_line_interpolate st_is_longlat sf_use_s2
 #' @importFrom units as_units ud_are_convertible deparse_unit set_units
+#' @importFrom stats median
+#' 
 #' @export
 
 align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE){
@@ -79,7 +81,7 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose =
   .check_move2(m)
   m_tracks <- split(m, mt_track_id(m))
   m_length <- if(mt_n_tracks(m) > 1) sapply(split(m, mt_track_id(m)), nrow) else nrow(m)
-  if(any(m_length < 2)) out(paste0("Individual track(s) ", paste0(which(m.length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
+  if(any(m_length < 2)) out(paste0("Individual track(s) ", paste0(which(m_length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
   # check resolution and define resolution
   if(all(!c(inherits(res, "units"), inherits(res, "character")))) out("Argument 'res' must either be a 'units' object or one of c('min', 'max', 'mean', 'median').", type = 3)
