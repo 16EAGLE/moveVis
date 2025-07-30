@@ -19,28 +19,31 @@
 #'
 #' @examples 
 #' library(moveVis)
-#' library(move)
-#' 
-#' data("move_data", "basemap_data")
-#' m <- align_move(move_data, res = 4, unit = "mins")
-#' 
-#' # create spatial frames using a custom NDVI base layer
-#' r_list <- basemap_data[[1]]
-#' r_times <- basemap_data[[2]]
-#' 
-#' \dontrun{
-#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                          fade_raster = TRUE)
-#' 
-#' # add labels to frames:
-#' frames <- add_labels(frames, title = "Example animation using moveVis::add_labels()", 
-#'                      subtitle = "Adding a subtitle to frames created using frames_spatial()",
-#'                      caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
-#'                      x = "Longitude", y = "Latitude")
+#' library(move2)
+#'
+#' data("move_data", package = "moveVis")
+#' r <- readRDS(example_data(file = "basemap_data.rds"))
+#'
+#' # align movement
+#' m <- align_move(move_data, res = units::set_units(4, "min"))
+#'
+#' # create frames and add labels
+#' frames <- frames_spatial(
+#'   m, r, r_type = "gradient", fade_raster = TRUE
+#' )
+#'
+#' # add labels
+#' frames <- add_labels(
+#'   frames,
+#'   title = "Example animation using moveVis::add_labels()", 
+#'   subtitle = "Adding a subtitle to frames created using frames_spatial()",
+#'   caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
+#'   x = "Longitude", y = "Latitude"
+#' )
+#'
 #' # have a look at one frame
 #' frames[[100]]
-#' }
-#' 
+#'
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export
 

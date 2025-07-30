@@ -19,41 +19,48 @@
 #' 
 #' @examples
 #' library(moveVis)
-#' library(move)
+#' library(move2)
+#' library(terra)
 #' 
-#' data("move_data", "basemap_data")
+#' data("move_data", package = "moveVis")
+#' r <- readRDS(example_data(file = "basemap_data.rds"))
+#' 
 #' # align movement
-#' m <- align_move(move_data, res = 4, unit = "mins")
-#' 
-#' # create spatial frames with frames_spatial:
-#' r_list <- basemap_data[[1]]
-#' r_times <- basemap_data[[2]]
+#' m <- align_move(move_data, res = units::set_units(4, "min"))
 #' 
 #' \dontrun{
-#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                          fade_raster = TRUE)
+#' # create spatial frames with frames_spatial:
+#' frames <- frames_spatial(
+#'   m, r, r_type = "gradient", fade_raster = TRUE
+#' )
 #' frames[[100]] # take a look at one of the frames
 #' 
-#' # default blue is boring, let's change the colour scale of all frames
-#' frames <- add_colourscale(frames, type = "gradient", colours = c("orange", "white", "darkgreen"),
-#'                           legend_title = "NDVI")
+#' # change the colour scale of all frames
+#' frames <- add_colourscale(
+#'   frames, type = "gradient", colours = c("orange", "white", "darkgreen"),
+#'   legend_title = "NDVI"
+#' )
 #' frames[[100]]
 #' 
-#' 
-#' # let's make up some classification data with 10 classes
-#' r_list <- lapply(r_list, function(x){
-#'   y <- raster::setValues(x, round(raster::getValues(x)*10))
+#' r <- terra::sds(lapply(r, function(x){
+#'   y <- x
+#' terra::values(y) <- round(terra::values(y)*10)
 #'   return(y)
-#' })
-#' # turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes
-#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "discrete",
-#'                          fade_raster = FALSE)
-#' frames[[100]]
+#' }))
 #' 
+#' # turn fade_raster to FALSE, since it makes no sense to temporally interpolate discrete classes
+#' frames <- frames_spatial(
+#'   m, r, r_type = "discrete",
+#'   fade_raster = FALSE
+#' )
+#' frames[[100]]
+
 #' # now, let's assign a colour per class value to frames
 #' colFUN <- colorRampPalette(c("orange", "lightgreen", "darkgreen"))
 #' cols <- colFUN(10)
-#' frames <- add_colourscale(frames, type = "discrete", colours = cols, legend_title = "Classes")
+#' frames <- add_colourscale(
+#'   frames, type = "discrete", colours = cols, legend_title = "Classes"
+#' )
 #' frames[[100]]
 #' }
 #' 

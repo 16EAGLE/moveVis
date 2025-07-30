@@ -25,25 +25,16 @@ A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access pa
 
 ## Installation
 
-With version 0.10.0, the package has been rewritten from the ground up with the goal to make it easier to customize the appearance of movement animations. Thus, the logic of the package, its functions and their syntax have changed. 
-
-The latest stable version of <a href="https://movevis.org">`moveVis`</a> can be installed from CRAN:
+Install the latest stable relasae of `moveVis` from CRAN:
 
 ```r
 install.packages("moveVis")
 ```
 
-The development version can be installed from GitHub:
+Install the latest development version of `moveVis` from GitHub:
 
 ```r
 devtools::install_github("16EAGLE/moveVis")
-```
-
-Code written for <a href="https://movevis.org">`moveVis`</a> version <=0.9.9 will not work with newer versions, but it is quite simple and thus highly recommended to switch to the new syntax due to a variety of advantages. <a href="https://movevis.org">`moveVis`</a> version <=0.9.9 can still be downloaded <a href="https://github.com/16EAGLE/moveVis/releases/tag/v0.9.9">here</a> and installed manually:
-
-```r
-setwd("your/download/directory")
-install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
 ```
 
 ## Get started
@@ -52,17 +43,17 @@ The following example shows how to make a simple animation using a default basem
 
 ```R
 library(moveVis)
-library(move)
+library(move2)
 
-data("move_data", package = "moveVis") # move class object
-# if your tracks are present as data.frames, see df2move() for conversion
+data("move_data", package = "moveVis") # move2 class object
 
 # align move_data to a uniform time scale
-m <- align_move(move_data, res = 4, unit = "mins")
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-# create spatial frames with a OpenStreetMap watercolour map
-frames <- frames_spatial(m, path_colours = c("red", "green", "blue"),
-                         map_service = "osm_stamen", map_type = "watercolor", alpha = 0.5) %>% 
+# create spatial frames with an OpenStreetMap basemap
+frames <- frames_spatial(
+  m, path_colours = c("blue", "cyan", "purple"),
+  map_service = "osm", map_type = "topographic", alpha = 0.5) %>% 
   add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
   add_northarrow() %>% 
   add_scalebar() %>% 
@@ -78,16 +69,13 @@ animate_frames(frames, out_file = "moveVis.gif")
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp5.gif"></p>
 
 
-
 ## Function overview
 
 <a href="https://movevis.org">`moveVis`</a> includes the following functions, sorted by the order they would be applied to create an animation from movement and environmental data:
 
 #### Preparing movement tracks
 
-* `df2move()` converts a `data.frame` into a `move` or `moveStack` object. This is useful if you do not usually work with the `move` classes and your tracks are present as `data.frames`.
 * `align_move()` aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.
-* `subset_move()` subsets a `move` or `moveStack` by a given time span. This is useful if you want to create a movement animation of only a temporal subset of your data, e.g. a particular day.
 
 #### Creating frames
 
@@ -133,6 +121,11 @@ animate_frames(frames, out_file = "moveVis.gif")
 * `use_multicore()` enables multi-core usage for computational expensive processing steps.
 * `use_disk()` enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
 
+#### Example data
+
+* `data("move_data")` returns a `move2` object representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany.
+* `data("whitestork_data")` returns a `data.frame` and a `move2` object, both representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.
+* `readRDS(example_data(file = "basemap_data.rds"))` returns a `SpatRasterDataset`, representing simulated NDVI images covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.
 
 ## Examples
 
@@ -183,25 +176,13 @@ Detailed code examples explaining how to use specific functions are provided at 
 
 Blog post: Featured article in <a target="_blank" href = "https://methodsblog.com/2020/05/05/issue-11-5-our-may-issue-is-now-online/">Issue 11.5: Our May issue is now online!</a> by <a target="_blank" href = "https://besjournals.onlinelibrary.wiley.com/journal/2041210x">Methods in Ecology and Evolution</a>
 
-
-## Features to be added
-
-Things and features that should be added in future versions of `moveVis` (feel free to contribute to this list using a pull request):
-
-* follow population mode
-* follow individual mode
-* 3D animations, e.g. for including altitude data
-
-
 ## Related packages
 
 Other R packages that might interest you:
 
- * <a target="_blank" href="http://jxsw.de/basemaps">basemaps</a>, a package to download and cache spatial basemaps from open sources such as *OpenStreetMap*, *Stamen*, *Thunderforest*, *Carto*, *Mapbox* and others,
- * <a target="_blank" href="http://jxsw.de/getSpatialData">getSpatialData</a>, a package to query, preview and download satellite data,
+ * <a target="_blank" href="http://jakob.schwalb-willmann.de/basemaps">basemaps</a>, a package to download and cache spatial basemaps from open sources such as *OpenStreetMap*, *Stamen*, *Thunderforest*, *Carto*, *Mapbox* and others,
+ * <a target="_blank" href="https://jakob.schwalb-willmann.de/getSpatialData/">getSpatialData</a>, a package to query, preview and download satellite data,
  * <a target="_blank" href="http://bleutner.github.io/RStoolbox/">RStoolbox</a>, a package providing a wide range of tools for every-day remote sensing processing needs,
- * <a target="_blank" href="https://github.com/RRemelgado/rsMove/">rsMove</a>, a package providing tools to query and analyze movement data using remote sensing.
-
 
 ## Acknowledgements
           
@@ -212,7 +193,7 @@ This initiative was part of the <a target="_blank" href="https://www.geographie.
     <a href="https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"><img width="29%" src="https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"></a>
     <a href="http://www.dlr.de/eoc/en/"><img width="16%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"></a>
      <a href="https://www.bmu.de/en/"><img width="29%" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"></a>
-    <a href="https://www.ab.mpg.de/"><img width="16%" src="https://www.mpg.de/assets/og-logo-8216b4912130f3257762760810a4027c063e0a4b09512fc955727997f9da6ea3.jpg"></a>
+    <a href="https://www.ab.mpg.de/"><img width="16%" src="https://www.ab.mpg.de/assets/og-logo-281c44f14f2114ed3fe50e666618ff96341055a2f8ce31aa0fd70471a30ca9ed.jpg"></a>
 </div>
 </p>
 

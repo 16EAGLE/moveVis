@@ -40,27 +40,30 @@ This function adds character labels such as titles or axis labels to frames crea
 }
 \examples{
 library(moveVis)
-library(move)
+library(move2)
 
-data("move_data", "basemap_data")
-m <- align_move(move_data, res = 4, unit = "mins")
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
 
-# create spatial frames using a custom NDVI base layer
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
+# align movement
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-\dontrun{
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                         fade_raster = TRUE)
+# create frames and add labels
+frames <- frames_spatial(
+  m, r, r_type = "gradient", fade_raster = TRUE
+)
 
-# add labels to frames:
-frames <- add_labels(frames, title = "Example animation using moveVis::add_labels()", 
-                     subtitle = "Adding a subtitle to frames created using frames_spatial()",
-                     caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
-                     x = "Longitude", y = "Latitude")
+# add labels
+frames <- add_labels(
+  frames,
+  title = "Example animation using moveVis::add_labels()", 
+  subtitle = "Adding a subtitle to frames created using frames_spatial()",
+  caption = "Projection: Geographical, WGS84. Sources: moveVis examples.",
+  x = "Longitude", y = "Latitude"
+)
+
 # have a look at one frame
 frames[[100]]
-}
 
 }
 \seealso{
