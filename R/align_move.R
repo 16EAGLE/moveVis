@@ -25,45 +25,43 @@
 #' library(moveVis)
 #' library(move2)
 #' library(lubridate)
-#' 
+#'
 #' # example data
 #' data("move_data")
-#' 
+#'
 #' # the tracks in move_data have irregular timestamps and sampling rates.
 #' # print unique timestamps and time lags
 #' unique(mt_time(move_data))
 #' unique(mt_time_lags(move_data, units = "s"))
-#' 
+#'
 #' # use align_move to interpolate move_data to a uniform time scale and lag.
 #' # e.g. setting a resolution of 4 minutes:
 #' m <- align_move(m = move_data, res = units::set_units(4, "min"))
 #' # check the result: records with attribute interpolate == TRUE have been added
 #' # all trajectories are now aligend to a uniform 4-minute resolution:
 #' unique(mt_time_lags(m, units = "min"))
-#' 
+#'
 #' # same with resolution of 1 hour:
 #' m <- align_move(move_data, res = units::set_units(1, "hour"))
 #' unique(mt_time_lags(m, units = "hour"))
-#' 
+#'
 #' # resolution of 15 seconds:
 #' m <- align_move(move_data, res = units::set_units(15, "sec"))
 #' unique(mt_time_lags(m, units = "sec"))
-#' 
+#'
 #' # you can set the start/end times if needed:
-#' # first, let us retrieve the start and end time per track:
-#' start_end_time <- lapply(split(move_data, mt_track_id(move_data)), function(m){
-#'    range(mt_time(m), na.rm = TRUE)
-#' })
+#' # first, let us retrieve the start and end times
+#' start_end_time <- range(mt_time(m))
 #' start_end_time
+#'
 #' # I want the start time to be at 00 minutes and 00 seconds for the first track:
-#' start_end_time[[1]] <- round(start_end_time[[1]])
-#' 
+#' start_end_time <- round.POSIXt(start_end_time, units = "hours")
+#'
 #' m <- align_move(
-#'    move_data, res = units::set_units(4, "min"), 
-#'    start_end_time = start_end_time
+#'   move_data, res = units::set_units(4, "min"), 
+#'   start_end_time = start_end_time
 #' )
-#' mt_time(m[m$track == unique(mt_track_id(m))[1],])
-#' 
+#' mt_time(m)
 #' @importFrom move2 mt_track_id mt_track_id<- mt_track_id mt_n_tracks mt_time_lags mt_time mt_track_id_column mt_time_column mt_as_move2 mt_set_track_data mt_track_data
 #' @importFrom sf st_coordinates st_sf st_as_sf st_sfc st_linestring st_crs st_geometry st_line_interpolate st_is_longlat sf_use_s2
 #' @importFrom s2 s2_interpolate_normalized

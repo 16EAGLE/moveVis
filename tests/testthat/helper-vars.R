@@ -30,7 +30,7 @@ m <- move_data
 m.aligned <- align_move(move_data, res = units::set_units(4, "min"))
 
 # shift across dateline
-l.df <- lapply(split(m, mt_track_id(m)), function(x){
+l.df <- lapply(split(m.aligned, mt_track_id(m.aligned)), function(x){
   as.data.frame(cbind(x, sf::st_coordinates(x)))
 })
 df <- do.call(rbind, mapply(x = names(l.df), y = l.df, function(x, y){

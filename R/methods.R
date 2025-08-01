@@ -16,17 +16,17 @@ print.moveVis <- function(x, ...) {
     #crs_params <- sf:::crs_parameters(st_crs(x$m))
     
     cat(paste0("moveVis frames (spatial)"))
-    .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F)
+    .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F, verbose = T)
     cat(paste0("Temporal extent:  ", paste0(min(x$m$time), " to ", max(x$m$time), "\n")))
     cat(paste0("Spatial extent:   ", paste0(mapply(x = names(x$aesthetics$gg.ext), y = x$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
-    .cat_crs_params(.crs_params(x$m))
+    .cat_crs_params(.crs_params(x$m), verbose = T)
     cat(paste0("Basemap:          ", if(x$aesthetics$map_service != "custom") paste0("'", x$aesthetics$map_type, "' from '", x$aesthetics$map_service, "'") else paste0("SpatRaster*: ", x$aesthetics$n_r, " user-supplied raster(s)", if(x$aesthetics$fade_raster) ", interpolated" else ", not interpolated"), "\n"))
     cat(paste0("Names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
   }
   
   if(inherits(x, "frames_graph")){
     cat(paste0("moveVis frames (graph)"))
-    .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F)
+    .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F, verbose = T)
     cat(paste0("Temporal extent:  ", paste0(min(x$m$time), " to ", max(x$m$time), "\n")))
     cat(paste0("Raster type:      ", x$aesthetics$r_type, "\n"))
     cat(paste0("Names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
@@ -35,7 +35,7 @@ print.moveVis <- function(x, ...) {
   
   if(inherits(x, "frames_joined")){
     cat(paste0("moveVis frames (joined)"))
-    .stats(n.frames = length(unique(x$frames_list[[1]]$m$frame)), lead_text = ", ", return_char = F)
+    .stats(n.frames = length(unique(x$frames_list[[1]]$m$frame)), lead_text = ", ", return_char = F, verbose = T)
     cat(paste0("Temporal extent:  ", paste0(min(x$frames_list[[1]]$m$time), " to ", max(x$frames_list[[1]]$m$time), "\n")))
     cat(paste0("Raster type:      ", x$frames_list[[1]]$aesthetics$r_type, "\n"))
     cat(paste0("Names:            '", paste0(unique(x$frames_list[[1]]$m$name), collapse = "', '"), "'\n"))

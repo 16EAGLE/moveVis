@@ -60,20 +60,18 @@ m <- align_move(move_data, res = units::set_units(15, "sec"))
 unique(mt_time_lags(m, units = "sec"))
 
 # you can set the start/end times if needed:
-# first, let us retrieve the start and end time per track:
-start_end_time <- lapply(split(move_data, mt_track_id(move_data)), function(m){
-   range(mt_time(m), na.rm = TRUE)
-})
+# first, let us retrieve the start and end times
+start_end_time <- range(mt_time(m))
 start_end_time
+
 # I want the start time to be at 00 minutes and 00 seconds for the first track:
-start_end_time[[1]] <- round(start_end_time[[1]])
+start_end_time <- round.POSIXt(start_end_time, units = "hours")
 
 m <- align_move(
-   move_data, res = units::set_units(4, "min"), 
-   start_end_time = start_end_time
+  move_data, res = units::set_units(4, "min"), 
+  start_end_time = start_end_time
 )
-mt_time(m[m$track == unique(mt_track_id(m))[1],])
-
+mt_time(m)
 }
 \seealso{
 \code{\link{frames_spatial}} \code{\link{frames_graph}}

@@ -31,9 +31,9 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 #' @importFrom lubridate dseconds
 #' @keywords internal
 #' @noRd
-.stats <- function(n.frames, fps = 25, lead_text = "Approximated animation duration: ", return_char = FALSE){
+.stats <- function(n.frames, fps = 25, lead_text = "Approximated animation duration: ", return_char = FALSE, verbose = getOption("moveVis.verbose")){
   x <- paste0(lead_text, "\u2248 ", as.character(dseconds(n.frames/fps)), " at ", toString(fps), " fps using ", toString(n.frames), " frames")
-  if(return_char) return(x) else out(x)
+  if(return_char) return(x) else out(x, verbose = verbose)
 }
 
 #' Replace value
@@ -352,7 +352,7 @@ repl_vals <- function(data, x, y){
   
   ## check time lag
   uni.lag <- length(unique(unlist(tl))) <= 1
-  if(!isTRUE(uni.lag)) out("The temporal resolution of 'm' is diverging. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
+  if(!isTRUE(uni.lag)) out("The temporal resolution of 'm' is inconsistent. Use align_move() to align movement data to a uniform time scale with a consistent temporal resolution.", type = 3)
   
   ## check temporal consistence per individual (consider to remove, if NA timestamps should be allowed)
   uni.intra <- mapply(x = tl, y = ts, function(x, y) length(c(min(y, na.rm = T), min(y, na.rm = T) + cumsum(as.numeric(x)))) == length(y))
@@ -641,11 +641,9 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 #' @noRd 
 .onAttach <- function(...) {
   messages <- c(
-    "Do you need help with moveVis? Have a look at the docs on our web page: http://movevis.org/",
-    "Find out about new features added to moveVis at http://movevis.org/news/index.html",
-    "Find example code and code snippets at http://movevis.org/index.html#examples",
-    #"Find a collection of moveVis animations created by other users on Twitter: https://twitter.com/schwalbwillmann",
-    "Are you missing a feature or did you find a bug? Please open an issue at https://github.com/16eagle/movevis/issues",
+    "Do you need help with moveVis? Have a look at the docs on our web page: https://movevis.org/",
+    "Find out about new features added to moveVis at https://movevis.org/news/index.html",
+    "Find example code and code snippets at https://movevis.org/index.html#examples",
     "Read our accompanying open-access paper published in 'Methods in Ecology and Evolution': https://doi.org/10.1111/2041-210X.13374"
   )
   packageStartupMessage(paste(strwrap(sample(messages, 1)), collapse = "\n"))
@@ -720,8 +718,8 @@ which.minpos <- function(x) min(which(min(x[x > 0]) == x))
 
 #' cat crs params
 #' @noRd
-.cat_crs_params <- function(crs_params){
-  if(grepl("Geodetic", crs_params[1])) cat(paste0("CRS (geodetic):   ", crs_params[2], "\n")) else{
-    cat(paste0("CRS (projected):  ", crs_params[2], "\n"))
+.cat_crs_params <- function(crs_params, verbose = getOption("moveVis.verbose")){
+  if(grepl("Geodetic", crs_params[1])) out(paste0("CRS (geodetic):   ", crs_params[2]), verbose = verbose) else{
+    out(paste0("CRS (projected):  ", crs_params[2]), verbose = verbose)
   }
 }
