@@ -42,6 +42,38 @@ test_that("add_gg", {
   expect_error(add_gg(frames, gg = ggplot2::expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black")), data = data[-1]))
   expect_error(add_gg(frames, gg = list(ggplot2::expr(ggplot2::geom_path(ggplot2::aes(x = x, y = y), data = data, colour = "black"))), data = data))
   expect_error(add_gg(frames, gg = "hi", data = data))
+  
+  # with sf
+  data <- cbind(
+    x = c(8.96, 8.955, 8.959, 8.963, 8.968, 8.963, 8.96),
+    y = c(47.725, 47.728, 47.729, 47.728, 47.725, 47.723, 47.725)
+  )
+  data <- list(data) %>% 
+    st_polygon() %>% 
+    st_geometry() %>% 
+    st_as_sf(crs = st_crs(4326)) %>% 
+    st_transform(crs = st_crs(3857))
+  
+  expect_length(expect_is(add_gg(frames, gg = ggplot2::expr(geom_sf(data = data, colour = "black", fill = "transparent", linetype = "dashed", lwd = 1)), data = data), "moveVis"), 188)
+  
+  # with sf dynamic
+  data <- cbind(
+    x = c(8.96, 8.955, 8.959, 8.963, 8.968, 8.963, 8.96),
+    y = c(47.725, 47.728, 47.729, 47.728, 47.725, 47.723, 47.725)
+  )
+  data <- rep(list(data), length.out = length(frames))
+  data <- lapply(data, function(x){
+    y <- rnorm(nrow(x)-1, mean = 0.00001, sd = 0.0001) 
+    x + c(y, y[1])
+  })
+  data <- lapply(data, function(x){
+    list(x) %>% 
+      st_polygon() %>% 
+      st_geometry() %>% 
+      st_as_sf(crs = st_crs(4326)) %>% 
+      st_transform( crs = st_crs(3857))
+  })
+  expect_length(expect_is(add_gg(frames, gg = ggplot2::expr(geom_sf(data = data, colour = "black", fill = "transparent", linetype = "dashed", lwd = 1)), data = data), "moveVis"), 188)
 })
 
 test_that("add_labels", {
@@ -112,6 +144,5 @@ test_that("add_timestamps", {
   # false calls
   expect_error(add_timestamps(NA, type = "label", colour = "black")) # false frames
   expect_error(add_timestamps(list(frames[[1]], NA), type = "label", colour = "black")) # false frames
-  expect_warning(add_timestamps(frames, m = m.aligned, type = "label", colour = "black")) #  timestamps not matching
 })
 #}

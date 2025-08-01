@@ -86,27 +86,34 @@ frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_ra
   out("Processing input data...")
   .time_conform(m)
   
-  if(!is.null(extras$r_list)) out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects.", type = 3)
-  if(inherits(r, "SpatRaster")){
-    r_list <- list(r)
-    r_times <- list(time(r))
+  crs <- st_crs(m)
+  if(!is.null(extras$r_list)){
+    out("Argument 'r_list' is deprecated. Use 'r' instead to supply raster objects and associated times. See ?moveVis::frames_spatial for help.", type = 2)
+    r_list <- extras$r_list
+    crs_r <- st_crs(terra::crs(r_list[[1]]))
   }
-  if(inherits(r, "SpatRasterDataset")){
-    r_list <- lapply(r, function(x) x)
-    r_times <- time(r)
+  if(!is.null(extras$r_times)){
+    out("Argument 'r_times' is deprecated. Use 'r' instead to supply raster objects and associated times. See ?moveVis::frames_spatial for help.", type = 2)
+    r_times <- extras$r_times
   }
-  if(!inherits(r, c("SpatRaster", "SpatRasterDataset"))) out("Argument 'r' must be a terra raster object of class SpatRaster or SpatRasterDataset.", type = 3)
-  
-  if(is.character(r_type)){
-    if(!any(r_type == c("gradient", "discrete"))) out("Argument 'r_type' must be either 'gradient' or 'discrete'.", type = 3)
-  } else{ out("Argument 'r_type' must be of type 'character'.", type = 3)}
-  
+  if(!is.null(r)){
+    if(inherits(r, "SpatRaster")){
+      r_list <- list(r)
+      r_times <- list(time(r))
+    }
+    if(inherits(r, "SpatRasterDataset")){
+      r_list <- lapply(r, function(x) x)
+      r_times <- time(r)
+    }
+    if(!inherits(r, c("SpatRaster", "SpatRasterDataset"))) out("Argument 'r' must be a terra raster object of class SpatRaster or SpatRasterDataset.", type = 3)
+    crs_r <- st_crs(terra::crs(r))
+  } 
+  if(crs_r != crs) r_list <- lapply(r_list, project, crs$wkt)
+  if(nlyr(r_list[[1]]) != 1) out("frames_graph is expecting single-layer 'SpatRaster' objects per time steps. Multi-layer 'SpatRaster' objects are not supported by this function.", type = 3)
   if(length(unique(sapply(r_list, nlyr))) > 1) out("Number of layers per raster object in 'r' differ.", type = 3)
   if(!all(sapply(r_times, inherits, "POSIXct"))) out("Times of r must be of class 'POSIXct' (see ?terra::time).", type = 3)
   
-  if(nlyr(r_list[[1]]) != 1) out("frames_graph is expecting single-layer 'SpatRaster' objects per time steps. Multi-layer 'SpatRaster' objects are not supported by this function.", type = 3)
-  if(length(unique(sapply(r_list, nlyr))) > 1) out("Number of layers per 'SpatRaster' object in differ.", type = 3)
-  if(!all(sapply(r_times, inherits, "POSIXct"))) out("Raster times  must be of class 'POSIXct' (see ?terra::time).", type = 3)
+  if(!isTRUE(r_type %in% c("gradient", "discrete", "RGB"))) out("Argument 'r_type' must eihter be 'gradient', 'discrete' or 'RGB'.", type = 3)
   if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
   
   if(!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)

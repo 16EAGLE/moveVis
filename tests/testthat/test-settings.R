@@ -14,8 +14,8 @@ test_that("use_multicore", {
 
 test_that("use_disk", {
   expect_output(use_disk(frames_to_disk = TRUE, n_memory_frames = NULL))
-  expect_is(frames_spatial(m = m.aligned[move::timestamps(m.aligned) > as.POSIXct("2018-05-15 07:00:00") & move::timestamps(m.aligned) < as.POSIXct("2018-05-15 10:00:00"),],
-                           r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F, fade_raster = T), "moveVis")
+  expect_is(frames_spatial(m = m.aligned,
+                           r = r_grad, r_type = "gradient", verbose = F, fade_raster = T), "moveVis")
   expect_output(use_disk(frames_to_disk = TRUE, dir_frames = paste0(tempdir(), "/moveVis/xyz/abc"), n_memory_frames = NULL))
   expect_output(expect_warning(use_disk(frames_to_disk = TRUE, n_memory_frames = 2)))
   use_disk(frames_to_disk = FALSE, verbose = F)

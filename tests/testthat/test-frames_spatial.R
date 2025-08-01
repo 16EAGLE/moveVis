@@ -25,50 +25,62 @@ test_that("frames_spatial (default maps)", {
 test_that("frames_spatial (raster, gradient)", {
   # correct calls
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r = r_grad, r_type = "gradient", verbose = F), "moveVis"), 188)
-  expect_is(frames[[1]], "ggplot") # move stack
+  expect_is(frames[[1]], "ggplot") # ggplot
   frames <- expect_length(expect_is(frames_spatial(split(m.aligned, mt_track_id(m.aligned))[[1]], r = r_grad, r_type = "gradient", verbose = F), "moveVis"), 143)
   expect_is(frames[[1]], "ggplot") # single move
+  
+  ### LOOK INTO THIS
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r = r_grad[[5]],  r_type = "gradient", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # single raster
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "moveVis"), 188)
+  
+  
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # path arrow
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", trace_show = T,  trace_size = 4, trace_colour = "black", verbose = F), "moveVis"), 188)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_type = "gradient", trace_show = T,  trace_size = 4, trace_colour = "black", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # trace_ arguments
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", tail_length = 25, tail_size = 3, tail_colour = "black", verbose = F), "moveVis"), 188)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_type = "gradient", tail_length = 25, tail_size = 3, tail_colour = "black", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # tail_ arguments
   
   
   # false calls
-  expect_error(frames_spatial(m, r_grad, r_times, r_type = "gradient", verbose = F)) # diveriging temporal resolution (m not aligend)
-  expect_error(frames_spatial(NA, r_grad, r_times, r_type = "gradient", verbose = F)) # false m
+  expect_error(frames_spatial(m, r_grad, r_type = "gradient", verbose = F)) # diveriging temporal resolution (m not aligend)
+  expect_error(frames_spatial(NA, r_grad, r_type = "gradient", verbose = F)) # false m
   
-  x <- r_grad[[1]]
-  raster::crs(x) <- raster::crs("+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-  expect_error(frames_spatial(m.aligned, list(x), r_times, r_type = "gradient", verbose = F)) # false proj
+  r_grad_false_proj <- terra::sds(lapply(r_grad, function(x){
+    terra::crs(x) <- terra::crs(sf::st_crs(32632)$wkt)
+    return(x)
+  }))
+  expect_error(frames_spatial(m.aligned, r_grad_false_proj, r_type = "gradient", verbose = F)) # false proj
   
-  x <- list(r_grad[[1]], raster::stack( r_grad[[2]],  r_grad[[2]]))
-  expect_error(frames_spatial(m.aligned, x, r_times, r_type = "gradient", verbose = F)) # differing numbers of layers
+  x <- terra::sds(list(r_grad[[1]], c(r_grad[[2]],  r_grad[[2]])))
+  expect_error(frames_spatial(m.aligned, x, r_type = "gradient", verbose = F)) # differing numbers of layers
   
-  expect_error(frames_spatial(m.aligned, r_grad, as.character(r_times), r_type = "gradient", verbose = F)) # false r_times
-  expect_error(frames_spatial(m.aligned, r_grad, r_times, r_type = "abc", verbose = F)) # false r_type
-  expect_error(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", fade_raster = 1, verbose = F)) # false fade_raster
-  expect_error(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", crop_raster = 1, verbose = F)) # false crop_raster
+  # downward compatibility
+  expect_warning(frames_spatial(m.aligned, r_grad, r_times = r_times, r_type = "gradient", verbose = F)) # defined r_times
+  expect_warning(frames_spatial(m.aligned, r_grad, r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F)) # defined r_times
+  expect_warning(frames_spatial(m.aligned, r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F)) # defined r_times
+  
+  expect_error(frames_spatial(m.aligned, r_grad, r_type = "abc", verbose = F)) # false r_type
+  expect_error(frames_spatial(m.aligned, r_grad, r_type = "gradient", fade_raster = 1, verbose = F)) # false fade_raster
+  expect_error(frames_spatial(m.aligned, r_grad, r_type = "gradient", crop_raster = 1, verbose = F)) # false crop_raster
 })
 
 test_that("frames_spatial (raster, gradient, fade)", {
-  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_times, r_type = "gradient", fade_raster = T, verbose = F), "moveVis"), 188)
+  frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_type = "gradient", fade_raster = T, verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot")
 })
 
 test_that("frames_spatial (raster, discrete)", {
-  frames <-  expect_length(expect_is(frames_spatial(m.aligned, r_disc, r_times, r_type = "discrete", verbose = F), "moveVis"), 188)
+  frames <-  expect_length(expect_is(frames_spatial(m.aligned, r_disc, r_type = "discrete", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot")
 })
 #}
 ## check special arguments, including ext and path_length
 
 test_that("frames_spatial (different extent/proj settings)", {
-  ext <- raster::extent(m)*1.1
+  ext <- sf::st_bbox(move_data)
+  ext[["xmin"]] <- ext[["xmin"]] - (ext[["xmin"]]*0.03)
+  ext[["xmax"]] <- ext[["xmax"]] + (ext[["xmax"]]*0.03)
 
   # custom extent
   frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, ext = ext, verbose = F), "moveVis"), 188)
@@ -83,14 +95,14 @@ test_that("frames_spatial (different extent/proj settings)", {
   expect_is(frames[[1]], "ggplot")
 
   # other projections
-  frames <- lapply(c("+init=epsg:32632", "+init=epsg:3857"), function(p){
+  frames <- lapply(c(st_crs(32632), st_crs(3857)), function(p){
     
     # transform using sf
-    m_tf <- sf::st_transform(sf::st_as_sf(m), sf::st_crs(p))
-    m_tf <- cbind.data.frame(sf::st_coordinates(m_tf), time = m_tf$time, id = move::trackId(m))
-    m <- quiet(df2move(m_tf, proj = p, x = "X", y = "Y", time = "time", track_id = "id")) # warnings are exected sometimes
-    
-    frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "moveVis"), 188)
+    m_tf <- st_transform(m.aligned, crs = p)
+   
+    frames <- expect_length(expect_is(frames_spatial(m_tf, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, verbose = F), "moveVis"), 188)
+    frames <- expect_length(expect_is(frames_spatial(m.aligned, map_service = "osm", map_type = get_maptypes("osm")[1], map_res = 0.1, equidistant = F, 
+                                                     crs = p, verbose = F), "moveVis"), 188)
     expect_is(frames[[1]], "ggplot")
     frames[[100]]
   })
@@ -103,9 +115,9 @@ test_that("frames_spatial (different extent/proj settings)", {
 
 test_that("frames_spatial (cross_dateline)", {
   
-  frames <- expect_length(expect_is(frames_spatial(m = m.shifted, map_service = "carto", map_type = "light",
-                                                   verbose = F, cross_dateline = T), "moveVis"), 188)
+  frames <- expect_warning(expect_length(expect_is(frames_spatial(m = m.shifted, map_service = "carto", map_type = "light",
+                                                   verbose = F, cross_dateline = T), "moveVis"), 188))
   frames <- expect_warning(frames_spatial(m= m.shifted.repro, verbose = F, cross_dateline = T))
-  frames <- expect_error(frames_spatial(m = m.shifted, r_list = r_grad, r_times = r_times, r_type = "gradient", verbose = F, cross_dateline = T))
+  frames <- expect_error(frames_spatial(m = m.shifted, r_grad, r_type = "gradient", verbose = F, cross_dateline = T))
   
 })
