@@ -30,7 +30,7 @@ a consistent, unique temporal resolution for all supplied trajectories."><meta p
     <li><a class="external-link dropdown-item" href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></li>
     <li><a class="external-link dropdown-item" href="https://jakob.schwalb-willmann.de/getSpatialData/">getSpatialData</a></li>
   </ul></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-brands fa-bluesky fa-lg"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://bsky.app/profile/schwalb-willmann.de"><span class="fa fa-brands fa-bluesky fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://www.github.com/16eagle"><span class="fa fa-github fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://jakob.schwalb-willmann.de"><span class="fa fa-globe fa-lg"></span></a></li>
       </ul></div>
@@ -110,6 +110,8 @@ a consistent, unique temporal resolution for all supplied trajectories.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     date, intersect, setdiff, union</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># example data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the tracks in move_data have irregular timestamps and sampling rates.</span></span></span>
@@ -431,7 +433,7 @@ a consistent, unique temporal resolution for all supplied trajectories.</p>
 <span class="r-in"><span><span class="co"># you can set the start/end times if needed:</span></span></span>
 <span class="r-in"><span><span class="co"># first, let us retrieve the start and end time per track:</span></span></span>
 <span class="r-in"><span><span class="va">start_end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">move_data</span>, <span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_track_id.html" class="external-link">mt_track_id</a></span><span class="op">(</span><span class="va">move_data</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_time.html" class="external-link">mt_time</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_time.html" class="external-link">mt_time</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">start_end_time</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $T246a</span>

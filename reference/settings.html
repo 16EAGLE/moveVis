@@ -26,7 +26,7 @@
     <li><a class="external-link dropdown-item" href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></li>
     <li><a class="external-link dropdown-item" href="https://jakob.schwalb-willmann.de/getSpatialData/">getSpatialData</a></li>
   </ul></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.twitter.com/schwalbwillmann"><span class="fa fa-brands fa-bluesky fa-lg"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://bsky.app/profile/schwalb-willmann.de"><span class="fa fa-brands fa-bluesky fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://www.github.com/16eagle"><span class="fa fa-github fa-lg"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://jakob.schwalb-willmann.de"><span class="fa fa-globe fa-lg"></span></a></li>
       </ul></div>
@@ -96,7 +96,9 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># enable multi-core usage automatically</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># enable multi-core usage automatically</span></span></span>
 <span class="r-in"><span><span class="fu">use_multicore</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of cores set to be used by moveVis: 3 out of 4</span>
 <span class="r-in"><span></span></span>
@@ -105,10 +107,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of cores set to be used by moveVis: 2 out of 4</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># allow disk use with default directory</span></span></span>
-<span class="r-in"><span><span class="co"># and maxiumum of 50 frames in memory</span></span></span>
+<span class="r-in"><span><span class="co"># and maximum of 50 frames in memory</span></span></span>
 <span class="r-in"><span><span class="fu">use_disk</span><span class="op">(</span>frames_to_disk <span class="op">=</span> <span class="cn">TRUE</span>, n_memory_frames <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Disk usage for creating frames enabled.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Directory: '/tmp/Rtmpqk3PIF/moveVis'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Directory: '/tmp/RtmpLB66M1/moveVis'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum number of frames which will be hold in memory: 50</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
