@@ -20,6 +20,7 @@
 #' @examples 
 #' library(moveVis)
 #' library(move2)
+#' library(terra)
 #'
 #' data("move_data", package = "moveVis")
 #' r <- readRDS(example_data(file = "basemap_data.rds"))

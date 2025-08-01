@@ -22,28 +22,23 @@ render_frame(frames, i = length(frames))
 This function renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting \code{[[]]}.
 }
 \examples{
-
 library(moveVis)
-library(move)
-data("move_data")
-data("basemap_data")
-
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
-
-# align
-m <- align_move(m = move_data, res = 4, unit = "mins")
-
-# create frames
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, fade_raster = TRUE)
-
+library(move2)
+library(terra)
+ 
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
+ 
+# align movement
+m <- align_move(move_data, res = units::set_units(4, "min"))
+ 
+# create spatial frames 
+frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE)
+ 
 # viewing frames calling this function:
 render_frame(frames) # displays the last frame 
 render_frame(frames, i = 100) # displays frame 100 
-
-\dontrun{
+ 
 # alternatively, you can simply use `[[` to do this:
 frames[[100]] # displays frame 100
-
-}
 }

@@ -12,6 +12,8 @@
 #' @importFrom av av_muxers
 #' 
 #' @examples
+#' library(moveVis)
+#' 
 #' # find out which formats are available
 #' suggest_formats()
 #' 

@@ -28,37 +28,38 @@
 #' 
 #' @examples
 #' library(moveVis)
-#' library(move)
-#' 
-#' data("m", "basemap_data")
+#' library(move2)
+#' library(terra)
+#'
+#' data("move_data", package = "moveVis")
+#' r <- readRDS(example_data(file = "basemap_data.rds"))
+#'
 #' # align movement
-#' m <- align_move(m, res = 4, unit = "mins")
-#' 
-#' # create spatial frames with frames_spatial:
-#' r_list <- basemap_data[[1]]
-#' r_times <- basemap_data[[2]]
-#' 
-#' \dontrun{
-#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                          fade_raster = TRUE)
-#' 
-#' # customize
-#' frames <- add_colourscale(frames, type = "gradient",
-#'                           colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
-#' frames <- add_northarrow(frames, position = "bottomleft")
-#' frames <- add_scalebar(frames, colour = "white", position = "bottomright")
-#' 
-#' frames <- add_progress(frames)
-#' frames <- add_timestamps(frames, m, type = "label")
-#' 
+#' m <- align_move(move_data, res = units::set_units(4, "min"))
+#'
+#' # create frames 
+#' frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) %>% 
+#'   add_colourscale(
+#'     type = "gradient", colours = c("orange", "white", "darkgreen"),
+#'     legend_title = "NDVI") %>% 
+#'   add_northarrow(position = "bottomleft") %>% 
+#'   add_scalebar(colour = "white", position = "bottomright") %>% 
+#'   add_progress() %>% 
+#'   add_timestamps(type = "label")
+#'  
 #' # check available formats
 #' suggest_formats()
 #' 
+#' \dontrun{
 #' # animate frames as GIF
-#' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
-#' 
+#' out_file <- tempfile(fileext = ".gif")
+#' animate_frames(frames, out_file = out_file)
+#' browseURL(out_file) # view animation
+#'  
 #' # animate frames as mov
-#' animate_frames(frames, out_file = tempfile(fileext = ".gif"))
+#' out_file <- tempfile(fileext = ".mov")
+#' animate_frames(frames, out_file = out_file)
+#' browseURL(out_file) # view animation
 #' }
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{join_frames}}
 #' 

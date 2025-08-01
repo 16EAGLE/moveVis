@@ -19,19 +19,17 @@
 #' @examples 
 #' \dontrun{
 #' library(moveVis)
-#' library(move)
-#' 
-#' data("move_data")
-#' 
-#' # return a mapview map (mapview must be installed)
+#' library(move2)
+#'
+#' data("move_data", package = "moveVis")
+#'
 #' view_spatial(move_data)
-#' 
+#'  
 #' # return a leaflet map (leaflet must be installed)
 #' view_spatial(move_data, render_as = "leaflet")
-#' 
+#'  
 #' # turn off time labels and legend
 #' view_spatial(move_data, time_labels = FALSE, path_legend = FALSE)
-#' 
 #' }
 #' @seealso \code{\link{frames_spatial}}
 #' 

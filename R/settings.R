@@ -22,6 +22,8 @@
 #' 
 #' 
 #' @examples 
+#' library(moveVis)
+#' 
 #' # enable multi-core usage automatically
 #' use_multicore()
 #' 
@@ -29,7 +31,7 @@
 #' use_multicore(n_cores = 2)
 #' 
 #' # allow disk use with default directory
-#' # and maxiumum of 50 frames in memory
+#' # and maximum of 50 frames in memory
 #' use_disk(frames_to_disk = TRUE, n_memory_frames = 50)
 #' 
 #' @name settings

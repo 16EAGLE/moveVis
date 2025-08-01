@@ -281,12 +281,7 @@ frames_spatial <- function(
   
   # print stats
   .stats(n.frames = max(m$frame))
-  crs_params <- sf:::crs_parameters(st_crs(m))
-  if(crs_params$IsGeographic){
-    out(paste0("CRS (geodetic): '", crs_params$Name, "'"))
-  } else{
-    out(paste0("CRS (projected): '", crs_params$Name, "'"))
-  }
+  .cat_crs_params(.crs_params(m))
   
   gg.ext <- .ext(m, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
   

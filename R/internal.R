@@ -709,3 +709,19 @@ which.minpos <- function(x) min(which(min(x[x > 0]) == x))
   m$name <- mt_track_id(m)
   return(m)
 }
+
+#' extract crs params
+#' @importFrom utils capture.output
+#' @noRd
+.crs_params <- function(x){
+  class(x) <- class(x) %>% setdiff("move2")
+  sapply(strsplit(capture.output(x)[5], ":")[[1]], trimws, USE.NAMES = F)
+}
+
+#' cat crs params
+#' @noRd
+.cat_crs_params <- function(crs_params){
+  if(grepl("Geodetic", crs_params[1])) cat(paste0("CRS (geodetic):   ", crs_params[2], "\n")) else{
+    cat(paste0("CRS (projected):  ", crs_params[2], "\n"))
+  }
+}

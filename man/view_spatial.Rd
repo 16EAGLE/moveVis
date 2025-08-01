@@ -45,19 +45,17 @@ Colours could also be arranged to change through time or by behavioral segments,
 \examples{
 \dontrun{
 library(moveVis)
-library(move)
+library(move2)
 
-data("move_data")
+data("move_data", package = "moveVis")
 
-# return a mapview map (mapview must be installed)
 view_spatial(move_data)
-
+ 
 # return a leaflet map (leaflet must be installed)
 view_spatial(move_data, render_as = "leaflet")
-
+ 
 # turn off time labels and legend
 view_spatial(move_data, time_labels = FALSE, path_legend = FALSE)
-
 }
 }
 \seealso{

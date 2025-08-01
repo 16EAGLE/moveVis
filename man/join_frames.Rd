@@ -36,44 +36,49 @@ A frames object of class \code{moveVis}.
 This function joins two or more \code{moveVis} frames of equal lengths side-by-side into a single plot per frame using \code{\link[patchwork]{wrap_plots}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
 }
 \examples{
-\dontrun{
 library(moveVis)
-library(move)
+library(move2)
+library(terra)
 
-data("move_data", "basemap_data")
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
+
 # align movement
-m <- align_move(move_data, res = 4, unit = "mins")
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-# create spatial frames and graph frames:
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
+# create spatial frames 
+frames_sp <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) \%>\% 
+  add_colourscale(
+    type = "gradient", colours = c("orange", "white", "darkgreen"),
+    legend_title = "NDVI"
+  )
 
-frames.sp <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                            fade_raster = TRUE)
-frames.sp <- add_colourscale(frames.sp, type = "gradient",
-                             colours = c("orange", "white", "darkgreen"), legend_title = "NDVI")
-frames.flow <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "flow")
-frames.hist <- frames_graph(m, r_list, r_times, path_legend = FALSE, graph_type = "hist")
+# create graph frames
+frames_flow <- frames_graph(m, r, path_legend = FALSE, graph_type = "flow")
+frames_hist <- frames_graph(m, r, path_legend = FALSE, graph_type = "hist")
 
 # check lengths (must be equal)
-sapply(list(frames.sp, frames.flow, frames.hist), length)
+sapply(list(frames_sp, frames_flow, frames_hist), length)
 
-# Let's join the graph frames vertically
-frames.join.gr <- join_frames(list(frames.flow, frames.hist), ncol = 1, nrow = 2)
-frames.join.gr[[100]]
+# define a patchwork design (see ?wrap_plots)
+design <- "
+AAB
+AAC
+"
 
-# Now, let's join the joined graph frames with the spatial frames horizontally
-# in 2:1 ration and align all axis
-frames.join <- join_frames(list(frames.sp, frames.join.gr),
-                           ncol = 2, nrow = 1, rel_widths = c(2, 1), axis = "tb")
-frames.join[[100]]
-# in a standard graphics device, this looks a bit unproportional
-# however when setting the correct width, height and resolution of a graphic device,
-# it will come out well aligend.
+# create joined frames
+frames_joined <- join_frames(
+  list(frames_sp, frames_flow, frames_hist), design = design
+)
+frames_joined[[100]]
 
-# Do so for example with animate_move() with width = 900, dheight = 500 and res = 90
-animate_frames(frames.join, out_file = tempfile(fileext = ".gif"), fps = 25, 
-               width = 900, height = 500, res = 90, display = TRUE, overwrite = TRUE)
+# adjust width and height to suite your joined frames
+\dontrun{
+out_file <- tempfile(fileext = ".gif")
+animate_frames(
+  frames_joined, out_file = out_file, fps = 25, width = 900, height = 500, 
+  res = 90, display = TRUE, overwrite = TRUE
+)
 }
 }
 \seealso{

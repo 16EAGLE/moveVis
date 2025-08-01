@@ -25,27 +25,24 @@ This function adds a progress bar to frames created with \code{\link{frames_spat
 }
 \examples{
 library(moveVis)
-library(move)
+library(move2)
+library(terra)
 
-data("move_data", "basemap_data")
-m <- align_move(move_data, res = 4, unit = "mins")
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
 
-# create spatial frames using a custom NDVI base layer
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
+# align movement
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-\dontrun{
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                         fade_raster = TRUE)
+# create frames and add northarrow
+frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) \%>\% 
+  add_progress()
+frames[[100]]
 
-# add a progress bar:
-frames.a <- add_progress(frames)
-frames.a[[100]]
-
-# or in red and larger
-frames.b <- add_progress(frames, colour = "red", size = 2.5)
-frames.b[[100]]
-}
+# or in white at another position
+frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) \%>\% 
+  add_progress(colour = "red", size = 2.5)
+frames[[100]]
 
 }
 \seealso{

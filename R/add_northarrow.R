@@ -22,27 +22,24 @@
 #'
 #' @examples 
 #' library(moveVis)
-#' library(move)
+#' library(move2)
+#' library(terra)
 #' 
-#' data("move_data", "basemap_data")
-#' m <- align_move(move_data, res = 4, unit = "mins")
+#' data("move_data", package = "moveVis")
+#' r <- readRDS(example_data(file = "basemap_data.rds"))
 #' 
-#' # create spatial frames using a custom NDVI base layer
-#' r_list <- basemap_data[[1]]
-#' r_times <- basemap_data[[2]]
+#' # align movement
+#' m <- align_move(move_data, res = units::set_units(4, "min"))
 #' 
-#' \dontrun{
-#' frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-#'                          fade_raster = TRUE)
-#' 
-#' # add a north arrow to frames:
-#' frames.a <- add_northarrow(frames)
-#' frames.a[[100]]
+#' # create frames and add northarrow
+#' frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) %>% 
+#'   add_northarrow()
+#' frames[[100]]
 #' 
 #' # or in white at another position
-#' frames.b <- add_northarrow(frames, colour = "white", position = "bottomleft")
-#' frames.b[[100]]
-#' }
+#' frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) %>% 
+#'   add_northarrow(colour = "white", position = "bottomleft")
+#' frames[[100]]
 #' 
 #' @seealso \code{\link{frames_spatial}} \code{\link{frames_graph}} \code{\link{animate_frames}}
 #' @export

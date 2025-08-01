@@ -35,6 +35,8 @@ a consistent, unique temporal resolution for all supplied trajectories.
 library(moveVis)
 library(move2)
 library(lubridate)
+
+# example data
 data("move_data")
 
 # the tracks in move_data have irregular timestamps and sampling rates.
@@ -60,7 +62,7 @@ unique(mt_time_lags(m, units = "sec"))
 # you can set the start/end times if needed:
 # first, let us retrieve the start and end time per track:
 start_end_time <- lapply(split(move_data, mt_track_id(move_data)), function(m){
-   range(mt_time(m), na.rm = T)
+   range(mt_time(m), na.rm = TRUE)
 })
 start_end_time
 # I want the start time to be at 00 minutes and 00 seconds for the first track:

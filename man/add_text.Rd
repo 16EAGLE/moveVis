@@ -40,29 +40,25 @@ This function adds text to frames created with \code{\link{frames_spatial}}.
 }
 \examples{
 library(moveVis)
-library(move)
+library(move2)
+library(terra)
 
-data("move_data", "basemap_data")
-m <- align_move(move_data, res = 4, unit = "mins")
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
 
-# create spatial frames using a custom NDVI base layer
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
+# align movement
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-\dontrun{
-frames <- frames_spatial(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                         fade_raster = TRUE)
-
-# add text somewhere to all frames:
-frames.a <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
-                     colour = "white", size = 3)
-frames.a[[100]]
+# create frames and add text somewhere to all frames:
+frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) \%>\%
+  add_text("Water area", x = 8.959, y = 47.7305, colour = "white", size = 3)
+frames[[100]]
 
 # or use the ggplot2 "label" type:
-frames.b <- add_text(frames, "Water area", x = 8.959, y = 47.7305,
-                     colour = "black", size = 3, type = "label")
-frames.b[[100]]
-}
+frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) \%>\%
+  add_text("Water area", x = 8.959, y = 47.7305, colour = "black", size = 3, 
+           type = "label")
+frames[[100]]
 
 }
 \seealso{

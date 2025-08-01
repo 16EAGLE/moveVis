@@ -79,7 +79,7 @@
 #'
 #' # take alook
 #' frames[[100]]
-#' }
+#' 
 #' # add_gg can also be used iteratively to manipulate each frame differently.
 #' # let's create unique polygons per frame:
 #'
@@ -106,7 +106,6 @@
 #'     st_transform( crs = st_crs(3857))
 #' })
 #' 
-#' \dontrun{
 #' # apply add_gg
 #' frames <- frames_spatial(
 #'   m, map_service = "osm", map_type = "topographic", alpha = 0.5) %>% 

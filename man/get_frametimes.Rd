@@ -17,17 +17,20 @@ This function extracts the timestamps associated with each frame from a \code{mo
 }
 \examples{
 library(moveVis)
-library(move)
+library(move2)
+library(terra)
 
-data("move_data")
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
+
 # align movement
-m <- align_move(move_data, res = 4, unit = "mins")
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-\dontrun{
-frames <- frames_spatial(m, map_service = "osm", map_type = "watercolor")
-frames.ts <- get_frametimes(frames)
-print(frames.ts)
-}
+# create frames 
+frames <- frames_spatial(m, r, r_type = "gradient", fade_raster = TRUE) 
+
+# get frametimes
+get_frametimes(frames)
 
 }
 \seealso{

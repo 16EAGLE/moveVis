@@ -43,7 +43,7 @@ navbar:
 
   right:
     - icon: fa-brands fa-bluesky fa-lg
-      href: https://www.twitter.com/schwalbwillmann
+      href: https://bsky.app/profile/schwalb-willmann.de
     - icon: fa-github fa-lg
       href: https://www.github.com/16eagle
     - icon: fa-globe fa-lg

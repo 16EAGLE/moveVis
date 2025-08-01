@@ -9,17 +9,17 @@
 #' Invisible, used for its side effect.
 #' 
 #' @rdname print
+#' 
 #' @export
 print.moveVis <- function(x, ...) {
-  crs_params <- sf:::crs_parameters(st_crs(x$m))
   if(inherits(x, "frames_spatial")){
+    #crs_params <- sf:::crs_parameters(st_crs(x$m))
+    
     cat(paste0("moveVis frames (spatial)"))
     .stats(n.frames = length(unique(x$m$frame)), lead_text = ", ", return_char = F)
     cat(paste0("Temporal extent:  ", paste0(min(x$m$time), " to ", max(x$m$time), "\n")))
     cat(paste0("Spatial extent:   ", paste0(mapply(x = names(x$aesthetics$gg.ext), y = x$aesthetics$gg.ext, function(x, y) paste0(x, ": ", round(y, digits = 5)), USE.NAMES = F), collapse = "; "), "\n"))
-    if(crs_params$IsGeographic) cat(paste0("CRS (geodetic):   ", crs_params$Name, "\n")) else{
-      cat(paste0("CRS (projected):  ", crs_params$Name, "\n"))
-    }
+    .cat_crs_params(.crs_params(x$m))
     cat(paste0("Basemap:          ", if(x$aesthetics$map_service != "custom") paste0("'", x$aesthetics$map_type, "' from '", x$aesthetics$map_service, "'") else paste0("SpatRaster*: ", x$aesthetics$n_r, " user-supplied raster(s)", if(x$aesthetics$fade_raster) ", interpolated" else ", not interpolated"), "\n"))
     cat(paste0("Names:            '", paste0(unique(x$m$name), collapse = "', '"), "'\n"))
   }

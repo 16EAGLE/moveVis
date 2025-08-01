@@ -25,6 +25,8 @@
 #' library(moveVis)
 #' library(move2)
 #' library(lubridate)
+#' 
+#' # example data
 #' data("move_data")
 #' 
 #' # the tracks in move_data have irregular timestamps and sampling rates.
@@ -50,7 +52,7 @@
 #' # you can set the start/end times if needed:
 #' # first, let us retrieve the start and end time per track:
 #' start_end_time <- lapply(split(move_data, mt_track_id(move_data)), function(m){
-#'    range(mt_time(m), na.rm = T)
+#'    range(mt_time(m), na.rm = TRUE)
 #' })
 #' start_end_time
 #' # I want the start time to be at 00 minutes and 00 seconds for the first track:
@@ -64,6 +66,7 @@
 #' 
 #' @importFrom move2 mt_track_id mt_track_id<- mt_track_id mt_n_tracks mt_time_lags mt_time mt_track_id_column mt_time_column mt_as_move2 mt_set_track_data mt_track_data
 #' @importFrom sf st_coordinates st_sf st_as_sf st_sfc st_linestring st_crs st_geometry st_line_interpolate st_is_longlat sf_use_s2
+#' @importFrom s2 s2_interpolate_normalized
 #' @importFrom units as_units ud_are_convertible deparse_unit set_units
 #' @importFrom stats median
 #' 
@@ -140,7 +143,7 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose =
   nd <- lapply(1:length(m_tracks), function(i) as.numeric(difftime(times_target[[i]], min(mt_time(m_tracks[[i]])), units = "secs")) / as.numeric(diff(range(mt_time(m_tracks[[i]])), units = "s")))
   
   if(all(st_is_longlat(m), sf_use_s2())){
-    m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_as_sf(s2::s2_interpolate_normalized(st_geometry(.m), .nd)), SIMPLIFY = T)
+    m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_as_sf(s2_interpolate_normalized(st_geometry(.m), .nd)), SIMPLIFY = T)
   } else{
     m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_line_interpolate(st_geometry(.m), .nd), SIMPLIFY = T)
   }

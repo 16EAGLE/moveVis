@@ -75,49 +75,45 @@ Colours could also be arranged to change through time or by behavioral segments,
 }
 \examples{
 library(moveVis)
-library(move)
-library(ggplot2)
+library(move2)
+library(terra)
 
-data("move_data", "basemap_data")
+data("move_data", package = "moveVis")
+r <- readRDS(example_data(file = "basemap_data.rds"))
+
 # align movement
-m <- align_move(move_data, res = 4, unit = "mins")
+m <- align_move(move_data, res = units::set_units(4, "min"))
 
-r_list <- basemap_data[[1]]
-r_times <- basemap_data[[2]]
-
-\dontrun{
-# use the same inputs to create a non-spatial graph, e.g. a flow graph:
-frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                          fade_raster = TRUE, graph_type = "flow")
+# create frames 
+frames <- frames_graph(
+  m, r, r_type = "gradient", fade_raster = TRUE, graph_type = "flow"
+)
 # take a look
-frames.gr[[100]]
+frames[[100]]
 
 # make a histogram graph:
-frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                          fade_raster = TRUE, graph_type = "hist")
-# change the value interval:
-frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                          fade_raster = TRUE, graph_type = "hist", val_by = 0.01)
-                          
-frames.gr[[100]]
-# manipulate the labels, since now they are very dense:
-# just replace the current scale
-frames.gr <- add_gg(frames.gr, expr(scale_x_continuous(breaks=seq(0,1,0.1),
-                                    labels=seq(0,1,0.1), expand = c(0,0))))
-frames.gr[[100]]
+frames <- frames_graph(
+  m, r, r_type = "gradient", fade_raster = TRUE, graph_type = "hist"
+)
+frames[[100]]
 
-# the same can be done for discrete data, histogram will then be shown as bin plots
+# change the value interval:
+frames <- frames_graph(
+  m, r, r_type = "gradient", fade_raster = TRUE, graph_type = "hist", 
+  val_by = 0.01
+)
+frames[[100]]
+                          
+# manipulate the labels, as they are quite dense by replacing the scale
+frames <- add_gg(frames, rlang::expr(
+  scale_x_continuous(breaks=seq(0,1,0.1), labels=seq(0,1,0.1), expand = c(0,0)))
+)
+frames[[100]]
 
 # to make your own graphs, use frames_graph to return data instead of frames
-frames.gr <- frames_graph(m, r_list = r_list, r_times = r_times, r_type = "gradient",
-                        fade_raster = TRUE, return_data = TRUE)
-
-# then simply animate the frames using animate_frames 
-# see all add_ functions on how to customize your frames created with frames_spatial
-# or frames_graph
-
-# see ?animate_frames on how to animate frames
-}
+graph_data <- frames_graph(
+  m, r, r_type = "gradient", fade_raster = TRUE, return_data = TRUE
+)
 }
 \seealso{
 \code{\link{frames_spatial}} \code{\link{join_frames}} \code{\link{animate_frames}}

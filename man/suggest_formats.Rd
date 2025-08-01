@@ -18,6 +18,8 @@ A subset of \code{suggested}, containing only those file formats which are known
 This function returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
 }
 \examples{
+library(moveVis)
+
 # find out which formats are available
 suggest_formats()
 
