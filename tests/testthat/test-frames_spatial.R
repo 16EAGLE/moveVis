@@ -10,16 +10,16 @@ test_that("frames_spatial (default maps)", {
   expect_is(frames[[10]], "ggplot")
   
   # false calls
-  expect_error(frames_spatial(m.aligned, map_service = "abc", verbose = F)) # false map service
-  expect_error(frames_spatial(m.aligned, map_service = "osm", map_type = "light", verbose = F)) # false map service
+  expect_error(frames_spatial(m.aligned, map_service = "abc", map_res = 0.1, verbose = F)) # false map service
+  expect_error(frames_spatial(m.aligned, map_service = "osm", map_type = "light", map_res = 0.1, verbose = F)) # false map service
   expect_error(frames_spatial(m.aligned, map_service = "osm", map_type = "streets", map_res = "abc", verbose = F)) # false map res
   expect_error(frames_spatial(m.aligned, map_service = "osm", map_type = "streets", map_res = -1, verbose = F)) # false map res
-  expect_error(frames_spatial(m.aligned, map_service = "mapbox", map_type = "satellite", verbose = F)) # missing token
-  expect_error(frames_spatial(m.aligned, map_dir = "abc/abc/abc", verbose = F)) # false map_dir
-  expect_error(frames_spatial(m.aligned, path_arrow = "abc", verbose = F)) # false path arrow
-  expect_error(frames_spatial(m.aligned, path_colours = "abc", verbose = F)) # false path_colours
-  expect_error(frames_spatial(m.aligned, path_legend = "abc", verbose = F)) # false path_legend
-  expect_error(frames_spatial(m.aligned, equidistant = "abc", verbose = F)) # false path_legend
+  expect_error(frames_spatial(m.aligned, map_service = "mapbox", map_type = "satellite", map_res = 0.1, verbose = F)) # missing token
+  expect_error(frames_spatial(m.aligned, map_dir = "abc/abc/abc", map_res = 0.1, verbose = F)) # false map_dir
+  expect_error(frames_spatial(m.aligned, path_arrow = "abc", map_res = 0.1, verbose = F)) # false path arrow
+  expect_error(frames_spatial(m.aligned, path_colours = "abc", map_res = 0.1, verbose = F)) # false path_colours
+  expect_error(frames_spatial(m.aligned, path_legend = "abc", map_res = 0.1, verbose = F)) # false path_legend
+  expect_error(frames_spatial(m.aligned, equidistant = "abc", map_res = 0.1, verbose = F)) # false path_legend
 })
 
 test_that("frames_spatial (raster, gradient)", {
@@ -29,10 +29,8 @@ test_that("frames_spatial (raster, gradient)", {
   frames <- expect_length(expect_is(frames_spatial(split(m.aligned, mt_track_id(m.aligned))[[1]], r = r_grad, r_type = "gradient", verbose = F), "moveVis"), 143)
   expect_is(frames[[1]], "ggplot") # single move
   
-  ### LOOK INTO THIS
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r = r_grad[[5]],  r_type = "gradient", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # single raster
-  
   
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_type = "gradient", path_arrow = grid::arrow(), verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # path arrow
@@ -40,7 +38,6 @@ test_that("frames_spatial (raster, gradient)", {
   expect_is(frames[[1]], "ggplot") # trace_ arguments
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r_grad, r_type = "gradient", tail_length = 25, tail_size = 3, tail_colour = "black", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot") # tail_ arguments
-  
   
   # false calls
   expect_error(frames_spatial(m, r_grad, r_type = "gradient", verbose = F)) # diveriging temporal resolution (m not aligend)
@@ -74,9 +71,8 @@ test_that("frames_spatial (raster, discrete)", {
   frames <-  expect_length(expect_is(frames_spatial(m.aligned, r_disc, r_type = "discrete", verbose = F), "moveVis"), 188)
   expect_is(frames[[1]], "ggplot")
 })
-#}
-## check special arguments, including ext and path_length
 
+# check special arguments, including ext and path_length
 test_that("frames_spatial (different extent/proj settings)", {
   ext <- sf::st_bbox(move_data)
   ext[["xmin"]] <- ext[["xmin"]] - (ext[["xmin"]]*0.03)
@@ -95,7 +91,7 @@ test_that("frames_spatial (different extent/proj settings)", {
   expect_is(frames[[1]], "ggplot")
 
   # other projections
-  frames <- lapply(c(st_crs(32632), st_crs(3857)), function(p){
+  frames <- lapply(list(st_crs(32632), st_crs(3857)), function(p){
     
     # transform using sf
     m_tf <- st_transform(m.aligned, crs = p)
@@ -117,7 +113,7 @@ test_that("frames_spatial (cross_dateline)", {
   
   frames <- expect_warning(expect_length(expect_is(frames_spatial(m = m.shifted, map_service = "carto", map_type = "light",
                                                    verbose = F, cross_dateline = T), "moveVis"), 188))
-  frames <- expect_warning(frames_spatial(m= m.shifted.repro, verbose = F, cross_dateline = T))
+  frames <- expect_length(expect_is(frames_spatial(m = m.shifted, map_service = "carto", map_type = "light",
+                                                                  verbose = F, crs = st_crs(4326), cross_dateline = T), "moveVis"), 188)
   frames <- expect_error(frames_spatial(m = m.shifted, r_grad, r_type = "gradient", verbose = F, cross_dateline = T))
-  
 })

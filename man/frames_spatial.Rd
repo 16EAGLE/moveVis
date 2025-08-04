@@ -19,6 +19,7 @@ frames_spatial(
   equidistant = NULL,
   ext = NULL,
   crs = if (is.null(r)) st_crs(3857) else st_crs(terra::crs(r)),
+  crs_graticule = st_crs(4326),
   path_size = 3,
   path_end = "round",
   path_join = "round",
@@ -69,7 +70,9 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{ext}{\code{sf bbox} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, the extent is computed from \code{m}, optionally with a margin set by \code{margin_factor}.}
 
-\item{crs}{\code{sf crs} object. This is the projection that is used for visualzing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.}
+\item{crs}{\code{sf crs} object. This is the CRS that is used for visualizing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.}
+
+\item{crs_graticule}{\code{sf crs} object. This is the CRS that should be used to generate graticules. By default, geographic coordinates (Lon/Lat WGS84, EPSG:4326) is used.}
 
 \item{path_size}{numeric, size of each path.}
 
@@ -109,7 +112,8 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 \itemize{
     \item \code{alpha}, numeric, background transparency (0-1).
     \item \code{maxpixels}, maximum number of pixels to be plotted per frame. Defaults to 500000. Reduce to decrease detail and increase rendering speeds.
-    \item \code{macColorValue}, numeric, only relevant for RGB backgrounds (i.e. if \code{r_type = "RGB"} or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.
+    \item \code{maxColorValue}, numeric, only relevant for RGB backgrounds (i.e. if \code{r_type = "RGB"} or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.
+    \item \code{interpolate}, logical, whether to spatially smooth the map raster (default is \code{FALSE}).
 }}
 
 \item{verbose}{logical, if \code{TRUE}, messages and progress information are displayed on the console (default).}

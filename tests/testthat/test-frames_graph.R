@@ -27,8 +27,7 @@ test_that("frames_graph (gradient, flow)", {
     return(x)
   }))
   
-  ## LOOK INTO THIS ONE
-  expect_error(frames_graph(m.aligned, r_grad_false_proj, graph_type = "flow", verbose = F)) # false proj
+  expect_error(frames_graph(m.aligned, r_grad_false_proj, graph_type = "flow", verbose = F)) # false proj leads to non-overlapping extents after auto-reproject
   
   x <- terra::sds(list(r_grad[[1]], c(r_grad[[2]],  r_grad[[2]])))
   expect_error(frames_graph(m.aligned, x, graph_type = "flow", verbose = F)) # differing numbers of layers

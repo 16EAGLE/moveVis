@@ -1,3 +1,7 @@
+library(move2)
+library(sf)
+library(terra)
+
 ## env vars
 n_cores <- as.numeric(Sys.getenv("moveVis_n_cores"))
 if(!is.na(n_cores)) if(n_cores > 1) use_multicore(n_cores)
@@ -48,8 +52,25 @@ m.shifted.repro <- sf::st_transform(m.shifted, sf::st_crs(3995))
 
 ## base map
 r_grad <- basemap_data
-r_disc <- terra::sds(lapply(r_grad, function(x){
-  terra::values(x) <- round(terra::values(x)*10)
-  return(x)
-}))
+#r_disc <- terra::as.list(r_grad) # not working
+#r_disc <- lapply(1:length(r_grad), function(i) `[[`(r_grad, i)) # not working
+# r_grad_list <- list()
+# for(i in 1:length(r_grad)){
+#   r_grad_list[[i]] <- `[[`(r_grad, i)
+# } # not working
+# r_grad <- methods::as(r_grad, "list") # not working
+# r_grad <- selectMethod("as.list", class(r_grad))(r_grad)
+
+r_disc <- terra::as.list(r_grad) # not working
+for(i in 1:length(r_disc)){
+  terra::values(r_disc[[i]]) <- round(terra::values(r_disc[[i]])*10)
+}
+r_disc <- terra::sds(r_disc)
+# r_disc <- terra::sds(lapply(r_grad, function(x){
+#   terra::values(x) <- round(terra::values(x)*10)
+#   return(x)
+# }))
 r_times <- terra::time(basemap_data)
+
+
+library(moveVis)

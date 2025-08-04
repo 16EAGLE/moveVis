@@ -27,7 +27,8 @@
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
 #' @param equidistant logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.
 #' @param ext \code{sf bbox} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, the extent is computed from \code{m}, optionally with a margin set by \code{margin_factor}.
-#' @param crs \code{sf crs} object. This is the projection that is used for visualzing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.
+#' @param crs \code{sf crs} object. This is the CRS that is used for visualizing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.
+#' @param crs_graticule \code{sf crs} object. This is the CRS that should be used to generate graticules. By default, geographic coordinates (Lon/Lat WGS84, EPSG:4326) is used.
 #' @param map_service character, a map service, e.g. \code{"osm"}. Use \code{\link{get_maptypes}} for a list of available map services and types..
 #' @param map_type character, a map type, e.g. \code{"streets"}. Use \code{\link{get_maptypes}} for available map services and types.
 #' @param map_res numeric, resolution of base map in range from 0 to 1.
@@ -39,7 +40,8 @@
 #'    \itemize{
 #'        \item \code{alpha}, numeric, background transparency (0-1).
 #'        \item \code{maxpixels}, maximum number of pixels to be plotted per frame. Defaults to 500000. Reduce to decrease detail and increase rendering speeds.
-#'        \item \code{macColorValue}, numeric, only relevant for RGB backgrounds (i.e. if \code{r_type = "RGB"} or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.
+#'        \item \code{maxColorValue}, numeric, only relevant for RGB backgrounds (i.e. if \code{r_type = "RGB"} or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.
+#'        \item \code{interpolate}, logical, whether to spatially smooth the map raster (default is \code{FALSE}).
 #'    }
 #' @param verbose logical, if \code{TRUE}, messages and progress information are displayed on the console (default).
 #' 
@@ -183,14 +185,14 @@
 #' @seealso \code{\link{frames_graph}} \code{\link{join_frames}} \code{\link{animate_frames}}
 #' 
 #' @importFrom basemaps get_maptypes basemap_terra
-#' @importFrom sf st_crs st_transform st_coordinates st_geometry<- st_geometry st_as_sf st_bbox
+#' @importFrom sf st_crs st_transform st_coordinates st_geometry<- st_geometry st_as_sf st_bbox st_shift_longitude st_is_longlat
 #' @importFrom move2 mt_time mt_n_tracks mt_track_id
 #' @importFrom terra time time<- project sds
 #' @export
 
 frames_spatial <- function(
     m, r = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
-    margin_factor = 1.1, equidistant = NULL, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
+    margin_factor = 1.1, equidistant = NULL, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), crs_graticule = st_crs(4326), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
     path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
   
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -198,7 +200,6 @@ frames_spatial <- function(
   
   # check input arguments
   .check_move2(m)
-  if(st_crs(m) != crs) m <- st_transform(m, crs = crs)
   
   if(any(!is.null(r), !is.null(extras$r_list))){
     if(!is.null(extras$r_list)){
@@ -250,25 +251,33 @@ frames_spatial <- function(
   char.args <- c(path_end = path_end, path_join = path_join, path_legend_title = path_legend_title)
   catch <- sapply(1:length(char.args), function(i) if(!is.character(char.args[[i]])) out(paste0("Argument '", names(char.args)[[i]], "' must be of type 'numeric'."), type = 3))
   
+  #if(all(st_crs(m) != st_crs(4326), isTRUE(cross_dateline))) out("The CRS of 'm' needs to be lat/lon WGS84 (EPSG:4326) if argument 'cross_dateline' is set to TRUE.", type = 3)
+  if(all(isTRUE(cross_dateline), !is.null(r_list))) out("Argument 'cross_dateline = TRUE' only works with default base maps. Argument 'r' (and 'r_list', deprecated) cannot be used, if cross_dateline = TRUE.\nTip: Reproject 'm' and 'r' to a CRS that suits the dateline region instead of using Geographic Coordinates (EPSG 4326, Lat/Lon WGS84) and the 'cross_dateline' argument.", type = 3)
+  
+  ## preprocess movement data
+  if(isTRUE(cross_dateline)){
+    if(isFALSE(st_is_longlat(crs))){
+      out("Argument 'cross_dateline = TRUE' is being ignored, since argument 'crs' is using projected coordinates, not geographic coordinates. Use geographic coordinates to make use of 'cross_dateline', e.g. by setting argument 'crs' to st_crs(4326).", type = 2)
+      cross_dateline <- FALSE
+    } else{
+      m <- st_transform(m, crs)
+      m <- st_shift_longitude(m)
+    }
+  } else{
+    if(st_crs(m) != crs){
+      m <- st_transform(m, crs = crs)
+    }
+  }
+  
   if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
   if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
-  if(all(isTRUE(cross_dateline), !is.null(r_list))) out("Argument 'cross_dateline' only works with default base maps. Arguments 'r_list' and 'r_times' cannot be used, if cross_dateline = TRUE.\nTip: Reproject 'm' to another CRS that better suits the region if you want to use 'r_list' with tracks crossing the dateline.", type = 3)
   
   # check m time conformities
   out("Processing input data...")
   .time_conform(m)
-  
-  ## preprocess movement data
-  m.crs <- st_crs(m)
-  if(isTRUE(cross_dateline)){
-    equidistant <- FALSE
-    if(m.crs != st_crs(4326)) out("Since arugment 'cross_dateline' is TRUE, 'm' will be transformed to Geographic Coordinates (EPSG 4326, Lat/Lon WGS84)", type = 2)
-    m.crs <- st_crs(4326) 
-  }
-  if(isTRUE(cross_dateline)) m <- st_transform(m, st_crs(4326))
   
   # path colours
   # if(any(is.na(path_colours))){
@@ -283,19 +292,7 @@ frames_spatial <- function(
   .stats(n.frames = max(m$frame))
   .cat_crs_params(.crs_params(m))
   
-  gg.ext <- .ext(m, m.crs, ext, margin_factor, equidistant, cross_dateline) # calculate extent
-  
-  # shift coordinates crossing dateline
-  if(isTRUE(cross_dateline)){
-    coords <- st_coordinates(m)
-    rg <- c("pos" = diff(range(coords[,1][coords[,1] >= 0])), "neg" = diff(range(coords[,1][coords[,1] < 0])))
-    if(which.max(rg) == 1){
-      coords[,1][coords[,1] < 0] <- 180+coords[,1][coords[,1] < 0]+180
-    } else{
-      coords[,1][coords[,1] >= 0] <- -180+coords[,1][coords[,1] >= 0]-180
-    }
-    st_geometry(m) <- st_geometry(st_as_sf(as.data.frame(coords), coords = c("X", "Y"), crs = st_crs(m)))
-  }
+  gg.ext <- .ext(m = m, crs = crs, ext = ext, margin_factor = margin_factor, equidistant = equidistant) # calculate extent
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
@@ -321,33 +318,26 @@ frames_spatial <- function(
     map_type <- "custom"
   }
   
-  # calculate frames extents and coord labes
-  if(isTRUE(cross_dateline)){
-    gg.ext <- st_bbox(ext(r_list[[1]]), crs = m.crs)
-    
-    # use coord_equal for dateline crossingngs in EPSG:4326 only
-    m$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                         expand = F, clip = "off"))
-    m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels))
-    m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
-  } else{
-    
-    # use coord_sf for all other cases
-    m$coord <- list(ggplot2::coord_sf(xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
-                                         expand = F, crs = st_crs(m), datum = st_crs(m), clip = "off"))
-    m$scaley <- m$scalex <- NULL
-  }
+  # use coord_sf for all other cases
+  m$coord <- list(ggplot2::coord_sf(
+    xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
+    expand = F, crs = crs, datum = crs_graticule, clip = "on")
+  )
+  m$scaley <- m$scalex <- NULL # relict from when moveVis handled cross_dateline by itself insteaf of relying
+  # on sf::st_shift_longitude() for it. 
+  # m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels)) # only works with caartesian coord on the render end
+  # m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
   
   out("Assigning raster maps to frames...")
   n_r <- length(r_list)
   r_list <- .rFrames(r_list, r_times, m, gg.ext, fade_raster, crop_raster = crop_raster)
   r <- sds(r_list)
   
-  if(map_type == "custom"){
-    time(r) <- mapply(x = as.list(sort(unique(mt_time(m)))), y = lapply(r_list, nlyr), function(x, y) rep(x, y), SIMPLIFY = F)
-  } else{
-    time(r) <- list(rep(floor(length(sort(unique(mt_time(m))))/2), nlyr(r_list[[1]])))
-  }
+  # if(map_type == "custom"){
+  #   time(r) <- mapply(x = as.list(sort(unique(mt_time(m)))), y = lapply(r_list, nlyr), function(x, y) rep(x, y), SIMPLIFY = F)
+  # } else{
+  #   time(r) <- list(rep(floor(length(sort(unique(mt_time(m))))/2), nlyr(r_list[[1]])))
+  # }
   
   # create frames object
   frames <- list(
@@ -379,7 +369,8 @@ frames_spatial <- function(
       n_r = n_r),
       maxpixels = if(!is.null(extras$maxpixels)) extras$maxpixels else 500000,
       alpha = if(!is.null(extras$alpha)) extras$alpha else 1,
-      maxColorValue = if(!is.null(extras$maxColorValue)) extras$maxColorValue else NA),
+      maxColorValue = if(!is.null(extras$maxColorValue)) extras$maxColorValue else NA,
+      interpolate = if(!is.null(extras$interpolate)) extras$interpolate else FALSE),
     additions = NULL
   )
   attr(frames, "class") <- c("moveVis", "frames_spatial")

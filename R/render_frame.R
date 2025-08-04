@@ -60,6 +60,7 @@ render_frame <- function(frames, i = length(frames)){
           maxpixels = frames$aesthetics$maxpixels,
           alpha = frames$aesthetics$alpha,
           maxColorValue = frames$aesthetics$maxColorValue,
+          interpolate = frames$aesthetics$interpolate,
           add_coord = FALSE),
         m_names = frames$m$name,
         m_colour = frames$m$colour,
