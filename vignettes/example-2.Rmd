@@ -3,7 +3,9 @@ title: "Customizing frames"
 output: html_document
 ---
 
-`moveVis` is entierly based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
+*Note: This vignette has not yet been updated to the most recent `moveVis` version. Displayed code will likely not work as it relies on deprecated dependencies such as `move` (replaced by `move2`) or `raster` (replaced by `terra`). For details, see the help pages of `moveVis` and the README as those resources have already been updated.*
+
+`moveVis` is entirely based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
 
 ```R
 library(moveVis)

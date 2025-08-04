@@ -3,6 +3,8 @@ title: "View movement tracks"
 output: html_document
 ---
 
+*Note: This vignette has not yet been updated to the most recent `moveVis` version. Displayed code will likely not work as it relies on deprecated dependencies such as `move` (replaced by `move2`) or `raster` (replaced by `terra`). For details, see the help pages of `moveVis` and the README as those resources have already been updated.*
+
 With the simple `view_spatial()` wrapper, movement tracks can be displayed on an interactive map using the very handy `mapview` or `leaflet` packages. This may be helpful if you want to explore data before animating them or check the effect of applying correction methods as done by `align_move()`.
 
 ```R

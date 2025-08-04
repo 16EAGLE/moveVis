@@ -3,6 +3,8 @@ title: "Using a mapbox satellite base map"
 output: html_document
 ---
 
+*Note: This vignette has not yet been updated to the most recent `moveVis` version. Displayed code will likely not work as it relies on deprecated dependencies such as `move` (replaced by `move2`) or `raster` (replaced by `terra`). For details, see the help pages of `moveVis` and the README as those resources have already been updated.*
+
 Thanks to the <a href = "http://github.com/MilesMcBain/slippymath">`slippymath`</a> package used by `frames_spatial`, you can use `mapbox` base maps (e.g. satellite):
 
 ```R
