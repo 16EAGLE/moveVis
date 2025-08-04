@@ -41,23 +41,35 @@
 #' @usage NULL
 "m"
 
-#' Example NDVI data
+#' Example raster data
 #'
-#' This dataset is a SpatRasterDataset, representing simulated NDVI images covering the Lake of Constance area, 
-#' as well as invented dates and times that simulate acquisition times.
+#' This function provides two example raster datasets as \code{SpatRasterDataset}, covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.
 #'
 #' @param file character, file name of the example dataset.
-#' @details This object is used by some \code{moveVis} examples and unit tests. Use \code{readRDS(example_data())} to retrieve the SpatRasterDataset. 
+#' @details 
+#' The returned \code{SpatRasterDataset} objects are used as example data by some \code{moveVis} code examples and unit tests.
 #' 
-#' Times can be retrieved using \code{terra::time(readRDS(example_data()))}
+#' The two available datasets are: 
+#' 
+#' \itemize{
+#'  \item \code{raster_NDVI.rds} representing simulated NDVI images (continuous values)
+#'  \item \code{raster_classification.rds}, representing an NDVI-derived classification (discrete values). NDVI values from -1 to 0 translate into class 1, from 0 to 0.2 into class 2, from 0.2 to 0.4 into class 3, from 0.4 to 0.8 into class 4 and from 0.8 to 1 into class 5.
+#' }
+#'
+#' Acquisition times can be retrieved using \code{terra::time(readRDS(example_data()))}
 #' 
 #' @note All data contained should only be used for testing \code{moveVis} and are not suitable to be used for analysis or interpretation.
 #'
-#' @format \code{SpatRasterDataset}, consisting of NDVI layers and acquisition times as \code{POSIXct} objects.
 #' @source Simulated based on MODIS (MOD13Q1 NDVI)
-#' @name basemap_data
+#' @return A \code{SpatRasterDataset} dataset of either continuous or discrete values, including acquisition times as \code{POSIXct} objects.
+#' @name raster_data
 #' @docType data
 #' @export
-example_data <- function(file = "basemap_data.rds"){
-  if(file == "basemap_data.rds") system.file("extdata", file, package = "moveVis", mustWork = TRUE)
+example_data <- function(file = c("raster_NDVI.rds", "raster_classification.rds")){
+  if(length(file) > 1) file <- file[1]
+  if(file == "raster_NDVI.rds"){
+    system.file("extdata", file, package = "moveVis", mustWork = TRUE)
+  } else if(file == "raster_classification.rds"){
+    system.file("extdata", file, package = "moveVis", mustWork = TRUE)
+  }
 }

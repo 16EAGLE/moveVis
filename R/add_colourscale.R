@@ -23,7 +23,7 @@
 #' library(terra)
 #' 
 #' data("move_data", package = "moveVis")
-#' r <- readRDS(example_data(file = "basemap_data.rds"))
+#' r <- readRDS(example_data(file = "raster_NDVI.rds"))
 #' 
 #' # align movement
 #' m <- align_move(move_data, res = units::set_units(4, "min"))

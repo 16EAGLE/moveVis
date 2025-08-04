@@ -1,7 +1,3 @@
-library(move2)
-library(sf)
-library(terra)
-
 ## env vars
 n_cores <- as.numeric(Sys.getenv("moveVis_n_cores"))
 if(!is.na(n_cores)) if(n_cores > 1) use_multicore(n_cores)
@@ -27,7 +23,9 @@ if(test_dir != ""){
 cat("Test directory: ", test_dir, "\n")
 
 data("move_data", package = "moveVis", envir = environment())
-basemap_data <- readRDS(example_data())
+r_grad <- terra::unwrap(readRDS(example_data("raster_NDVI.rds")))
+r_disc <- terra::unwrap(readRDS(example_data("raster_classification.rds")))
+r_times <- terra::time(r_grad)
 
 ## movement
 m <- move_data
@@ -51,7 +49,6 @@ m.shifted <- mt_as_move2(df, coords = c("X", "Y"), time_column = "timestamp", tr
 m.shifted.repro <- sf::st_transform(m.shifted, sf::st_crs(3995))
 
 ## base map
-r_grad <- basemap_data
 #r_disc <- terra::as.list(r_grad) # not working
 #r_disc <- lapply(1:length(r_grad), function(i) `[[`(r_grad, i)) # not working
 # r_grad_list <- list()
@@ -60,17 +57,17 @@ r_grad <- basemap_data
 # } # not working
 # r_grad <- methods::as(r_grad, "list") # not working
 # r_grad <- selectMethod("as.list", class(r_grad))(r_grad)
-
-r_disc <- terra::as.list(r_grad) # not working
-for(i in 1:length(r_disc)){
-  terra::values(r_disc[[i]]) <- round(terra::values(r_disc[[i]])*10)
-}
-r_disc <- terra::sds(r_disc)
+# r_disc <- terra::as.list(r_grad) # not working
+# for(i in 1:length(r_disc)){
+#   r_disc[[i]] <- terra::classify(r_disc[[i]], rcl = matrix(c(
+#     -1, 0, 1,
+#     0, 0.2, 2,
+#     0.2, 0.4, 3,
+#     0.4, 0.8, 4,
+#     0.8, 1, 5), ncol = 3, byrow = TRUE), include.lowest = TRUE)
+# }
+# r_disc <- terra::sds(r_disc)
 # r_disc <- terra::sds(lapply(r_grad, function(x){
 #   terra::values(x) <- round(terra::values(x)*10)
 #   return(x)
 # }))
-r_times <- terra::time(basemap_data)
-
-
-library(moveVis)

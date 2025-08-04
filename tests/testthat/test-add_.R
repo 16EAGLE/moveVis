@@ -49,7 +49,7 @@ test_that("add_gg", {
     y = c(47.725, 47.728, 47.729, 47.728, 47.725, 47.723, 47.725)
   )
   data <- list(data) %>% 
-    st_polygon() %>% 
+    sf::st_polygon() %>% 
     st_geometry() %>% 
     st_as_sf(crs = st_crs(4326)) %>% 
     st_transform(crs = st_crs(3857))
@@ -68,7 +68,7 @@ test_that("add_gg", {
   })
   data <- lapply(data, function(x){
     list(x) %>% 
-      st_polygon() %>% 
+      sf::st_polygon() %>% 
       st_geometry() %>% 
       st_as_sf(crs = st_crs(4326)) %>% 
       st_transform( crs = st_crs(3857))

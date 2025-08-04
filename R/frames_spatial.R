@@ -144,7 +144,7 @@
 #' 
 #' }
 #' # create frames from custom (multi-temporal) basemaps
-#' r <- readRDS(example_data(file = "basemap_data.rds"))
+#' r <- readRDS(example_data(file = "raster_NDVI.rds"))
 #' 
 #' # timestamps of each raster are stored in the SpatRasterDataset:
 #' time(r)
