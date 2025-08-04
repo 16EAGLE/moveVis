@@ -62,6 +62,7 @@
 <span>  equidistant <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ext <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">3857</span><span class="op">)</span> <span class="kw">else</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  crs_graticule <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span>,</span>
 <span>  path_size <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  path_end <span class="op">=</span> <span class="st">"round"</span>,</span>
 <span>  path_join <span class="op">=</span> <span class="st">"round"</span>,</span>
@@ -143,7 +144,11 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
-<dd><p><code>sf crs</code> object. This is the projection that is used for visualzing both movement and map data. Defaults to <code>st_crs(3857)</code> (Web Mercator), unless <code>r</code> is defined. In that case, <code>st_crs(r)</code> is used.</p></dd>
+<dd><p><code>sf crs</code> object. This is the CRS that is used for visualizing both movement and map data. Defaults to <code>st_crs(3857)</code> (Web Mercator), unless <code>r</code> is defined. In that case, <code>st_crs(r)</code> is used.</p></dd>
+
+
+<dt id="arg-crs-graticule">crs_graticule<a class="anchor" aria-label="anchor" href="#arg-crs-graticule"></a></dt>
+<dd><p><code>sf crs</code> object. This is the CRS that should be used to generate graticules. By default, geographic coordinates (Lon/Lat WGS84, EPSG:4326) is used.</p></dd>
 
 
 <dt id="arg-path-size">path_size<a class="anchor" aria-label="anchor" href="#arg-path-size"></a></dt>
@@ -217,7 +222,8 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments customizing the frame background:</p><ul><li><p><code>alpha</code>, numeric, background transparency (0-1).</p></li>
 <li><p><code>maxpixels</code>, maximum number of pixels to be plotted per frame. Defaults to 500000. Reduce to decrease detail and increase rendering speeds.</p></li>
-<li><p><code>macColorValue</code>, numeric, only relevant for RGB backgrounds (i.e. if <code>r_type = "RGB"</code> or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.</p></li>
+<li><p><code>maxColorValue</code>, numeric, only relevant for RGB backgrounds (i.e. if <code>r_type = "RGB"</code> or if a default base map is used). Maximum colour value (e.g. 255). Defaults to maximum raster value.</p></li>
+<li><p><code>interpolate</code>, logical, whether to spatially smooth the map raster (default is <code>FALSE</code>).</p></li>
 </ul></dd>
 
 
