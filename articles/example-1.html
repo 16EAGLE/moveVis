@@ -77,140 +77,209 @@
 <code>moveVis</code> example movement data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move2/" class="external-link">move2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span><span class="op">)</span></span></code></pre></div>
-<p><code>move_data</code> is a <code>moveStack</code>, containing three
-individual tracks. <code>moveVis</code> works with <code>move</code>
-class objects. If your movement tracks are present as
-<code>data.frames</code>, see
-<a href="http://movevis.org/reference/df2move.html" class="external-link"><code>df2move()</code></a>
-and the example code there for conversion. Let’s have a look at both
-timestamps and sampling rates of <code>move_data</code>:</p>
+<p><code>move_data</code> is a <code>move2</code> data frame, containing
+three individual tracks <code>moveVis</code> works with
+<code>move2</code> class objects. If your movement data are represented
+by <code>data.frames</code>, see <code><a href="https://bartk.gitlab.io/move2/reference/mt_as_move2.html" class="external-link">?move2::mt_as_move2</a></code> on how
+to coerce your data into <code>move2</code> class objects. Let’s have a
+look at both timestamps and sampling rates of
+<code>move_data</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu">timestamps</span><span class="op">(</span><span class="va">move_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">timeLag</span><span class="op">(</span><span class="va">move_data</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span></code></pre></div>
-<p>We can conclude that each track has a sampling rate of roughly 4
-minutes, however sampling rates differ over time. Due to this, tracks do
-not share unique timestamps. For animation, unique frame times are
-needed, regardless if we want to animate a single track or multiple at
-once. Thus, we need to align <code>move_data</code> in order to * make
-all tracks share unique timestamps that can be assigned to frames * make
-all tracks share unique, steady sampling rates without gaps</p>
-<p>You can use
-<a href="http://movevis.org/reference/align_move.html" class="external-link"><code>align_move()</code></a>
-to align <code>move_data</code> to a sampling rate of 4 minutes:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_time.html" class="external-link">mt_time</a></span><span class="op">(</span><span class="va">move_data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_time.html" class="external-link">mt_time_lags</a></span><span class="op">(</span><span class="va">move_data</span>, unit <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span></code></pre></div>
+<p>You can see that each track has a sampling rate of roughly 4 minutes.
+However, sampling rates differ over time. Due to this, tracks do not
+share unique timestamps. For animation, fixed regular frame times are
+needed, regardless whether you want to animate a single track or
+multiple tracks at once. Thus, we need to align <code>move_data</code>
+in order to</p>
+<ul>
+<li>make all tracks share a unique time interval that can be matched by
+frame times</li>
+<li>make all tracks share a fixed sampling rate without gaps</li>
+</ul>
+<p>To achieve the above, we need to apply interpolation. There are many
+ways to spatio-temporally interpolate movement tracks. One basic
+approach to this is linear referencing, as implemented via
+<a href="http://movevis.org/reference/align_move.html" class="external-link"><code>align_move()</code></a>.
+You can use <code>align_move</code> to align movement tracks to a fixed
+uniform time scale of e.g. 4 minutes:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">move_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">move_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"min"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Instead, you could apply your own functions for aligning your data,
 e.g. using more advanced interpolation methods.</p>
-<p>Now, as the movement tracks are aligned, we can pair them with a base
-map to create frames that can be turned into an animation later on. You
-can use your own custom base map imagery or choose from default map
-types. Here is a GIF of some example base maps you can use out of the
-box thanks to the
-<a href="http://github.com/MilesMcBain/slippymath" class="external-link"><code>slippymath</code></a>
-package:</p>
+<p>Now, as movement tracks are aligned, we can pair them with a base map
+to create frames that can be turned into an animation later on. You can
+use your own base map imagery or choose from default map types provided
+by the
+<a href="https://jakob.schwalb-willmann.de/basemaps/" class="external-link"><code>basemaps</code></a>
+package. Here is a GIF of some example base maps you can use out of the
+box:</p>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/map_types.gif"></p>
-<p>You can display a list of all available maps:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># get a list of all available map_services and map_types</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">get_maptypes</span>()<span class="st">`</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="at">$osm</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="at"> [1] "streets"      "streets_de"   "streets_fr"   "humanitarian" "topographic"  "roads"       </span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="at"> [7] "hydda"        "hydda_base"   "hike"         "grayscale"    "no_labels"    "watercolor"  </span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="at">[13] "toner"        "toner_bg"     "toner_lite"   "terrain"      "terrain_bg"   "mtb"         </span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="at">$carto</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="at"> [1] "light"                "light_no_labels"      "light_only_labels"    "dark"                </span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="at"> [5] "dark_no_labels"       "dark_only_labels"     "voyager"              "voyager_no_labels"   </span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="at"> [9] "voyager_only_labels"  "voyager_labels_under"</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="at">$mapbox</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="at"> [1] "satellite"     "streets"       "streets_basic" "hybrid"        "light"        </span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="at"> [6] "dark"          "high_contrast" "outdoors"      "hike"          "wheatpaste"   </span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="at">[11] "pencil"        "comic"         "pirates"       "emerald"      </span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span></code></pre></div>
-<p>Currently, you can use more than 40 types of maps, provided by
-<code>OpenStreetMap</code>, <code>Carto</code> (both free without
-registration) and <code>Mapbox</code> (free, but registration required).
-Most maps display thematic or terrain data, while <code>Mapbox</code>
-also offers satellite imagery (see
-<a href="http://movevis.org/articles/example-3.html" class="external-link">Example 3: using a
-mapbox satellite base map</a> for details on how to register and use
-mapbox).</p>
-<p>In this example, we want to use the OpenStreetMap ‘watercolour’
-imagery with a transparency of 50% to start with something nice looking
-and colourful. To create a list of spatial frames from
-<code>move_data</code> using a map, we can use
-<code><a href="../reference/frames_spatial.html">frames_spatial()</a></code>:</p>
+<p>You can display a list of all available maps like this:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get a list of all available map_services and map_types</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/basemaps/man/get_maptypes.html" class="external-link">get_maptypes</a></span><span class="op">(</span>as_df <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;          map_service                              map_type</span></span>
+<span><span class="co">#&gt; 1                osm                               streets</span></span>
+<span><span class="co">#&gt; 2                osm                            streets_de</span></span>
+<span><span class="co">#&gt; 3                osm                           topographic</span></span>
+<span><span class="co">#&gt; 4         osm_stamen                                 toner</span></span>
+<span><span class="co">#&gt; 5         osm_stamen                              toner_bg</span></span>
+<span><span class="co">#&gt; 6         osm_stamen                               terrain</span></span>
+<span><span class="co">#&gt; 7         osm_stamen                            terrain_bg</span></span>
+<span><span class="co">#&gt; 8         osm_stamen                            watercolor</span></span>
+<span><span class="co">#&gt; 9         osm_stadia                        alidade_smooth</span></span>
+<span><span class="co">#&gt; 10        osm_stadia                   alidade_smooth_dark</span></span>
+<span><span class="co">#&gt; 11        osm_stadia                              outdoors</span></span>
+<span><span class="co">#&gt; 12        osm_stadia                            osm_bright</span></span>
+<span><span class="co">#&gt; 13 osm_thunderforest                                 cycle</span></span>
+<span><span class="co">#&gt; 14 osm_thunderforest                             transport</span></span>
+<span><span class="co">#&gt; 15 osm_thunderforest                             landscape</span></span>
+<span><span class="co">#&gt; 16 osm_thunderforest                              outdoors</span></span>
+<span><span class="co">#&gt; 17 osm_thunderforest                        transport_dark</span></span>
+<span><span class="co">#&gt; 18 osm_thunderforest                                spinal</span></span>
+<span><span class="co">#&gt; 19 osm_thunderforest                               pioneer</span></span>
+<span><span class="co">#&gt; 20 osm_thunderforest                          mobile_atlas</span></span>
+<span><span class="co">#&gt; 21 osm_thunderforest                         neighbourhood</span></span>
+<span><span class="co">#&gt; 22 osm_thunderforest                                 atlas</span></span>
+<span><span class="co">#&gt; 23             carto                                 light</span></span>
+<span><span class="co">#&gt; 24             carto                       light_no_labels</span></span>
+<span><span class="co">#&gt; 25             carto                     light_only_labels</span></span>
+<span><span class="co">#&gt; 26             carto                                  dark</span></span>
+<span><span class="co">#&gt; 27             carto                        dark_no_labels</span></span>
+<span><span class="co">#&gt; 28             carto                      dark_only_labels</span></span>
+<span><span class="co">#&gt; 29             carto                               voyager</span></span>
+<span><span class="co">#&gt; 30             carto                     voyager_no_labels</span></span>
+<span><span class="co">#&gt; 31             carto                   voyager_only_labels</span></span>
+<span><span class="co">#&gt; 32             carto                  voyager_labels_under</span></span>
+<span><span class="co">#&gt; 33            mapbox                               streets</span></span>
+<span><span class="co">#&gt; 34            mapbox                              outdoors</span></span>
+<span><span class="co">#&gt; 35            mapbox                                 light</span></span>
+<span><span class="co">#&gt; 36            mapbox                                  dark</span></span>
+<span><span class="co">#&gt; 37            mapbox                             satellite</span></span>
+<span><span class="co">#&gt; 38            mapbox                                hybrid</span></span>
+<span><span class="co">#&gt; 39            mapbox                               terrain</span></span>
+<span><span class="co">#&gt; 40              esri                      natgeo_world_map</span></span>
+<span><span class="co">#&gt; 41              esri                         usa_topo_maps</span></span>
+<span><span class="co">#&gt; 42              esri                         world_imagery</span></span>
+<span><span class="co">#&gt; 43              esri                    world_physical_map</span></span>
+<span><span class="co">#&gt; 44              esri                   world_shaded_relief</span></span>
+<span><span class="co">#&gt; 45              esri                      world_street_map</span></span>
+<span><span class="co">#&gt; 46              esri                    world_terrain_base</span></span>
+<span><span class="co">#&gt; 47              esri                        world_topo_map</span></span>
+<span><span class="co">#&gt; 48              esri                  world_dark_gray_base</span></span>
+<span><span class="co">#&gt; 49              esri             world_dark_gray_reference</span></span>
+<span><span class="co">#&gt; 50              esri                 world_light_gray_base</span></span>
+<span><span class="co">#&gt; 51              esri            world_light_gray_reference</span></span>
+<span><span class="co">#&gt; 52              esri                  world_hillshade_dark</span></span>
+<span><span class="co">#&gt; 53              esri                       world_hillshade</span></span>
+<span><span class="co">#&gt; 54              esri                      world_ocean_base</span></span>
+<span><span class="co">#&gt; 55              esri                 world_ocean_reference</span></span>
+<span><span class="co">#&gt; 56              esri                     antarctic_imagery</span></span>
+<span><span class="co">#&gt; 57              esri                        arctic_imagery</span></span>
+<span><span class="co">#&gt; 58              esri                     arctic_ocean_base</span></span>
+<span><span class="co">#&gt; 59              esri                arctic_ocean_reference</span></span>
+<span><span class="co">#&gt; 60              esri world_boundaries_and_places_alternate</span></span>
+<span><span class="co">#&gt; 61              esri           world_boundaries_and_places</span></span>
+<span><span class="co">#&gt; 62              esri               world_reference_overlay</span></span>
+<span><span class="co">#&gt; 63              esri                  world_transportation</span></span>
+<span><span class="co">#&gt; 64              esri                delorme_world_base_map</span></span>
+<span><span class="co">#&gt; 65              esri               world_navigation_charts</span></span>
+<span><span class="co">#&gt; 66          maptiler                             aquarelle</span></span>
+<span><span class="co">#&gt; 67          maptiler                        aquarelle_dark</span></span>
+<span><span class="co">#&gt; 68          maptiler                       aquarelle_vivid</span></span>
+<span><span class="co">#&gt; 69          maptiler                              backdrop</span></span>
+<span><span class="co">#&gt; 70          maptiler                                 basic</span></span>
+<span><span class="co">#&gt; 71          maptiler                                bright</span></span>
+<span><span class="co">#&gt; 72          maptiler                               dataviz</span></span>
+<span><span class="co">#&gt; 73          maptiler                             landscape</span></span>
+<span><span class="co">#&gt; 74          maptiler                                 ocean</span></span>
+<span><span class="co">#&gt; 75          maptiler                               outdoor</span></span>
+<span><span class="co">#&gt; 76          maptiler                             satellite</span></span>
+<span><span class="co">#&gt; 77          maptiler                               streets</span></span>
+<span><span class="co">#&gt; 78          maptiler                                 toner</span></span>
+<span><span class="co">#&gt; 79          maptiler                                  topo</span></span>
+<span><span class="co">#&gt; 80          maptiler                                winter</span></span></code></pre></div>
+<p>Currently, you can use more than 75 types of maps, e.g. provided by
+<code>OpenStreetMap</code>, <code>Carto</code> or <code>Mapbox</code>.
+For some map services, you need a (free) map token for which you need an
+account at the respective service (see
+<a href="https://jakob.schwalb-willmann.de/basemaps/index.html#supported-services-and-maps" class="external-link">supported
+maps&lt;&gt; for details).</a></p>
+<p>In this example, we want to use the OpenStreetMap ‘topographic’
+imagery with a transparency of 50% to standard with a fairly standard
+type of map. To create a spatial frames from <code>move_data</code>
+using a base map, we can use <code><a href="../reference/frames_spatial.html">frames_spatial()</a></code> like
+this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">move_data</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p>Instead of using <code>path_colours</code>, you can add a
 <code>colour</code> column to your <code>move</code> or
 <code>moveStack</code> object. This allows you to colour your movement
 tracks as you want, e.g. not only by individual track, but by behavioral
 segment, time, age, speed or something different (see
-<a href="http://movevis.org/reference/frames_spatial.html" class="external-link"><code>?frames_spatial</code></a>
+<a href="https://movevis.org/reference/frames_spatial.html"><code>?frames_spatial</code></a>
 for details).</p>
-<p>Have a look at the newly created <code>frames</code> list object and
-display a randomly selected frame to get a first impression, how your
-animation will look like:</p>
+<p>Have a look at the newly created frames object. You can retrieve some
+information about the frames that you have just created and plot
+individual frames to get first impressions on how your animation will
+look like:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">frames</span><span class="op">)</span> <span class="co"># number of frames</span></span>
+<code class="sourceCode R"><span><span class="va">frames</span></span>
+<span><span class="co">#&gt; moveVis frames (spatial), ≈ 7.52s at 25 fps using 188 frames</span></span>
+<span><span class="co">#&gt; Temporal extent:  2018-05-15 07:03:59.636288 to 2018-05-15 19:31:59.636288</span></span>
+<span><span class="co">#&gt; Spatial extent:   xmin: 990463.40648; ymin: 6060710.02464; xmax: 1001881.32133; ymax: 6069317.35905</span></span>
+<span><span class="co">#&gt; CRS (projected):  WGS 84 / Pseudo-Mercator</span></span>
+<span><span class="co">#&gt; Basemap:          'topographic' from 'osm'</span></span>
+<span><span class="co">#&gt; Names:            'T932u', 'T342g', 'T246a'</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">frames</span><span class="op">)</span> <span class="co"># number of frames</span></span>
+<span><span class="co">#&gt; [1] 188</span></span>
 <span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># display one of the frames</span></span></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_01.png"></p>
-<p>You can pass any list of frames like the one we just created to
-<code><a href="../reference/animate_frames.html">animate_frames()</a></code>. This function will turn your frames into
-an animation, written as a GIF image or a video file. For now, we do not
-want to add any customization to <code>frames</code> and just create a
-<code>GIF</code> from it. If you are not sure, which output formats can
-be used, run <code><a href="../reference/suggest_formats.html">suggest_formats()</a></code> that returns you a vector of
-file suffixes that can be created on your system. For making a
-<code>GIF</code> from <code>frames</code>, just run:</p>
+<p>You can pass any moveVis frames object like the one we just created
+to <code><a href="../reference/animate_frames.html">animate_frames()</a></code>. This function will turn your frames
+into an animation, written as a GIF image or a video file. For now, we
+do not want to <a href="https://movevis.org/articles/example-2.html">add
+any customization to <code>frames</code>&lt;&gt; and just create a
+<code>GIF</code> from it right away. If you are not sure, which output
+formats can be used, run <code>suggest_formats()</code>. This function
+returns a vector of file suffixes that can be created on your operating
+system. For making a <code>GIF</code> from <code>frames</code>, just
+run:</a></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="st">"example_1.gif"</span><span class="op">)</span></span></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_opt.gif"></p>
-<p>We have just used an <code>OSM</code> base map that does not contain
-any map labels. How would the same frames look like with a standard
-<code>OSM</code> streets base map?</p>
+<p>We have just used a classic OpenStreetMap map as base map. You can
+try different map services and types (some of which are showcased as
+<a href="jakob.schwalb-willmann.de/basemaps/index.html#map-examples">visual
+examples in the <code>basemaps</code> documentation</a>):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">move_data</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"streets"</span>, map_res <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span>                         map_service <span class="op">=</span> <span class="st">"carto"</span>, map_type <span class="op">=</span> <span class="st">"light"</span>, map_res <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># display one of the frames</span></span></code></pre></div>
-<p align="center">
-<img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_02.png"></p>
-<p>You may recognize that the map seems to be distorted which becomes
-mainly visible when looking at the map labels. By default,
-<code>moveVis</code> calculates an equidistant map extent (squared),
-with y and x axis measuring equal surface distances. In addition,
-<code>moveVis</code> reprojects the default base maps to the projection
-of your movement data. The default base maps are originally projected as
-<code>WGS 84 / Pseudo Mercator</code> (<code>epsg:3857</code>), also
-referred to as <code>Web Mercator</code>, and thus are squeezed or
-stretched onto the projection grid of the movement data (in this case
-<code>WGS 84 / LatLon</code>).</p>
-<p>To represent the base map in its original projection, just reproject
-your movement data to the <code>WGS 84 / Pseudo Mercator</code>
-projection and disable the calculation of an equidistant extent:</p>
+<p>Like above, these frames can be put in motion using
+<code><a href="../reference/animate_frames.html">animate_frames()</a></code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">move_data</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://edzer.github.io/sp/reference/spTransform.html" class="external-link">spTransform</a></span><span class="op">(</span><span class="va">move_data</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="st">"+init=epsg:3857"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">move_data</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"streets"</span>, map_res <span class="op">=</span> <span class="fl">0.8</span>, equidistant <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="co"># display one of the frames</span></span></code></pre></div>
-<p align="center">
-<img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1_03.png"></p>
-<p>Finally, animate the newly created frames:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="st">"example_1b.gif"</span>, width <span class="op">=</span> <span class="fl">700</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/animate_frames.html">animate_frames</a></span><span class="op">(</span><span class="va">frames</span>, out_file <span class="op">=</span> <span class="st">"example_1b.gif"</span><span class="op">)</span></span></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1b.gif"></p>
+<p>That’s the basics of using <code>moveVis</code>! If you want to learn
+more, take a look at
+<a href="https://movevis.org/articles/example-2.html">how
+<code>moveVis</code> frames can be customized</a> – either using
+out-of-the-box functions for convenience, or by applying
+<code>ggplot2</code> code frame by frame.</p>
   </main>
 </div>
 
