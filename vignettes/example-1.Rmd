@@ -135,7 +135,7 @@ frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
                          map_service = "osm", map_type = "topographic", alpha = 0.5)
 ```
 
-Instead of using `path_colours`, you can add a `colour` column to your `move` or `moveStack` object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioral segment, time, age, speed or something different (see <a href = "https://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details).
+Instead of using `path_colours`, you can add a `colour` column to your `move2` object. This allows you to colour your movement tracks as you want, e.g. not only by individual track, but by behavioural segment, time, age, speed or something different (see <a href = "https://movevis.org/reference/frames_spatial.html">`?frames_spatial`</a> for details).
 
 Have a look at the newly created frames object. You can retrieve some information about the frames that you have just created and plot individual frames to get first impressions on how your animation will look like:
 
