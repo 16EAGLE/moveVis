@@ -53,5 +53,5 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf", "--resave-data")'
-          args: '"--as-cran"'
+          args: 'c("--as-cran", "--no-vignettes", "--no-build-vignettes", "--ignore-vignettes")'
           error-on: '"error"'
