@@ -28,7 +28,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      PKG_SYSREQS: false
 
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +40,10 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           
+      # - name: Install Ubuntu system dependencies
+      #   if: runner.os == 'Linux'
+      #   run: sudo apt-get -y install libproj-dev libudunits2-dev libgeos-dev libgdal-dev cargo libavformat-dev libavcodec-dev libavfilter-dev libavdevice-dev libmagick++-dev
+           
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
