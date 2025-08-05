@@ -32,23 +32,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up LaTeX (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
-
-      - name: Set up LaTeX (macOS)
-        if: matrix.config.os == 'macos-latest'
-        run: |
-          brew install --cask basictex
-          sudo tlmgr update --self
-          sudo tlmgr install latexmk
-
-      - name: Set up LaTeX (Windows)
-        if: matrix.config.os == 'windows-latest'
-        run: |
-          choco install miktex -y
+      # - name: Set up LaTeX (Ubuntu)
+      #   if: matrix.config.os == 'ubuntu-latest'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+      # 
+      # - name: Set up LaTeX (macOS)
+      #   if: matrix.config.os == 'macos-latest'
+      #   run: |
+      #     brew install --cask basictex
+      # 
+      # - name: Set up LaTeX (Windows)
+      #   if: matrix.config.os == 'windows-latest'
+      #   run: |
+      #     choco install miktex -y
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -67,5 +65,5 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf", "--resave-data")'
-          args: 'c("--as-cran", "--no-vignettes", "--no-build-vignettes", "--ignore-vignettes")'
+          args: 'c("--no-manual", "--as-cran", "--no-vignettes", "--no-build-vignettes", "--ignore-vignettes")'
           error-on: '"error"'
