@@ -83,11 +83,12 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span><span class="op">)</span></span></code></pre></div>
 <p><code>move_data</code> is a <code>move2</code> data frame, containing
-three individual tracks <code>moveVis</code> works with
+three individual tracks. <code>moveVis</code> works with such
 <code>move2</code> class objects. If your movement data are represented
-by <code>data.frames</code>, see <code><a href="https://bartk.gitlab.io/move2/reference/mt_as_move2.html" class="external-link">?move2::mt_as_move2</a></code> on how
-to coerce your data into <code>move2</code> class objects. Let’s have a
-look at both timestamps and sampling rates of
+by other classes, e.g. non-spatial <code>data.frames</code>, see
+<code><a href="https://bartk.gitlab.io/move2/reference/mt_as_move2.html" class="external-link">?move2::mt_as_move2</a></code> on how to coerce your data into
+<code>move2</code> class objects.</p>
+<p>Let’s have a look at both timestamps and sampling rates of
 <code>move_data</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://bartk.gitlab.io/move2/reference/mt_time.html" class="external-link">mt_time</a></span><span class="op">(</span><span class="va">move_data</span><span class="op">)</span><span class="op">)</span></span>
@@ -277,9 +278,9 @@ examples in the <code>basemaps</code> documentation</a>):</p>
 <p>That’s the basics of using <code>moveVis</code>! If you want to learn
 more, take a look at
 <a href="https://movevis.org/articles/example-2.html">how
-<code>moveVis</code> frames can be customized</a> – either using
-out-of-the-box functions for convenience, or by applying
-<code>ggplot2</code> code frame by frame.</p>
+<code>moveVis</code> frames can be customized</a> – either using the
+<code>moveVis</code> <code>add_</code> functions or by applying
+<code>ggplot2</code> code frame-by-frame.</p>
   </main>
 </div>
 
