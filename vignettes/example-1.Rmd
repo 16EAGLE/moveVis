@@ -14,7 +14,9 @@ library(ggplot2)
 data("move_data")
 ```
 
-`move_data` is a `move2` data frame, containing three individual tracks `moveVis` works with `move2` class objects. If your movement data are represented by `data.frames`, see `?move2::mt_as_move2` on how to coerce your data into `move2` class objects. Let's have a look at both timestamps and sampling rates of `move_data`:
+`move_data` is a `move2` data frame, containing three individual tracks. `moveVis` works with such `move2` class objects. If your movement data are represented by other classes, e.g. non-spatial `data.frames`, see `?move2::mt_as_move2` on how to coerce your data into `move2` class objects. 
+
+Let's have a look at both timestamps and sampling rates of `move_data`:
 
 ```R
 unique(mt_time(move_data))
@@ -179,4 +181,4 @@ animate_frames(frames, out_file = "example_1b.gif")
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example1b.gif"></p>
 
-That's the basics of using `moveVis`! If you want to learn more, take a look at <a href="https://movevis.org/articles/example-2.html">how `moveVis` frames can be customized</a> – either using out-of-the-box functions for convenience, or by applying `ggplot2` code frame by frame.
+That's the basics of using `moveVis`! If you want to learn more, take a look at <a href="https://movevis.org/articles/example-2.html">how `moveVis` frames can be customized</a> – either using the `moveVis` `add_` functions or by applying `ggplot2` code frame-by-frame.
