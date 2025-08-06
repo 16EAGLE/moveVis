@@ -52,27 +52,85 @@ The <code>moveVis</code> package is closely connected to the <code>move2</code> 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The package includes the following functions, sorted by the order they would be applied to create an animation from movement data:</p>
+<div class="section">
+<h3 id="preparing-movement-tracks">Preparing movement tracks<a class="anchor" aria-label="anchor" href="#preparing-movement-tracks"></a></h3>
+
+
 <ul><li><p><code><a href="align_move.html">align_move</a></code> aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.</p></li>
-<li><p><code><a href="https://rdrr.io/pkg/basemaps/man/get_maptypes.html" class="external-link">get_maptypes</a></code> returns a character vector of available map types that can be used with <code><a href="frames_spatial.html">frames_spatial</a></code>. <code>moveVis</code> supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to <code><a href="frames_spatial.html">frames_spatial</a></code>.</p></li>
-<li><p><code><a href="frames_spatial.html">frames_spatial</a></code> creates frames from movement and map/raster data. Frames are returned as an object of class <code>moveVis</code> and can be subsetted, viewed (see <code><a href="render_frame.html">render_frame</a></code>), modified (see <code><a href="add_gg.html">add_gg</a></code> and associated functions ) and animated (see <code><a href="animate_frames.html">animate_frames</a></code>).</p></li>
-<li><p><code><a href="frames_graph.html">frames_graph</a></code> creates frames of <code>ggplot2</code> graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returnedframes can be animated using <code><a href="animate_frames.html">animate_frames</a></code>.</p></li>
-<li><p><code><a href="add_gg.html">add_gg</a></code> adds <code>ggplot2</code> functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> <code>add_</code> functions:</p></li>
-<li><p><code><a href="add_labels.html">add_labels</a></code> adds character labels such as title or axis labels to animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="add_scalebar.html">add_scalebar</a></code> adds a scalebar to the animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="add_northarrow.html">add_northarrow</a></code> adds a north arrow to the animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="add_progress.html">add_progress</a></code> adds a progress bar to animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="add_timestamps.html">add_timestamps</a></code> adds timestamps to animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="add_text.html">add_text</a></code> adds static or dynamically changing text to the animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="add_colourscale.html">add_colourscale</a></code> adjusts the colour scales of the animation frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> and custom map imagery.</p></li>
-<li><p><code><a href="join_frames.html">join_frames</a></code> side-by-side joins the <code>ggplot2</code> objects of two or more frames lists of equal lengths into a single list of <code>ggplot2</code> objects per frame using <code><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href="frames_spatial.html">frames_spatial</a></code> with graph frames returned by <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
-<li><p><code><a href="get_frametimes.html">get_frametimes</a></code> extracts the timestamps associated with each frame from a <code>moveVis</code> object created using <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code> and returns them as a vector.</p></li>
-<li><p><code><a href="render_frame.html">render_frame</a></code> renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting <code>[[]]</code>.</p></li>
-<li><p><code><a href="suggest_formats.html">suggest_formats</a></code> returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href="animate_frames.html">animate_frames</a></code> on your system.</p></li>
-<li><p><code><a href="animate_frames.html">animate_frames</a></code> creates an animation from a list of frames computed with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="creating-frames">Creating frames<a class="anchor" aria-label="anchor" href="#creating-frames"></a></h3>
+
+
+<ul><li><p><code><a href="https://rdrr.io/pkg/basemaps/man/get_maptypes.html" class="external-link">get_maptypes</a></code> returns available map services and types that can be used with  <code><a href="frames_spatial.html">frames_spatial</a></code>. This function is reexported from the &lt;a href="https://jakob.schwalb-willmann.de/basemaps/"&gt;basemaps&lt;/a&gt; package.</p></li>
+<li><p><code><a href="frames_spatial.html">frames_spatial</a></code> creates <code>moveVis</code> frames from movement and map/raster data, displaying movement-environment interactions spatio-temporally. Frames are returned as an object of class <code>moveVis</code> and can be subsetted, viewed (see <code><a href="render_frame.html">render_frame</a></code>), modified (see <code><a href="add_gg.html">add_gg</a></code> and associated functions) and animated (see <code><a href="animate_frames.html">animate_frames</a></code>).</p></li>
+<li><p><code><a href="frames_graph.html">frames_graph</a></code> creates <code>moveVis</code> frames displaying movement-environment interaction graphs. Frames can be viewed or modified individually and animated using <code><a href="animate_frames.html">animate_frames</a></code>.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="adapting-frames">Adapting frames<a class="anchor" aria-label="anchor" href="#adapting-frames"></a></h3>
+
+
+<ul><li><p><code><a href="add_gg.html">add_gg</a></code> adds <code>ggplot2</code> expressions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to frames created with <code>frames_spatial</code> or  <code>frames_graph</code>.</p></li>
+<li><p><code><a href="add_labels.html">add_labels</a></code> adds character labels such as title or axis labels to frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="add_scalebar.html">add_scalebar</a></code> adds a scalebar to frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="add_northarrow.html">add_northarrow</a></code> adds a north arrow to frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="add_progress.html">add_progress</a></code> adds a progress bar to frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="add_timestamps.html">add_timestamps</a></code> adds timestamps to frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="add_text.html">add_text</a></code> adds static or dynamically changing text to frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="add_colourscale.html">add_colourscale</a></code> adjusts the colour scales of frames created with <code><a href="frames_spatial.html">frames_spatial</a></code> and custom map imagery.</p></li>
+<li><p><code><a href="join_frames.html">join_frames</a></code> side-by-side two or more sets of frames of equal lengths into one set of frames using <code><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></code>, e.g. to combine spatial frames returned by <code><a href="frames_spatial.html">frames_spatial</a></code> with graph frames returned by <code><a href="frames_graph.html">frames_graph</a></code>.</p></li>
+<li><p><code><a href="get_frametimes.html">get_frametimes</a></code> extracts the timestamps associated with each frame of frames created using <code><a href="frames_spatial.html">frames_spatial</a></code> or <code><a href="frames_graph.html">frames_graph</a></code> and returns them as a vector.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="animating-frames-as-gif-or-video-">Animating frames (as GIF or video)<a class="anchor" aria-label="anchor" href="#animating-frames-as-gif-or-video-"></a></h3>
+
+
+<ul><li><p><code><a href="suggest_formats.html">suggest_formats</a></code> returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href="animate_frames.html">animate_frames</a></code> on your system.</p></li>
+<li><p><code><a href="animate_frames.html">animate_frames</a></code> creates an animation from <code>moveVis</code> frames, e.g as <code>.gif</code> or <code>.mov</code> video file.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="viewing-movement-tracks">Viewing movement tracks<a class="anchor" aria-label="anchor" href="#viewing-movement-tracks"></a></h3>
+
+
+<ul><li><p><code><a href="render_frame.html">render_frame</a></code> renders an individual frame. It yields the same result as if an individual frame is extracted using <code>[[]]</code>.</p></li>
 <li><p><code><a href="view_spatial.html">view_spatial</a></code> displays movement tracks on an interactive <code>mapview</code> or <code>leaflet</code> map.</p></li>
-<li><p><code><a href="settings.html">use_multicore</a></code> enables multi-core usage for computational expensive processing steps.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h3>
+
+
+<ul><li><p><code><a href="Extract.html">[.moveVis</a></code> extracts individual frames or a sequence of frames from a <code>moveVis</code> frames object.</p></li>
+<li><p><code><a href="render_frame.html">[[.moveVis</a></code> renders an individual frame, like <code><a href="render_frame.html">render_frame</a></code> does.</p></li>
+<li><p><code><a href="https://rspatial.github.io/terra/reference/c.html" class="external-link">c</a></code> combines multiple <code>moveVis</code> frames.</p></li>
+<li><p><code><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">tail</a></code> and <code><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></code> return <code>n</code> last or first frames of a <code>moveVis</code> frames object.</p></li>
+<li><p><code><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">length</a></code> returns the length of  <code>moveVis</code> frames, i.e. number of frames.</p></li>
+<li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></code> shows basic information about a <code>moveVis</code> frames object, i.e. number of frames, extent and more.</p></li>
+<li><p><code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">rev</a></code> reverses the order of a <code>moveVis</code> frames object.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="processing-settings">Processing settings<a class="anchor" aria-label="anchor" href="#processing-settings"></a></h3>
+
+
+<ul><li><p><code><a href="settings.html">use_multicore</a></code> enables multi-core usage for computational expensive processing steps.</p></li>
 <li><p><code><a href="settings.html">use_disk</a></code> enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.</p></li>
-</ul><p>The majority of these functions can be used with the forward pipe operator <code>%&gt;%</code>, which is re-exported by <code>moveVis</code>.</p>
+</ul></div>
+
+<div class="section">
+<h3 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a></h3>
+
+
+<ul><li><p><code><a href="move_data.html">move_data</a></code>, a <code>move2</code> object representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany.</p></li>
+<li><p><code><a href="whitestork_data.html">whitestork_data</a></code>, a <code>data.frame</code> and a <code>move2</code> object, both representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.</p></li>
+<li><p><code><a href="raster_data.html">example_data</a></code>, two <code>SpatRasterDataset</code>s, representing simulated NDVI images and an NDVI-derived classification covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.</p></li>
+</ul></div>
+
+<p>The majority of these functions can be used with the forward pipe operator <code>%&gt;%</code>, which is re-exported by <code>moveVis</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

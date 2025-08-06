@@ -68,12 +68,11 @@
 <a class="anchor" aria-label="anchor" href="#movevis-"></a>
 </h1>
 </div>
-<p><a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://www.r-pkg.org/badges/version/moveVis" alt="CRAN version"></a> <a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/moveVis?color=brightgreen" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/web/checks/check_results_moveVis.html" class="external-link"><img src="https://cranchecks.info/badges/summary/moveVis" alt="CRAN checks"></a> <a href="https://github.com/16EAGLE/moveVis/actions" class="external-link"><img src="https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/16EAGLE/moveVis" class="external-link"><img src="https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg" alt="Coverage"></a> <a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://tinyverse.netlify.com/badge/moveVis" alt="Package dependencies"></a></p>
-<p><em>Note: <code>moveVis</code> is currently being updated to support <code>move2</code> for representing trajectory data and <code>terra</code> for representing raster data. The package version currently hosted on GitHub is provided “as is”. It is work in progress and subject to changes. Unit tests are partially non-functioning, documentation may be not yet up-to-date, and there are bugs that are not yet fixed.</em></p>
+<p><a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://www.r-pkg.org/badges/version/moveVis" alt="CRAN version"></a> <a href="https://16eagle.r-universe.dev/moveVis" class="external-link"><img src="https://16eagle.r-universe.dev/moveVis/basges/version" alt="r-universe version"></a> <a href="https://github.com/16EAGLE/moveVis/actions" class="external-link"><img src="https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/r-universe/16eagle/actions/workflows/build.yml" class="external-link"><img src="https://github.com/r-universe/16eagle/actions/workflows/build.yml/badge.svg" alt="r-universe build"></a> <a href="https://ci.appveyor.com/project/16EAGLE/moveVis" class="external-link"><img src="https://ci.appveyor.com/api/projects/status/github/16EAGLE/moveVis?branch=master&amp;svg=true" alt="AppVeyor build status"></a> <a href="https://app.codecov.io/gh/16EAGLE/moveVis" class="external-link"><img src="https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg" alt="Coverage"></a> <a href="https://CRAN.R-project.org/package=moveVis" class="external-link"><img src="https://tinyverse.netlify.com/badge/moveVis" alt="Package dependencies"></a></p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><a href="https://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move" class="external-link"><code>move</code></a> and <a href="https://github.com/rspatial/raster" class="external-link"><code>raster</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2" class="external-link"><code>ggplot2</code></a> frames that can be further customized. <a href="https://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski" class="external-link"><code>gifski</code></a> (wrapping the <a href="https://gif.ski" class="external-link">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av" class="external-link"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/" class="external-link">FFmpeg</a>) to render frames into animated GIF or video files.</p>
+<p><a href="https://movevis.org"><code>moveVis</code></a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://bartk.gitlab.io/move2/" class="external-link"><code>move2</code></a> and <a href="https://rspatial.github.io/terra/" class="external-link"><code>terra</code></a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2" class="external-link"><code>ggplot2</code></a>-based frames that can be further customized. <a href="https://movevis.org"><code>moveVis</code></a> uses <a href="https://github.com/r-rust/gifski" class="external-link"><code>gifski</code></a> (wrapping the <a href="https://gif.ski" class="external-link">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av" class="external-link"><code>av</code></a> (binding to <a href="https://www.ffmpeg.org/" class="external-link">FFmpeg</a>) to render frames into animated GIF or video files.</p>
 <p>A <a href="https://doi.org/10.1111/2041-210X.13374" class="external-link">peer-reviewed open-access paper</a> accompanying <code>moveVis</code> has been published in <em>Methods in Ecology and Evolution</em>.</p>
 <br><p align="center">
 <img width="100%" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/examp4.gif"></p>
@@ -87,18 +86,21 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the latest stable relasae of <code>moveVis</code> from CRAN:</p>
+<p>Install the latest stable release of <code>moveVis</code> from CRAN (<em>currently unavailable</em>):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"moveVis"</span><span class="op">)</span></span></code></pre></div>
-<p>Install the latest development version of <code>moveVis</code> from GitHub:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"moveVis"</span>, repos <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span></span></code></pre></div>
+<p>Install the latest tested development builds of <code>moveVis</code> from r-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"16EAGLE/moveVis"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"moveVis"</span>, repos <span class="op">=</span> <span class="st">'16eagle.r-universe.dev'</span><span class="op">)</span></span></code></pre></div>
+<p>Install the latest tested development version of <code>moveVis</code> from source via GitHub:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"16EAGLE/moveVis"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
 <p>The following example shows how to make a simple animation using a default basemap by first aligning your movement data to a uniform time scale, creating frames that can be viewed or modified using <code>ggplot2</code> or <code>add*()</code> functions and turning these frames into an animated <code>GIF</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move2/" class="external-link">move2</a></span><span class="op">)</span></span>
 <span></span>
@@ -141,11 +143,11 @@
 </h4>
 <ul>
 <li>
-<code><a href="https://rdrr.io/pkg/basemaps/man/get_maptypes.html" class="external-link">get_maptypes()</a></code> returns a character vector of available map types that can be used with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>. <code>moveVis</code> supports OpenStreetMap and Mapbox basemap imagery. Alternatively, you can provide custom imagery to <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>.</li>
+<code><a href="https://rdrr.io/pkg/basemaps/man/get_maptypes.html" class="external-link">get_maptypes()</a></code> returns available map services and types that can be used with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>. This function is reexported from the <a href="https://jakob.schwalb-willmann.de/basemaps/" class="external-link">basemaps</a> package.</li>
 <li>
-<code><a href="reference/frames_spatial.html">frames_spatial()</a></code> creates <code>moveVis</code> frames spatio-temporally displaying movement. Frames can be individually plotted using <code>ggplot2</code>, modified individually or as a whole using <code>add*()</code> functions, or animated using <code><a href="reference/animate_frames.html">animate_frames()</a></code>.</li>
+<code><a href="reference/frames_spatial.html">frames_spatial()</a></code> creates <code>moveVis</code> frames from movement and map/raster data, displaying movement-environment interactions spatio-temporally. Frames are returned as an object of class <code>moveVis</code> and can be subsetted, viewed (see <code><a href="reference/render_frame.html">render_frame()</a></code>), modified (see <code><a href="reference/add_gg.html">add_gg()</a></code>} and associated functions) and animated (see <code><a href="reference/animate_frames.html">animate_frames()</a></code>).</li>
 <li>
-<code><a href="reference/frames_graph.html">frames_graph()</a></code> creates <code>moveVis</code> frames displaying movement-environment interaction graphs. Frames can be individually plotted using <code>ggplot2</code>, modified individually or as a whole using <code>add*()</code> functions, or animated using <code><a href="reference/animate_frames.html">animate_frames()</a></code>.</li>
+<code><a href="reference/frames_graph.html">frames_graph()</a></code> creates <code>moveVis</code> frames displaying movement-environment interaction graphs. Frames can be viewed or modified individually and animated using <code><a href="reference/animate_frames.html">animate_frames()</a></code>.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -153,25 +155,25 @@
 </h4>
 <ul>
 <li>
-<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>. Instead of creating your own <code>ggplot2</code> functions, you can use one of the other <code>moveVis</code> `add_``functions:</li>
+<code><a href="reference/add_gg.html">add_gg()</a></code> adds <code>ggplot2</code> expressions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_labels.html">add_labels()</a></code> adds character labels such as title or axis labels to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/add_labels.html">add_labels()</a></code> adds character labels such as title or axis labels to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_scalebar.html">add_scalebar()</a></code> adds a scalebar to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/add_scalebar.html">add_scalebar()</a></code> adds a scale bar to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_northarrow.html">add_northarrow()</a></code> adds a north arrow to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/add_northarrow.html">add_northarrow()</a></code> adds a north arrow to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_progress.html">add_progress()</a></code> adds a progress bar to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/add_progress.html">add_progress()</a></code> adds a progress bar to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_timestamps.html">add_timestamps()</a></code> adds timestamps to animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/add_timestamps.html">add_timestamps()</a></code> adds timestamps to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_text.html">add_text()</a></code> adds static or dynamically changing text to the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/add_text.html">add_text()</a></code> adds static or dynamically changing text to frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/add_colourscale.html">add_colourscale()</a></code> adjusts the colour scales of the animation frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> and custom map imagery using the <code>r_list</code> argument.</li>
+<code><a href="reference/add_colourscale.html">add_colourscale()</a></code> adjusts the colour scales of frames created with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> and custom map imagery.</li>
 <li>
-<code><a href="reference/join_frames.html">join_frames()</a></code> side-by-side joins two or more <code>moveVis</code> frame sequences of equal lengths into a single plot per frame using <code>cowplot::plot_grid</code>. This is useful if you want to side-by-side combine spatial frames returned by <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> with graph frames returned by <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
+<code><a href="reference/join_frames.html">join_frames()</a></code> side-by-side two or more sets of frames of equal lengths into one set of frames using <code><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">patchwork::wrap_plots()</a></code>, e.g. to combine spatial frames returned by <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> with graph frames returned by <code><a href="reference/frames_graph.html">frames_graph()</a></code>.</li>
 <li>
-<code><a href="reference/get_frametimes.html">get_frametimes()</a></code> extracts the timestamps associated with each frame from a <code>moveVis</code> object created using <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code> and returns them as a vector.</li>
+<code><a href="reference/get_frametimes.html">get_frametimes()</a></code> extracts the timestamps associated with each frame of frames created using <code><a href="reference/frames_spatial.html">frames_spatial()</a></code> or <code><a href="reference/frames_graph.html">frames_graph()</a></code> and returns them as a vector.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -181,7 +183,7 @@
 <li>
 <code><a href="reference/suggest_formats.html">suggest_formats()</a></code> returns a selection of suggested file formats that can be used with <code>out_file</code> of <code><a href="reference/animate_frames.html">animate_frames()</a></code> on your system.</li>
 <li>
-<code><a href="reference/animate_frames.html">animate_frames()</a></code> creates an animation from <code>moveVis</code> frames computed with <code><a href="reference/frames_spatial.html">frames_spatial()</a></code>, <code><a href="reference/frames_graph.html">frames_graph()</a></code> or <code><a href="reference/join_frames.html">join_frames()</a></code>.</li>
+<code><a href="reference/animate_frames.html">animate_frames()</a></code> creates an animation from <code>moveVis</code> frames, e.g as <code>.gif</code> or <code>.mov</code> video file.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -189,7 +191,7 @@
 </h4>
 <ul>
 <li>
-<code><a href="reference/render_frame.html">render_frame()</a></code> renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting <code>[[</code>.</li>
+<code><a href="reference/render_frame.html">render_frame()</a></code> renders an individual frame. It yields the same result as if an individual frame is extracted using <code>[[</code>.</li>
 <li>
 <code><a href="reference/view_spatial.html">view_spatial()</a></code> displays movement tracks on an interactive <code>mapview</code> or <code>leaflet</code> map.</li>
 </ul>
@@ -203,11 +205,11 @@
 <li>
 <code>[[</code> renders an individual frame.</li>
 <li>
-<code>c</code> combines multiple <code>moveVis</code> frames objects.</li>
+<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> combines multiple <code>moveVis</code> frames.</li>
 <li>
 <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail()</a></code> and <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> return <code>n</code> last or first frames of a <code>moveVis</code> frames object.</li>
 <li>
-<code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code> return length of <code>moveVis</code> frames, i.e. number of frames.</li>
+<code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code> returns the length of <code>moveVis</code> frames, i.e. number of frames.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows basic information about a <code>moveVis</code> frames object, i.e. number of frames, extent and more.</li>
 <li>
@@ -235,6 +237,7 @@
 <li>
 <code>readRDS(example_data(file = "basemap_data.rds"))</code> returns a <code>SpatRasterDataset</code>, representing simulated NDVI images covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.</li>
 </ul>
+<p>The majority of these functions can be used with the forward pipe operator <code>%&gt;%</code>, which is re-exported by <code>moveVis</code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -292,10 +295,10 @@
 <p align="justify">
 </p>
 <div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="sc">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"http://www.dlr.de/eoc/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a> <span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.bmu.de/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/assets/og-logo-281c44f14f2114ed3fe50e666618ff96341055a2f8ce31aa0fd70471a30ca9ed.jpg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.geographie.uni-wuerzburg.de/en/fernerkundung/startseite/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://www.uni-wuerzburg.de/typo3conf/ext/uw_sitepackage/Resources/Public/Images/uni-wuerzburg-logo.svg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"http://www.dlr.de/eoc/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/DLR_Logo.svg/744px-DLR_Logo.svg.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a> <span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.bmu.de/en/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"29%"</span> src<span class="ot">=</span><span class="st">"https://upload.wikimedia.org/wikipedia/commons/b/b1/Logo_Bundesministerium_f%C3%BCr_Umwelt_Naturschutz_und_nukleare_Sicherheit.png"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="er">&lt;</span>a href<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/"</span><span class="sc">&gt;</span><span class="er">&lt;</span>img width<span class="ot">=</span><span class="st">"16%"</span> src<span class="ot">=</span><span class="st">"https://www.ab.mpg.de/assets/og-logo-281c44f14f2114ed3fe50e666618ff96341055a2f8ce31aa0fd70471a30ca9ed.jpg"</span><span class="sc">&gt;</span><span class="er">&lt;/</span>a<span class="sc">&gt;</span></span></code></pre></div>
 </div>
 
 </div>
