@@ -2,11 +2,10 @@
 
 [![CRAN version](https://www.r-pkg.org/badges/version/moveVis)](https://CRAN.R-project.org/package=moveVis)
 [![r-universe version](https://16eagle.r-universe.dev/moveVis/badges/version)](https://16eagle.r-universe.dev/moveVis)
-[![R-CMD-check](https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg)](https://github.com/16EAGLE/moveVis/actions)
 [![r-universe build](https://github.com/r-universe/16eagle/actions/workflows/build.yml/badge.svg)](https://github.com/r-universe/16eagle/actions/workflows/build.yml)
+[![R-CMD-check](https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg)](https://github.com/16EAGLE/moveVis/actions)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/16EAGLE/moveVis?branch=master&svg=true)](https://ci.appveyor.com/project/16EAGLE/moveVis)
 [![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://app.codecov.io/gh/16EAGLE/moveVis)
-[![Package dependencies](https://tinyverse.netlify.com/badge/moveVis)](https://CRAN.R-project.org/package=moveVis)
 
 ## Introduction
 
