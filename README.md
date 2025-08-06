@@ -1,17 +1,16 @@
 # moveVis <a href="https://movevis.org"><img align="right" src="man/figures/logo.png" /></a>
 
 [![CRAN version](https://www.r-pkg.org/badges/version/moveVis)](https://CRAN.R-project.org/package=moveVis)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/moveVis?color=brightgreen)](https://CRAN.R-project.org/package=moveVis)
-[![CRAN checks](https://cranchecks.info/badges/summary/moveVis)](https://cran.r-project.org/web/checks/check_results_moveVis.html)
+[![r-universe version](https://16eagle.r-universe.dev/moveVis/basges/version)](https://16eagle.r-universe.dev/moveVis)
 [![R-CMD-check](https://github.com/16EAGLE/moveVis/workflows/R-CMD-check/badge.svg)](https://github.com/16EAGLE/moveVis/actions)
+[![r-universe build](https://github.com/r-universe/16eagle/actions/workflows/build.yml/badge.svg)](https://github.com/r-universe/16eagle/actions/workflows/build.yml)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/16EAGLE/moveVis?branch=master&svg=true)](https://ci.appveyor.com/project/16EAGLE/moveVis)
 [![Coverage](https://codecov.io/gh/16eagle/moveVis/branch/master/graph/badge.svg)](https://app.codecov.io/gh/16EAGLE/moveVis)
 [![Package dependencies](https://tinyverse.netlify.com/badge/moveVis)](https://CRAN.R-project.org/package=moveVis)
 
-*Note: `moveVis` is currently being updated  to support `move2` for representing trajectory data and `terra` for representing raster data. The package version currently hosted on GitHub is provided "as is". It is work in progress and subject to changes. Unit tests are partially non-functioning, documentation may be not yet up-to-date, and there are bugs that are not yet fixed.*
-
 ## Introduction
 
-<a href="https://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://github.com/cran/move">`move`</a> and <a href="https://github.com/rspatial/raster">`raster`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a> frames that can be further customized. <a href="https://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files. 
+<a href="https://movevis.org">`moveVis`</a> provides tools to visualize movement data (e.g. from GPS tracking) and temporal changes of environmental data (e.g. from remote sensing) by creating video animations. It works with <a href="https://bartk.gitlab.io/move2/">`move2`</a> and <a href="https://rspatial.github.io/terra/">`terra`</a> class inputs and turns them into <a href="https://github.com/tidyverse/ggplot2">`ggplot2`</a>-based frames that can be further customized. <a href="https://movevis.org">`moveVis`</a> uses <a href="https://github.com/r-rust/gifski">`gifski`</a> (wrapping the <a href="https://gif.ski">gifski</a> cargo crate) and <a href="https://github.com/ropensci/av">`av`</a> (binding to <a href="https://www.ffmpeg.org/">FFmpeg</a>) to render frames into animated GIF or video files. 
 
 A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access paper</a> accompanying `moveVis` has been published in *Methods in Ecology and Evolution*.
 
@@ -25,16 +24,22 @@ A <a href="https://doi.org/10.1111/2041-210X.13374">peer-reviewed open-access pa
 
 ## Installation
 
-Install the latest stable relasae of `moveVis` from CRAN:
+Install the latest stable release of `moveVis` from CRAN (*currently unavailable*):
 
 ```r
-install.packages("moveVis")
+install.packages("moveVis", repos = 'https://cloud.r-project.org')
 ```
 
-Install the latest development version of `moveVis` from GitHub:
+Install the latest tested development builds of `moveVis` from r-universe:
 
 ```r
-devtools::install_github("16EAGLE/moveVis")
+install.packages("moveVis", repos = '16eagle.r-universe.dev')
+```
+
+Install the latest tested development version of `moveVis` from source via GitHub:
+
+```r
+remotes::install_github("16EAGLE/moveVis")
 ```
 
 ## Get started
@@ -79,40 +84,40 @@ animate_frames(frames, out_file = "moveVis.gif")
 
 #### Creating frames
 
-* `get_maptypes()` returns a character vector of available map types that can be used with `frames_spatial()`. `moveVis` supports OpenStreetMap and Mapbox basemap imagery. Alternatively, you can provide custom imagery to `frames_spatial()`.
-* `frames_spatial()` creates `moveVis` frames spatio-temporally displaying movement.  Frames can be individually plotted using `ggplot2`, modified individually or as a whole using `add*()` functions, or animated using `animate_frames()`.
-* `frames_graph()` creates `moveVis` frames displaying movement-environment interaction graphs. Frames can be individually plotted using `ggplot2`, modified individually or as a whole using `add*()` functions, or animated using `animate_frames()`.
+* `get_maptypes()` returns available map services and types that can be used with `frames_spatial()`. This function is reexported from the <a href="https://jakob.schwalb-willmann.de/basemaps/">basemaps</a> package.
+* `frames_spatial()` creates `moveVis` frames from movement and map/raster data, displaying movement-environment interactions spatio-temporally. Frames are returned as an object of class `moveVis` and can be subsetted, viewed (see `render_frame()`), modified (see `add_gg()`} and associated functions) and animated (see `animate_frames()`).
+* `frames_graph()` creates `moveVis` frames displaying movement-environment interaction graphs. Frames can be viewed or modified individually and animated using `animate_frames()`.
 
 #### Adapting frames
 
-* `add_gg()` adds `ggplot2` functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with `frames_spatial()` or `frames_graph()`. Instead of creating your own `ggplot2` functions, you can use one of the other `moveVis` `add_``functions:
-* `add_labels()` adds character labels such as title or axis labels to animation frames created with `frames_spatial()` or `frames_graph()`.
-* `add_scalebar()` adds a scalebar to the animation frames created with `frames_spatial()` or `frames_graph()`.
-* `add_northarrow()` adds a north arrow to the animation frames created with `frames_spatial()` or `frames_graph()`.
-* `add_progress()` adds a progress bar to animation frames created with `frames_spatial()` or `frames_graph()`.
-* `add_timestamps()` adds timestamps to animation frames created with `frames_spatial()` or `frames_graph()`.
-* `add_text()` adds static or dynamically changing text to the animation frames created with `frames_spatial()` or `frames_graph()`.
-* `add_colourscale()` adjusts the colour scales of the animation frames created with `frames_spatial()` and custom map imagery using the `r_list` argument.
-* `join_frames()` side-by-side joins two or more `moveVis` frame sequences of equal lengths into a single plot per frame using `cowplot::plot_grid`. This is useful if you want to side-by-side combine spatial frames returned by `frames_spatial()` with graph frames returned by `frames_graph()`.
-* `get_frametimes()` extracts the timestamps associated with each frame from a `moveVis` object created using `frames_spatial()` or `frames_graph()` and returns them as a vector.
+* `add_gg()` adds `ggplot2` expressions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_labels()` adds character labels such as title or axis labels to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_scalebar()` adds a scale bar to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_northarrow()` adds a north arrow to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_progress()` adds a progress bar to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_timestamps()` adds timestamps to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_text()` adds static or dynamically changing text to frames created with `frames_spatial()` or `frames_graph()`.
+* `add_colourscale()` adjusts the colour scales of frames created with `frames_spatial()` and custom map imagery.
+* `join_frames()` side-by-side two or more sets of frames of equal lengths into one set of frames using `patchwork::wrap_plots()`, e.g. to combine spatial frames returned by `frames_spatial()` with graph frames returned by `frames_graph()`.
+* `get_frametimes()` extracts the timestamps associated with each frame of frames created using `frames_spatial()` or `frames_graph()` and returns them as a vector.
 
 #### Animating frames (as GIF or video)
 
 * `suggest_formats()` returns a selection of suggested file formats that can be used with `out_file` of `animate_frames()` on your system.
-* `animate_frames()` creates an animation from `moveVis` frames computed with `frames_spatial()`, `frames_graph()` or  `join_frames()`.
+* `animate_frames()` creates an animation from `moveVis` frames, e.g as `.gif` or `.mov` video file.
 
 #### Viewing movement tracks
 
-* `render_frame()` renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting `[[`.
+* `render_frame()` renders an individual frame. It yields the same result as if an individual frame is extracted using `[[`.
 * `view_spatial()` displays movement tracks on an interactive `mapview` or `leaflet` map.
 
 #### Methods
 
 * `[` extracts individual frames or a sequence of frames from a `moveVis` frames object.
 * `[[` renders an individual frame.
-* `c` combines multiple `moveVis` frames objects.
+* `c()` combines multiple `moveVis` frames.
 * `tail()` and `head()` return `n` last or first frames of a `moveVis` frames object.
-* `length()` return length of `moveVis` frames, i.e. number of frames.
+* `length()` returns the length of `moveVis` frames, i.e. number of frames.
 * `print()` shows basic information about a `moveVis` frames object, i.e. number of frames, extent and more.
 * `rev()` reverses the order of a `moveVis` frames object.
 
@@ -126,6 +131,8 @@ animate_frames(frames, out_file = "moveVis.gif")
 * `data("move_data")` returns a `move2` object representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany.
 * `data("whitestork_data")` returns a `data.frame` and a `move2` object, both representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.
 * `readRDS(example_data(file = "basemap_data.rds"))` returns a `SpatRasterDataset`, representing simulated NDVI images covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.
+
+The majority of these functions can be used with the forward pipe operator `%>%`, which is re-exported by `moveVis`.
 
 ## Examples
 

@@ -5,27 +5,82 @@
 #'
 #' @details The package includes the following functions, sorted by the order they would be applied to create an animation from movement data:
 #' 
+#' \subsection{Preparing movement tracks}{
+#' 
 #' \itemize{
 #'    \item \code{\link{align_move}} aligns single and multi-individual movement data to a uniform time scale with a uniform temporal resolution needed for creating an animation from it. Use this function to prepare your movement data for animation depending on the temporal resolution that suits your data.
-#'    \item \code{\link{get_maptypes}} returns a character vector of available map types that can be used with \code{\link{frames_spatial}}. \code{moveVis} supports OpenStreetMaps and Mapbox basemap imergay. Alternatively, you can provide custom imagery to \code{\link{frames_spatial}}.
-#'    \item \code{\link{frames_spatial}} creates frames from movement and map/raster data. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
-#'    \item \code{\link{frames_graph}} creates frames of \code{ggplot2} graphs displaying movement-environment interaction. Each object represents a single frame. Each frame can be viewed or modified individually. The returnedframes can be animated using \code{\link{animate_frames}}.
-#'    \item \code{\link{add_gg}} adds \code{ggplot2} functions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}. Instead of creating your own \code{ggplot2} functions, you can use one of the other \code{moveVis} \code{add_} functions:
-#'    \item \code{\link{add_labels}} adds character labels such as title or axis labels to animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#'    \item \code{\link{add_scalebar}} adds a scalebar to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#'    \item \code{\link{add_northarrow}} adds a north arrow to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#'    \item \code{\link{add_progress}} adds a progress bar to animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#'    \item \code{\link{add_timestamps}} adds timestamps to animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#'    \item \code{\link{add_text}} adds static or dynamically changing text to the animation frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
-#'    \item \code{\link{add_colourscale}} adjusts the colour scales of the animation frames created with \code{\link{frames_spatial}} and custom map imagery.
-#'    \item \code{\link{join_frames}} side-by-side joins the \code{ggplot2} objects of two or more frames lists of equal lengths into a single list of \code{ggplot2} objects per frame using \code{\link[patchwork]{wrap_plots}}. This is useful if you want to side-by-side combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
-#'    \item \code{\link{get_frametimes}} extracts the timestamps associated with each frame from a \code{moveVis} object created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
-#'    \item \code{\link{render_frame}} renders an individual frame. It yields the same result as if an individual frame is extracted using default subsetting \code{[[]]}.
+#' }
+#' }
+#' 
+#' \subsection{Creating frames}{
+#' 
+#' \itemize{
+#'    \item \code{\link{get_maptypes}} returns available map services and types that can be used with  \code{\link{frames_spatial}}. This function is reexported from the <a href="https://jakob.schwalb-willmann.de/basemaps/">basemaps</a> package.
+#'    \item \code{\link{frames_spatial}} creates \code{moveVis} frames from movement and map/raster data, displaying movement-environment interactions spatio-temporally. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions) and animated (see \code{\link{animate_frames}}).
+#'    \item \code{\link{frames_graph}} creates \code{moveVis} frames displaying movement-environment interaction graphs. Frames can be viewed or modified individually and animated using \code{\link{animate_frames}}.
+#' }
+#' }
+#' 
+#' \subsection{Adapting frames}{
+#' 
+#' \itemize{
+#'    \item \code{\link{add_gg}} adds \code{ggplot2} expressions (e.g. to add layers such as points, polygons, lines, or to change scales etc.) to frames created with \code{frames_spatial} or  \code{frames_graph}.
+#'    \item \code{\link{add_labels}} adds character labels such as title or axis labels to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{add_scalebar}} adds a scalebar to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{add_northarrow}} adds a north arrow to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{add_progress}} adds a progress bar to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{add_timestamps}} adds timestamps to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{add_text}} adds static or dynamically changing text to frames created with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{add_colourscale}} adjusts the colour scales of frames created with \code{\link{frames_spatial}} and custom map imagery.
+#'    \item \code{\link{join_frames}} side-by-side two or more sets of frames of equal lengths into one set of frames using \code{\link[patchwork]{wrap_plots}}, e.g. to combine spatial frames returned by \code{\link{frames_spatial}} with graph frames returned by \code{\link{frames_graph}}.
+#'    \item \code{\link{get_frametimes}} extracts the timestamps associated with each frame of frames created using \code{\link{frames_spatial}} or \code{\link{frames_graph}} and returns them as a vector.
+#' }
+#' }
+#' 
+#' \subsection{Animating frames (as GIF or video)}{
+#' 
+#' \itemize{
 #'    \item \code{\link{suggest_formats}} returns a selection of suggested file formats that can be used with \code{out_file} of \code{\link{animate_frames}} on your system.
-#'    \item \code{\link{animate_frames}} creates an animation from a list of frames computed with \code{\link{frames_spatial}} or \code{\link{frames_graph}}.
+#'    \item \code{\link{animate_frames}} creates an animation from \code{\link{moveVis}} frames, e.g as \code{.gif} or \code{.mov} video file.
+#' }
+#' }
+#'  
+#' \subsection{Viewing movement tracks}{
+#' 
+#' \itemize{
+#'    \item \code{\link{render_frame}} renders an individual frame. It yields the same result as if an individual frame is extracted using \code{[[]]}.  
 #'    \item \code{\link{view_spatial}} displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
+#' }    
+#' }
+#' 
+#' \subsection{Methods}{
+#' 
+#' \itemize{
+#'    \item \code{\link{[.moveVis}} extracts individual frames or a sequence of frames from a \code{moveVis} frames object.
+#'    \item \code{\link{[[.moveVis}} renders an individual frame, like \code{\link{render_frame}} does.
+#'    \item \code{\link{c}} combines multiple \code{moveVis} frames.
+#'    \item \code{\link{tail}} and \code{\link{head}} return \code{n} last or first frames of a \code{moveVis} frames object.
+#'    \item \code{\link{length}} returns the length of  \code{moveVis} frames, i.e. number of frames.
+#'    \item \code{\link{print}} shows basic information about a \code{moveVis} frames object, i.e. number of frames, extent and more.
+#'    \item \code{\link{rev}} reverses the order of a \code{moveVis} frames object.
+#' }
+#' }
+#'  
+#' \subsection{Processing settings}{
+#' 
+#' \itemize{
 #'    \item \code{\link{use_multicore}} enables multi-core usage for computational expensive processing steps. 
 #'    \item \code{\link{use_disk}} enables the usage of disk space for creating frames, which can prevent memory overload when creating frames for very large animations.
+#' }
+#' }
+#' 
+#' \subsection{Example data}{
+#' 
+#' \itemize{
+#'    \item \code{\link{move_data}}, a \code{move2} object representing coordinates and acquisition times of three simulated movement tracks, covering a location nearby Lake of Constance, Germany.
+#'    \item \code{\link{whitestork_data}}, a \code{data.frame} and a \code{move2} object, both representing coordinates and acquisition times of 15 White Storks, migrating from Lake of Constance, SW Germany, to Africa.
+#'    \item \code{\link{example_data}}, two \code{SpatRasterDataset}s, representing simulated NDVI images and an NDVI-derived classification covering the Lake of Constance area, as well as invented dates and times that simulate acquisition times.
+#' }
 #' }
 #' 
 #' The majority of these functions can be used with the forward pipe operator \code{\%>\%}, which is re-exported by \code{moveVis}.

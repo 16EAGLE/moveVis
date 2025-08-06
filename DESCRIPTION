@@ -6,7 +6,7 @@ Depends:
   R (>= 3.5.0)
 Date: 2025-08-05
 Authors@R: c(
-  person("Jakob", "Schwalb-Willmann", email = "movevis@schwalb-willmann.de",
+  person("Jakob", "Schwalb-Willmann", email = "dev@schwalb-willmann.de",
          role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2665-1509")),
   person("Annika", "Ludwig", role = c("aut", "ctb"))
   )
