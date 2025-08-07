@@ -6,12 +6,28 @@ Updating `moveVis` to support `move2` for representing trajectory data and `terr
 **Changes:**
 
 * Argument `res` of `align_move` now expects a units object for representing the target time resolution (see `?moveVis::align_move`).
+* `align_move` now relies on `s2` for spatio-temporal interpolation.
 * `frames_spatial` now expects `terra` `SpatRasterDataset` for multi-temporal raster data via the `r` argument. See `?moveVis::frames_spatial` for details.
+* Arguments `crs` and `crs_graticule` were added to `frames_spatial` to control the CRS used by frames (see `?frames_spatial` for details). With this version onwards, the CRS of frames created using `frames_spatial` is no longer determined by the CRS of `m` but instead by argument `crs`. All spatial components of frames will be transformed to this CRS if needed. The standard CRS of `moveVis` frames is Web Mercator (EPSG 3857), as this CRS is the standard CRS of open base map products from the web. This default setting ensures that map labels are not distorted.
+* Argument `ext` of `frames_spatial` now expect an `sf` `bbox` object with same CRS a `m`.
+* `render_frame` now uses `coord_sf` instead of `coord_cartesian` to correctly render different Coordinate Reference Systems.
+* `join_frames` now uses `patchwork` instead of `cowplot` to combine plots in frames. Thus, arguments `guides`, `design`, `render_all_legends` and `...` were added to control `patchwork::wrap_plots`.
+* `moveVis` documentation was updated to reflect the changes.
+* `moveVis` example code was updated, using `move2` instead of `move` and `terra` instead of `raster` and to reflect the changes.
+* The way dateline crossings are handled has been revised: `moveVis` now relies on `sf` to compute cross-dateline paths in Lat/Lon instead of doing this internally. Be advised that it is recommended to use a projection suiting your area instead of enabling dateline crossing in Lat/Lon (see `?frames_spatial` for details).
+* Example movement data were updated to the `move2` class
+* Example raster data were updated to the `terra` `SpatRasterDataset` class and an additional example comprised of disrecte values was added (see `?moveVis::example_data` for details)
+* `s2`, `move2`, `terra`, `units`, `patchwork`, `ggnewscale`, `basemaps` and `rlang` were added as imports
+* `move`, `raster` and `cowplot` were removed as imports
 
 **Deprecations:**
 
 * Arguments `r_list` and `r_times` of `frames_spatial` are deprecated. Use argument `r` instead and supply a `terra` `SpatRasterDataset` to bundle multiple multi-layered rasters of a time series. See `?moveVis::frames_spatial` for details.
+* `df2move` and `subset_move` were deprecated in favor of `move2`'s interface for coercion and subsetting.
 
+**Distribution:**
+
+* `moveVis` was added to r-universe for continuous testing and integration. Like on CRAN, platform-specific binaries are build there to ease installation. You can now install the most recent `moveVis` version from r-universe using `install.packages("moveVis", repos = '16eagle.r-universe.dev')`
 
 ## moveVis 0.10.6
 New S3 class and methods to represent frames, lazy plotting, improvements.
