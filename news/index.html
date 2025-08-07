@@ -46,9 +46,34 @@
 <p><strong>Changes:</strong></p>
 <ul><li>Argument <code>res</code> of <code>align_move</code> now expects a units object for representing the target time resolution (see <code><a href="../reference/align_move.html">?moveVis::align_move</a></code>).</li>
 <li>
+<code>align_move</code> now relies on <code>s2</code> for spatio-temporal interpolation.</li>
+<li>
 <code>frames_spatial</code> now expects <code>terra</code> <code>SpatRasterDataset</code> for multi-temporal raster data via the <code>r</code> argument. See <code><a href="../reference/frames_spatial.html">?moveVis::frames_spatial</a></code> for details.</li>
+<li>Arguments <code>crs</code> and <code>crs_graticule</code> were added to <code>frames_spatial</code> to control the CRS used by frames (see <code><a href="../reference/frames_spatial.html">?frames_spatial</a></code> for details). With this version onwards, the CRS of frames created using <code>frames_spatial</code> is no longer determined by the CRS of <code>m</code> but instead by argument <code>crs</code>. All spatial components of frames will be transformed to this CRS if needed. The standard CRS of <code>moveVis</code> frames is Web Mercator (EPSG 3857), as this CRS is the standard CRS of open base map products from the web. This default setting ensures that map labels are not distorted.</li>
+<li>Argument <code>ext</code> of <code>frames_spatial</code> now expect an <code>sf</code> <code>bbox</code> object with same CRS a <code>m</code>.</li>
+<li>
+<code>render_frame</code> now uses <code>coord_sf</code> instead of <code>coord_cartesian</code> to correctly render different Coordinate Reference Systems.</li>
+<li>
+<code>join_frames</code> now uses <code>patchwork</code> instead of <code>cowplot</code> to combine plots in frames. Thus, arguments <code>guides</code>, <code>design</code>, <code>render_all_legends</code> and <code>...</code> were added to control <code><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">patchwork::wrap_plots</a></code>.</li>
+<li>
+<code>moveVis</code> documentation was updated to reflect the changes.</li>
+<li>
+<code>moveVis</code> example code was updated, using <code>move2</code> instead of <code>move</code> and <code>terra</code> instead of <code>raster</code> and to reflect the changes.</li>
+<li>The way dateline crossings are handled has been revised: <code>moveVis</code> now relies on <code>sf</code> to compute cross-dateline paths in Lat/Lon instead of doing this internally. Be advised that it is recommended to use a projection suiting your area instead of enabling dateline crossing in Lat/Lon (see <code><a href="../reference/frames_spatial.html">?frames_spatial</a></code> for details).</li>
+<li>Example movement data were updated to the <code>move2</code> class</li>
+<li>Example raster data were updated to the <code>terra</code> <code>SpatRasterDataset</code> class and an additional example comprised of disrecte values was added (see <code><a href="../reference/raster_data.html">?moveVis::example_data</a></code> for details)</li>
+<li>
+<code>s2</code>, <code>move2</code>, <code>terra</code>, <code>units</code>, <code>patchwork</code>, <code>ggnewscale</code>, <code>basemaps</code> and <code>rlang</code> were added as imports</li>
+<li>
+<code>move</code>, <code>raster</code> and <code>cowplot</code> were removed as imports</li>
 </ul><p><strong>Deprecations:</strong></p>
 <ul><li>Arguments <code>r_list</code> and <code>r_times</code> of <code>frames_spatial</code> are deprecated. Use argument <code>r</code> instead and supply a <code>terra</code> <code>SpatRasterDataset</code> to bundle multiple multi-layered rasters of a time series. See <code><a href="../reference/frames_spatial.html">?moveVis::frames_spatial</a></code> for details.</li>
+<li>
+<code>df2move</code> and <code>subset_move</code> were deprecated in favor of <code>move2</code>’s interface for coercion and subsetting.</li>
+</ul><p><strong>Distribution:</strong></p>
+<ul><li>
+<code>moveVis</code> was added to r-universe for continuous testing and integration. Like on CRAN, platform-specific binaries are build there to ease installation. You can now install the most recent <code>moveVis</code> version from r-universe using <code>install.packages("moveVis", repos = '16eagle.r-universe.dev')</code>
+</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.6" id="movevis-0106">moveVis 0.10.6<a class="anchor" aria-label="anchor" href="#movevis-0106"></a></h2>
