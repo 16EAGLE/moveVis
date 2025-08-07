@@ -46,17 +46,17 @@
 #' @param verbose logical, if \code{TRUE}, messages and progress information are displayed on the console (default).
 #' 
 #' @details If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
-#' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
+#' Colours could also be arranged to change through time or by behavioural segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected using \code{path_colours} or automatically. Call \code{colours()} to see all available colours in R.
 #' 
-#' Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
+#' Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continuous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 #' 
-#' If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal surface distances on the x and y axis.
+#' If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal distances on the x and y axis.
 #'
 #' @note 
 #' 
-#' The use of the map services \code{"osm_thunderforest"} and \code{"mapbox"} require registration to obtain an API token/key which can be supplied to \code{map_token}. Register at \url{https://www.thunderforest.com/} and/or \url{https://www.mapbox.com/} to get a token.
+#' The use of some map services, e.g. \code{"osm_stadia"}, \code{"osm_thunderforest"} or \code{"mapbox"}, require registration to obtain an API token/key which can be supplied to \code{map_token}. See \code{\link[basemaps]{get_maptypes}} for details.
 #' 
-#' The projection of \code{m} is treated as target projection. Default basemaps accessed through a map service will be reprojected into the projection of \code{m}. Thus, depending on the projection of \code{m}, it may happen that map labels are distorted. To get undistorted map labels, reproject \code{m} to the web mercator projection (the default projection for basemaps): \code{spTransform(m, crs("+init=epsg:3857"))}
+#' The Coordinate Reference System defined by argument \code{crs} is treated as target projection. Both \code{m}, basemaps accessed through a map service, or custom imagery provided through argument \code{r} will be reprojected into \code{crs}. The default CRS is Web Mercator (EPSG 3857), which guarantees undistorted map labels in web basemap imagery.
 #'
 #' @return A frames object of class \code{moveVis}.
 #' 
