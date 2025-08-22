@@ -11,7 +11,7 @@ a consistent, unique temporal resolution for all supplied trajectories."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">moveVis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,14 @@ a consistent, unique temporal resolution for all supplied trajectories.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">align_move</span><span class="op">(</span><span class="va">m</span>, res <span class="op">=</span> <span class="st">"minimum"</span>, start_end_time <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">align_move</span><span class="op">(</span></span>
+<span>  <span class="va">m</span>,</span>
+<span>  res <span class="op">=</span> <span class="st">"minimum"</span>,</span>
+<span>  start_end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fill_na_values <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,7 +72,7 @@ a consistent, unique temporal resolution for all supplied trajectories.</p>
 
 
 <dt id="arg-res">res<a class="anchor" aria-label="anchor" href="#arg-res"></a></dt>
-<dd><p>either  a <code>units</code> object representing the temporal resolution <code>m</code> should be aligned to, or a character being one of 'min', 'max', 'mean' or 'median' to indicate how the target resolution should be derived from <code>m</code>.</p></dd>
+<dd><p>either  a <code>units</code> object representing the temporal resolution <code>m</code> should be aligned to, or a character being one of 'minimum', 'maximum', 'mean' or 'median' to indicate how the target resolution should be derived from <code>m</code>.</p></dd>
 
 
 <dt id="arg-start-end-time">start_end_time<a class="anchor" aria-label="anchor" href="#arg-start-end-time"></a></dt>
@@ -74,6 +81,10 @@ a consistent, unique temporal resolution for all supplied trajectories.</p>
 <li><p><code>"mean"</code> to use the rounded average temporal resolution of <code>m</code></p></li>
 <li><p><code>"median"</code> to use the rounded median temporal resolution of <code>m</code></p></li>
 </ul></dd>
+
+
+<dt id="arg-fill-na-values">fill_na_values<a class="anchor" aria-label="anchor" href="#arg-fill-na-values"></a></dt>
+<dd><p>logical, whether to fill empty (<code>NA</code>) values of columns of <code>m</code> at interpolated locations (defaults to <code>TRUE</code>). Column values at interpolated locations are filled with the value of the temporally closest location.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

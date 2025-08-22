@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">moveVis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,13 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.1" id="movevis-101">moveVis 1.0.1<a class="anchor" aria-label="anchor" href="#movevis-101"></a></h2>
+<p>Minor improvements.</p>
+<p><strong>New features:</strong></p>
+<ul><li>Added argument <code>fill_na_values</code> to <code>align_move</code> to allow control for whether <code>NA</code> values of columns at interpolated locations should be filled or not. <code>NA</code> values are filled with the value of the temporally closest location.</li>
+</ul><p><br></p>
+<hr></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="movevis-100">moveVis 1.0.0<a class="anchor" aria-label="anchor" href="#movevis-100"></a></h2>
 <p>Updating <code>moveVis</code> to support <code>move2</code> for representing trajectory data and <code>terra</code> for representing raster data.</p>
@@ -74,7 +81,8 @@
 <ul><li>
 <code>moveVis</code> was added to r-universe for continuous testing and integration. Like on CRAN, platform-specific binaries are build there to ease installation. You can now install the most recent <code>moveVis</code> version from r-universe using <code>install.packages("moveVis", repos = '16eagle.r-universe.dev')</code>
 </li>
-</ul></div>
+</ul><p><br></p>
+<hr></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.6" id="movevis-0106">moveVis 0.10.6<a class="anchor" aria-label="anchor" href="#movevis-0106"></a></h2>
 <p>New S3 class and methods to represent frames, lazy plotting, improvements.</p>

@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">moveVis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,62 +81,73 @@ relies on deprecated dependencies such as <code>move</code> (replaced by
 <code>moveVis</code> and the README as those resources have already been
 updated.</em></p>
 <p><code>moveVis</code> is entirely based on the <code>ggplot2</code>
-grammar of graphics. Each list element in <code>frames</code> is a
+grammar of graphics. Each <code>moveVis</code> frame is rendered as a
 <code>ggplot2</code> object that represents a single animation frame.
 Thus, it is possible to customize each frame individually using
-<code>ggplot2</code> functions. Instead, <code>moveVis</code> provides a
-set of functions for making it simpler to cutomize frames. We will use
-some of them in the following to customize <code>frames</code> that we
-created in the prior section:</p>
+<code>ggplot2</code> functions. Also, <code>moveVis</code> provides a
+set of functions for making it easier to customize frames. Let’s create
+some <code>moveVis</code> frames and change their apperance:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://movevis.org">moveVis</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move/" class="external-link">move</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bartk.gitlab.io/move2/" class="external-link">move2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"move_data"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># align movement tracks</span></span>
-<span><span class="va">move_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fl">4</span>, unit <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span></span>
+<span><span class="va">move_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align_move.html">align_move</a></span><span class="op">(</span><span class="va">move_data</span>, res <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"min"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create frames</span></span>
 <span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frames_spatial.html">frames_spatial</a></span><span class="op">(</span><span class="va">move_data</span>, path_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
-<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"watercolor"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>                         map_service <span class="op">=</span> <span class="st">"osm"</span>, map_type <span class="op">=</span> <span class="st">"topographic"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># edit frames</span></span>
 <span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_labels.html">add_labels</a></span><span class="op">(</span><span class="va">frames</span>, x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="co"># add labels, e.g. axis labels</span></span>
 <span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_progress.html">add_progress</a></span><span class="op">(</span><span class="va">frames</span><span class="op">)</span> <span class="co"># add a progress bar</span></span>
 <span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span><span class="va">frames</span>, height <span class="op">=</span> <span class="fl">0.015</span><span class="op">)</span> <span class="co"># add a scale bar</span></span>
 <span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="va">frames</span><span class="op">)</span> <span class="co"># add a north arrow</span></span>
-<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_timestamps.html">add_timestamps</a></span><span class="op">(</span><span class="va">frames</span>, <span class="va">move_data</span>, type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span> <span class="co"># add timestamps</span></span></code></pre></div>
+<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_timestamps.html">add_timestamps</a></span><span class="op">(</span><span class="va">frames</span>, type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span> <span class="co"># add timestamps</span></span></code></pre></div>
 <p>Alternatively, use the pipe, which (in my opinion) makes this more
 elegant:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edit frames</span></span>
-<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_labels.html">add_labels</a></span><span class="op">(</span><span class="va">frames</span>, x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_progress.html">add_progress</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span>height <span class="op">=</span> <span class="fl">0.015</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_timestamps.html">add_timestamps</a></span><span class="op">(</span><span class="va">move_data</span>, type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span></span>
+<span><span class="va">frames</span> <span class="op">&lt;-</span> <span class="va">frames</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_labels.html">add_labels</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Longitude"</span>, y <span class="op">=</span> <span class="st">"Latitude"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># add labels, e.g. axis labels</span></span>
+<span>  <span class="fu"><a href="../reference/add_progress.html">add_progress</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  <span class="co"># add a progress bar</span></span>
+<span>  <span class="fu"><a href="../reference/add_scalebar.html">add_scalebar</a></span><span class="op">(</span>height <span class="op">=</span> <span class="fl">0.015</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  <span class="co"># add a scale bar</span></span>
+<span>  <span class="fu"><a href="../reference/add_northarrow.html">add_northarrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  <span class="co"># add a north arrow</span></span>
+<span>  <span class="fu"><a href="../reference/add_timestamps.html">add_timestamps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span> <span class="co"># add timestamps</span></span>
 <span></span>
 <span><span class="co">## Have a look at one of the frames:</span></span>
 <span><span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_01.png"></p>
-<p>For further details on these functions, please see their help files.
-If you want to apply your own <code>ggplot2</code> syntax to
+<p>It’s also possible to apply your own <code>ggplot2</code> syntax to
 <code>frames</code>, e.g. for drawing polygons, lines or points that are
-static or even change with time, you can do this frame-wise. In the
-following example, we customize one individual frame just as if you
-would work with a single <code>ggplot2</code> object:</p>
+static or change with time. Let’s start with editing a single frame. In
+the following example, we create an <code>sf</code> polygon using
+Lat/Lon coordinates (EPSG:4326), transform it to Pseudo Mercator (EPSG
+3857) to match the Coordinate Reference System of default basemaps, and
+add it to one individual frame:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8.917</span>, <span class="fl">8.924</span>, <span class="fl">8.924</span>, <span class="fl">8.916</span>, <span class="fl">8.917</span><span class="op">)</span>,</span>
-<span>                   y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">47.7678</span>, <span class="fl">47.7675</span>, <span class="fl">47.764</span>, <span class="fl">47.7646</span>, <span class="fl">47.7678</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8.96</span>, <span class="fl">8.955</span>, <span class="fl">8.959</span>, <span class="fl">8.963</span>, <span class="fl">8.968</span>, <span class="fl">8.963</span>, <span class="fl">8.96</span><span class="op">)</span>,</span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">47.725</span>, <span class="fl">47.728</span>, <span class="fl">47.729</span>, <span class="fl">47.728</span>, <span class="fl">47.725</span>, <span class="fl">47.723</span>, <span class="fl">47.725</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># just customize a single frame and have a look at it</span></span>
-<span><span class="va">frame_test</span> <span class="op">&lt;-</span> <span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_path</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>                                        colour <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span>
-<span><span class="va">frame_test</span></span></code></pre></div>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">3857</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">frame_edited</span> <span class="op">&lt;-</span> <span class="va">frames</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">data</span>, colour <span class="op">=</span> <span class="st">"red"</span>, fill <span class="op">=</span> <span class="st">"transparent"</span>, </span>
+<span>    linetype <span class="op">=</span> <span class="st">"dashed"</span>, lwd <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">frame_edited</span></span></code></pre></div>
 <p align="center">
 <img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_02.png"></p>
 <p>If you just want to change one or a small selection of frames, you
@@ -177,7 +188,7 @@ changing with each frame:</p>
 <span></span>
 <span><span class="co">## now alter the coordinates to make them shift</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">data</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, mean <span class="op">=</span> <span class="fl">0.00001</span>, sd <span class="op">=</span> <span class="fl">0.0001</span><span class="op">)</span> </span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, mean <span class="op">=</span> <span class="fl">0.00001</span>, sd <span class="op">=</span> <span class="fl">0.0001</span><span class="op">)</span> </span>
 <span>  <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
