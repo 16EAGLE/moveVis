@@ -5,40 +5,41 @@ output: html_document
 
 *Note: This vignette has not yet been updated to the most recent `moveVis` version. Displayed code will likely not work as it relies on deprecated dependencies such as `move` (replaced by `move2`) or `raster` (replaced by `terra`). For details, see the help pages of `moveVis` and the README as those resources have already been updated.*
 
-`moveVis` is entirely based on the `ggplot2` grammar of graphics. Each list element in `frames` is a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Instead, `moveVis` provides a set of functions for making it simpler to cutomize frames. We will use some of them in the following to customize `frames` that we created in the prior section:
+`moveVis` is entirely based on the `ggplot2` grammar of graphics. Each `moveVis` frame is rendered as a `ggplot2` object that represents a single animation frame. Thus, it is possible to customize each frame individually using `ggplot2` functions. Also, `moveVis` provides a set of functions for making it easier to customize frames. Let's create some `moveVis` frames and change their apperance:
 
 ```R
 library(moveVis)
-library(move)
-library(raster)
+library(move2)
+library(sf)
 library(ggplot2)
 
 data("move_data")
 
 # align movement tracks
-move_data <- align_move(move_data, res = 4, unit = "mins")
+move_data <- align_move(move_data, res = units::set_units(4, "min"))
 
 # create frames
 frames <- frames_spatial(move_data, path_colours = c("red", "green", "blue"),
-                         map_service = "osm", map_type = "watercolor", alpha = 0.5)
+                         map_service = "osm", map_type = "topographic", alpha = 0.5)
 
 # edit frames
 frames <- add_labels(frames, x = "Longitude", y = "Latitude") # add labels, e.g. axis labels
 frames <- add_progress(frames) # add a progress bar
 frames <- add_scalebar(frames, height = 0.015) # add a scale bar
 frames <- add_northarrow(frames) # add a north arrow
-frames <- add_timestamps(frames, move_data, type = "label") # add timestamps
+frames <- add_timestamps(frames, type = "label") # add timestamps
 ```
 
 Alternatively, use the pipe, which (in my opinion) makes this more elegant:
 
 ```R
 # edit frames
-frames <- add_labels(frames, x = "Longitude", y = "Latitude") %>% 
-  add_progress() %>% 
-  add_scalebar(height = 0.015) %>% 
-  add_northarrow() %>% 
-  add_timestamps(move_data, type = "label")
+frames <- frames %>% 
+  add_labels(x = "Longitude", y = "Latitude") %>% # add labels, e.g. axis labels
+  add_progress() %>%  # add a progress bar
+  add_scalebar(height = 0.015) %>%  # add a scale bar
+  add_northarrow() %>%  # add a north arrow
+  add_timestamps(type = "label") # add timestamps
 
 ## Have a look at one of the frames:
 frames[[100]]
@@ -46,20 +47,29 @@ frames[[100]]
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_01.png"></p>
 
-For further details on these functions, please see their help files. If you want to apply your own `ggplot2` syntax to `frames`, e.g. for drawing polygons, lines or points that are static or even change with time, you can do this frame-wise. In the following example, we customize one individual frame just as if you would work with a single `ggplot2` object:
+It's also possible to apply your own `ggplot2` syntax to `frames`, e.g. for drawing polygons, lines or points that are static or change with time. Let's start with editing a single frame. In the following example, we create an `sf` polygon using Lat/Lon coordinates (EPSG:4326), transform it to Pseudo Mercator (EPSG 3857) to match the Coordinate Reference System of default basemaps, and add it to one individual frame:
 
 ```R
-data <- data.frame(x = c(8.917, 8.924, 8.924, 8.916, 8.917),
-                   y = c(47.7678, 47.7675, 47.764, 47.7646, 47.7678))
+data <- cbind(
+  x = c(8.96, 8.955, 8.959, 8.963, 8.968, 8.963, 8.96),
+  y = c(47.725, 47.728, 47.729, 47.728, 47.725, 47.723, 47.725)
+)
 
-# just customize a single frame and have a look at it
-frame_test <- frames[[100]] + geom_path(aes(x = x, y = y), data = data,
-                                        colour = "red", linetype = "dashed")
-frame_test
+data <- list(data) %>% 
+  st_polygon() %>% 
+  st_geometry() %>% 
+  st_as_sf(crs = st_crs(4326)) %>% 
+  st_transform(crs = st_crs(3857))
+
+frame_edited <- frames[[100]] + geom_sf(
+    data = data, colour = "red", fill = "transparent", 
+    linetype = "dashed", lwd = 1
+) + coord_sf(expand = F)
+
+frame_edited
 ```
 
 <p align="center"><img width="700" src="https://raw.githubusercontent.com/16EAGLE/AUX_data/master/data/moveVis_readme/readme_example2_02.png"></p>
-
 
 If you just want to change one or a small selection of frames, you could just manipulate those frames like shown above and assign the cusomized `ggplot2` frames to the equivalent elements in your `frames` list.
 

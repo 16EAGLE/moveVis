@@ -1,5 +1,17 @@
 ***
 
+## moveVis 1.0.1
+Minor improvements.
+
+**New features:**
+
+* Added argument `fill_na_values` to `align_move` to allow control for whether `NA` values of columns at interpolated locations should be filled or not. `NA` values are filled with the value of the temporally closest location.
+
+
+<br>
+
+***
+
 ## moveVis 1.0.0
 Updating `moveVis` to support `move2` for representing trajectory data and `terra` for representing raster data.
 
@@ -29,6 +41,10 @@ Updating `moveVis` to support `move2` for representing trajectory data and `terr
 
 * `moveVis` was added to r-universe for continuous testing and integration. Like on CRAN, platform-specific binaries are build there to ease installation. You can now install the most recent `moveVis` version from r-universe using `install.packages("moveVis", repos = '16eagle.r-universe.dev')`
 
+<br>
+
+***
+
 ## moveVis 0.10.6
 New S3 class and methods to represent frames, lazy plotting, improvements.
 
@@ -54,7 +70,6 @@ New S3 class and methods to represent frames, lazy plotting, improvements.
 * Fixed bug in adding margin to user `ext` in `frames_spatial()`
 * Fixed bug with paths crossing end of grid (aka dateline) when `cross_dateline=TRUE` in `frames_spatial()`
 * Fixing bug causing no path to be displayed at all when `tail_length=0` (now correctly showing points without tails)
-
 
 <br>
 

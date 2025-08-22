@@ -6,7 +6,7 @@
 #' 
 #' @inheritParams frames_spatial
 #' @param m \code{move2} object, which is allowed to contain irregular timestamps and diverging temporal resolutions.
-#' @param res either  a \code{units} object representing the temporal resolution \code{m} should be aligned to, or a character being one of 'min', 'max', 'mean' or 'median' to indicate how the target resolution should be derived from \code{m}.
+#' @param res either  a \code{units} object representing the temporal resolution \code{m} should be aligned to, or a character being one of 'minimum', 'maximum', 'mean' or 'median' to indicate how the target resolution should be derived from \code{m}.
 #' @param start_end_time \code{NULL} (default) or a vector of two POSIXct times (one start time and one end time for alignment). If \code{NULL}, the start and end time are retrieved from \code{m} and used for alignment.
 #' \itemize{
 #'   \item \code{"minimum"} to use the smallest temporal resolution of \code{m} (default)
@@ -14,6 +14,8 @@
 #'   \item \code{"mean"} to use the rounded average temporal resolution of \code{m}
 #'   \item \code{"median"} to use the rounded median temporal resolution of \code{m}
 #' }
+#' @param fill_na_values logical, whether to fill empty (\code{NA}) values of columns of \code{m} at interpolated locations (defaults to \code{TRUE}). Column values at interpolated locations are filled with the value of the temporally closest location.
+#' 
 #' @param ... deprecated arguments, including \code{digit}, \code{unit} and \code{spaceMethod}.
 #'
 #' @return \code{move2} object, with aligned positions at uniform temporal scale computed from \code{m}, ready to be used by \code{\link{frames_spatial}}.
@@ -70,13 +72,15 @@
 #' 
 #' @export
 
-align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE){
+align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values = TRUE, ..., verbose = TRUE){
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   
   extras <- list(...)
   if(!is.null(extras$digit)) out("Argument 'digit' is deprecated. See ?moveVis::align_move for details.", type = 2)
   if(!is.null(extras$unit)) out("Argument 'unit' is deprecated. See ?moveVis::align_move for details.", type = 2)
   if(!is.null(extras$spaceMethod)) out("Argument 'spaceMethod' is deprecated. See ?moveVis::align_move for details.", type = 2)
+  
+  if(!is.logical(fill_na_values)) fill_na_values <- TRUE
   
   # check inputs
   .check_move2(m)
@@ -85,7 +89,7 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose =
   if(any(m_length < 2)) out(paste0("Individual track(s) ", paste0(which(m_length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
   # check resolution and define resolution
-  if(all(!c(inherits(res, "units"), inherits(res, "character")))) out("Argument 'res' must either be a 'units' object or one of c('min', 'max', 'mean', 'median').", type = 3)
+  if(all(!c(inherits(res, "units"), inherits(res, "character")))) out("Argument 'res' must either be a 'units' object or one of c('minimum', 'maximum', 'mean', 'median').", type = 3)
   if(inherits(res, "units")){
     time_unit <- as_units("s")
     is_time_unit <- ud_are_convertible(deparse_unit(res), deparse_unit(time_unit))
@@ -176,6 +180,43 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, ..., verbose =
   # reorder by time
   m_aligned <- m_aligned[order(m_aligned$timestamp),]
   m_aligned <- m_aligned[order(mt_track_id(m_aligned)),]
+  
+  # fill variables
+  if(isTRUE(fill_na_values)){
+    m_aligend_filled <- lapply(split(m_aligned, mt_track_id(m_aligned)), function(m_track){
+      for(x in names_attr){
+        this_attr <- m_track[[x]]
+          
+        m_track[[x]] <- sapply(1:length(this_attr), function(i){
+          if(!is.na(this_attr[i])){
+            this_attr[i]
+          } else{
+            left <- if(i == 1) NULL else 1:(i-1)
+            right <- if(i == length(this_attr)) NULL else (i+1):length(this_attr)
+            
+            if(!is.null(left)){
+              non_na <- left[which(!is.na(this_attr[left]))[1]]
+            } else non_na <- NULL
+            if(!is.null(right)){
+              non_na <- c(non_na, right[which(!is.na(this_attr[right]))[1]])
+            }
+            
+            non_na_diff <- abs(sapply(non_na, function(.non_na){
+              difftime(
+                m_track[[mt_time_column(m_track)]][.non_na],
+                m_track[[mt_time_column(m_track)]][i],
+                units = "secs"
+              )
+            }))
+            
+            this_attr[non_na[which.min(non_na_diff)]]
+          }
+        })
+      }
+      return(m_track)
+    })
+    m_aligned <- do.call(rbind, m_aligend_filled)
+  }
   
   # for now, we just return the aligned data
   m_aligned <- m_aligned[m_aligned$interpolated,]

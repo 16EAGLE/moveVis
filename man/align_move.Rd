@@ -4,12 +4,19 @@
 \alias{align_move}
 \title{Align movement data}
 \usage{
-align_move(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE)
+align_move(
+  m,
+  res = "minimum",
+  start_end_time = NULL,
+  fill_na_values = TRUE,
+  ...,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{m}{\code{move2} object, which is allowed to contain irregular timestamps and diverging temporal resolutions.}
 
-\item{res}{either  a \code{units} object representing the temporal resolution \code{m} should be aligned to, or a character being one of 'min', 'max', 'mean' or 'median' to indicate how the target resolution should be derived from \code{m}.}
+\item{res}{either  a \code{units} object representing the temporal resolution \code{m} should be aligned to, or a character being one of 'minimum', 'maximum', 'mean' or 'median' to indicate how the target resolution should be derived from \code{m}.}
 
 \item{start_end_time}{\code{NULL} (default) or a vector of two POSIXct times (one start time and one end time for alignment). If \code{NULL}, the start and end time are retrieved from \code{m} and used for alignment.
 \itemize{
@@ -18,6 +25,8 @@ align_move(m, res = "minimum", start_end_time = NULL, ..., verbose = TRUE)
   \item \code{"mean"} to use the rounded average temporal resolution of \code{m}
   \item \code{"median"} to use the rounded median temporal resolution of \code{m}
 }}
+
+\item{fill_na_values}{logical, whether to fill empty (\code{NA}) values of columns of \code{m} at interpolated locations (defaults to \code{TRUE}). Column values at interpolated locations are filled with the value of the temporally closest location.}
 
 \item{...}{deprecated arguments, including \code{digit}, \code{unit} and \code{spaceMethod}.}
 
