@@ -71,3 +71,47 @@ test_that("frames_graph (discrete, hist)", {
   expect_is(frames[[1]], "ggplot")
 })
 #}
+
+test_that("frames_graph maps correct colours to tracks (flow)", {
+  fr <- frames_graph(
+    m = m.aligned,
+    r_grad,
+    graph_type = "flow",
+    verbose = F,
+    path_colours = c("#F2A08F", "#65A7C9", "#461A6B")
+  )
+  
+  built <- ggplot2::ggplot_build(fr[[50]])
+  sc <- built$plot$scales$get_scales("colour")
+  
+  lims <- sc$get_limits()
+  cols <- sc$map(lims)
+  
+  pal <- setNames(cols, lims)
+  
+  expect_equal(pal[["T246a"]],  "#F2A08F")
+  expect_equal(pal[["T342g"]],  "#65A7C9")
+  expect_equal(pal[["T932u"]],  "#461A6B")
+})
+
+test_that("frames_graph maps correct colours to tracks (hist)", {
+  fr <- frames_graph(
+    m = m.aligned,
+    r_grad,
+    graph_type = "hist",
+    verbose = F,
+    path_colours = c("#F2A08F", "#65A7C9", "#461A6B")
+  )
+  
+  built <- ggplot2::ggplot_build(fr[[50]])
+  sc <- built$plot$scales$get_scales("colour")
+  
+  lims <- sc$get_limits()
+  cols <- sc$map(lims)
+  
+  pal <- setNames(cols, lims)
+  
+  expect_equal(pal[["T246a"]],  "#F2A08F")
+  expect_equal(pal[["T342g"]],  "#65A7C9")
+  expect_equal(pal[["T932u"]],  "#461A6B")
+})

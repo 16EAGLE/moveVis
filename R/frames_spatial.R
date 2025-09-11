@@ -15,7 +15,7 @@
 #' @param path_colours character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.
 #' @param path_alpha numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.
 #' @param path_fade logical, whether paths should be faded towards the last frame or not. Useful, if \code{trace_show = TRUE} and you want to hold the last frame using \code{end_pause} in \code{\link{animate_frames}}.
-#' @param path_legend logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.
+#' @param path_legend logical, whether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.
 #' @param path_legend_title character, path legend title. Default is \code{"Names"}.
 #' @param tail_length numeric, length of tail per movement path.
 #' @param tail_size numeric, size of the last tail element. Default is 1.

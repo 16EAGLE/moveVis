@@ -22,6 +22,29 @@ test_that("frames_spatial (default maps)", {
   expect_error(frames_spatial(m.aligned, equidistant = "abc", map_res = 0.1, verbose = F)) # false path_legend
 })
 
+test_that("frames_spatial maps correct colours to tracks", {
+  fr <- frames_spatial(
+    m = m.aligned,
+    verbose = F,
+    map_res = 0.1,
+    path_colours = c("#F2A08F", "#65A7C9", "#461A6B")
+  )
+
+  built <- ggplot2::ggplot_build(fr[[50]])
+
+  built <- ggplot2::ggplot_build(fr[[50]])
+  sc <- built$plot$scales$get_scales("colour")
+  
+  lims <- sc$get_limits()
+  cols <- sc$map(lims)
+
+  pal <- setNames(cols, lims)
+  
+  expect_equal(pal[["T246a"]],  "#F2A08F")
+  expect_equal(pal[["T342g"]],  "#65A7C9")
+  expect_equal(pal[["T932u"]],  "#461A6B")
+})
+
 test_that("frames_spatial (raster, gradient)", {
   # correct calls
   frames <- expect_length(expect_is(frames_spatial(m.aligned, r = r_grad, r_type = "gradient", verbose = F), "moveVis"), 188)

@@ -555,7 +555,8 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
     coords <- st_coordinates(x)
     st_sf(geometry = st_sfc(st_linestring(coords), crs = st_crs(x)))  
   }))
-  x_lines_legend$name <- unique(m_names)
+  x_lines_legend$name <- factor(unique(m_names), levels = unique(m_names))
+  x_lines_legend$colour <- unique(m_colour)
   
   # scale plot to ext and set na.rm to TRUE to avoid warnings
   y$layers[[1]]$geom_params$na.rm <- T
@@ -577,7 +578,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
       geom_sf(data = x_lines_legend, aes(colour = .data$name, linetype = NA), linewidth = path_size, na.rm = TRUE) + 
       scale_linetype(guide = "none") +
       scale_colour_manual(
-        values = unique(m_colour),
+        values = setNames(x_lines_legend$colour, x_lines_legend$name),
         name = path_legend_title) + guides(color = guide_legend(order = 1)))
   }    
   
@@ -600,13 +601,16 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   
   ## add legend
   if(isTRUE(path_legend)){
-    l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name),
-                             colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
+    colour_pos <- sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )
+    
+    l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = names(colour_pos),
+                             colour = as.character(y$colour[colour_pos]), stringsAsFactors = F)
     l.df$name <- factor(l.df$name, levels = l.df$name)
     l.df <- rbind(l.df, l.df)
     p <- p + geom_path(data = l.df, aes(x = .data$frame, y = .data$value, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA)
-  }  
+  }
   return(p)
+  
 }
 
 
@@ -631,11 +635,10 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
                              colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
     l.df$name <- factor(l.df$name, levels = l.df$name)
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes(x = .data$value, y = .data$count, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA
+    p <- p + geom_path(data = l.df, aes(x = .data$value, y = .data$count, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = setNames(as.character(l.df$colour), as.character(l.df$name)), name = path_legend_title) #linetype = NA
   }
   return(p)
 }
-
 
 #' package attatching
 #' @noRd 
