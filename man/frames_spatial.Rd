@@ -16,7 +16,7 @@ frames_spatial(
   map_token = NULL,
   map_dir = NULL,
   margin_factor = 1.1,
-  equidistant = NULL,
+  equidistant = TRUE,
   ext = NULL,
   crs = if (is.null(r)) st_crs(3857) else st_crs(terra::crs(r)),
   crs_graticule = st_crs(4326),
@@ -66,7 +66,7 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{margin_factor}{numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.}
 
-\item{equidistant}{logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.}
+\item{equidistant}{logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = TRUE}). If \code{ext} is set, this argument will always be \code{FALSE}. Read more in the details.}
 
 \item{ext}{\code{sf bbox} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, the extent is computed from \code{m}, optionally with a margin set by \code{margin_factor}.}
 

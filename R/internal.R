@@ -152,76 +152,74 @@ repl_vals <- function(data, x, y){
   return(st_bbox(.st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
 }
 
+#' This calculates an extent for an input move2 object and provides it in
+#' a desired output CRS.
+#' 
+#' If a custom extent is provided to `ext`, all scaling arguments are ignored,
+#' as we assume the custom extent itself is the desired output bbox.
+#' 
 #' generate ext, return as latlon
 #' @importFrom sf st_as_sf st_transform st_crs st_bbox st_as_sfc st_intersects st_coordinates
 #' @noRd 
-.ext <- function(m, crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = NULL, return_latlon = FALSE){
-  
-  m_ll <- st_as_sf(m, coords=c("x", "y"), crs = crs, remove = F)
-  m_ll <- st_transform(m_ll, st_crs(4326))
-  
-  ## calculate ext
-  gg.ext <- st_bbox(m_ll)
-  
-  if(!is.null(ext)){
-    ext <- st_bbox(st_transform(ext, st_crs(m_ll)))
-    #ext <- st_bbox(st_transform(st_as_sfc(st_bbox(ext, crs = crs)), st_crs(4326)))
+.ext <- function(m, crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE) {
+  # m may not be in same CRS as crs, but st_as_sf uses m's CRS if crs is inconsistent
+  m <- st_as_sf(m, coords = c("x", "y"), crs = crs, remove = F)
+
+  # If no user-provided ext, calculate from m bbox, using margin_factor/equidistant
+  if (is.null(ext)) {
+    gg.ext <- st_bbox(st_transform(m, st_crs(4326)))
     
-    if(!quiet(st_intersects(st_as_sfc(ext), st_as_sfc(gg.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
-    margin_factor <- 1 # no margin since user extent set
+    xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
+    
+    # equidistant currently not supported for cross_dateline
+    if(isTRUE(equidistant)){
+      gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor)
+    }else{
+      gg.ext <- st_bbox(
+        c(
+          gg.ext[1:2] - (xy.diff*(-1+margin_factor)), 
+          gg.ext[3:4] + (xy.diff*(-1+margin_factor))
+        ), 
+        crs = st_crs(gg.ext)
+      )
+    }
+  } else {
+    # Otherwise, just need to ensure user provided ext overlaps data ext
+    stopifnot(inherits(ext, "bbox"))
+    
     gg.ext <- ext
-  }
-  
-  # xy.diff <- if(isTRUE(cross_dateline)){
-  #   xy <- st_coordinates(m)
-  #   c(abs(abs(max(xy[xy[,1] < 0, 1])) - min(xy[xy[,1] > 0,1])), gg.ext[4]-gg.ext[2])/2
-  # }else (gg.ext[3:4] - gg.ext[1:2])/2
-  xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
-  
-  # squared equidistant extent or not
-  # if(isTRUE(cross_dateline)){
-  #   
-  #   # split extents for both dateline sides
-  #   gg.ext <- list("west" = gg.ext, "east" = gg.ext)
-  #   
-  #   # cut extents and add margins to x components
-  #   gg.ext$west[[1]] <- -180 #xmin
-  #   gg.ext$west[[3]] <- max(xy[xy[,1] < 0,1]) + xy.diff[1]*(-1+margin_factor) #xmax
-  #   gg.ext$east[[1]] <- min(xy[xy[,1] > 0,1]) - xy.diff[1]*(-1+margin_factor) #xmin
-  #   gg.ext$east[[3]] <- 180 #xmax
-  #   
-  #   # add margins to y components
-  #   gg.ext$west[[2]] <- gg.ext$west[[2]] - xy.diff[2]*(-1+margin_factor) #ymin
-  #   gg.ext$west[[4]] <- gg.ext$west[[4]] + xy.diff[2]*(-1+margin_factor) #ymax
-  #   gg.ext$east[[2]] <- gg.ext$east[[2]] - xy.diff[2]*(-1+margin_factor) #ymin
-  #   gg.ext$east[[4]] <- gg.ext$east[[4]] + xy.diff[2]*(-1+margin_factor) #ymax
-  #   
-  # } else{
     
-  # equidistant currently not supported for cross_dateline
-  if(isTRUE(equidistant)){
-    gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor)
-  }else{
-    gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = st_crs(gg.ext))
+    has_intersection <- quiet(
+      st_intersects(
+        st_transform(st_as_sfc(gg.ext), st_crs(m)),
+        st_as_sfc(st_bbox(m)),
+        sparse = F
+      )
+    )
+    
+    if(!has_intersection[1,1]) {
+      out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
+    }
   }
   
-  # cut by longlat maximums
-  if(isTRUE(st_crs(m) == st_crs(4326))){
+  # Transform gg.ext to desired output crs
+  transform_ext <- function(y, crs) st_bbox(st_transform(st_as_sfc(y), crs))
+  
+  if(inherits(gg.ext, "list")){
+    gg.ext <- lapply(gg.ext, function(y) transform_ext(y, crs))
+  } else{
+    gg.ext <- transform_ext(gg.ext, crs)
+  }
+  
+  # cut by longlat maximums if gg.ext is in 4326
+  if(isTRUE(crs == st_crs(4326))){
     if(gg.ext[1] < -180) gg.ext[1] <- -180
     if(gg.ext[3] > 180) gg.ext[3] <- 180
     if(gg.ext[2] < -90) gg.ext[2] <- -90
     if(gg.ext[4] > 90) gg.ext[4] <- 90
   }
   
-  if(isFALSE(return_latlon)){
-    transform_ext <- function(y) st_bbox(st_transform(st_as_sfc(y), crs))
-    if(inherits(gg.ext, "list")){
-      gg.ext <- lapply(gg.ext, transform_ext)
-    } else{
-      gg.ext <- transform_ext(gg.ext)
-    }
-  }
-  return(gg.ext)
+  gg.ext
 }
 
 #' calculate x labels from breaks
