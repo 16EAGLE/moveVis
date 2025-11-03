@@ -33,3 +33,12 @@ test_that("align_move (default)", {
   expect_warning(align_move(m, digit = "max", verbose = F))
 })
 #}
+
+test_that("align_move() handles empty factor levels", {
+  m_filt <- move2::filter_track_data(m, .track_id = c("T246a", "T932u"))
+  
+  expect_silent(x <- align_move(m_filt, verbose = FALSE))
+  expect_is(x, "move2")
+  expect_length(na.omit(unique(unlist(move2::mt_time_lags(x, units = "secs")))), 1)
+  expect_equal(nrow(x), 300)
+})

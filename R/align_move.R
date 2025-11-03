@@ -84,8 +84,8 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   
   # check inputs
   .check_move2(m)
-  m_tracks <- split(m, mt_track_id(m))
-  m_length <- if(mt_n_tracks(m) > 1) sapply(split(m, mt_track_id(m)), nrow) else nrow(m)
+  m_tracks <- split(m, mt_track_id(m), drop = TRUE)
+  m_length <- if(mt_n_tracks(m) > 1) sapply(split(m, mt_track_id(m), drop = TRUE), nrow) else nrow(m)
   if(any(m_length < 2)) out(paste0("Individual track(s) ", paste0(which(m_length < 2), collapse = ", "), " of 'm' consist(s) of less than 2 locations. A minimum of 2 locations per indvidual track is required for alignment."), type = 3)
   
   # check resolution and define resolution
@@ -183,7 +183,7 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   
   # fill variables
   if(isTRUE(fill_na_values)){
-    m_aligend_filled <- lapply(split(m_aligned, mt_track_id(m_aligned)), function(m_track){
+    m_aligend_filled <- lapply(split(m_aligned, mt_track_id(m_aligned), drop = TRUE), function(m_track){
       for(x in names_attr){
         this_attr <- m_track[[x]]
           

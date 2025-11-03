@@ -343,7 +343,7 @@ repl_vals <- function(data, x, y){
 #' @noRd 
 .time_conform <- function(m){
   
-  m.indi <- if(mt_n_tracks(m) > 1) split(m, mt_track_id(m)) else list(m)
+  m.indi <- if(mt_n_tracks(m) > 1) split(m, mt_track_id(m), drop = TRUE) else list(m)
   ts <- .lapply(m.indi, mt_time, moveVis.verbose = F)
   tl <- .lapply(m.indi, mt_time_lags, unit = "secs", moveVis.verbose = F)
   
