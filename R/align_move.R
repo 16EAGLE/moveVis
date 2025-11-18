@@ -178,7 +178,7 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   m_aligned <- mt_set_track_data(m_aligned, mt_track_data(m))
   
   # reorder by time
-  m_aligned <- m_aligned[order(m_aligned$timestamp),]
+  m_aligned <- m_aligned[order(mt_time(m_aligned)),]
   m_aligned <- m_aligned[order(mt_track_id(m_aligned)),]
   
   # fill variables
