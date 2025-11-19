@@ -110,13 +110,20 @@ animate_frames <- function(frames, out_file, fps = 25, width = 700, height = 700
   dir.create(frames_dir, recursive = T)
   
   tryCatch({
-    file <- file.path(frames_dir, "frame_%05d.png")
-    grDevices::png(file, width = width, height = height, res = res)
-    graphics::par(ask = FALSE)
-    .lapply(1:length(frames), function(i){
-      quiet(print(frames[[i]]))
-    }, moveVis.n_cores = 1)
-    grDevices::dev.off()
+    .lapply(
+      1:length(frames), 
+      function(i) {
+        file <- file.path(frames_dir, sprintf("frame_%05d.png", i))
+        
+        grDevices::png(file, width = width, height = height, res = res)
+        graphics::par(ask = FALSE)
+        
+        quiet(print(frames[[i]]))
+        grDevices::dev.off()
+      }, 
+      moveVis.n_cores = 1
+    )
+    
     frames_files <- list.files(frames_dir, full.names = TRUE)
     
     # animate PNGs

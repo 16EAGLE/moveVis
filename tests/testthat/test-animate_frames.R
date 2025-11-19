@@ -6,9 +6,11 @@ test_that("animate_frames", {
   frames <- frames_spatial(m.aligned, r_grad, r_type = "gradient", verbose = F)[1:10]
   file.gif <- tempfile(tmpdir = test_dir, fileext = ".gif")
   expect_null(animate_frames(frames, out_file = file.gif, verbose = F, overwrite = T, display = F))
+  expect_true(file.exists(file.gif))
   
   file.mov <- tempfile(tmpdir = test_dir, fileext = ".mov")
   expect_null(animate_frames(frames, out_file = file.mov, verbose = F, overwrite = T, display = F))
+  expect_true(file.exists(file.mov))
   
   # end pause
   expect_null(animate_frames(frames, out_file = file.mov, verbose = F, overwrite = T, display = F, end_pause = 2))
