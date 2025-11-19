@@ -33,3 +33,21 @@ test_that("align_move (default)", {
   expect_warning(align_move(m, digit = "max", verbose = F))
 })
 #}
+
+test_that("Fill most proximate value when `fill_na_vals = TRUE`", {
+  m <- move_data
+  m[["x"]] <- sample(100, size = nrow(m), replace = TRUE)
+  
+  a <- align_move(m, res = units::set_units(2, "min"), verbose = FALSE)
+  
+  # Check each track separately, as timestamps should not be matched
+  # for interpolation across tracks. Each interpolated value in `a` should
+  # match the value in `m` where the min timestamp criterion is met
+  for (track in unique(a$track)) {
+    a1 <- move2::filter_track_data(a, .track_id = track)
+    m1 <- move2::filter_track_data(m, .track_id = track)
+    
+    idx <- sapply(a1$timestamp, function(x) which.min(abs(x - m1$timestamp)))
+    expect_equal(a1$x, m1$x[idx])
+  }
+})

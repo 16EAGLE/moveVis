@@ -152,10 +152,10 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   
   # assemble sf object
   m_aligned <- lapply(1:length(m_tracks), function(i) st_sf(
-    interpolated = c(rep(FALSE, nrow(m_tracks[[i]])), rep(TRUE, length(m_aligned[[i]]))),
+    interpolated = TRUE,
     track = names(m_tracks)[i],
-    timestamp = c(mt_time(m_tracks[[i]]), times_target[[i]]),
-    geometry = c(st_geometry(m_tracks[[i]]), m_aligned[[i]])
+    timestamp = times_target[[i]],
+    geometry = m_aligned[[i]]
   ))
   m_aligned <- do.call(rbind, m_aligned)
   colnames(m_aligned) <- c("interpolated", mt_track_id_column(m), mt_time_column(m), attr(m, "sf_column"))
@@ -181,41 +181,24 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   m_aligned <- m_aligned[order(m_aligned$timestamp),]
   m_aligned <- m_aligned[order(mt_track_id(m_aligned)),]
   
-  # fill variables
-  if(isTRUE(fill_na_values)){
-    m_aligend_filled <- lapply(split(m_aligned, mt_track_id(m_aligned)), function(m_track){
-      for(x in names_attr){
-        this_attr <- m_track[[x]]
-          
-        m_track[[x]] <- sapply(1:length(this_attr), function(i){
-          if(!is.na(this_attr[i])){
-            this_attr[i]
-          } else{
-            left <- if(i == 1) NULL else 1:(i-1)
-            right <- if(i == length(this_attr)) NULL else (i+1):length(this_attr)
-            
-            if(!is.null(left)){
-              non_na <- left[which(!is.na(this_attr[left]))[1]]
-            } else non_na <- NULL
-            if(!is.null(right)){
-              non_na <- c(non_na, right[which(!is.na(this_attr[right]))[1]])
-            }
-            
-            non_na_diff <- abs(sapply(non_na, function(.non_na){
-              difftime(
-                m_track[[mt_time_column(m_track)]][.non_na],
-                m_track[[mt_time_column(m_track)]][i],
-                units = "secs"
-              )
-            }))
-            
-            this_attr[non_na[which.min(non_na_diff)]]
-          }
-        })
+  if (isTRUE(fill_na_values) && length(names_attr) > 0) {
+    m_aligned_filled <- split(m_aligned, mt_track_id(m_aligned))
+    
+    # Split by track to avoid interpolating values across tracks
+    for (i in seq(1, length(m_aligned_filled))) {
+      for (att in names_attr) {
+        # Identify closest timestamps for each missing record
+        idx <- nearest_time_idx(
+          m_aligned_filled[[i]][[att]],
+          mt_time(m_aligned_filled[[i]])
+        )
+        
+        x <- m_aligned_filled[[i]][[att]]
+        m_aligned_filled[[i]][[att]][is.na(x)] <- x[!is.na(x)][idx]
       }
-      return(m_track)
-    })
-    m_aligned <- do.call(rbind, m_aligend_filled)
+    }
+    
+    m_aligned <- do.call(rbind, m_aligned_filled)
   }
   
   # for now, we just return the aligned data
@@ -223,4 +206,20 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   m_aligned$interpolated <- NULL
   
   return(m_aligned)
+}
+
+# Helper to identify index position of the temporally closest filled records
+# using an input vector `x` with values to use for interpolation (and `NA`
+# values at locations that need interpolation) and an input timestamp vector
+# `time` that is used to identify the closest temporal records in `x`.
+nearest_time_idx <- function(x, time) {
+  stopifnot(length(x) == length(time))
+  non_na <- !is.na(x)
+  if (all(non_na) || all(!non_na)) return(x)
+  
+  # numeric representation of time for distance comparisons
+  time <- as.numeric(time)
+  time_non_na <- time[non_na]
+  
+  sapply(time[!non_na], function(t) which.min(abs(time_non_na - t)))
 }
