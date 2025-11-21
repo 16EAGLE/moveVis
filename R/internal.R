@@ -531,7 +531,7 @@ repl_vals <- function(data, x, y){
 #' @importFrom ggnewscale new_scale_colour
 #' @importFrom rlang .data
 #' @noRd
-gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant, tail_length){
+gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre, path_arrow, path_alpha, path_legend, path_legend_title, path_size, equidistant, tail_length, legend_colours, legend_labels){
   
   # lines: sements
   x_lines <- do.call(rbind, lapply(unique(m_names), function(.name){
@@ -550,39 +550,62 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
     } else NULL
   }))
   
-  # lines: full
-  x_lines_legend <- do.call(rbind, lapply(unique(m_names), function(.name){
-    coords <- st_coordinates(x)
-    st_sf(geometry = st_sfc(st_linestring(coords), crs = st_crs(x)))  
-  }))
-  x_lines_legend$name <- unique(m_names)
-  
   # scale plot to ext and set na.rm to TRUE to avoid warnings
   y$layers[[1]]$geom_params$na.rm <- T
   
   # plot
   p <- y + geom_sf(data = x_lines,
-    aes(colour = .data$tail_colour), linewidth = x_lines$tail_size,
-    lineend = path_end, linejoin = path_join, linemitre = path_mitre, arrow = path_arrow,
-    alpha = path_alpha, na.rm = T
+                   aes(colour = .data$tail_colour), linewidth = x_lines$tail_size,
+                   lineend = path_end, linejoin = path_join, linemitre = path_mitre, arrow = path_arrow,
+                   alpha = path_alpha, na.rm = T
   ) + scale_colour_identity()
-   
+  
   # # points
   # ggplot(x) + geom_sf(aes(colour = tail_colour, size = tail_size)) + 
   #   scale_colour_identity() + scale_size(guide = NULL)
   
   # add legend?
   if(isTRUE(path_legend)){
-    p <- quiet(p + new_scale_colour() +
-      geom_sf(data = x_lines_legend, aes(colour = .data$name, linetype = NA), linewidth = path_size, na.rm = TRUE) + 
-      scale_linetype(guide = "none") +
-      scale_colour_manual(
-        values = unique(m_colour),
-        name = path_legend_title) + guides(color = guide_legend(order = 1)))
-  }    
+    scale_type <- .scale_type(legend_labels)
+    
+    if (scale_type == "qualitative") {
+      x_lines_legend <- do.call(rbind, lapply(seq_along(legend_labels), function(.name){
+        coords <- st_coordinates(x)
+        st_sf(geometry = st_sfc(st_linestring(coords), crs = st_crs(x)))  
+      }))
+      x_lines_legend$label <- legend_labels
+
+      p <- quiet(
+        p + 
+          new_scale_colour() +
+          geom_sf(data = x_lines_legend, aes(colour = .data$label, linetype = NA), linewidth = path_size, na.rm = TRUE) +
+          scale_linetype(guide = "none") +
+          scale_colour_manual(
+            values = legend_colours,
+            name = path_legend_title 
+          ) +
+          guides(color = guide_legend(order = 1))
+      )
+    } else {
+      # Continuous legend doesn't need predefined factor levels in the input
+      # data. To speed up rendering, we use an empty data layer and build the
+      # gradient scale manually based on the range of values in the input labels
+      p <- quiet(
+        p + 
+          new_scale_colour() +
+          ggplot2::geom_point(
+            data = data.frame(x = numeric(0), y = numeric(0), label = numeric(0)), 
+            aes(x = x, y = y, colour = .data$label)
+          ) +
+          scale_linetype(guide = "none") +
+          ggplot2::scale_colour_gradientn(colours = legend_colours, limits = range(as.numeric(legend_labels)), name = path_legend_title) +
+          guides(color = ggplot2::guide_colourbar(order = 1))
+      )
+    }
+  }
   
   # theme
-  p <- p + theme_bw() + x$coord[[1]] + x$scalex[[1]] + x$scaley[[1]]
+  p <- p + theme_bw() + x$coord[[1]] + x[["scalex"]][[1]] + x[["scaley"]][[1]]
   if(isTRUE(equidistant)) p <- p + theme(aspect.ratio = 1)
   return(p)
 }
@@ -591,22 +614,35 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 #' @importFrom ggplot2 ggplot geom_path aes theme scale_fill_identity scale_y_continuous scale_x_continuous scale_colour_manual theme_bw coord_cartesian geom_bar
 #' @importFrom rlang .data
 #' @noRd
-.gg_flow <- function(x, y, path_legend, path_legend_title, path_size, val_seq){
+.gg_flow <- function(x, y, path_legend, path_legend_title, path_size, val_seq, legend_colours, legend_labels){
   
   ## generate base plot
   p <- ggplot(x, aes(x = .data$frame, y = .data$value)) + geom_path(aes(group = .data$name), linewidth = path_size, show.legend = F, colour = x$colour) + 
     coord_cartesian(xlim = c(0, max(y$frame, na.rm = T)), ylim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T))) +
     theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0), breaks = val_seq) + scale_x_continuous(expand = c(0,0))
   
+  if (is.null(y$colour_labels)) {
+    y$colour_labels <- y$name
+  }
+  
   ## add legend
   if(isTRUE(path_legend)){
-    l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = levels(y$name),
-                             colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
-    l.df$name <- factor(l.df$name, levels = l.df$name)
+    colour_pos <- sapply(as.character(unique(y$colour_labels)), function(x) match(x, y$colour_labels)[1])
+    
+    l.df <- cbind.data.frame(frame = x[1,]$frame, value = x[1,]$value, name = legend_labels,
+                             colour = legend_colours, stringsAsFactors = F)
+    
+    # Ensure legend mapping is in factor order if input data are factor
+    if (is.factor(legend_labels)) {
+      l.df$name <- factor(l.df$name, levels = levels(legend_labels))
+    }
+    
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes(x = .data$frame, y = .data$value, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA)
-  }  
+    p <- p + geom_path(data = l.df, aes(x = .data$frame, y = .data$value, colour = .data$name), linewidth = path_size, na.rm = TRUE) + 
+      scale_colour_manual(values = legend_colours, name = path_legend_title) #linetype = NA)
+  }
   return(p)
+  
 }
 
 
@@ -616,7 +652,7 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
 #'
 #' @noRd
 ## stats plot function
-.gg_hist <- function(x, y, path_legend, path_legend_title, path_size, val_seq, r_type){
+.gg_hist <- function(x, y, path_legend, path_legend_title, path_size, val_seq, r_type, legend_colours, legend_labels){
   
   ## generate base plot
   if(r_type == "gradient") p <- ggplot(x, aes(x = .data$value, y = .data$count)) + geom_path(aes(group = "name"), linewidth = path_size, show.legend = F, colour = x$colour)
@@ -625,17 +661,28 @@ gg.spatial <- function(x, y, m_names, m_colour, path_end, path_join, path_mitre,
   p <- p + coord_cartesian(xlim = c(min(val_seq, na.rm = T), max(val_seq, na.rm = T)), ylim = c(min(y$count, na.rm = T), max(y$count, na.rm = T))) +
     theme_bw() + theme(aspect.ratio = 1) + scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0,0), breaks = val_seq)
   
+  if (is.null(y$colour_labels)) {
+    y$colour_labels <- y$name
+  }
+  
   ## add legend
   if(isTRUE(path_legend)){
-    l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = unique(y$name),
-                             colour = as.character(y$colour[sapply(as.character(unique(y$name)), function(x) match(x, y$name)[1] )]), stringsAsFactors = F)
-    l.df$name <- factor(l.df$name, levels = l.df$name)
+    colour_pos <- sapply(as.character(unique(y$colour_labels)), function(x) match(x, y$colour_labels)[1])
+    
+    l.df <- cbind.data.frame(value = x[1,]$value, count = x[1,]$count, name = legend_labels,
+                             colour = legend_colours, stringsAsFactors = F)
+    
+    # Ensure legend mapping is in factor order if input data are factor
+    if (is.factor(legend_labels)) {
+      l.df$name <- factor(l.df$name, levels = levels(legend_labels))
+    }
+    
     l.df <- rbind(l.df, l.df)
-    p <- p + geom_path(data = l.df, aes(x = .data$value, y = .data$count, colour = .data$name), linewidth = path_size, na.rm = TRUE) + scale_colour_manual(values = as.character(l.df$colour), name = path_legend_title) #linetype = NA
+    p <- p + geom_path(data = l.df, aes(x = .data$value, y = .data$count, colour = .data$name), linewidth = path_size, na.rm = TRUE) + 
+      scale_colour_manual(values = legend_colours, name = path_legend_title) #linetype = NA
   }
   return(p)
 }
-
 
 #' package attatching
 #' @noRd 
@@ -690,14 +737,7 @@ which.minpos <- function(x) min(which(min(x[x > 0]) == x))
 #' add attributes needed by moveVis functions to m
 #' @importFrom move2 mt_time mt_track_id
 #' @noRd
-.add_m_attributes <- function(m, path_colours){
-  if(!is.character(path_colours)){
-    path_colours <- .standard_colours(mt_n_tracks(m))
-    if(is.null(m$colour)) m$colour <- .mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
-  } else{
-    m$colour <- .mapvalues(as.character(mt_track_id(m)), unique(mt_track_id(m)), path_colours)
-  }
-  
+.add_m_attributes <- function(m) {
   # add some info to m
   m$time_chr <- as.character(mt_time(m))
   m$time <- mt_time(m)
@@ -706,6 +746,123 @@ which.minpos <- function(x) min(which(min(x[x > 0]) == x))
   m <- m[order(m$frame),]
   m$name <- mt_track_id(m)
   return(m)
+}
+
+# This is a safe version of `move2::mt_as_event_attribute()` that does not
+# fail if passed an attribute that happens to already be an event-level
+# attribute
+.expand_track_attr <- function(m, var) {
+  # If colouring by a track attribute, expand it into the event data frame
+  is_track_attr <- var %in% colnames(move2::mt_track_data(m))
+  is_event_attr <- var %in% colnames(m)
+  
+  if (is_track_attr && !is_event_attr) {
+    m <- move2::mt_as_event_attribute(m, !!as.name(var))
+  } else if (!is_event_attr) {
+    # If not colouring by a track attribute, the column must be in event data
+    out(
+      paste0("Column '", var, "' not found in 'm'"),
+      type = 3
+    )
+  }
+  
+  m
+}
+
+.build_pal <- function(x, path_colours = NULL) {
+  # Identify what type of color scale we're working with.
+  scale_type <- .scale_type(x)
+  
+  if (scale_type == "continuous") {
+    if (is.null(path_colours)) {
+      path_colours <- function(x) grDevices::hcl.colors(x, "viridis")
+    }
+    
+    if (is.character(path_colours)) {
+      pal <- grDevices::colorRampPalette(path_colours)
+    } else {
+      pal <- path_colours
+    }
+  } else {
+    if (is.null(path_colours)) {
+      path_colours <- function(x) .standard_colours(x)
+    }
+    
+    if (is.character(path_colours)) {
+      pal <- function(n) {
+        if (length(path_colours) == 1) {
+          rep(path_colours, n)
+        } else if (n <= length(path_colours)) {
+          path_colours[seq_len(n)]
+        } else {
+          out("Not enough colors in scale", type = 3)
+        }
+      }
+    } else {
+      pal <- path_colours
+    }
+  }
+  
+  pal
+}
+
+.build_scale <- function(x, palette) {
+  # Identify what type of color scale we're working with.
+  scale_type <- .scale_type(x)
+  
+  if (scale_type == "continuous") {
+    color_scale <- scales::col_numeric(palette(256), domain = range(x))
+  } else {
+    # Build mapping from levels of attribute being colored by to color codes
+    colour_categories <- unique(x)
+    colour_categories <- colour_categories[!is.na(colour_categories)]
+    
+    n_colour_cats <- length(unique(colour_categories))
+    
+    if (is.factor(colour_categories)) {
+      colour_categories <- droplevels(colour_categories)
+    }
+    
+    color_scale <- scales::col_factor(
+      palette(n_colour_cats), 
+      domain = colour_categories
+    )
+  }
+  
+  color_scale
+}
+
+.scale_type <- function(x) {
+  if ("units" %in% class(x)) {
+    x <- units::drop_units(x)
+  }
+  
+  switch(
+    class(x)[1],
+    numeric   = "continuous",
+    integer   = "continuous",
+    integer64 = "continuous",
+    Date      = "continuous",
+    POSIXct   = "continuous",
+    POSIXlt   = "continuous",
+    difftime  = "continuous",
+    factor    = "qualitative",
+    ordered   = "qualitative",
+    character = "qualitative",
+    logical   = "qualitative",
+    "qualitative" 
+  )
+}
+
+.drop_units_safe <- function(x) {
+  x <- tryCatch(
+    units::drop_units(x),
+    error = function(cnd) {
+      x
+    }
+  )
+  
+  x
 }
 
 #' extract crs params

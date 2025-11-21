@@ -3,13 +3,10 @@
 #' \code{view_spatial} is a simple wrapper that displays movement tracks on an interactive \code{mapview} or \code{leaflet} map.
 #'
 #' @inheritParams frames_spatial
-#' @param m \code{move2} object. Can contain a column named \code{colour} to control path colours (see \code{details}).
+#' @param m \code{move2} object.
 #' @param render_as character, either \code{'mapview'} to return a \code{mapview} map or \code{'leaflet'} to return a \code{leaflet} map. 
 #' @param time_labels logical, whether to display timestamps for each track fix when hovering it with the mouse cursor.
 #' @param stroke logical, whether to draw stroke around circles.
-#' 
-#' @details If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
-#' Colours could also be arranged to change through time or by behavioral segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected automatically. Call \code{colours()} to see all available colours in R.
 #' 
 #' @return An interactive \code{mapview} or \code{leaflet} map.
 #' 
@@ -37,25 +34,30 @@
 #' @importFrom sf st_coordinates
 #' @export
 
-view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = TRUE, path_colours = NA, path_legend = TRUE,
-                         path_legend_title = "Names", verbose = TRUE){
+view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = TRUE, path_colours = NULL, colour_paths_by = move2::mt_track_id_column(m), path_legend = TRUE,
+                         path_legend_title = colour_paths_by, verbose = TRUE){
   
   ## dependency check
   if(is.character(render_as)){
     if(!isTRUE(render_as %in% c("mapview", "leaflet"))) out("Argument 'render_as' must be either 'mapview' or 'leaflet'.", type = 3)
   } else{out("Argument 'render_as' must be of type 'character'.", type = 3)}
-
+  
   ## check input arguments
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   if(all(!inherits(m, "move2"))) out("Argument 'm' must be of class 'move2'.", type = 3)
   
-  if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(!is.logical(time_labels)) out("Argument 'time_labels' must be of type 'logical'.", type = 3)
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   
+  # Units do not always cooperate with color scales...
+  m[[colour_paths_by]] <- .drop_units_safe(m[[colour_paths_by]])
+  m <- .expand_track_attr(m, var = colour_paths_by)
+  
+  pal <- .build_pal(m[[colour_paths_by]], path_colours)
+
   ## preprocess movement data
-  m <- .add_m_attributes(m, path_colours = path_colours)
+  m <- .add_m_attributes(m)
   
   ## render as mapview object
   if(render_as == "mapview"){
@@ -63,9 +65,9 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = 
     
     # compose
     map <- mapview::mapview(
-      m, map.types = "OpenStreetMap", xcol = "x", ycol = "y", zcol = mt_track_id_column(m), legend = path_legend,
+      m, map.types = "OpenStreetMap", xcol = "x", ycol = "y", zcol = colour_paths_by, legend = path_legend,
       crs = st_crs(m)$proj4string, grid = F, layer.name = path_legend_title,
-      col.regions = unique(m$colour),
+      col.regions = pal,
       label = if(isTRUE(time_labels)) mt_time(m) else NULL, stroke = stroke
     )
   }
@@ -74,19 +76,52 @@ view_spatial <- function(m, render_as = "mapview", time_labels = TRUE, stroke = 
   if(render_as == "leaflet"){
     if(length(grep("leaflet", rownames(utils::installed.packages()))) == 0) out("'leaflet' has to be installed to use this function. Use install.packages('leaflet').", type = 3)
     
-    # compose
-    m.split <- split(m, mt_track_id(m))
     map <- leaflet::addTiles(map = leaflet::leaflet(m))
-    for(i in 1:length(m.split)) map <- leaflet::addCircleMarkers(
-      map = map, lng = st_coordinates(m.split[[i]])[,1], 
-      lat = st_coordinates(m.split[[i]])[,2],
-      radius = 5.5, color = "black", stroke = stroke, fillColor = m.split[[i]]$colour, fillOpacity = 0.6, weight = 2, opacity = 1, 
-      label = if(isTRUE(time_labels)) as.character(mt_time(m.split[[i]])) else NULL)
-    map <- leaflet::addScaleBar(map = leaflet::addLegend(
-      map = map, colors = unique(m$colour),
-      labels = as.character(unique(mt_track_id(m))), opacity = 1, title = path_legend_title), position = "bottomleft"
+    
+    var_type <- .scale_type(m[[colour_paths_by]])
+    
+    # Need to convert palette to leaflet format (colorNumeric and colorFactor)
+    # to get correct legend behavior
+    if (var_type == "continuous") {
+      # Remove units, which leaflet can't handle.
+      m[[colour_paths_by]] <- as.numeric(m[[colour_paths_by]])
+      
+      leaflet_scale <- leaflet::colorNumeric(
+        palette = pal(256),
+        domain = m[[colour_paths_by]]
+      )
+    } else {
+      leaflet_scale <- leaflet::colorFactor(
+        palette = pal(length(unique(m[[colour_paths_by]]))),
+        domain = unique(m[[colour_paths_by]])
+      )
+    }
+    
+    map <- leaflet::addCircleMarkers(
+      map = map, 
+      lng = st_coordinates(m)[,1],
+      lat = st_coordinates(m)[,2],
+      radius = 5.5, 
+      color = "black", 
+      stroke = stroke, 
+      fillColor = ~ leaflet_scale(m[[colour_paths_by]]),
+      fillOpacity = 0.6, 
+      weight = 2, 
+      opacity = 1, 
+      label = if(isTRUE(time_labels)) as.character(mt_time(m)) else m[[colour_paths_by]]
     )
     
+    map <- leaflet::addScaleBar(
+      map = leaflet::addLegend(
+        map = map, 
+        pal = leaflet_scale,
+        values = m[[colour_paths_by]], 
+        opacity = 1, 
+        title = path_legend_title
+      ), 
+      position = "bottomleft"
+    )
   }
+  
   return(map)
 }

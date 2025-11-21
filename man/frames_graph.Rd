@@ -13,9 +13,10 @@ frames_graph(
   return_data = FALSE,
   graph_type = "flow",
   path_size = 1,
-  path_colours = NA,
+  path_colours = NULL,
+  colour_paths_by = move2::mt_track_id_column(m),
   path_legend = TRUE,
-  path_legend_title = "Names",
+  path_legend_title = colour_paths_by,
   val_min = NULL,
   val_max = NULL,
   val_by = 0.1,
@@ -24,7 +25,7 @@ frames_graph(
 )
 }
 \arguments{
-\item{m}{\code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}. Can contain a column named \code{colour} to control path colours (see details below).}
+\item{m}{\code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}.}
 
 \item{r}{\code{terra} object, either a \code{SpatRaster} (mono-temporal) or a \code{SpatRasterDataset} (multi-temporal). In case of the latter, times of `r` must be defined as 'POSIXct' (see \code{\link[terra]{time}} and details below).}
 
@@ -44,11 +45,13 @@ frames_graph(
 
 \item{path_size}{numeric, size of each path.}
 
-\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.}
+\item{path_colours}{character or palette function to use to colour the tracks in `m`. If a character vector, must be a vector of the same length as the number of levels in the attribute being used to colour the tracks (see argument `colour_paths_by`). If a function, must accept an integer and return a vector of colours of that length. By default, colours are selected from a standard rainbow palette per individual track.}
 
-\item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
+\item{colour_paths_by}{character indicating the name of an attribute column in `m` to use to define path colours. This attribute can be either an event or track-level attribute. By default, colours by track ID.}
 
-\item{path_legend_title}{character, path legend title. Default is \code{"Names"}.}
+\item{path_legend}{logical, whether to add a path legend from \code{m} or not. When colouring tracks by a qualitative attribute, legend entries will be ordered by the levels of that attribute (if a factor) or alphabetically (if a character).}
+
+\item{path_legend_title}{character, path legend title. Defaults to the column name specified in `colour_paths_by`.}
 
 \item{val_min}{numeric, minimum value of the value axis. If undefined, the minimum is collected automatically.}
 

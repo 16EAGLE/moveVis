@@ -25,11 +25,12 @@ frames_spatial(
   path_join = "round",
   path_mitre = 10,
   path_arrow = NULL,
-  path_colours = NA,
+  path_colours = NULL,
+  colour_paths_by = move2::mt_track_id_column(m),
   path_alpha = 1,
   path_fade = FALSE,
   path_legend = TRUE,
-  path_legend_title = "Names",
+  path_legend_title = colour_paths_by,
   tail_length = 19,
   tail_size = 1,
   tail_colour = "white",
@@ -42,7 +43,7 @@ frames_spatial(
 )
 }
 \arguments{
-\item{m}{\code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}. Can contain a column named \code{colour} to control path colours (see details below).}
+\item{m}{\code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}.}
 
 \item{r}{\code{terra} object, either a \code{SpatRaster} (mono-temporal) or a \code{SpatRasterDataset} (multi-temporal). In case of the latter, times of `r` must be defined as 'POSIXct' (see \code{\link[terra]{time}} and details below).}
 
@@ -84,15 +85,17 @@ so that baesmap tiles that had been already downloaded by moveVis do not have to
 
 \item{path_arrow}{arrow, path arrow specification, as created by grid::arrow().}
 
-\item{path_colours}{character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.}
+\item{path_colours}{character or palette function to use to colour the tracks in `m`. If a character vector, must be a vector of the same length as the number of levels in the attribute being used to colour the tracks (see argument `colour_paths_by`). If a function, must accept an integer and return a vector of colours of that length. By default, colours are selected from a standard rainbow palette per individual track.}
+
+\item{colour_paths_by}{character indicating the name of an attribute column in `m` to use to define path colours. This attribute can be either an event or track-level attribute. By default, colours by track ID.}
 
 \item{path_alpha}{numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.}
 
 \item{path_fade}{logical, whether paths should be faded towards the last frame or not. Useful, if \code{trace_show = TRUE} and you want to hold the last frame using \code{end_pause} in \code{\link{animate_frames}}.}
 
-\item{path_legend}{logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.}
+\item{path_legend}{logical, whether to add a path legend from \code{m} or not. When colouring tracks by a qualitative attribute, legend entries will be ordered by the levels of that attribute (if a factor) or alphabetically (if a character).}
 
-\item{path_legend_title}{character, path legend title. Default is \code{"Names"}.}
+\item{path_legend_title}{character, path legend title. Defaults to the column name specified in `colour_paths_by`.}
 
 \item{tail_length}{numeric, length of tail per movement path.}
 
@@ -125,9 +128,6 @@ A frames object of class \code{moveVis}.
 \code{frames_spatial} creates frames from movement and map/raster data. If no custom raster data is provided, a basemap is pulled from a map tile service using the \code{basemaps} package. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 }
 \details{
-If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
-Colours could also be arranged to change through time or by behavioural segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected using \code{path_colours} or automatically. Call \code{colours()} to see all available colours in R.
-
 Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continuous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 
 If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal distances on the x and y axis.
@@ -205,17 +205,26 @@ frames <- frames_spatial(
 )
 frames[[100]]
 
-m$colour <- plyr::mapvalues(
-  as.character(mt_track_id(m)), 
-  unique(mt_track_id(m)), c("orange", "purple", "darkgreen")
-)
+# colour paths based on an attribute variable
+m$tag_type <- ifelse(m$track == "T246a", "A", "B")
 
 frames <- frames_spatial(
-  m, map_service = "osm", map_type = "topographic", alpha = 0.5
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+  colour_paths_by = "tag_type",
+  path_colours = c("firebrick", "steelblue")
 )
 frames[[100]]
 
+# Colour using a separately-defined palette function
+# This will handle any number of levels in the attribute used for colouring
+frames <- frames_spatial(
+  m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+  colour_paths_by = "tag_type",
+  path_colours = function(x) grDevices::hcl.colors(x, "Dark 3")
+)
+frames[[100]]
 }
+
 # create frames from custom (multi-temporal) basemaps
 r <- readRDS(example_data(file = "raster_NDVI.rds"))
 

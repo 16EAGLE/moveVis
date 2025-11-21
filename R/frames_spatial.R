@@ -2,7 +2,7 @@
 #'
 #' \code{frames_spatial} creates frames from movement and map/raster data. If no custom raster data is provided, a basemap is pulled from a map tile service using the \code{basemaps} package. Frames are returned as an object of class \code{moveVis} and can be subsetted, viewed (see \code{\link{render_frame}}), modified (see \code{\link{add_gg}} and associated functions ) and animated (see \code{\link{animate_frames}}).
 #'
-#' @param m \code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}. Can contain a column named \code{colour} to control path colours (see details below).
+#' @param m \code{move2} object of uniform time scale and time lag as returned by \code{\link{align_move}}.
 #' @param r \code{terra} object, either a \code{SpatRaster} (mono-temporal) or a \code{SpatRasterDataset} (multi-temporal). In case of the latter, times of `r` must be defined as 'POSIXct' (see \code{\link[terra]{time}} and details below).
 #' @param r_type character, either \code{"gradient"} or \code{"discrete"}. Ignored, if \code{r} contains three bands, which are treated as RGB.
 #' @param fade_raster logical, if \code{TRUE}, \code{r} is interpolated over time. If \code{FALSE}, \code{r} elements are assigned to those frames closest to the equivalent times of \code{r}.
@@ -12,11 +12,12 @@
 #' @param path_join character, either \code{"round"}, \code{"mitre"} or \code{"bevel"}, indicating the path join style.
 #' @param path_mitre numeric, path mitre limit (number greater than 1).
 #' @param path_arrow arrow, path arrow specification, as created by grid::arrow().
-#' @param path_colours character, a vector of colours. Must be of same length as number of individual tracks in \code{m} and refers to the order of tracks in \code{m}. If undefined (\code{NA}) and \code{m} contains a column named \code{colour}, colours provided within \code{m} are used (see details). Othwersie, colours are selected from a standard rainbow palette per individual track.
+#' @param path_colours character or palette function to use to colour the tracks in `m`. If a character vector, must be a vector of the same length as the number of levels in the attribute being used to colour the tracks (see argument `colour_paths_by`). If a function, must accept an integer and return a vector of colours of that length. By default, colours are selected from a standard rainbow palette per individual track.
+#' @param colour_paths_by character indicating the name of an attribute column in `m` to use to define path colours. This attribute can be either an event or track-level attribute. By default, colours by track ID.
 #' @param path_alpha numeric, defines alpha (transparency) of the path. Value between 0 and 1. Default is 1.
 #' @param path_fade logical, whether paths should be faded towards the last frame or not. Useful, if \code{trace_show = TRUE} and you want to hold the last frame using \code{end_pause} in \code{\link{animate_frames}}.
-#' @param path_legend logical, wether to add a path legend from \code{m} or not. Legend tracks and colours will be ordered by the tracks' temporal apperances, not by their order in \code{m}.
-#' @param path_legend_title character, path legend title. Default is \code{"Names"}.
+#' @param path_legend logical, whether to add a path legend from \code{m} or not. When colouring tracks by a qualitative attribute, legend entries will be ordered by the levels of that attribute (if a factor) or alphabetically (if a character).
+#' @param path_legend_title character, path legend title. Defaults to the column name specified in `colour_paths_by`.
 #' @param tail_length numeric, length of tail per movement path.
 #' @param tail_size numeric, size of the last tail element. Default is 1.
 #' @param tail_colour character, colour of the last tail element, to which the path colour is faded. Default is "white".
@@ -45,9 +46,7 @@
 #'    }
 #' @param verbose logical, if \code{TRUE}, messages and progress information are displayed on the console (default).
 #' 
-#' @details If argument \code{path_colours} is not defined (set to \code{NA}), path colours can be defined by adding a character column named \code{colour} to \code{m}, containing a colour code or name per row (e.g. \code{"red"}. This way, for example, column \code{colour} for all rows belonging to individual A can be set to \code{"green"}, while column \code{colour} for all rows belonging to individual B can be set to \code{"red"}.
-#' Colours could also be arranged to change through time or by behavioural segments, geographic locations, age, environmental or health parameters etc. If a column name \code{colour} in \code{m} is missing, colours will be selected using \code{path_colours} or automatically. Call \code{colours()} to see all available colours in R.
-#' 
+#' @details 
 #' Basemap colour scales can be changed/added using \code{\link{add_colourscale}} or by using \code{ggplot2} commands (see \code{examples}). For continuous scales, use \code{r_type = "gradient"}. For discrete scales, use \code{r_type = "discrete"}.
 #' 
 #' If argument \code{equidistant} is set, the map extent is calculated (thus enlarged into one axis direction) to represent equal distances on the x and y axis.
@@ -131,18 +130,26 @@
 #' )
 #' frames[[100]]
 #' 
-#' m$colour <- plyr::mapvalues(
-#'   as.character(mt_track_id(m)), 
-#'   unique(mt_track_id(m)), c("orange", "purple", "darkgreen")
-#' )
+#' # colour paths based on an attribute variable
+#' m$tag_type <- ifelse(m$track == "T246a", "A", "B")
 #' 
 #' frames <- frames_spatial(
-#'   m, map_service = "osm", map_type = "topographic", alpha = 0.5
+#'   m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+#'   colour_paths_by = "tag_type",
+#'   path_colours = c("firebrick", "steelblue")
 #' )
 #' frames[[100]]
-# this way, you can assign colours by segment, age, speed or other variables
 #' 
+#' # Colour using a separately-defined palette function
+#' # This will handle any number of levels in the attribute used for colouring
+#' frames <- frames_spatial(
+#'   m, map_service = "osm", map_type = "topographic", alpha = 0.5,
+#'   colour_paths_by = "tag_type",
+#'   path_colours = function(x) grDevices::hcl.colors(x, "Dark 3")
+#' )
+#' frames[[100]]
 #' }
+#' 
 #' # create frames from custom (multi-temporal) basemaps
 #' r <- readRDS(example_data(file = "raster_NDVI.rds"))
 #' 
@@ -192,8 +199,8 @@
 
 frames_spatial <- function(
     m, r = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
-    margin_factor = 1.1, equidistant = NULL, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), crs_graticule = st_crs(4326), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
-    path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
+    margin_factor = 1.1, equidistant = NULL, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), crs_graticule = st_crs(4326), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NULL, colour_paths_by = move2::mt_track_id_column(m), path_alpha = 1, path_fade = FALSE,
+    path_legend = TRUE, path_legend_title = colour_paths_by, tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
   
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
   extras <- list(...)
@@ -270,7 +277,6 @@ frames_spatial <- function(
   }
   
   if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
-  if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
@@ -286,7 +292,27 @@ frames_spatial <- function(
   # if(is.null(m$colour)){
   #   m$colour <- repl_vals(as.character(mt_track_id(m)), unique(as.character(mt_track_id(m))), path_colours[1:mt_n_tracks(m)])
   # }
-  m <- .add_m_attributes(m, path_colours = path_colours)
+  
+  # Units do not always cooperate with color scales...
+  m[[colour_paths_by]] <- .drop_units_safe(m[[colour_paths_by]])
+  m <- .expand_track_attr(m, var = colour_paths_by)
+  
+  pal <- .build_pal(m[[colour_paths_by]], path_colours)
+  scale <- .build_scale(m[[colour_paths_by]], pal)
+  
+  m$colour <- scale(m[[colour_paths_by]])
+  
+  if (.scale_type(m[[colour_paths_by]]) == "qualitative") {
+    legend_labels <- unique(m[[colour_paths_by]])
+    legend_colours <- pal(length(legend_labels))
+  } else {
+    # we don't actually use this except to keep a record that the scale is 
+    # continuous, would be nice to find another way.
+    legend_labels <- unique(m[[colour_paths_by]])
+    legend_colours <- pal(256)
+  }
+  
+  m <- .add_m_attributes(m)
   
   # print stats
   .stats(n.frames = max(m$frame))
@@ -323,7 +349,7 @@ frames_spatial <- function(
     xlim = c(gg.ext$xmin, gg.ext$xmax), ylim = c(gg.ext$ymin, gg.ext$ymax),
     expand = F, crs = crs, datum = crs_graticule, clip = "on")
   )
-  m$scaley <- m$scalex <- NULL # relict from when moveVis handled cross_dateline by itself insteaf of relying
+  m[["scaley"]] <- m[["scalex"]] <- NULL # relict from when moveVis handled cross_dateline by itself insteaf of relying
   # on sf::st_shift_longitude() for it. 
   # m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels)) # only works with caartesian coord on the render end
   # m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
@@ -338,39 +364,44 @@ frames_spatial <- function(
   # } else{
   #   time(r) <- list(rep(floor(length(sort(unique(mt_time(m))))/2), nlyr(r_list[[1]])))
   # }
-  
+
   # create frames object
   frames <- list(
     m = m,
     r = r,
     crs = crs,
-    aesthetics = c(list(
-      equidistant = equidistant,
-      path_size = path_size,
-      path_end = path_end,
-      path_join = path_join,
-      path_alpha = path_alpha,
-      path_mitre = path_mitre,
-      path_arrow = path_arrow, 
-      path_legend = path_legend,
-      path_legend_title = path_legend_title,
-      tail_length = tail_length,
-      tail_size = tail_size,
-      tail_colour = tail_colour,
-      trace_show = trace_show,
-      trace_size = trace_size,
-      trace_colour = trace_colour,
-      path_fade = path_fade,
-      gg.ext = gg.ext,
-      map_service = map_service,
-      map_type = map_type,
-      r_type = r_type,
-      fade_raster = fade_raster,
-      n_r = n_r),
+    aesthetics = c(
+      list(
+        equidistant = equidistant,
+        path_size = path_size,
+        path_end = path_end,
+        path_join = path_join,
+        path_alpha = path_alpha,
+        path_mitre = path_mitre,
+        path_arrow = path_arrow, 
+        path_legend = path_legend,
+        path_legend_title = path_legend_title,
+        tail_length = tail_length,
+        tail_size = tail_size,
+        tail_colour = tail_colour,
+        trace_show = trace_show,
+        trace_size = trace_size,
+        trace_colour = trace_colour,
+        path_fade = path_fade,
+        gg.ext = gg.ext,
+        map_service = map_service,
+        map_type = map_type,
+        r_type = r_type,
+        fade_raster = fade_raster,
+        n_r = n_r,
+        legend_colours = legend_colours,
+        legend_labels = legend_labels
+      ),
       maxpixels = if(!is.null(extras$maxpixels)) extras$maxpixels else 500000,
       alpha = if(!is.null(extras$alpha)) extras$alpha else 1,
       maxColorValue = if(!is.null(extras$maxColorValue)) extras$maxColorValue else NA,
-      interpolate = if(!is.null(extras$interpolate)) extras$interpolate else FALSE),
+      interpolate = if(!is.null(extras$interpolate)) extras$interpolate else FALSE
+    ),
     additions = NULL
   )
   attr(frames, "class") <- c("moveVis", "frames_spatial")

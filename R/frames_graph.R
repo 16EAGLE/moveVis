@@ -74,7 +74,7 @@
 #' 
 #' @export
 
-frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NA, path_legend = TRUE, path_legend_title = "Names", 
+frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, return_data = FALSE, graph_type = "flow", path_size = 1, path_colours = NULL, colour_paths_by = move2::mt_track_id_column(m), path_legend = TRUE, path_legend_title = colour_paths_by, 
                          val_min = NULL, val_max = NULL, val_by = 0.1, ..., verbose = T){
 
   ## check input arguments
@@ -117,7 +117,6 @@ frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_ra
   if(!is.logical(fade_raster)) out("Argument 'fade_raster' has to be either TRUE or FALSE.", type = 3)
   
   if(!is.numeric(path_size)) out("Argument 'path_size' must be of type 'numeric'.", type = 3)
-  if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
   if(!is.character(path_legend_title)) out("Argument 'path_legend_title' must be of type 'character'.", type = 3)
   if(!is.logical(return_data)) out("Argument 'return_data' must be of type 'logical'.", type = 3)
@@ -138,8 +137,27 @@ frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_ra
   if(r_type == "discrete" & fade_raster == T) out("Argument 'fade_raster' is TRUE, while argument 'r_type' is set to 'discrete'. Interpolating discrete values will destroy discrete classes!", type = 2)
   if(r_type == "discrete" & !val_by%%1==0) out("Argument 'val_by' is fractional, while argument 'r_type' is set to 'discrete'. You may want to set 'val_by' to 1 or another integer for discrete classes.", type = 2)
   
+  if (.scale_type(m[[colour_paths_by]]) == "continuous") {
+    out("Cannot color by continuous variables in `frames_graph()`", type = 3)
+  }
+  
+  m <- .expand_track_attr(m, var = colour_paths_by)
+  
+  pal <- .build_pal(m[[colour_paths_by]], path_colours)
+  scale <- .build_scale(m[[colour_paths_by]], pal)
+  
+  m$colour <- scale(m[[colour_paths_by]])
+
+  if (.scale_type(m[[colour_paths_by]]) == "qualitative") {
+    legend_labels <- unique(m[[colour_paths_by]])
+    legend_colours <- pal(length(legend_labels))
+  } else {
+    legend_labels <- NULL
+    legend_colours <- pal(256)
+  }
+  
   ## create data.frame from m with frame time and colour
-  m <- .add_m_attributes(m, path_colours = path_colours)
+  m <- .add_m_attributes(m)
   .stats(max(m$frame))
   
   ## create raster list
@@ -172,18 +190,22 @@ frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_ra
     hist_data <- NULL
     if(graph_type == "hist"){
       
-      dummy <- do.call(rbind, lapply(as.character(unique(mt_track_id(m))), function(name){
+      dummy <- do.call(rbind, lapply(as.character(unique(m[[colour_paths_by]])), function(name){
         cbind.data.frame(count = 0, value = val_seq, name = name,
-                         colour = unique(m[m$name == name,]$colour))
+                         colour = unique(legend_colours[legend_labels == name]))
       }))
+      
+      if (is.factor(legend_labels)) {
+        dummy$name <- factor(dummy$name, levels = levels(legend_labels))
+      }
       
       ## Calculating time-cumulative value histogram per individual and timestep
       #out("Calculating histogram...")
       hist_data <- lapply(1:max(m$frame), function(i, d = dummy){
         x <- m[unlist(lapply(1:i, function(x) which(m$frame == x))),]
         
-        x <- do.call(rbind, lapply(unique(x$name), function(name){
-          y <- x[x$name == name,]
+        x <- do.call(rbind, lapply(unique(x[[colour_paths_by]]), function(name){
+          y <- x[x[[colour_paths_by]] == name,]
           z <- table(round(y$value, digits = val_digits))
           
           d.name <- d[d$name == name,]
@@ -212,7 +234,10 @@ frames_graph <- function(m, r, r_type = "gradient", fade_raster = FALSE, crop_ra
       path_legend = path_legend,
       path_legend_title = path_legend_title,
       val_seq = val_seq,
-      r_type = r_type),
+      r_type = r_type,
+      legend_labels = legend_labels,
+      legend_colours = legend_colours
+    ),
     additions = NULL
   )
   attr(frames, "class") <- c("moveVis", "frames_graph")
