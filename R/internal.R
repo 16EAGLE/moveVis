@@ -257,12 +257,10 @@ repl_vals <- function(data, x, y){
 #' Retrieve basemap imagery for a single extent, in the target CRS
 #' @importFrom basemaps basemap_terra
 #' @noRd
-.basemap <- function(ext, crs, ...) {
-  r <- suppressWarnings(basemap_terra(
-    ext = ext, ...
-    #custom_crs = as.character(m.crs$wkt), ...
-    #custom_crs =  as.character(raster::crs(m)), ...
-  ))
+.basemap <- function(ext, crs, ..., custom_zoom = NULL) {
+  r <- suppressWarnings(
+    basemap_terra(ext = ext, custom_zoom = custom_zoom, ...)
+  )
   
   if(crs != st_crs(3857)){
     r <- terra::project(r, crs$wkt)
@@ -277,6 +275,32 @@ repl_vals <- function(data, x, y){
   r
 }
 
+#' Tile zoom for an extent that crosses the dateline
+#' 
+#' Tile services size the zoom to the extent they are given. As the halves of
+#' a crossing extent are requested separately, a lopsided split would give each
+#' half a zoom suited to its own width, and merging imagery of very different
+#' resolutions lets the narrower half dictate the whole raster. Deriving one
+#' zoom from the full extent keeps the detail of a crossing map the same as a
+#' non-crossing map of equal span.
+#' 
+#' @importFrom sf st_bbox st_crs
+#' @noRd
+.dateline_zoom <- function(ext, map_res = 1) {
+  width <- ext[["xmax"]] - ext[["xmin"]]
+  
+  equivalent <- st_bbox(
+    c(xmin = -width/2, ymin = ext[["ymin"]], xmax = width/2, ymax = ext[["ymax"]]),
+    crs = st_crs(4326)
+  )
+  
+  suppressWarnings(
+    slippymath::bbox_to_tile_grid(
+      equivalent, max_tiles = ceiling(map_res * 20)
+    )$zoom
+  )
+}
+
 #' Retrieve basemap imagery for an extent that crosses the dateline
 #' 
 #' Tile services cannot serve a single extent spanning the dateline, so the
@@ -284,14 +308,38 @@ repl_vals <- function(data, x, y){
 #' shifted (0-360) space before merging. Only used with geographic CRS, where
 #' the shift is a plain 360 degree translation.
 #' @noRd
-.basemap_dateline <- function(ext, crs, ...) {
+.basemap_dateline <- function(ext, crs, ..., map_res = 1, custom_zoom = NULL) {
+  if(is.null(map_res)) map_res <- 1
+  
   # Avoid splitting a basemap that doesn't actually cross the dateline
-  if(ext[["xmax"]] <= 180) return(.basemap(ext, crs = crs, ...))
+  if(ext[["xmax"]] <= 180){
+    return(.basemap(ext, crs = crs, map_res = map_res, custom_zoom = custom_zoom, ...))
+  }
   
   halves <- .split_dateline_ext(ext)
   
-  r.east <- .basemap(halves$east, crs = crs, ...)
-  r.west <- terra::shift(.basemap(halves$west, crs = crs, ...), dx = 360)
+  # Both halves must share a zoom, otherwise the resolution of the map will
+  # change at the dateline
+  if(is.null(custom_zoom)) custom_zoom <- .dateline_zoom(ext, map_res = map_res)
+  
+  r.east <- .basemap(
+    halves$east,
+    crs = crs,
+    map_res = map_res,
+    custom_zoom = custom_zoom,
+    ...
+  )
+  
+  r.west <- terra::shift(
+    .basemap(
+      halves$west,
+      crs = crs,
+      map_res = map_res,
+      custom_zoom = custom_zoom,
+      ...
+    ),
+    dx = 360
+  )
   
   # the halves come from independent tile requests, so terra resamples the
   # second onto the first's grid and throws a warning. We expect this

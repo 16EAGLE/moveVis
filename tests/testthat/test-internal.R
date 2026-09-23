@@ -88,3 +88,63 @@ test_that("internal (.equidistant still clips lon maxima when not crossing)", {
 
   expect_lte(sq[["xmax"]], 180)
 })
+
+test_that("internal (.dateline_zoom matches an equivalent non-crossing extent)", {
+  ext <- sf::st_bbox(
+    c(xmin = 179, ymin = 20, xmax = 260, ymax = 60), crs = sf::st_crs(4326)
+  )
+  # same span, placed away from the dateline
+  equiv <- sf::st_bbox(
+    c(xmin = -40.5, ymin = 20, xmax = 40.5, ymax = 60), crs = sf::st_crs(4326)
+  )
+
+  expect_equal(
+    moveVis:::.dateline_zoom(ext),
+    slippymath::bbox_to_tile_grid(equiv, max_tiles = 20)$zoom
+  )
+})
+
+test_that("internal (.basemap_dateline gives a lopsided split consistent detail)", {
+  # 1 degree east of the dateline, 80 degrees west of it
+  crossing <- sf::st_bbox(
+    c(xmin = 179, ymin = 20, xmax = 260, ymax = 60), crs = sf::st_crs(4326)
+  )
+  equiv <- sf::st_bbox(
+    c(xmin = -40.5, ymin = 20, xmax = 40.5, ymax = 60), crs = sf::st_crs(4326)
+  )
+
+  r <- moveVis:::.basemap_dateline(
+    crossing, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE
+  )
+  ref <- moveVis:::.basemap(
+    equiv, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE
+  )
+
+  # sizing each half to its own width lets the narrow half dictate the
+  # resolution of the whole merged raster. Compare as a ratio: these values are
+  # far smaller than any useful tolerance, so expect_equal() would degenerate
+  # to an absolute comparison and pass regardless.
+  ratio <- terra::res(r)[1] / terra::res(ref)[1]
+
+  expect_gt(ratio, 0.5)
+  expect_lt(ratio, 2)
+})
+
+test_that("internal (.basemap_dateline respects a user supplied zoom)", {
+  ext <- sf::st_bbox(
+    c(xmin = 179, ymin = 20, xmax = 260, ymax = 60), crs = sf::st_crs(4326)
+  )
+
+  auto <- moveVis:::.basemap_dateline(
+    ext, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE
+  )
+  user <- moveVis:::.basemap_dateline(
+    ext, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE, custom_zoom = 6
+  )
+
+  expect_lt(terra::res(user)[1], terra::res(auto)[1])
+})
