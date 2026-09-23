@@ -292,26 +292,19 @@ frames_spatial <- function(
   .stats(n.frames = max(m$frame))
   .cat_crs_params(.crs_params(m))
   
-  gg.ext <- .ext(m = m, crs = crs, ext = ext, margin_factor = margin_factor, equidistant = equidistant) # calculate extent
+  gg.ext <- .ext(m = m, crs = crs, ext = ext, margin_factor = margin_factor, equidistant = equidistant, cross_dateline = cross_dateline) # calculate extent
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     # out("Retrieving and compositing basemap imagery...")
-    r_list <- list(suppressWarnings(basemap_terra(
-      ext = gg.ext, map_service = map_service, map_type = map_type,
+    # a dateline-crossing extent has to be requested in two halves, as tile
+    # services cannot serve imagery spanning the dateline
+    get_basemap <- if(isTRUE(cross_dateline)) .basemap_dateline else .basemap
+    
+    r_list <- list(get_basemap(
+      gg.ext, crs = crs, map_service = map_service, map_type = map_type,
       map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose, ...
-      #custom_crs = as.character(m.crs$wkt), ...
-      #custom_crs =  as.character(raster::crs(m)), ...
-    )))
-    if(crs != st_crs(3857)){
-      r_list[[1]] <- project(r_list[[1]], crs$wkt)
-      
-      # correct scale
-      r_list[[1]] <- rast(lapply(r_list[[1]], function(x){
-        x[x > 255] <- 255
-        return(x)
-      }))
-    }
+    ))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   } else{
     map_service <- "custom"
@@ -325,6 +318,12 @@ frames_spatial <- function(
   )
   m$scaley <- m$scalex <- NULL # relict from when moveVis handled cross_dateline by itself insteaf of relying
   # on sf::st_shift_longitude() for it. 
+  
+  # a shifted extent needs explicit breaks, as the graticule is otherwise cut
+  # at the dateline and the shifted part of the frame is left unlabelled
+  if(isTRUE(cross_dateline)){
+    m$scalex <- list(ggplot2::scale_x_continuous(breaks = .dateline_lon_breaks(gg.ext)))
+  }
   # m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels)) # only works with caartesian coord on the render end
   # m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
   
