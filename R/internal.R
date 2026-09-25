@@ -144,12 +144,7 @@ repl_vals <- function(data, x, y){
     y.devi <- ((ax.diff[2]*margin_factor)-ax.diff[2])
     ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs(4326))
     
-    if(isFALSE(cross_dateline)){
-      if(ext.ll.sq["xmin"] < -180) ext.ll.sq["xmin"] <- -180
-      if(ext.ll.sq["xmax"] > 180) ext.ll.sq["xmax"] <- 180
-    }
-    if(ext.ll.sq["ymin"] < -90) ext.ll.sq["ymin"] <- -90
-    if(ext.ll.sq["ymax"] > 90) ext.ll.sq["ymax"] <- 90
+    ext.ll.sq <- .clip_ll(ext.ll.sq, cross_dateline)
   }
   return(st_bbox(.st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
 }
@@ -208,7 +203,9 @@ repl_vals <- function(data, x, y){
   }
   
   # Transform gg.ext to desired output crs
-  transform_ext <- function(y, crs) st_bbox(st_transform(st_as_sfc(y), crs))
+  transform_ext <- function(y, crs){
+    st_bbox(st_transform(st_as_sfc(.clip_ll(y, cross_dateline)), crs))
+  }
   
   if(inherits(gg.ext, "list")){
     gg.ext <- lapply(gg.ext, function(y) transform_ext(y, crs))
@@ -216,19 +213,29 @@ repl_vals <- function(data, x, y){
     gg.ext <- transform_ext(gg.ext, crs)
   }
   
-  # cut by longlat maximums if gg.ext is in 4326
-  if(isTRUE(crs == st_crs(4326))){
-    # shifted extents legitimately exceed the dateline, so only clip x when
-    # the extent is not meant to cross it
-    if(isFALSE(cross_dateline)){
-      if(gg.ext[1] < -180) gg.ext[1] <- -180
-      if(gg.ext[3] > 180) gg.ext[3] <- 180
-    }
-    if(gg.ext[2] < -90) gg.ext[2] <- -90
-    if(gg.ext[4] > 90) gg.ext[4] <- 90
-  }
-  
   gg.ext
+}
+
+#' Clip a geographic extent to valid limits
+#'
+#' Clip an input extent to standard lat/lon limits. Ignore longitude clip if an
+#' extent that deliberately crosses the dateline is provided.
+#' 
+#' @importFrom sf st_crs
+#' @noRd
+.clip_ll <- function(ext, cross_dateline = FALSE){
+  if(isFALSE(st_crs(ext) == st_crs(4326))) return(ext)
+  
+  # shifted extents legitimately exceed the dateline, so only clip x when the
+  # extent is not meant to cross it
+  if(isFALSE(cross_dateline)){
+    if(ext["xmin"] < -180) ext["xmin"] <- -180
+    if(ext["xmax"] > 180) ext["xmax"] <- 180
+  }
+  if(ext["ymin"] < -90) ext["ymin"] <- -90
+  if(ext["ymax"] > 90) ext["ymax"] <- 90
+  
+  ext
 }
 
 #' Split a shifted (0-360) extent that crosses the dateline into its eastern
