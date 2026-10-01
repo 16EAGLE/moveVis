@@ -301,6 +301,9 @@ repl_vals <- function(data, x, y){
     crs = st_crs(4326)
   )
   
+  # Use the zoom rule that basemaps applies when no custom_zoom is provided
+  # in basemaps:::.get_map(). If basemaps changes how it determines zoom, this
+  # may warrant updating.
   suppressWarnings(
     slippymath::bbox_to_tile_grid(
       equivalent, max_tiles = ceiling(map_res * 20)
@@ -364,8 +367,9 @@ repl_vals <- function(data, x, y){
 #' `sf::st_graticule()` only keeps longitudes beyond 180 when it is asked for
 #' a 0-360 graticule, which it decides by looking for a requested longitude
 #' greater than 195. A narrow extent straddling the dateline never reaches 
-#' that threshold, so we append one break past the threshold forces
-#' visible breaks are labelled as degrees west of the dateline.
+#' that threshold, so we append one break beyond it. This extra break falls
+#' outside the plotted extent, but it forces a 0-360 graticule, so the visible
+#' breaks past 180 are kept and labelled as degrees west.
 #' @noRd
 .dateline_lon_breaks <- function(ext) {
   breaks <- pretty(c(ext[["xmin"]], ext[["xmax"]]), n = 6)
