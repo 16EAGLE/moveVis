@@ -22,6 +22,7 @@ Imports:
   lwgeom,
   units,
   basemaps,
+  slippymath,
   lubridate,
   ggplot2,
   rlang,

@@ -9,3 +9,142 @@ test_that("internal (labels)", {
 test_that("internal (onLoad)", {
   expect_invisible(moveVis:::.onLoad())
 })
+
+test_that("internal (.ext splits extent across the dateline)", {
+  ext <- sf::st_bbox(
+    c(xmin = 178.44, ymin = 51.8, xmax = 181.56, ymax = 52.9),
+    crs = sf::st_crs(4326)
+  )
+  halves <- .split_dateline_ext(ext)
+
+  expect_named(halves, c("east", "west"))
+  expect_equal(as.numeric(halves$east[c("xmin", "xmax")]), c(178.44, 180))
+  expect_equal(as.numeric(halves$west[c("xmin", "xmax")]), c(-180, -178.44))
+})
+
+test_that("internal (.ext does not clip shifted extents at the dateline)", {
+  m <- sf::st_shift_longitude(m.dateline)
+  ext <- .ext(
+    m, crs = sf::st_crs(4326), margin_factor = 1.3, cross_dateline = TRUE
+  )
+
+  # extent must stay in shifted (0-360) space rather than being cut at 180
+  expect_gt(ext[["xmax"]], 180)
+  expect_lt(ext[["xmax"]] - ext[["xmin"]], 10)
+})
+
+test_that("internal (.ext still clips lon/lat maxima when not crossing)", {
+  # margin expansion must not push a non-crossing extent outside the domain
+  ext <- .ext(
+    m.dateline,
+    crs = sf::st_crs(4326),
+    margin_factor = 1.3,
+    cross_dateline = FALSE
+  )
+
+  expect_lte(ext[["xmax"]], 180)
+  expect_gte(ext[["xmin"]], -180)
+})
+
+test_that("internal (.basemap_dateline leaves a non-crossing extent unsplit)", {
+  # splitting an extent that stops short of the dateline yields an invalid
+  # western half, which would merge into a raster spanning most of the globe
+  ext <- sf::st_bbox(
+    c(xmin = 178.8, ymin = 51.9, xmax = 179.9, ymax = 52.9),
+    crs = sf::st_crs(4326)
+  )
+  
+  r <- .basemap_dateline(
+    ext,
+    crs = sf::st_crs(4326),
+    map_service = "carto",
+    map_type = "light",
+    verbose = FALSE
+  )
+
+  r.ext <- as.vector(terra::ext(r))
+  expect_lt(r.ext[2], 180)
+  expect_lt(r.ext[2] - r.ext[1], 2)
+})
+
+test_that("internal (.equidistant does not clip a shifted extent)", {
+  ext <- sf::st_bbox(
+    c(xmin = 178.8, ymin = 51.83, xmax = 181.2, ymax = 52.87),
+    crs = sf::st_crs(4326)
+  )
+  sq <- .equidistant(ext, margin_factor = 1.3, cross_dateline = TRUE)
+
+  # the square extent stays centered on the data instead of being cut at 180
+  expect_gt(sq[["xmax"]], 180)
+  expect_equal(unname(mean(c(sq[["xmin"]], sq[["xmax"]]))), 180, tolerance = 1e-6)
+})
+
+test_that("internal (.equidistant still clips lon maxima when not crossing)", {
+  ext <- sf::st_bbox(
+    c(xmin = 178, ymin = 51.83, xmax = 179.9, ymax = 52.87),
+    crs = sf::st_crs(4326)
+  )
+  sq <- .equidistant(ext, margin_factor = 1.3, cross_dateline = FALSE)
+
+  expect_lte(sq[["xmax"]], 180)
+})
+
+test_that("internal (.dateline_zoom matches an equivalent non-crossing extent)", {
+  ext <- sf::st_bbox(
+    c(xmin = 179, ymin = 20, xmax = 260, ymax = 60), crs = sf::st_crs(4326)
+  )
+  # same span, placed away from the dateline
+  equiv <- sf::st_bbox(
+    c(xmin = -40.5, ymin = 20, xmax = 40.5, ymax = 60), crs = sf::st_crs(4326)
+  )
+
+  expect_equal(
+    moveVis:::.dateline_zoom(ext),
+    slippymath::bbox_to_tile_grid(equiv, max_tiles = 20)$zoom
+  )
+})
+
+test_that("internal (.basemap_dateline gives a lopsided split consistent detail)", {
+  # 1 degree east of the dateline, 80 degrees west of it
+  crossing <- sf::st_bbox(
+    c(xmin = 179, ymin = 20, xmax = 260, ymax = 60), crs = sf::st_crs(4326)
+  )
+  equiv <- sf::st_bbox(
+    c(xmin = -40.5, ymin = 20, xmax = 40.5, ymax = 60), crs = sf::st_crs(4326)
+  )
+
+  r <- moveVis:::.basemap_dateline(
+    crossing, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE
+  )
+  ref <- moveVis:::.basemap(
+    equiv, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE
+  )
+
+  # sizing each half to its own width lets the narrow half dictate the
+  # resolution of the whole merged raster. Compare as a ratio: these values are
+  # far smaller than any useful tolerance, so expect_equal() would degenerate
+  # to an absolute comparison and pass regardless.
+  ratio <- terra::res(r)[1] / terra::res(ref)[1]
+
+  expect_gt(ratio, 0.5)
+  expect_lt(ratio, 2)
+})
+
+test_that("internal (.basemap_dateline respects a user supplied zoom)", {
+  ext <- sf::st_bbox(
+    c(xmin = 179, ymin = 20, xmax = 260, ymax = 60), crs = sf::st_crs(4326)
+  )
+
+  auto <- moveVis:::.basemap_dateline(
+    ext, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE
+  )
+  user <- moveVis:::.basemap_dateline(
+    ext, crs = sf::st_crs(4326),
+    map_service = "carto", map_type = "light", verbose = FALSE, custom_zoom = 6
+  )
+
+  expect_lt(terra::res(user)[1], terra::res(auto)[1])
+})

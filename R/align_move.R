@@ -147,7 +147,7 @@ align_move <- function(m, res = "minimum", start_end_time = NULL, fill_na_values
   if(all(st_is_longlat(m), sf_use_s2())){
     m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_as_sf(s2_interpolate_normalized(st_geometry(.m), .nd)), SIMPLIFY = T)
   } else{
-    m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_line_interpolate(st_geometry(.m), .nd), SIMPLIFY = T)
+    m_aligned <- mapply(.m = m_sf_lines, .nd = nd, function(.m, .nd) st_as_sf(st_line_interpolate(st_geometry(.m), .nd, normalized = TRUE)), SIMPLIFY = T)
   }
   
   # assemble sf object

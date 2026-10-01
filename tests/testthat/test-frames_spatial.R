@@ -109,6 +109,64 @@ test_that("frames_spatial (different extent/proj settings)", {
   
 })
 
+test_that("Correctly handle custom extent selection", {
+  m_bbox <- st_bbox(m.aligned)
+  m_crs <- st_crs(m.aligned)
+  
+  # If no adjustments, .ext() should equal bbox
+  expect_identical(
+    .ext(m.aligned, m_crs, margin_factor = 1, equidistant = FALSE),
+    m_bbox
+  )
+  
+  # If no scaling, .ext() should equal the bbox when transformed to same CRS
+  expect_identical(
+    .ext(m.aligned, crs = "epsg:4326", margin_factor = 1, equidistant = FALSE),
+    st_transform(m_bbox, "epsg:4326")
+  )
+  
+  expect_identical(
+    .ext(m.aligned, crs = "epsg:32637", margin_factor = 1, equidistant = FALSE),
+    st_transform(m_bbox, "epsg:32637")
+  )
+  
+  # with ext, .ext() should equal the ext
+  my_ext <- st_bbox(c(xmin = 8.4, ymin = 47, xmax = 10, ymax = 48), crs = m_crs)
+  
+  expect_identical(
+    .ext(m, crs = m_crs, ext = my_ext),
+    my_ext
+  )
+  
+  expect_identical(
+    .ext(m.aligned, crs = st_crs("epsg:32637"), ext = my_ext),
+    st_transform(my_ext, st_crs("epsg:32637"))
+  )
+  
+  # scale args ignored when extent is provided
+  expect_identical(
+    .ext(m.aligned, m_crs, ext = my_ext, margin_factor = 2, equidistant = TRUE),
+    .ext(m.aligned, m_crs, ext = my_ext, margin_factor = 0.4, equidistant = FALSE)
+  )
+  
+  # Can correctly handle extent when provided in different crs of input data
+  ext <- sf::st_set_crs(
+    sf::st_bbox(c(xmin = -1740000, ymin = 5740000, xmax = -1736000, ymax = 5747000)), 
+    sf::st_crs("epsg:32637")
+  )
+  
+  fr <- frames_spatial(
+    m.aligned,
+    ext = ext,
+    crs = sf::st_crs("epsg:32637"),
+    crs_graticule = sf::st_crs("epsg:32637"),
+    verbose = FALSE
+  )
+  
+  expect_equal(fr$aesthetics$gg.ext, ext)
+  expect_equal(fr$crs, sf::st_crs("epsg:32637"))
+})
+
 test_that("frames_spatial (cross_dateline)", {
   
   frames <- expect_warning(expect_length(expect_is(frames_spatial(m = m.shifted, map_service = "carto", map_type = "light",
@@ -116,4 +174,57 @@ test_that("frames_spatial (cross_dateline)", {
   frames <- expect_length(expect_is(frames_spatial(m = m.shifted, map_service = "carto", map_type = "light",
                                                                   verbose = F, crs = st_crs(4326), cross_dateline = T), "moveVis"), 188)
   frames <- expect_error(frames_spatial(m = m.shifted, r_grad, r_type = "gradient", verbose = F, cross_dateline = T))
+})
+
+test_that("frames_spatial (cross_dateline) covers the full shifted extent", {
+  fr <- frames_spatial(
+    m.dateline,
+    crs = sf::st_crs(4326), 
+    cross_dateline = TRUE,
+    margin_factor = 1.3,
+    equidistant = FALSE,
+    verbose = FALSE
+  )
+
+  gg.ext <- fr$aesthetics$gg.ext
+  expect_gt(gg.ext[["xmax"]], 180)
+
+  # basemap must span the shifted extent, not collapse to a world raster
+  r.ext <- as.vector(terra::ext(fr$r[1]))
+  expect_gt(r.ext[2], 180)
+  expect_lt(r.ext[2] - r.ext[1], 10)
+})
+
+test_that("frames_spatial (cross_dateline) supports an equidistant extent", {
+  fr <- expect_no_warning(
+    frames_spatial(
+      m.dateline,
+      crs = sf::st_crs(4326),
+      cross_dateline = TRUE,
+      equidistant = TRUE,
+      verbose = FALSE
+    ),
+    message = "equidistant"
+  )
+
+  expect_true(fr$aesthetics$equidistant)
+  expect_gt(fr$aesthetics$gg.ext[["xmax"]], 180)
+})
+
+test_that("frames_spatial (cross_dateline) labels longitudes beyond the dateline", {
+  fr <- frames_spatial(
+    m.dateline,
+    crs = sf::st_crs(4326),
+    cross_dateline = TRUE,
+    margin_factor = 1.3,
+    equidistant = FALSE,
+    verbose = FALSE
+  )
+
+  grat <- ggplot2::ggplot_build(fr[[length(fr)]])$layout$panel_params[[1]]$graticule
+  lon <- grat[grat$type == "E", ]
+
+  expect_gt(max(lon$degree), 180)
+  # shifted longitudes must read as degrees west, not as values above 180
+  expect_true(any(grepl("W", as.character(lon$degree_label))))
 })

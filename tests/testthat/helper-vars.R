@@ -71,3 +71,21 @@ m.shifted.repro <- sf::st_transform(m.shifted, sf::st_crs(3995))
 #   terra::values(x) <- round(terra::values(x)*10)
 #   return(x)
 # }))
+
+# small synthetic dataset with two tracks crossing the dateline, used to test
+# cross_dateline handling without the cost of the full m.shifted dataset
+m.dateline <- local({
+  wrap_lon <- function(x) ((x + 180) %% 360) - 180
+  n <- 16
+  ts <- as.POSIXct("2024-06-01 00:00:00", tz = "UTC") + (seq_len(n) - 1) * 1800
+  df <- data.frame(
+    x = c(wrap_lon(seq(178.8, 181.2, length.out = n)),
+          wrap_lon(seq(181.2, 178.8, length.out = n))),
+    y = c(52.5 + sin(seq(0, pi, length.out = n)) * 0.25,
+          52.2 - sin(seq(0, pi, length.out = n)) * 0.25),
+    timestamp = rep(ts, 2),
+    track = rep(c("A_east", "B_west"), each = n)
+  )
+  mt_as_move2(df, coords = c("x", "y"), time_column = "timestamp",
+              track_id_column = "track", crs = st_crs(4326))
+})

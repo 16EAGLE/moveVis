@@ -25,7 +25,7 @@
 #' @param trace_colour character, colour of the trace. Default is "white". It is recommended to define the same colours for both \code{trace_colour} and  \code{tail_colour} to enforce an uninterrupted colour transition form the tail to the trace.
 #' @param cross_dateline logical, whether tracks are crossing the dateline (longitude 180/-180) or not. If \code{TRUE}, frames are expanded towards the side of the dateline that is smaller in space. Applies only if the CRS of \code{m} is not projected (geographical, lon/lat). If \code{FALSE} (default), frames are clipped at the minimum and maximum longitudes and tracks cannot cross.
 #' @param margin_factor numeric, factor relative to the extent of \code{m} by which the frame extent should be increased around the movement area. Ignored, if \code{ext} is set.
-#' @param equidistant logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = NULL}), equidistant is set automatically to \code{FALSE}, if \code{ext} is set, otherwise \code{TRUE}. Read more in the details.
+#' @param equidistant logical, whether to make the map extent equidistant (squared) with y and x axis measuring equal distances or not. Especially in polar regions of the globe it might be necessaray to set \code{equidistant} to \code{FALSE} to avoid strong stretches. By default (\code{equidistant = TRUE}). If \code{ext} is set, this argument will always be \code{FALSE}. Read more in the details.
 #' @param ext \code{sf bbox} in same CRS as \code{m}, optional. If set, frames are cropped to this extent. If not set, the extent is computed from \code{m}, optionally with a margin set by \code{margin_factor}.
 #' @param crs \code{sf crs} object. This is the CRS that is used for visualizing both movement and map data. Defaults to \code{st_crs(3857)} (Web Mercator), unless \code{r} is defined. In that case, \code{st_crs(r)} is used.
 #' @param crs_graticule \code{sf crs} object. This is the CRS that should be used to generate graticules. By default, geographic coordinates (Lon/Lat WGS84, EPSG:4326) is used.
@@ -192,7 +192,7 @@
 
 frames_spatial <- function(
     m, r = NULL, r_type = "gradient", fade_raster = FALSE, crop_raster = TRUE, map_service = "osm", map_type = "streets", map_res = 1, map_token = NULL, map_dir = NULL,
-    margin_factor = 1.1, equidistant = NULL, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), crs_graticule = st_crs(4326), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
+    margin_factor = 1.1, equidistant = TRUE, ext = NULL, crs = if(is.null(r)) st_crs(3857) else st_crs(terra::crs(r)), crs_graticule = st_crs(4326), path_size = 3, path_end = "round", path_join = "round", path_mitre = 10, path_arrow = NULL, path_colours = NA, path_alpha = 1, path_fade = FALSE,
     path_legend = TRUE, path_legend_title = "Names", tail_length = 19, tail_size = 1, tail_colour = "white", trace_show = FALSE, trace_size = tail_size, trace_colour = "white", cross_dateline = FALSE, ..., verbose = TRUE){
   
   if(inherits(verbose, "logical")) options(moveVis.verbose = verbose)
@@ -272,7 +272,7 @@ frames_spatial <- function(
   if(!is.null(path_arrow)) if(!inherits(path_arrow, "arrow")) out("Argument 'path_arrow' must be of type 'arrrow' (see grid::arrow), if defined.", type = 3)
   if(is.character(path_colours)) if(length(path_colours) != mt_n_tracks(m)) out("Argument 'path_colours' must be of same length as the number of individual tracks of 'm', if defined. Alternatively, use a column 'colour' for individual colouring per coordinate within 'm' (see details of ?frames_spatial).", type = 3)
   if(!is.logical(path_legend)) out("Argument 'path_legend' must be of type 'logical'.", type = 3)
-  if(is.null(equidistant)) if(is.null(ext)) equidistant <- TRUE else equidistant <- FALSE
+  if(!is.null(ext)) equidistant <- FALSE
   if(!is.logical(equidistant)) out("Argument 'equidistant' must be of type 'logical'.", type = 3)
   
   # check m time conformities
@@ -292,26 +292,19 @@ frames_spatial <- function(
   .stats(n.frames = max(m$frame))
   .cat_crs_params(.crs_params(m))
   
-  gg.ext <- .ext(m = m, crs = crs, ext = ext, margin_factor = margin_factor, equidistant = equidistant) # calculate extent
+  gg.ext <- .ext(m = m, crs = crs, ext = ext, margin_factor = margin_factor, equidistant = equidistant, cross_dateline = cross_dateline) # calculate extent
   
   ## calculate tiles and get map imagery
   if(is.null(r_list)){
     # out("Retrieving and compositing basemap imagery...")
-    r_list <- list(suppressWarnings(basemap_terra(
-      ext = gg.ext, map_service = map_service, map_type = map_type,
+    # a dateline-crossing extent has to be requested in two halves, as tile
+    # services cannot serve imagery spanning the dateline
+    get_basemap <- if(isTRUE(cross_dateline)) .basemap_dateline else .basemap
+    
+    r_list <- list(get_basemap(
+      gg.ext, crs = crs, map_service = map_service, map_type = map_type,
       map_res = map_res, map_token = map_token, map_dir = map_dir, verbose = verbose, ...
-      #custom_crs = as.character(m.crs$wkt), ...
-      #custom_crs =  as.character(raster::crs(m)), ...
-    )))
-    if(crs != st_crs(3857)){
-      r_list[[1]] <- project(r_list[[1]], crs$wkt)
-      
-      # correct scale
-      r_list[[1]] <- rast(lapply(r_list[[1]], function(x){
-        x[x > 255] <- 255
-        return(x)
-      }))
-    }
+    ))
     if(all(map_service == "mapbox", map_type == "terrain")) r_type = "gradient" else r_type <- "RGB"
   } else{
     map_service <- "custom"
@@ -325,6 +318,12 @@ frames_spatial <- function(
   )
   m$scaley <- m$scalex <- NULL # relict from when moveVis handled cross_dateline by itself insteaf of relying
   # on sf::st_shift_longitude() for it. 
+  
+  # a shifted extent needs explicit breaks, as the graticule is otherwise cut
+  # at the dateline and the shifted part of the frame is left unlabelled
+  if(isTRUE(cross_dateline)){
+    m$scalex <- list(ggplot2::scale_x_continuous(breaks = .dateline_lon_breaks(gg.ext)))
+  }
   # m$scalex <- list(ggplot2::scale_x_continuous(labels = .x_labels)) # only works with caartesian coord on the render end
   # m$scaley <- list(ggplot2::scale_y_continuous(labels = .y_labels))
   

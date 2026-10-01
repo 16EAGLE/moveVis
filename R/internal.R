@@ -114,7 +114,7 @@ repl_vals <- function(data, x, y){
 #' square it
 #' @importFrom sf st_bbox st_as_sfc st_crs st_sfc st_point st_distance
 #' @noRd 
-.equidistant <- function(ext, margin_factor = 1){
+.equidistant <- function(ext, margin_factor = 1, cross_dateline = FALSE){
   
   # lat lon ext
   ext.ll <- st_bbox(.st_transform(st_as_sfc(ext), st_crs(4326)))
@@ -144,84 +144,237 @@ repl_vals <- function(data, x, y){
     y.devi <- ((ax.diff[2]*margin_factor)-ax.diff[2])
     ext.ll.sq <- st_bbox(c(ext.ll[1]-x.devi, ext.ll[3]+x.devi, ext.ll[2]-y.devi, ext.ll[4]+y.devi), crs = st_crs(4326))
     
-    if(ext.ll.sq["xmin"] < -180) ext.ll.sq["xmin"] <- -180
-    if(ext.ll.sq["xmax"] > 180) ext.ll.sq["xmax"] <- 180
-    if(ext.ll.sq["ymin"] < -90) ext.ll.sq["ymin"] <- -90
-    if(ext.ll.sq["ymax"] > 90) ext.ll.sq["ymax"] <- 90
+    ext.ll.sq <- .clip_ll(ext.ll.sq, cross_dateline)
   }
   return(st_bbox(.st_transform(st_as_sfc(ext.ll.sq, crs = st_crs(4326)), st_crs(ext))))
 }
 
+#' This calculates an extent for an input move2 object and provides it in
+#' a desired output CRS.
+#' 
+#' If a custom extent is provided to `ext`, all scaling arguments are ignored,
+#' as we assume the custom extent itself is the desired output bbox.
+#' 
+#' If `cross_dateline` is TRUE, `m` is expected to carry shifted (0-360)
+#' longitudes, so the returned extent may exceed 180 degrees. Clipping the x
+#' components at the dateline would truncate such an extent, so it is skipped.
+#' 
 #' generate ext, return as latlon
 #' @importFrom sf st_as_sf st_transform st_crs st_bbox st_as_sfc st_intersects st_coordinates
 #' @noRd 
-.ext <- function(m, crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = NULL, return_latlon = FALSE){
-  
-  m_ll <- st_as_sf(m, coords=c("x", "y"), crs = crs, remove = F)
-  m_ll <- st_transform(m_ll, st_crs(4326))
-  
-  ## calculate ext
-  gg.ext <- st_bbox(m_ll)
-  
-  if(!is.null(ext)){
-    ext <- st_bbox(st_transform(ext, st_crs(m_ll)))
-    #ext <- st_bbox(st_transform(st_as_sfc(st_bbox(ext, crs = crs)), st_crs(4326)))
+.ext <- function(m, crs, ext = NULL, margin_factor = 1.1, equidistant = FALSE, cross_dateline = FALSE) {
+  # m may not be in same CRS as crs, but st_as_sf uses m's CRS if crs is inconsistent
+  m <- st_as_sf(m, coords = c("x", "y"), crs = crs, remove = F)
+
+  # If no user-provided ext, calculate from m bbox, using margin_factor/equidistant
+  if (is.null(ext)) {
+    gg.ext <- st_bbox(st_transform(m, st_crs(4326)))
     
-    if(!quiet(st_intersects(st_as_sfc(ext), st_as_sfc(gg.ext), sparse = F)[1,1])) out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
-    margin_factor <- 1 # no margin since user extent set
+    xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
+    
+    if(isTRUE(equidistant)){
+      gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor, cross_dateline = cross_dateline)
+    }else{
+      gg.ext <- st_bbox(
+        c(
+          gg.ext[1:2] - (xy.diff*(-1+margin_factor)), 
+          gg.ext[3:4] + (xy.diff*(-1+margin_factor))
+        ), 
+        crs = st_crs(gg.ext)
+      )
+    }
+  } else {
+    # Otherwise, just need to ensure user provided ext overlaps data ext
+    stopifnot(inherits(ext, "bbox"))
+    
     gg.ext <- ext
-  }
-  
-  # xy.diff <- if(isTRUE(cross_dateline)){
-  #   xy <- st_coordinates(m)
-  #   c(abs(abs(max(xy[xy[,1] < 0, 1])) - min(xy[xy[,1] > 0,1])), gg.ext[4]-gg.ext[2])/2
-  # }else (gg.ext[3:4] - gg.ext[1:2])/2
-  xy.diff <- (gg.ext[3:4] - gg.ext[1:2])/2
-  
-  # squared equidistant extent or not
-  # if(isTRUE(cross_dateline)){
-  #   
-  #   # split extents for both dateline sides
-  #   gg.ext <- list("west" = gg.ext, "east" = gg.ext)
-  #   
-  #   # cut extents and add margins to x components
-  #   gg.ext$west[[1]] <- -180 #xmin
-  #   gg.ext$west[[3]] <- max(xy[xy[,1] < 0,1]) + xy.diff[1]*(-1+margin_factor) #xmax
-  #   gg.ext$east[[1]] <- min(xy[xy[,1] > 0,1]) - xy.diff[1]*(-1+margin_factor) #xmin
-  #   gg.ext$east[[3]] <- 180 #xmax
-  #   
-  #   # add margins to y components
-  #   gg.ext$west[[2]] <- gg.ext$west[[2]] - xy.diff[2]*(-1+margin_factor) #ymin
-  #   gg.ext$west[[4]] <- gg.ext$west[[4]] + xy.diff[2]*(-1+margin_factor) #ymax
-  #   gg.ext$east[[2]] <- gg.ext$east[[2]] - xy.diff[2]*(-1+margin_factor) #ymin
-  #   gg.ext$east[[4]] <- gg.ext$east[[4]] + xy.diff[2]*(-1+margin_factor) #ymax
-  #   
-  # } else{
     
-  # equidistant currently not supported for cross_dateline
-  if(isTRUE(equidistant)){
-    gg.ext <- .equidistant(ext = gg.ext, margin_factor = margin_factor)
-  }else{
-    gg.ext <- st_bbox(c(gg.ext[1:2] - (xy.diff*(-1+margin_factor)), gg.ext[3:4] + (xy.diff*(-1+margin_factor))), crs = st_crs(gg.ext))
-  }
-  
-  # cut by longlat maximums
-  if(isTRUE(st_crs(m) == st_crs(4326))){
-    if(gg.ext[1] < -180) gg.ext[1] <- -180
-    if(gg.ext[3] > 180) gg.ext[3] <- 180
-    if(gg.ext[2] < -90) gg.ext[2] <- -90
-    if(gg.ext[4] > 90) gg.ext[4] <- 90
-  }
-  
-  if(isFALSE(return_latlon)){
-    transform_ext <- function(y) st_bbox(st_transform(st_as_sfc(y), crs))
-    if(inherits(gg.ext, "list")){
-      gg.ext <- lapply(gg.ext, transform_ext)
-    } else{
-      gg.ext <- transform_ext(gg.ext)
+    has_intersection <- quiet(
+      st_intersects(
+        st_transform(st_as_sfc(gg.ext), st_crs(m)),
+        st_as_sfc(st_bbox(m)),
+        sparse = F
+      )
+    )
+    
+    if(!has_intersection[1,1]) {
+      out("Argument 'ext' does not overlap with the extent of 'm'.", type = 3)
     }
   }
-  return(gg.ext)
+  
+  # Transform gg.ext to desired output crs
+  transform_ext <- function(y, crs){
+    st_bbox(st_transform(st_as_sfc(.clip_ll(y, cross_dateline)), crs))
+  }
+  
+  if(inherits(gg.ext, "list")){
+    gg.ext <- lapply(gg.ext, function(y) transform_ext(y, crs))
+  } else{
+    gg.ext <- transform_ext(gg.ext, crs)
+  }
+  
+  gg.ext
+}
+
+#' Clip a geographic extent to valid limits
+#'
+#' Clip an input extent to standard lat/lon limits. Ignore longitude clip if an
+#' extent that deliberately crosses the dateline is provided.
+#' 
+#' @importFrom sf st_crs
+#' @noRd
+.clip_ll <- function(ext, cross_dateline = FALSE){
+  if(isFALSE(st_crs(ext) == st_crs(4326))) return(ext)
+  
+  # shifted extents legitimately exceed the dateline, so only clip x when the
+  # extent is not meant to cross it
+  if(isFALSE(cross_dateline)){
+    if(ext["xmin"] < -180) ext["xmin"] <- -180
+    if(ext["xmax"] > 180) ext["xmax"] <- 180
+  }
+  if(ext["ymin"] < -90) ext["ymin"] <- -90
+  if(ext["ymax"] > 90) ext["ymax"] <- 90
+  
+  ext
+}
+
+#' Split a shifted (0-360) extent that crosses the dateline into its eastern
+#' and western halves, each valid in conventional -180/180 longitudes.
+#' 
+#' Basemap tile services cannot serve a single extent spanning the dateline,
+#' so imagery is requested per half and merged afterwards.
+#' @noRd
+.split_dateline_ext <- function(ext) {
+  ymin <- ext[["ymin"]]
+  ymax <- ext[["ymax"]]
+  
+  east <- sf::st_bbox(
+    c(xmin = ext[["xmin"]], ymin = ymin, xmax = 180, ymax = ymax),
+    crs = sf::st_crs(ext)
+  )
+  
+  west <- sf::st_bbox(
+    c(xmin = -180, ymin = ymin, xmax = ext[["xmax"]] - 360, ymax = ymax),
+    crs = sf::st_crs(ext)
+  )
+  
+  list(east = east, west = west)
+}
+
+#' Retrieve basemap imagery for a single extent, in the target CRS
+#' @importFrom basemaps basemap_terra
+#' @noRd
+.basemap <- function(ext, crs, ..., custom_zoom = NULL) {
+  r <- suppressWarnings(
+    basemap_terra(ext = ext, custom_zoom = custom_zoom, ...)
+  )
+  
+  if(crs != st_crs(3857)){
+    r <- terra::project(r, crs$wkt)
+    
+    # correct scale
+    r <- terra::rast(lapply(r, function(x){
+      x[x > 255] <- 255
+      return(x)
+    }))
+  }
+  
+  r
+}
+
+#' Tile zoom for an extent that crosses the dateline
+#' 
+#' Tile services size the zoom to the extent they are given. As the halves of
+#' a crossing extent are requested separately, a lopsided split would give each
+#' half a zoom suited to its own width, and merging imagery of very different
+#' resolutions lets the narrower half dictate the whole raster. Deriving one
+#' zoom from the full extent keeps the detail of a crossing map the same as a
+#' non-crossing map of equal span.
+#' 
+#' @importFrom sf st_bbox st_crs
+#' @noRd
+.dateline_zoom <- function(ext, map_res = 1) {
+  width <- ext[["xmax"]] - ext[["xmin"]]
+  
+  equivalent <- st_bbox(
+    c(xmin = -width/2, ymin = ext[["ymin"]], xmax = width/2, ymax = ext[["ymax"]]),
+    crs = st_crs(4326)
+  )
+  
+  # Use the zoom rule that basemaps applies when no custom_zoom is provided
+  # in basemaps:::.get_map(). If basemaps changes how it determines zoom, this
+  # may warrant updating.
+  suppressWarnings(
+    slippymath::bbox_to_tile_grid(
+      equivalent, max_tiles = ceiling(map_res * 20)
+    )$zoom
+  )
+}
+
+#' Retrieve basemap imagery for an extent that crosses the dateline
+#' 
+#' Tile services cannot serve a single extent spanning the dateline, so the
+#' two halves are requested separately and the western one is moved into
+#' shifted (0-360) space before merging. Only used with geographic CRS, where
+#' the shift is a plain 360 degree translation.
+#' @noRd
+.basemap_dateline <- function(ext, crs, ..., map_res = 1, custom_zoom = NULL) {
+  if(is.null(map_res)) map_res <- 1
+  
+  # Avoid splitting a basemap that doesn't actually cross the dateline
+  if(ext[["xmax"]] <= 180){
+    return(.basemap(ext, crs = crs, map_res = map_res, custom_zoom = custom_zoom, ...))
+  }
+  
+  halves <- .split_dateline_ext(ext)
+  
+  # Both halves must share a zoom, otherwise the resolution of the map will
+  # change at the dateline
+  if(is.null(custom_zoom)) custom_zoom <- .dateline_zoom(ext, map_res = map_res)
+  
+  r.east <- .basemap(
+    halves$east,
+    crs = crs,
+    map_res = map_res,
+    custom_zoom = custom_zoom,
+    ...
+  )
+  
+  r.west <- terra::shift(
+    .basemap(
+      halves$west,
+      crs = crs,
+      map_res = map_res,
+      custom_zoom = custom_zoom,
+      ...
+    ),
+    dx = 360
+  )
+  
+  # the halves come from independent tile requests, so terra resamples the
+  # second onto the first's grid and throws a warning. We expect this
+  # and therefore suppress this particular warning.
+  withCallingHandlers(
+    terra::merge(r.east, r.west),
+    warning = function(w) {
+      if(grepl("base geometry", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+}
+
+#' Longitude breaks for a shifted (0-360) extent crossing the dateline
+#' 
+#' `sf::st_graticule()` only keeps longitudes beyond 180 when it is asked for
+#' a 0-360 graticule, which it decides by looking for a requested longitude
+#' greater than 195. A narrow extent straddling the dateline never reaches 
+#' that threshold, so we append one break beyond it. This extra break falls
+#' outside the plotted extent, but it forces a 0-360 graticule, so the visible
+#' breaks past 180 are kept and labelled as degrees west.
+#' @noRd
+.dateline_lon_breaks <- function(ext) {
+  breaks <- pretty(c(ext[["xmin"]], ext[["xmax"]]), n = 6)
+  if(max(breaks) <= 195) breaks <- c(breaks, 200)
+  breaks
 }
 
 #' calculate x labels from breaks
